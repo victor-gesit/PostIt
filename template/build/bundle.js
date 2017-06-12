@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "template";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -298,22 +298,16 @@ module.exports = "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n\t<title>PostIt</title>
 /* 4 */
 /***/ (function(module, exports) {
 
-module.exports = "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n\t<title>PostIt</title>\r\n\t<script type=\"text/javascript\" src=\"build/bundle.js\"></script>\r\n</head>\r\n<nav>\r\n\t<div>\r\n\t\t<a href=\"#\">PostIt</a>\r\n\t\t<a href=\"#\">About PostIt</a>\r\n\t</div>\r\n</nav>\r\n<body>\r\n<div>\r\n\t<h3 class=\"board-title\">Message Board</h3>\r\n\t<ul>\r\n\t\t<li>\r\n\t\t\t<div class=\"group-info\">Project NextBigThing</div>\r\n\t\t\t<div class=\"group-creator\"><small>Created by Ade Balogun</small></div>\r\n\t\t\t<label class=\"unread\">3 Unread messages</label>\r\n\t\t</li>\r\n\t\t<li>\r\n\t\t\t<div class=\"group-info\">Project MakeItHappen</div>\r\n\t\t\t<div class=\"group-creator\"><small>Created by Ade Balogun</small></div>\r\n\t\t\t<label class=\"unread\">3 Unread messages</label>\r\n\t\t</li>\r\n\t\t<li>\r\n\t\t\t<div class=\"group-info\">Project DisruptTheFlow</div>\r\n\t\t\t<div class=\"group-creator\"><small>Created by Ade Balogun</small></div>\r\n\t\t\t<label class=\"unread\">3 Unread messages</label>\r\n\t\t</li>\r\n\t</ul>\r\n</div>\r\n</body>\r\n</html>"
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
 module.exports = "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n\t<title>PostIt</title>\r\n\t<script type=\"text/javascript\" src=\"build/bundle.js\"></script>\r\n</head>\r\n<nav>\r\n\t<div>\r\n\t\t<a href=\"#\">PostIt</a>\r\n\t\t<a href=\"#\">About PostIt</a>\r\n\t</div>\r\n</nav>\r\n<body>\r\n<div>\r\n\t<div class=\"group-info\">Project NexBigThing</div>\r\n\t<ul class=\"messages\">\r\n\t\t<li class=\"message\">\r\n\t\t\t<div class=\"sender-name\">Ade Balogun</div>\r\n\t\t\t<div class=\"message-body\">I will not be able to make it to the meeting</div>\r\n\t\t\t<div class=\"message-info\"><small>Post created 12:06:2017, 11:34am</small></div>\r\n\t\t</li>\r\n\t\t<li class=\"message\">\r\n\t\t\t<div class=\"sender-name\">John Smith</div>\r\n\t\t\t<div class=\"message-body\">We will try to make up for your absence. Take care.</div>\r\n\t\t\t<div class=\"message-info\"><small>Post created 12:06:2017, 11:50am</small></div>\r\n\t\t</li>\r\n\t\t<li class=\"message\">\r\n\t\t\t<div class=\"sender-name\">Joy Okafor</div>\r\n\t\t\t<div class=\"message-body\">Can we get someone to fill his place?</div>\r\n\t\t\t<div class=\"message-info\"><small>Post created 12:06:2017, 12:00pm</small></div>\r\n\t\t</li>\r\n\t</ul>\r\n\t<div class=\"message-input-box\">\r\n\t\t<input type=\"text\" name=\"mymessage\">\r\n\t\t<button>Send</button>\r\n\t</div>\r\n</div>\r\n</body>\r\n</html>"
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(8);
+var content = __webpack_require__(7);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -321,7 +315,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(10)(content, options);
+var update = __webpack_require__(9)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -338,7 +332,7 @@ if(false) {
 }
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -348,19 +342,19 @@ if(false) {
 if (process.env.NODE_ENV === 'development') {
   __webpack_require__(3);
   __webpack_require__(2);
-  __webpack_require__(5);
   __webpack_require__(4);
+  __webpack_require__(11);
 }
-__webpack_require__(6);
+__webpack_require__(5);
 __webpack_require__(0);
 console.log('testing again  for recompilation');
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(9)(undefined);
+exports = module.exports = __webpack_require__(8)(undefined);
 // imports
 
 
@@ -371,7 +365,7 @@ exports.push([module.i, "body {\n  font-family: \"Lato\", sans-serif; }\n\n/* St
 
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports) {
 
 /*
@@ -453,7 +447,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -499,7 +493,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(11);
+var	fixUrls = __webpack_require__(10);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -812,7 +806,7 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports) {
 
 
@@ -905,6 +899,12 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+module.exports = "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n\t<title>PostIt</title>\r\n\t<script type=\"text/javascript\" src=\"build/bundle.js\"></script>\r\n</head>\r\n<nav>\r\n\t<div>\r\n\t\t<a href=\"#\">PostIt</a>\r\n\t\t<a href=\"#\">About PostIt</a>\r\n\t</div>\r\n</nav>\r\n<body>\r\n<div>\r\n\t<h3 class=\"board-title\">Message Board</h3>\r\n\t<ul>\r\n\t\t<li>\r\n\t\t\t<div class=\"group-info\">Project NextBigThing</div>\r\n\t\t\t<div class=\"group-creator\"><small>Created by Ade Balogun</small></div>\r\n\t\t\t<label class=\"unread\">3 Unread messages</label>\r\n\t\t</li>\r\n\t\t<li>\r\n\t\t\t<div class=\"group-info\">Project MakeItHappen</div>\r\n\t\t\t<div class=\"group-creator\"><small>Created by Ade Balogun</small></div>\r\n\t\t\t<label class=\"unread\">3 Unread messages</label>\r\n\t\t</li>\r\n\t\t<li>\r\n\t\t\t<div class=\"group-info\">Project DisruptTheFlow</div>\r\n\t\t\t<div class=\"group-creator\"><small>Created by Ade Balogun</small></div>\r\n\t\t\t<label class=\"unread\">3 Unread messages</label>\r\n\t\t</li>\r\n\t</ul>\r\n</div>\r\n</body>\r\n</html>"
 
 /***/ })
 /******/ ]);
