@@ -2,8 +2,7 @@
 <html>
 <head>
 	<title>PostIt</title>
-	<link rel="stylesheet" type="text/css" href="css/style.css">
-	<script src="js/index.js"></script>
+	<script src="build/bundle.js"></script>
 </head>
 <nav>
 	<div>
@@ -12,12 +11,35 @@
 	</div>
 </nav>
 <body>
-<div>
-	<button onclick="switchTab(event, 'info')">Create group</button>
-	<button onclick="switchTab(event, 'members')">Add members</button>
+<div class="tab">
+  <button class="tablinks" id="defaultTab" onclick="switchTab(event, 'info')">Group info</button>
+  <button class="tablinks" onclick="switchTab(event, 'members')">Add members</button>
 </div>
-<div>
 
+<div id="info" class="tabcontent">
+	<h3>Enter group details</h3>
+	<form>
+		<div>
+			<input type="text" name="group-title" placeholder="Group Title">
+		</div>
+		<div>
+			<textarea type="text" name="group-desc" placeholder="Description"></textarea>
+		</div>
+		<button>Next</button>
+	</form>
+</div>
+
+<div id="members" class="tabcontent">
+<h3>Add memebers</h3>
+	<form>
+		<ul>
+			<li>Ade Balogun <small> adebalogun@yahoo.com</small><input type="checkbox" name="IDforAdeBalogun"></li>
+			<li>John Smith <small>johnsmith@yahoo.com</small><input type="checkbox" name="IDforJohnSmith"></li>
+			<li>Sani Danjuma <small>sanidanjuma@gmail.com</small><input type="checkbox" name="IDforSaniDanjuma"></li>
+			<li>Joy Okafor <small>joyokafor@yahoo.com</small><input type="checkbox" name="IDforJoyOkafor"></li>
+		</ul>
+		<button>Create group</button>
+	</form>
 </div>
 </body>
 <footer>
