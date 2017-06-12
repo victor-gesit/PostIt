@@ -13,7 +13,7 @@
 <body>
 <div class="tab">
   <button class="tablinks" id="defaultTab" onclick="switchTab(event, 'info')">Group info</button>
-  <button class="tablinks" onclick="switchTab(event, 'members')">Add members</button>
+  <button class="tablinks" id="add-members" onclick="switchTab(event, 'members')">Add members</button>
 </div>
 
 <div id="info" class="tabcontent">
@@ -25,8 +25,8 @@
 		<div>
 			<textarea type="text" name="group-desc" placeholder="Description"></textarea>
 		</div>
-		<button>Next</button>
 	</form>
+	<button onclick="document.getElementById('add-members').click()">Next</button>
 </div>
 
 <div id="members" class="tabcontent">
@@ -40,6 +40,7 @@
 		</ul>
 		<button>Create group</button>
 	</form>
+	<button onclick="document.getElementById('defaultTab').click()">Group info</button>  
 </div>
 </body>
 <footer>
