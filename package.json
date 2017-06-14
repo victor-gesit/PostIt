@@ -4,6 +4,7 @@
   "description": "\u0016PostIt is a simple application that allows friends and colleagues create groups for notifications. ",
   "main": "index.js",
   "scripts": {
+    "start": "node server/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -42,8 +43,18 @@
   },
   "dependencies": {
     "babel-register": "^6.24.1",
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.17.2",
+    "dotenv": "^4.0.0",
     "eslint-config-airbnb": "^15.0.1",
     "eslint-config-airbnb-base": "^11.2.0",
-    "gulp": "^3.9.1"
+    "express": "^4.15.3",
+    "gulp": "^3.9.1",
+    "morgan": "^1.8.2",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "pg": "^6.2.4",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.1.0"
   }
 }
