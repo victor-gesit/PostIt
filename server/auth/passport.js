@@ -2,16 +2,20 @@ import passport from 'passport';
 import passportLocal from 'passport-local';
 import Sequelize from 'sequelize';
 import bcrypt from 'bcrypt-nodejs';
+import dotenv from 'dotenv';
 
-const connection = new Sequelize('post_it', 'postgres', 'idongesit', {
-  dialect: 'postgres'
-});
+dotenv.config();
+const connection = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME,
+  process.env.DB_PASSWORD, {
+    dialect: 'postgres'
+  });
 
 const User = connection.define('user', {
   firstName: Sequelize.STRING,
   lastName: Sequelize.STRING,
   email: Sequelize.STRING,
-  password: Sequelize.STRING
+  password: Sequelize.STRING,
+  groupsOwned: Sequelize.ARRAY(Sequelize.STRING)
 });
 
 User.beforeCreate((user) => {
@@ -43,7 +47,6 @@ passport.use('local.signup', new LocalStrategy(
       email
     } }).then((user) => {
       if (user) {
-        console.log(`User found: ${user}`);
         return done(null, false, { message: 'Username already in use' });
       }
       const newUser = User.build({
@@ -51,7 +54,6 @@ passport.use('local.signup', new LocalStrategy(
         firstName: req.body.firstName,
         lastName: req.body.lastName,
       });
-      console.log(newUser);
       newUser.password = req.body.password;
       newUser.save().then((savedUser) => {
         done(null, savedUser);
