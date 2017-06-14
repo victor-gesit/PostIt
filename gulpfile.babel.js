@@ -15,7 +15,7 @@ gulp.task('run-tests', () => {
 });
 // Gulp coverage implicitly depends on run-tests.
 gulp.task('coverage', () => {
-  gulp.src(['src/*.js', 'routes/*.js'])
+  gulp.src(['server/**/*.js'])
     .pipe(gulpBabelIstanbul())
     .pipe(gulpBabelIstanbul.hookRequire())
     .on('finish', () => {
@@ -24,7 +24,7 @@ gulp.task('coverage', () => {
       .pipe(injectModules())
       .pipe(jasmineNode())
       .pipe(gulpBabelIstanbul.writeReports())
-      .pipe(gulpBabelIstanbul.enforceThresholds({ thresholds: { global: 30 } }))
+      .pipe(gulpBabelIstanbul.enforceThresholds({ thresholds: { global: 50 } }))
       .on('end', () => {
         gulp.src('coverage/lcov.info')
         .pipe(gulpCoveralls());
