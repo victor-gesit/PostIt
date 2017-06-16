@@ -1,32 +1,33 @@
 import gulp from 'gulp';
-import browSync from 'browser-sync';
-import gulpSass from 'gulp-sass';
+import jasmineNode from 'gulp-jasmine-node';
+import babel from 'gulp-babel';
+import injectModules from 'gulp-inject-modules';
+import gulpBabelIstanbul from 'gulp-babel-istanbul';
+import gulpCoveralls from 'gulp-coveralls';
 
-const browserSync = browSync.create();
 
-// Setup browser-sync server
-gulp.task('browser-sync', () => {
-  browserSync.init({
-    server: {
-      baseDir: './template/',
-    }
-  });
+// This task runs jasmine tests and outputs the result to the cli.
+gulp.task('run-tests', () => {
+  gulp.src('server/tests/tests.js')
+    .pipe(babel())
+    .pipe(injectModules())
+    .pipe(jasmineNode());
 });
-
-// Reload browser
-gulp.task('reload', () => {
-  browserSync.reload();
-});
-
-// Task to convert sass to css
-gulp.task('sass', () => {
-  console.log('Converting sass to css');
-  gulp.src('template/scss/*.scss')
-    .pipe(gulpSass().on('error', gulpSass.logError))
-    .pipe(gulp.dest('template/css'));
-});
-
-// Watch sass and html files for changes, and run conversion task
-gulp.task('sass:watch', ['browser-sync'], () => {
-  gulp.watch(['template/scss/*.scss', 'template/*.html'], ['sass', 'reload']);
+// Gulp coverage implicitly depends on run-tests.
+gulp.task('coverage', () => {
+  gulp.src(['server/**/*.js'])
+    .pipe(gulpBabelIstanbul())
+    .pipe(gulpBabelIstanbul.hookRequire())
+    .on('finish', () => {
+      gulp.src('server/tests/tests.js')
+      .pipe(babel())
+      .pipe(injectModules())
+      .pipe(jasmineNode())
+      .pipe(gulpBabelIstanbul.writeReports())
+      .pipe(gulpBabelIstanbul.enforceThresholds({ thresholds: { global: 50 } }))
+      .on('end', () => {
+        gulp.src('coverage/lcov.info')
+        .pipe(gulpCoveralls());
+      });
+    });
 });

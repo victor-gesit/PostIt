@@ -1,8 +1,12 @@
 import Sequelize from 'sequelize';
+import dotenv from 'dotenv';
 
-const connection = new Sequelize('post_it', 'postgres', 'idongesit', {
-  dialect: 'postgres'
-});
+dotenv.config();
+
+const connection = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME,
+  process.env.DB_PASSWORD, {
+    dialect: 'postgres'
+  });
 const Group = connection.define('group', {
   createdBy: Sequelize.STRING,
   title: Sequelize.STRING,

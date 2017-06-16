@@ -36,6 +36,9 @@ app.get('/api/group/:id/messages', group.getmessages);
 app.get('/api/group/:id/members', group.getmembers);
 
 const port = process.env.PORT || 8000;
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Listening at port ${port}`);
 });
+
+// Export server for use in unit tests
+export default server;
