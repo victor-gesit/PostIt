@@ -1,3 +1,5 @@
+import 'jquery';
+
 function switchTab(evt, cityName) {
   var i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");

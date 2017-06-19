@@ -1,11 +1,19 @@
+import 'jquery/dist/jquery';
+import './scss/style.scss';
+import './js/creategroup';
+
+require('./js/materialize');
+
 
 // watch html files during development
 if (process.env.NODE_ENV === 'development') {
   require('./index.html');
+  require('./signup.html');
   require('./creategroup.html');
   require('./postmessage.html');
-  require('./messageboard.html');
+  require('./messageboard.html'); 
 }
-require('./scss/style.scss');
-require('./js/creategroup.js');
-console.log('testing again  for recompilation');
+
+$(document).ready(() => {
+  $('.button-collapse').sideNav();
+});
