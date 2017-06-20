@@ -4,35 +4,73 @@
 	<title>PostIt</title>
 	<script type="text/javascript" src="build/bundle.js"></script>
 </head>
-<nav>
-	<div>
-		<a href="#">PostIt</a>
-		<a href="#">About PostIt</a>
+<nav class="lime darken-4">
+	<div class="nav-wrapper">
+		<a href="#" id="brand" class="brand-logo">PostIt</a>
+		<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+		<ul class="right hide-on-med-and-down">
+			<li><a href="#">About PostIt</a></li>
+		</ul>
+		<ul id="mobile-demo" class="side-nav">
+			<li><a href="#"><i class="large material-icons teal-text">people_outline</i>Group Members</a></li>
+			<li><div class="divider"></div></li>
+			<li><a href="#"><i class="material-icons teal-text">person</i>Ade Balogun</a></li>
+			<li><a href="#"><i class="material-icons teal-text">person</i>John Smith</a></li>
+			<li><a href="#"><i class="material-icons teal-text">person</i>Joy Okafor</a></li>
+			<li><a href="#"><i class="material-icons red-text">person</i>John Kennedy</a></li>
+			<li><div class="divider"></div></li>
+			<li><a href="#"><i class="material-icons black-text">info</i>About PostIt</a>
+		</ul>
 	</div>
 </nav>
 <body>
-<div>
-	<div class="group-info">Project NexBigThing</div>
-	<ul class="messages">
-		<li class="message">
-			<div class="sender-name">Ade Balogun</div>
-			<div class="message-body">I will not be able to make it to the meeting</div>
-			<div class="message-info"><small>Post created 12:06:2017, 11:34am</small></div>
-		</li>
-		<li class="message">
-			<div class="sender-name">John Smith</div>
-			<div class="message-body">We will try to make up for your absence. Take care.</div>
-			<div class="message-info"><small>Post created 12:06:2017, 11:50am</small></div>
-		</li>
-		<li class="message">
-			<div class="sender-name">Joy Okafor</div>
-			<div class="message-body">Can we get someone to fill his place?</div>
-			<div class="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
-		</li>
-	</ul>
-	<div class="message-input-box">
-		<input type="text" name="mymessage">
-		<button>Send</button>
+<div class="row">
+	<div class="col s12 m8 l9 messageboard">
+		<div class="group-info">
+			<h5 class="center">Project NexBigThing</h5>
+		</div>
+		<ul class="messages row">
+			<li class="message card col s11">
+				<small class="sender-name">Ade Balogun</small>
+				<div class="message-body white-text">I will not be able to make it to the meeting</div>
+				<div class="message-info"><small>Post created 12:06:2017, 11:34am</small></div>
+			</li>
+			<li class="message card col s11">
+				<small class="sender-name">John Smith</small>
+				<div class="message-body white-text">We will try to make up for your absence. Take care.</div>
+				<div class="message-info"><small>Post created 12:06:2017, 11:50am</small></div>
+			</li>
+			<li class="message card col s11">
+				<small class="sender-name">Joy Okafor</small>
+				<div class="message-body white-text">Can we get someone to fill his place?</div>
+				<div class="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+			</li>
+			<li class="adminmessage card col s11 offset-s1">
+				<small class="sender-name">John Keneddy</small>
+				<div class="message-body white-text">Can we get someone to fill his place?</div>
+				<div class="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+			</li>
+		</ul>
+
+		<!-- Message input box -->
+		<div class="message-input-box row">
+			<div class="col s9">
+				<input class="white-text" type="text" name="mymessage">
+			</div>
+			<div class="col s3">
+				<button class="btn"><i class="material-icons">send</i></button>
+			</div>
+		</div>
+	</div>
+	<!--Side bar, visible only on large screens-->
+	<div id="members-list" class="m4 l3 hide-on-med-and-down">
+		<ul class="collection with-header">
+			<li class="collection-header">Members<a class="secondary-content"><i class="material-icons">people_outline</i></a></li>
+			<li class="collection-item">Ade Balogun<a class="secondary-content"><i class="material-icons">person</i></a></li>
+			<li class="collection-item">John Smith<a class="secondary-content"><i class="material-icons">person</i></a></li>
+			<li class="collection-item">Joy Okafor<a class="secondary-content"><i class="material-icons">person</i></a></li>
+			<li class="collection-item">John Kennedy<a class="secondary-content"><i class="material-icons red-text">person</i></a></li>
+		</ul>
 	</div>
 </div>
 </body>
