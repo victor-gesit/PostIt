@@ -70,3 +70,23 @@ body {
 	background-color: white;
     padding: 20px;
 }
+
+
+
+.message {
+	padding: 10px;
+    margin: 2px;
+    background: rgba(205, 220, 57, .5);
+}
+
+.adminmessage {
+	padding: 10px;
+    margin: 2px;
+    background: rgba(244, 67, 54, .5);
+}
+
+#members-list {
+    position: relative;
+    top: 80px;
+    right: 0;
+}
