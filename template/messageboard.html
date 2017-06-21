@@ -4,32 +4,46 @@
 	<title>PostIt</title>
 	<script type="text/javascript" src="build/bundle.js"></script>
 </head>
-<nav>
-	<div>
-		<a href="#">PostIt</a>
-		<a href="#">About PostIt</a>
+<nav class="lime darken-4">
+	<div class="nav-wrapper">
+		<a href="#" id="brand" class="brand-logo">PostIt</a>
+		<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+		<ul class="right hide-on-med-and-down">
+			<li><a class="waves-effect waves-light btn">About PostIt</a></</li>
+			<li><a class="waves-effect waves-light btn">Sign out</a></</li>
+		</ul>
+		<ul id="mobile-demo" class="side-nav">
+			<li><a href="#">About PostIt</a></li>
+		</ul>
 	</div>
 </nav>
 <body>
 <div>
-	<h3 class="board-title">Message Board</h3>
-	<ul>
-		<li>
-			<div class="group-info">Project NextBigThing</div>
-			<div class="group-creator"><small>Created by Ade Balogun</small></div>
-			<label class="unread">3 Unread messages</label>
-		</li>
-		<li>
-			<div class="group-info">Project MakeItHappen</div>
-			<div class="group-creator"><small>Created by Ade Balogun</small></div>
-			<label class="unread">3 Unread messages</label>
-		</li>
-		<li>
-			<div class="group-info">Project DisruptTheFlow</div>
-			<div class="group-creator"><small>Created by Ade Balogun</small></div>
-			<label class="unread">3 Unread messages</label>
-		</li>
-	</ul>
+	<h3 class="board-title center white-text">Message Board</h3>
+	<div class="row">
+	   <div class="collection col s12 m8 l8 offset-m2 offset-l2">
+         <a href="#" class="collection-item">
+         	<span class="secondary-content right new badge">4</span>
+         	Project NextBigThing
+         	<small class="grey-text">Created by Jane Doe</small>
+         </a>
+         <a href="#" class="collection-item">
+         	<span class="secondary-content right new badge">4</span>
+         	Project NextBigThing
+         	<small class="grey-text">Created by John Smith</small>
+         </a>
+         <a href="#" class="collection-item">
+         	<span class="secondary-content right new badge">4</span>
+         	Project DisruptiveTech
+         	<small class="grey-text">Created by Joy Okafor</small>
+         </a>
+         <a href="#" class="collection-item">
+         	<span class="secondary-content right new badge">4</span>
+         	Project MakeItHappen
+         	<small class="grey-text">Created by Abel Kennedy</small>
+         </a>
+      </div>
+     </div>
 </div>
 </body>
 </html>

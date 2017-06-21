@@ -1,5 +1,4 @@
-body {font-family: "Lato", sans-serif;}
-
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 /* Style the tab */
 div.tab {
     overflow: hidden;
@@ -16,7 +15,6 @@ div.tab button {
     cursor: pointer;
     padding: 14px 16px;
     transition: 0.3s;
-    font-size: 17px;
 }
 
 /* Change background color of buttons on hover */
@@ -35,4 +33,52 @@ div.tab button.active {
     padding: 6px 12px;
     border: 1px solid #ccc;
     border-top: none;
+}
+
+body {
+    margin-top: 20px;
+	background-image: url("../images/wood1.jpg");
+	background-repeat: repeat-y;
+	background-position: center;
+	background-size: cover;
+	background-attachment: fixed;
+}
+
+#brand {
+    padding-left: 20px;
+}
+
+.signin-form {
+    margin-top: 20px;
+    padding: 20px;
+    border-style: solid;
+    border-radius: 20px;
+    border-color: black;
+}
+.signup-form {
+    margin-top: 20px;
+    padding: 20px;
+    border-style: solid;
+    border-radius: 20px;
+    border-color: black;
+    padding-bottom: 30px;
+}
+
+.group-details {
+	background-color: white;
+    padding: 20px;
+}
+
+
+
+.message {
+	padding: 10px;
+    margin: 2px;
+    background: rgba(205, 220, 57, .5);
+}
+
+.adminmessage {
+	padding: 10px;
+    margin: 2px;
+    background: rgba(244, 67, 54, .5);
 }

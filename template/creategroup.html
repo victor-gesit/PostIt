@@ -4,43 +4,76 @@
 	<title>PostIt</title>
 	<script src="build/bundle.js"></script>
 </head>
-<nav>
-	<div>
-		<a href="#">PostIt</a>
-		<a href="#">About PostIt</a>
+<nav class="lime darken-4">
+	<div class="nav-wrapper">
+		<a href="#" id="brand" class="brand-logo lime darken-4">PostIt</a>
+		<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+		<ul class="right hide-on-med-and-down">
+			<li><a class="waves-effect waves-light btn">About PostIt</a></</li>
+			<li><a class="waves-effect waves-light btn">Sign out</a></</li>
+		</ul>
+		<ul id="mobile-demo" class="side-nav">
+			<li><a href="#" class="black-text">About PostIt</a></li>
+		</ul>
 	</div>
 </nav>
 <body>
+
 <div class="tab">
   <button class="tablinks" id="defaultTab" onclick="switchTab(event, 'info')">Group info</button>
   <button class="tablinks" id="add-members" onclick="switchTab(event, 'members')">Add members</button>
 </div>
 
 <div id="info" class="tabcontent">
-	<h3>Enter group details</h3>
-	<form>
-		<div>
-			<input type="text" name="group-title" placeholder="Group Title">
+	<div class="row">
+		<div class="col s10 m8 l6">
+			<div class="group-details">
+			<h4 class="center">Enter group details</h4>
+			<form>
+				<div>
+					<input type="text" name="group-title" placeholder="Group Title">
+				</div>
+				<div>
+					<textarea id="groupDescription" type="text" class="materialize-textarea" placeholder="Description" name="group-desc"></textarea>
+				</div>
+			</form>
+			<button class="btn"  onclick="document.getElementById('add-members').click()">Next >></button>
+			</div>
 		</div>
-		<div>
-			<textarea type="text" name="group-desc" placeholder="Description"></textarea>
-		</div>
-	</form>
-	<button onclick="document.getElementById('add-members').click()">Next</button>
+	</div>
+	
 </div>
 
 <div id="members" class="tabcontent">
-<h3>Add memebers</h3>
-	<form>
-		<ul>
-			<li>Ade Balogun <small> adebalogun@yahoo.com</small><input type="checkbox" name="IDforAdeBalogun"></li>
-			<li>John Smith <small>johnsmith@yahoo.com</small><input type="checkbox" name="IDforJohnSmith"></li>
-			<li>Sani Danjuma <small>sanidanjuma@gmail.com</small><input type="checkbox" name="IDforSaniDanjuma"></li>
-			<li>Joy Okafor <small>joyokafor@yahoo.com</small><input type="checkbox" name="IDforJoyOkafor"></li>
-		</ul>
-		<button>Create group</button>
-	</form>
-	<button onclick="document.getElementById('defaultTab').click()">Group info</button>  
+	<div class="row">
+		<div class="col s10 m8 l6">
+			<form>
+				<ul class="collection with-header">
+					<li class="collection-header"><h4>Add members</h4></li>
+					<li class="collection-item">
+						<input id="cb1" type="checkbox" name="IDforAdeBalogun">
+						<label for="cb1">Ade Balogun <small> adebalogun@yahoo.com</small></label>
+					</li>
+					<li class="collection-item">
+						<input id="cb2" type="checkbox" name="IDforAdeBalogun">
+						<label for="cb2">John Smith <small>johnsmith@yahoo.com</small></label>
+					</li>
+					<li class="collection-item">
+						<input id="cb3" type="checkbox" name="IDforAdeBalogun">
+						<label for="cb3">Sani Danjuma <small>sanidanjuma@gmail.com</small></label>
+					</li>
+					<li class="collection-item">
+						<input id="cb4" type="checkbox" name="IDforAdeBalogun">
+						<label for="cb4">Joy Okafor <small>joyokafor@yahoo.com</small></label>
+					</li>
+				</ul>
+			</form>
+			<div>
+				<button class="btn" onclick="document.getElementById('defaultTab').click()"><< Group info</button>
+				<button class="btn">Create group</button>
+			</div>
+		</div>
+	</div>
 </div>
 </body>
 <footer>
