@@ -1,6 +1,4 @@
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
-@import url("https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css");
-
 /* Style the tab */
 div.tab {
     overflow: hidden;
@@ -83,10 +81,4 @@ body {
 	padding: 10px;
     margin: 2px;
     background: rgba(244, 67, 54, .5);
-}
-
-#members-list {
-    position: relative;
-    top: 80px;
-    right: 0;
 }
