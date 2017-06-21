@@ -1,3 +1,4 @@
+import 'materialize-css/bin/materialize.css';
 import 'jquery/dist/jquery';
 import './scss/style.scss';
 import './js/creategroup';
@@ -16,4 +17,5 @@ if (process.env.NODE_ENV === 'development') {
 
 $(document).ready(() => {
   $('.button-collapse').sideNav();
-});
+}); 
+
