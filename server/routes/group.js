@@ -48,8 +48,8 @@ export default {
         foundGroup.addMessage(createdMessage).then((addedMessage) => {
           res.send(addedMessage);
         });
-      }).catch((err) => {
-        res.send(err);
+      }).catch(() => {
+        res.send({ error: 'Group not found' });
       });
     }).catch(() => {
       res.send({ error: 'Group not found' });
