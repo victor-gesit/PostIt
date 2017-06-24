@@ -79,7 +79,7 @@ export default {
   getmessages: (req, res) => {
     const groupId = req.params.id;
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
-      foundGroup.getMessages().then((groupMessages) => {
+      foundGroup.getMessages({ attributes: ['sentBy', 'body', 'createdAt'] }).then((groupMessages) => {
         res.send(groupMessages);
       });
     }).catch(() => {
@@ -89,28 +89,30 @@ export default {
   // Get the list of members in a particular group
   getmembers: (req, res) => {
     const groupId = req.params.id;
-    Group.find({ where: { id: groupId } }).then((foundGroup) => {
-      foundGroup.getUsers().then((groupMembers) => {
-        res.send(groupMembers);
+    Group.find({ where: { id: groupId } })
+      .then((foundGroup) => {
+        foundGroup.getUsers({ attributes: ['firstName', 'lastName', 'email'] }).then((groupMembers) => {
+          res.send(groupMembers);
+        });
+      }).catch(() => {
+        res.send({ error: 'Group not found' });
       });
-    }).catch(() => {
-      res.send({ error: 'Group not found' });
-    });
   },
   // Load all the groups that a user belongs to, for the message board
   messageboard: (req, res) => {
     const userId = req.params.userId;
     User.find({ where: { id: userId } }).then((foundUser) => {
-      foundUser.getGroups().then((groupsBelongedTo) => {
-        res.send(groupsBelongedTo);
-      });
+      foundUser.getGroups()
+        .then((groupsBelongedTo) => {
+          res.send(groupsBelongedTo);
+        });
     }).catch(() => {
       res.send({ error: 'User not found' });
     });
   },
   // Load everyone registered on PostIt
   getallusers: (rq, res) => {
-    User.findAll().then((allUsers) => {
+    User.findAll({ attributes: ['firstName', 'lastName', 'email'] }).then((allUsers) => {
       res.send(allUsers);
     });
   }
