@@ -10,17 +10,17 @@ module.exports = (sequelize, DataTypes) => {
     sentBy: {
       type: DataTypes.STRING,
       allowNull: false
-    }
-  }, {
-    classMethods: {
-      associate: (models) => {
-        // associations can be defined here
-        Message.belongsTo(models.Group, {
-          onDelete: 'CASCADE',
-          foreignKey: 'GroupId'
-        });
-      }
+    },
+    body: {
+      type: DataTypes.TEXT,
+      allowNull: false
     }
   });
+  Message.associate = (models) => {
+    Message.belongsTo(models.Group, {
+      onDelete: 'CASCADE',
+      foreignKey: 'groupId'
+    });
+  };
   return Message;
 };
