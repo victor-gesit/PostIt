@@ -19,19 +19,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: false
     },
-  }, {
-    classMethods: {
-      associate: (models) => {
-        // associations can be defined here
-        Group.belongsToMany(models.User, {
-          through: 'UserGroup'
-        });
-        Group.hasMany(models.Message, {
-          foreignKey: 'groupId',
-          as: 'messages'
-        });
-      }
-    }
   });
+  Group.associate = (models) => {
+    Group.belongsToMany(models.User, {
+      through: 'UserGroup'
+    });
+    Group.hasMany(models.Message, {
+      foreignKey: 'groupId',
+    });
+  };
   return Group;
 };
