@@ -11,8 +11,6 @@ import './auth/passport';
 const app = express();
 // Middlewares
 app.use(logger('dev'));
-app.use(passport.initialize());
-app.use(passport.session());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.get('/', (req, res) => {
