@@ -4,9 +4,8 @@ module.exports = {
     return queryInterface.createTable('Groups', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID
       },
       createdBy: {
         type: Sequelize.STRING,

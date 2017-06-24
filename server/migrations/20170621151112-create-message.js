@@ -4,18 +4,20 @@ module.exports = {
     return queryInterface.createTable('Messages', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID
       },
       sentBy: {
         type: Sequelize.STRING
       },
-      GroupId: {
+      body: {
+        type: Sequelize.TEXT
+      },
+      groupId: {
         type: Sequelize.UUID,
         onDelete: 'CASCADE',
         references: {
-          model: 'Users',
+          model: 'Groups',
           key: 'id'
         }
       },
