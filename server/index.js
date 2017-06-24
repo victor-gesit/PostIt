@@ -3,6 +3,8 @@ import bodyParser from 'body-parser';
 import logger from 'morgan';
 import passport from 'passport';
 import group from './routes/group';
+import models from './models';
+
 // Get the content of the ./auth/passport file
 import './auth/passport';
 
@@ -36,9 +38,13 @@ app.get('/api/group/:id/messages', group.getmessages);
 app.get('/api/group/:id/members', group.getmembers);
 
 const port = process.env.PORT || 8000;
-const server = app.listen(port, () => {
-  console.log(`Listening at port ${port}`);
+let server = {};
+models.sequelize.sync().then(() => {
+  server = app.listen(port, () => {
+    console.log(`Listening at port ${port}`);
+  });
 });
 
+
 // Export server for use in unit tests
-export default server;
+// export default server;
