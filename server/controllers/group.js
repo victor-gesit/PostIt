@@ -8,14 +8,34 @@ const Message = models.Message;
 dotenv.config();
 
 export default {
-  // Create a group
+  // Create a group, and automatically add the creator to it
   create: (req, res) => {
-    Group.build({
-      createdBy: 'victor4l@yahoo.com',
-      title: req.body.title,
-      description: req.body.description,
-    }).save().then((createdGroup) => {
-      res.send(createdGroup);
+    const userId = req.body.userId;
+    const initialMembers = req.body.initialMembers;
+
+    User.find({ where: { id: userId } }).then((creator) => {
+      // Get name of creator
+      const nameOfCreator = `${creator.firstName} ${creator.lastName}`;
+      let newMembers = [];
+      Group.build({
+        createdBy: nameOfCreator,
+        title: req.body.title,
+        description: req.body.description,
+      }).save().then((createdGroup) => {
+        newMembers.push(creator.email);
+        // Add new members if specified
+        if (initialMembers !== undefined && initialMembers !== null) {
+          if (typeof (initialMembers) === 'string') {
+            newMembers.push(initialMembers);
+          }
+          if (initialMembers.constructor === Array) {
+            newMembers = newMembers.concat(initialMembers);
+          }
+        }
+        User.findAll({ where: { email: newMembers } }).then((retrievedMembers) => {
+          createdGroup.addUsers(retrievedMembers).then(() => res.send(createdGroup));
+        });
+      }).catch(() => res.send({ error: 'Incomplete Fields' }));
     });
   },
   // Add a user to a group
@@ -24,8 +44,8 @@ export default {
     const newUserEmail = req.body.email;
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
       User.find({ where: { email: newUserEmail } }).then((foundUser) => {
-        foundGroup.addUser(foundUser).then((addedUser) => {
-          res.send(addedUser);
+        foundGroup.addUser(foundUser).then(() => {
+          res.send(foundUser);
         });
       }).catch(() => {
         res.send({ error: 'User not found' });
@@ -45,8 +65,8 @@ export default {
         body: messageBody,
         groupId
       }).save().then((createdMessage) => {
-        foundGroup.addMessage(createdMessage).then((addedMessage) => {
-          res.send(addedMessage);
+        foundGroup.addMessage(createdMessage).then(() => {
+          res.send(createdMessage);
         });
       }).catch(() => {
         res.send({ error: 'Group not found' });
@@ -75,6 +95,23 @@ export default {
       });
     }).catch(() => {
       res.send({ error: 'Group not found' });
+    });
+  },
+  // Load all the groups that a user belongs to, for the message board
+  messageboard: (req, res) => {
+    const userId = req.params.userId;
+    User.find({ where: { id: userId } }).then((foundUser) => {
+      foundUser.getGroups().then((groupsBelongedTo) => {
+        res.send(groupsBelongedTo);
+      });
+    }).catch(() => {
+      res.send({ error: 'User not found' });
+    });
+  },
+  // Load everyone registered on PostIt
+  getallusers: (rq, res) => {
+    User.findAll().then((allUsers) => {
+      res.send(allUsers);
     });
   }
 };
