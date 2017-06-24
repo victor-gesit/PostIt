@@ -18,7 +18,7 @@ passport.deserializeUser((id, done) => {
     done(err, user);
   });
 });
-
+// Strategy for signup
 passport.use('local.signup', new LocalStrategy(
   {
     usernameField: 'email',
@@ -45,7 +45,7 @@ passport.use('local.signup', new LocalStrategy(
   }
 ));
 
-
+// Strategy for signin
 passport.use('local.signin', new LocalStrategy(
   {
     usernameField: 'email',
