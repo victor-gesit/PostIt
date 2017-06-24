@@ -1,80 +1,18 @@
-import dotenv from 'dotenv';
-import models from '../models';
+import express from 'express';
+import groupController from '../controllers/group';
 
-const Group = models.Group;
-const User = models.User;
-const Message = models.Message;
+const router = express.Router();
 
-dotenv.config();
+router.post('/', groupController.create);
+router.post('/:id/user', groupController.adduser);
+router.post('/:id/message', groupController.postmessage);
+router.get('/:id/messages', groupController.getmessages);
 
-export default {
-  // Create a group
-  create: (req, res) => {
-    Group.build({
-      createdBy: 'victor4l@yahoo.com',
-      title: req.body.title,
-      description: req.body.description,
-    }).save().then((createdGroup) => {
-      res.send(createdGroup);
-    });
-  },
-  // Add a user to a group
-  adduser: (req, res) => {
-    const groupId = req.params.id;
-    const newUserEmail = req.body.email;
-    Group.find({ where: { id: groupId } }).then((foundGroup) => {
-      User.find({ where: { email: newUserEmail } }).then((foundUser) => {
-        foundGroup.addUser(foundUser).then((addedUser) => {
-          res.send(addedUser);
-        });
-      }).catch(() => {
-        res.send({ error: 'User not found' });
-      });
-    }).catch(() => {
-      res.send({ error: 'Group not found' });
-    });
-  },
-  // Post a message to a group
-  postmessage: (req, res) => {
-    const groupId = req.params.id;
-    const sentBy = req.body.sender;
-    const messageBody = req.body.message;
-    Group.find({ where: { id: groupId } }).then((foundGroup) => {
-      Message.build({
-        sentBy,
-        body: messageBody,
-        groupId
-      }).save().then((createdMessage) => {
-        foundGroup.addMessage(createdMessage).then((addedMessage) => {
-          res.send(addedMessage);
-        });
-      }).catch(() => {
-        res.send({ error: 'Group not found' });
-      });
-    }).catch(() => {
-      res.send({ error: 'Group not found' });
-    });
-  },
-  // Load messages from a particular group
-  getmessages: (req, res) => {
-    const groupId = req.params.id;
-    Group.find({ where: { id: groupId } }).then((foundGroup) => {
-      foundGroup.getMessages().then((groupMessages) => {
-        res.send(groupMessages);
-      });
-    }).catch(() => {
-      res.send({ error: 'Group not found' });
-    });
-  },
-  // Get the list of members in a particular group
-  getmembers: (req, res) => {
-    const groupId = req.params.id;
-    Group.find({ where: { id: groupId } }).then((foundGroup) => {
-      foundGroup.getUsers().then((groupMembers) => {
-        res.send(groupMembers);
-      });
-    }).catch(() => {
-      res.send({ error: 'Group not found' });
-    });
-  }
-};
+/* Additional Routes */
+// Get group members
+router.get('/:id/members', groupController.getmembers);
+// Get groups a user belongs to
+router.get('/:userId/groups', groupController.messageboard);
+// Get all users registered on api, so you could select members to add to a group
+router.get('/members', groupController.getallusers);
+export default router;
