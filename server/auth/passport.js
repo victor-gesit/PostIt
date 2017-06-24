@@ -1,29 +1,12 @@
 import passport from 'passport';
 import passportLocal from 'passport-local';
-import Sequelize from 'sequelize';
 import bcrypt from 'bcrypt-nodejs';
 import dotenv from 'dotenv';
+import models from '../models';
+
+const User = models.User;
 
 dotenv.config();
-const connection = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME,
-  process.env.DB_PASSWORD, {
-    dialect: 'postgres'
-  });
-
-const User = connection.define('user', {
-  firstName: Sequelize.STRING,
-  lastName: Sequelize.STRING,
-  email: Sequelize.STRING,
-  password: Sequelize.STRING,
-  groupsOwned: Sequelize.ARRAY(Sequelize.STRING)
-});
-
-User.beforeCreate((user) => {
-  user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(5), null);
-});
-
-
-connection.sync();
 
 const LocalStrategy = passportLocal.Strategy;
 passport.serializeUser((user, done) => {
@@ -35,7 +18,7 @@ passport.deserializeUser((id, done) => {
     done(err, user);
   });
 });
-
+// Strategy for signup
 passport.use('local.signup', new LocalStrategy(
   {
     usernameField: 'email',
@@ -62,7 +45,7 @@ passport.use('local.signup', new LocalStrategy(
   }
 ));
 
-
+// Strategy for signin
 passport.use('local.signin', new LocalStrategy(
   {
     usernameField: 'email',
