@@ -1,5 +1,9 @@
 import supertest from 'supertest';
+import dotenv from 'dotenv';
 import app from '../index';
+
+dotenv.config();
+process.env.NODE_ENV = 'test';
 
 describe('PostIt Tests', () => {
   describe('Authentication routes test', () => {
