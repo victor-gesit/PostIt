@@ -58,9 +58,11 @@ export default {
   postmessage: (req, res) => {
     const groupId = req.params.id;
     const sentBy = req.body.sender;
+    const isComment = req.body.isComment === 'comment';
     const messageBody = req.body.message;
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
       Message.build({
+        isComment,
         sentBy,
         body: messageBody,
         groupId
