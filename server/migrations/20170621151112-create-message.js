@@ -13,6 +13,9 @@ module.exports = {
       body: {
         type: Sequelize.TEXT
       },
+      isComment: {
+        type: Sequelize.BOOLEAN
+      },
       groupId: {
         type: Sequelize.UUID,
         onDelete: 'CASCADE',
