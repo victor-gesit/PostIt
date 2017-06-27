@@ -22,14 +22,10 @@ app.use('/api/user', auth);
 // Group routes
 app.use('/api/group', group);
 
-const port = process.env.PORT || 8001;
-let server = {};
-models.sequelize.sync().then(() => {
-  server = app.listen(port, () => {
-    console.log(`Listening at port ${port}`);
-  });
+const port = process.env.PORT || 8002;
+const server = app.listen(port, () => {
+  console.log(`Listening at port ${port}`);
 });
 
-
 // Export server for use in unit tests
-// export default server;
+export default server;

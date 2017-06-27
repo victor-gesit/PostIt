@@ -27,10 +27,10 @@ router.post('/signin',
   passport.authenticate('local.signin', { failWithError: true }),
   (req, res, next) => {
     // Successful signin
-    return res.json({ id: req.user.id, message: 'Successful Signin' });
+    return res.send({ user: req.user, message: 'Successful Signin' });
   }, (err, req, res, next) => {
     // Failure during signin
-    return res.json({ error: err, message: 'Error during signin' });
+    return res.send({ error: err, message: 'Error During Signin' });
   }
 );
 
@@ -38,10 +38,10 @@ router.post('/signup',
   passport.authenticate('local.signup', { failWithError: true }),
   (req, res, next) => {
     // Successful signup
-    return res.json( { id: req.user.id, message: 'Successfull Signup' });
+    return res.send( { id: req.user.id, message: 'Successfull Signup' });
   }, (err, req, res, next) => {
     // Failure during signup
-    return res.json({ error: err, message: 'Error in signup' });
+    return res.send({ error: err, message: 'Error During Signup' });
   }
 );
 
