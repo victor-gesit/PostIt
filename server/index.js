@@ -12,9 +12,7 @@ const app = express();
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.get('/', (req, res) => {
-  res.status(200).send({ message: 'Api up and running' });
-});
+
 
 // User routes
 app.use('/api/user', auth);
@@ -22,6 +20,10 @@ app.use('/api/user', auth);
 // Group routes
 app.use('/api/group', group);
 
+// Random route
+app.get('/*', (req, res) => {
+  res.status(200).send({ message: 'Api up and running' });
+});
 const port = process.env.PORT || 8002;
 const server = app.listen(port, () => {
   console.log(`Listening at port ${port}`);

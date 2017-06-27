@@ -32,6 +32,11 @@ export default {
     body: 'All team members are to submit their work this morning',
     isComment: false
   },
+  newMessageForRoute: {
+    sender: 'John Smith',
+    message: 'All team members are to submit their work this afternoon',
+    isComment: 'comment'
+  },
   registeredUser: {
     email: 'taiwok@yahoo.com',
     password: 'taiwookonkwo'

@@ -1,6 +1,5 @@
 import supertest from 'supertest';
 import dotenv from 'dotenv';
-import jasmine from 'jasmine';
 import models from '../models';
 import app from '../index';
 import fixtures from '../fixtures/testFixtures';
@@ -33,7 +32,8 @@ describe('PostIt Tests', () => {
         cascade: true,
         truncate: true
       }).then(() => {
-        models.User.create(newUser).then(() => {
+        models.User.create(newUser).then((createdUser) => {
+          userId = createdUser.id;
           done();
         });
       });
@@ -70,7 +70,8 @@ describe('PostIt Tests', () => {
       return request
         .get(`/api/group/${userId}/groups`)
         .expect((res) => {
-          expect(res.body).toEqual(jasmine.any(Array));
+          const isArray = res.body instanceof Array;
+          expect(isArray).toEqual(true);
         })
        .end((err) => {
          if (err) {
@@ -87,16 +88,13 @@ describe('PostIt Tests', () => {
         where: {},
         truncate: true,
         cascade: true
-      }).then(() => {});
-      done();
+      }).then(() => { done(); });
     });
     it('ensures proper response for successful user sign up', (done) => {
       return request
         .post('/api/user/signup')
         .send(fixtures.newUser)
         .expect((res) => {
-          console.log('REQUEST DOT BODY');
-          console.log(res.body);
           expect(res.body.error).toEqual(null);
         })
        .end((err) => {
@@ -139,11 +137,7 @@ describe('PostIt Tests', () => {
           cascade: true
         }).then(() => {
           models.User.create(fixtures.newUser).then((createdUser) => {
-            console.log('ABRABRABRABRA A;JF A;DJFA; DFJA DS;FJAD; FAJSDF ');
-            console.log(createdUser.id);
             newGroup.userId = createdUser.id;
-            console.log('THE NW GAYSDF ;ADFUA;DFUADF;');
-            console.log(fixtures.newGroup);
             newGroupWithMultipleMembers.userId = createdUser.id;
             newGroupWithSingleMember.userId = createdUser.id;
           }).then(() => {
@@ -155,8 +149,6 @@ describe('PostIt Tests', () => {
       });
     });
     it('ensures successfull group creation', (done) => {
-      console.log('IDEYHAJALALALALALALALALALALLALALALALA');
-      console.log(fixtures.newGroup);
       return request
         .post('/api/group')
         .send(fixtures.newGroup)
@@ -214,11 +206,23 @@ describe('PostIt Tests', () => {
     });
   });
   describe('General app activities', () => {
+    it('ensures sensible response for incorrect route', (done) => {
+      return request
+        .get('/unregistered')
+        .expect({ message: 'Api up and running' })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
     it('ensures all registered users can be loaded from the database', (done) => {
       return request
         .get('/api/group/members')
         .expect((res) => {
-          expect(res.body).toEqual(jasmine.any(Array));
+          const isArray = res.body instanceof Array;
+          expect(isArray).toEqual(true);
         })
        .end((err) => {
          if (err) {
@@ -230,15 +234,29 @@ describe('PostIt Tests', () => {
   });
   describe('Tests for CRUD activities in a particular group', () => {
     let groupId;
+    const newMessage = fixtures.newMessage;
+    const newMessageForRoute = fixtures.newMessageForRoute;
     beforeEach((done) => {
-      done();
+      models.Group.destroy({
+        where: {},
+        cascade: true,
+        truncate: true
+      }).then(() => {
+        models.Group.create(fixtures.newGroup).then((createdGroup) => {
+          groupId = createdGroup.id;
+          newMessage.groupId = createdGroup.id;
+          models.Message.create(newMessage).then(() => {
+            done();
+          });
+        });
+      });
     });
     it('ensures successfull posting of messages to a particular group', (done) => {
       return request
-        .post(`/api/${groupId}/message`)
-        .send(fixtures.newMessage)
+        .post(`/api/group/${groupId}/message`)
+        .send(newMessageForRoute)
         .expect((res) => {
-          expect(res.body.body).toEqual(fixtures.newMessage.body);
+          expect(res.body.body).toEqual(newMessageForRoute.message);
         })
        .end((err) => {
          if (err) {
@@ -249,9 +267,10 @@ describe('PostIt Tests', () => {
     });
     it('ensures all messages for a particular group can be loaded successfully', (done) => {
       return request
-        .get(`/api/${groupId}/messages`)
+        .get(`/api/group/${groupId}/messages`)
         .expect((res) => {
-          expect(res.body).toEqual(jasmine.any(Array));
+          const isArray = res.body instanceof Array;
+          expect(isArray).toEqual(true);
         })
        .end((err) => {
          if (err) {
@@ -262,9 +281,10 @@ describe('PostIt Tests', () => {
     });
     it('ensures all members of a particular group can be loaded successfully', (done) => {
       return request
-        .get(`api/${groupId}/members`)
+        .get(`/api/group/${groupId}/members`)
         .expect((res) => {
-          expect(res.body).toEqual(jasmine.any(Array));
+          const isArray = res.body instanceof Array;
+          expect(isArray).toEqual(true);
         })
        .end((err) => {
          if (err) {
@@ -278,8 +298,25 @@ describe('PostIt Tests', () => {
     const newUser = fixtures.newUser;
     const newGroup = fixtures.newGroup;
     const newMessage = fixtures.newMessage;
+    let groupId;
     beforeEach((done) => {
-      done();
+      models.User.destroy({
+        where: {},
+        truncate: true,
+        cascade: true
+      }).then(() => {
+        models.Group.destroy({
+          where: {},
+          truncate: true,
+          cascade: true
+        }).then(() => {
+          models.Group.create(fixtures.newGroup).then((createdGroup) => {
+            groupId = createdGroup.id;
+            newMessage.groupId = groupId;
+            done();
+          });
+        });
+      });
     });
     it('ensures User model is created correctly', (done) => {
       models.User.create(newUser).then((createdUser) => {

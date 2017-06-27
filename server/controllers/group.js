@@ -35,7 +35,7 @@ export default {
         User.findAll({ where: { email: newMembers } }).then((retrievedMembers) => {
           createdGroup.addUsers(retrievedMembers).then(() => res.send(createdGroup));
         });
-      }).catch(() => res.send({ error: 'Incomplete Fields' }));
+      }).catch(err => res.send(err));
     });
   },
   // Add a user to a group
@@ -47,11 +47,11 @@ export default {
         foundGroup.addUser(foundUser).then(() => {
           res.send(foundUser);
         });
-      }).catch(() => {
-        res.send({ error: 'User not found' });
+      }).catch((err) => {
+        res.send(err);
       });
-    }).catch(() => {
-      res.send({ error: 'Group not found' });
+    }).catch((err) => {
+      res.send(err);
     });
   },
   // Post a message to a group
@@ -70,11 +70,11 @@ export default {
         foundGroup.addMessage(createdMessage).then(() => {
           res.send(createdMessage);
         });
-      }).catch(() => {
-        res.send({ error: 'Group not found' });
+      }).catch((err) => {
+        res.send(err);
       });
-    }).catch(() => {
-      res.send({ error: 'Group not found' });
+    }).catch((err) => {
+      res.send(err);
     });
   },
   // Load messages from a particular group
@@ -84,8 +84,8 @@ export default {
       foundGroup.getMessages({ attributes: ['sentBy', 'body', 'createdAt'] }).then((groupMessages) => {
         res.send(groupMessages);
       });
-    }).catch(() => {
-      res.send({ error: 'Group not found' });
+    }).catch((err) => {
+      res.send(err);
     });
   },
   // Get the list of members in a particular group
@@ -96,8 +96,8 @@ export default {
         foundGroup.getUsers({ attributes: ['firstName', 'lastName', 'email'] }).then((groupMembers) => {
           res.send(groupMembers);
         });
-      }).catch(() => {
-        res.send({ error: 'Group not found' });
+      }).catch((err) => {
+        res.send(err);
       });
   },
   // Load all the groups that a user belongs to, for the message board
@@ -108,8 +108,8 @@ export default {
         .then((groupsBelongedTo) => {
           res.send(groupsBelongedTo);
         });
-    }).catch(() => {
-      res.send({ error: 'User not found' });
+    }).catch((err) => {
+      res.send(err);
     });
   },
   // Load everyone registered on PostIt
