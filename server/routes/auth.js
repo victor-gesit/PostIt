@@ -29,13 +29,11 @@ router.post('/signin',
 
 router.post('/signup',
   passport.authenticate('local.signup', { failWithError: true }),
-  (req, res, next) => {
+  (req, res, next) =>
     // Successful signup
-    return res.send( { user: req.user, message: 'Successfull Signup' });
-  }, (err, req, res, next) => {
+    res.send({ user: req.user, message: 'Successfull Signup' }), (err, req, res, next) =>
     // Failure during signup
-    return res.send({ error: err, message: 'Error During Signup' });
-  }
+    res.send({ error: err, message: 'Error During Signup' })
 );
 
 export default router;
