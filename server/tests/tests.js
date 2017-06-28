@@ -37,6 +37,20 @@ describe('PostIt Tests', () => {
          done();
        });
     });
+    it('returns an error a non-existent user attempts to create a group', (done) => {
+      request
+        .post('/api/group/')
+        .send(fixtures.newUser)
+        .expect((res) => {
+          expect(res.body.message).toEqual('User not found');
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
     it('returns an error if a message is to be posted to a non-existent group id', (done) => {
       request
         .post('/api/group/unknowngroupid/message')
