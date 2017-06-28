@@ -4,6 +4,10 @@ import babel from 'gulp-babel';
 import injectModules from 'gulp-inject-modules';
 import gulpBabelIstanbul from 'gulp-babel-istanbul';
 import gulpCoveralls from 'gulp-coveralls';
+import dotenv from 'dotenv';
+
+dotenv.config();
+process.env.NODE_ENV = 'test';
 
 
 // This task runs jasmine tests and outputs the result to the cli.

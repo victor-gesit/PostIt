@@ -7,7 +7,10 @@ import fixtures from '../fixtures/testFixtures';
 dotenv.config();
 const request = supertest(app);
 
+console.log(process.env.NODE_ENV);
+
 describe('PostIt Tests', () => {
+
   describe('Database connection tests', () => {
     // Sync database before commencing testing
     beforeEach((done) => {
