@@ -9,6 +9,7 @@ const request = supertest(app);
 
 describe('PostIt Tests', () => {
   describe('Database connection tests', () => {
+    // Sync database before commencing testing
     beforeEach((done) => {
       models.sequelize.sync();
       done();
@@ -20,12 +21,95 @@ describe('PostIt Tests', () => {
       });
     });
   });
+  describe('Testing routes with incorrect data', () => {
+    it('returns an error if info is not complete for group creation', (done) => {
+      request
+        .post('/api/group')
+        .send({}) // No field supplied for group creation
+        .expect((res) => {
+          expect(res.body.message).toEqual('Group not created');
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('returns an error if a user is to be added to a non-existent group id', (done) => {
+      request
+        .post('/api/group/unknowngroupid/user')
+        .send(fixtures.newUser)
+        .expect((res) => {
+          expect(res.body.message).toEqual('Group not found');
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('returns an error if a message is to be posted to a non-existent group id', (done) => {
+      request
+        .post('/api/group/unknowngroupid/message')
+        .send(fixtures.newMessage)
+        .expect((res) => {
+          expect(res.body.message).toEqual('Group not found');
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('returns an error if you attempt to load messages from a non-existent group id', (done) => {
+      request
+        .get('/api/group/unknowngroupid/messages')
+        .expect((res) => {
+          expect(res.body.message).toEqual('Group not found');
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('returns an error if you attempt to load members from a non-existent group id', (done) => {
+      request
+        .get('/api/group/unknowngroupid/members')
+        .expect((res) => {
+          expect(res.body.message).toEqual('Group not found');
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('returns error if you attempt to load the groups for a non-existent user', (done) => {
+      request
+        .get('/api/group/nonexistentuserId/groups')
+        .expect((res) => {
+          expect(res.body.message).toEqual('User not found');
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+  });
   describe('Authentication routes test', () => {
     const newUser = fixtures.newUser;
     const registeredUser = fixtures.registeredUser;
     const userWithIncorrectPassword = fixtures.userWithIncorrectPassword;
     let userId;
-    // Create a sample user and save in database
+    // Clean up User table, and then create  sample user
     beforeEach((done) => {
       models.User.destroy({
         where: {},
@@ -82,7 +166,7 @@ describe('PostIt Tests', () => {
     });
   });
   describe('Tests for User creation routes', () => {
-    // Clean up database
+    // Clean up database before commencing testing
     beforeEach((done) => {
       models.User.destroy({
         where: {},
@@ -122,6 +206,7 @@ describe('PostIt Tests', () => {
   });
   describe('Tests for Group CRUD operation routes', () => {
     // Delete previous records and populate db with test data
+    let groupId;
     const newGroup = fixtures.newGroup;
     const newGroupWithMultipleMembers = fixtures.newGroupWithMultipleMembers;
     const newGroupWithSingleMember = fixtures.newGroupWithSingleMember;
@@ -142,7 +227,10 @@ describe('PostIt Tests', () => {
             newGroupWithSingleMember.userId = createdUser.id;
           }).then(() => {
             models.User.bulkCreate([fixtures.newUser2, fixtures.newUser3]).then(() => {
-              done();
+              models.Group.create(newGroup).then((createdGroup) => {
+                groupId = createdGroup.id;
+                done();
+              });
             });
           });
         });
@@ -155,6 +243,32 @@ describe('PostIt Tests', () => {
         .expect((res) => {
           expect(res.body.title).toEqual(fixtures.newGroup.title);
         })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('ensures a user can be added to a group after it is created', (done) => {
+      return request
+        .post(`/api/group/${groupId}/user`)
+        .send({ email: 'taiwok@yahoo.com' })
+        .expect((res) => {
+          expect(res.body.email).toEqual('taiwok@yahoo.com');
+        })
+        .end((err) => {
+          if (err) {
+            return done(err);
+          }
+          done();
+        });
+    });
+    it('returns an empty object if an unregisterd user is to be added to a group', (done) => {
+      request
+        .post(`/api/group/${groupId}/user`)
+        .send({ email: 'unregistered@email.com' })
+        .expect({})
        .end((err) => {
          if (err) {
            return done(err);
@@ -234,6 +348,7 @@ describe('PostIt Tests', () => {
   });
   describe('Tests for CRUD activities in a particular group', () => {
     let groupId;
+    let newMemberEmail;
     const newMessage = fixtures.newMessage;
     const newMessageForRoute = fixtures.newMessageForRoute;
     beforeEach((done) => {
@@ -323,21 +438,18 @@ describe('PostIt Tests', () => {
         expect(createdUser.email).toEqual(newUser.email);
         done();
       });
-      done();
     });
     it('ensures Group model is created successfully', (done) => {
       models.Group.create(newGroup).then((createdGroup) => {
         expect(createdGroup.createdBy).toEqual('Jane Doe');
         done();
       });
-      done();
     });
     it('ensures Message model is created successfully', (done) => {
       models.Message.create(newMessage).then((createdMessage) => {
         expect(createdMessage.sentBy).toEqual('John Smith');
+        done();
       });
-      done();
-      return app.close();
     });
   });
 });

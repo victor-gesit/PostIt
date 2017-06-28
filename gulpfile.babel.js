@@ -15,7 +15,7 @@ gulp.task('run-tests', () => {
 });
 // Gulp coverage implicitly depends on run-tests.
 gulp.task('coverage', () => {
-  gulp.src(['server/**/*.js', '!server/tests/*.js', '!server/auth/passport.js' ])
+  gulp.src(['server/**/*.js', '!server/tests/*.js', '!server/auth/passport.js', '!server/models/index.js'])
     .pipe(gulpBabelIstanbul())
     .pipe(gulpBabelIstanbul.hookRequire())
     .on('finish', () => {

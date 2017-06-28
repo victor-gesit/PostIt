@@ -17,11 +17,6 @@ router.use(passport.session());
  * @param {*} res Response Object
  * @param {*} next Next Callback function
  */
-function authError(err, req, res, next) {
-  const statusCode = err.status || 500;
-  return res.status(statusCode).json({ error: 'Server error' });
-}
-router.use([authError]);
 
 router.post('/signin',
   passport.authenticate('local.signin', { failWithError: true }),
@@ -38,7 +33,7 @@ router.post('/signup',
   passport.authenticate('local.signup', { failWithError: true }),
   (req, res, next) => {
     // Successful signup
-    return res.send( { id: req.user.id, message: 'Successfull Signup' });
+    return res.send( { user: req.user, message: 'Successfull Signup' });
   }, (err, req, res, next) => {
     // Failure during signup
     return res.send({ error: err, message: 'Error During Signup' });
