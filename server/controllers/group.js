@@ -18,6 +18,8 @@ export default {
       // Get name of creator
       if (creator !== null) {
         nameOfCreator = `${creator.firstName} ${creator.lastName}`;
+      } else {
+        return res.send({ message: 'User not found' });
       }
       let newMembers = [];
       Group.build({
