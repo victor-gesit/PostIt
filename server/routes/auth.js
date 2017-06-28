@@ -20,13 +20,11 @@ router.use(passport.session());
 
 router.post('/signin',
   passport.authenticate('local.signin', { failWithError: true }),
-  (req, res, next) => {
+  (req, res, next) =>
     // Successful signin
-    return res.send({ user: req.user, message: 'Successful Signin' });
-  }, (err, req, res, next) => {
+    res.send({ user: req.user, message: 'Successful Signin' }), (err, req, res, next) =>
     // Failure during signin
-    return res.send({ error: err, message: 'Error During Signin' });
-  }
+    res.send({ error: err, message: 'Error During Signin' })
 );
 
 router.post('/signup',

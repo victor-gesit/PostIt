@@ -4,6 +4,7 @@ import babel from 'gulp-babel';
 import injectModules from 'gulp-inject-modules';
 import gulpBabelIstanbul from 'gulp-babel-istanbul';
 import gulpCoveralls from 'gulp-coveralls';
+
 import dotenv from 'dotenv';
 
 dotenv.config();

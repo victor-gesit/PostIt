@@ -48,9 +48,7 @@ export default {
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
       User.find({ where: { email: newUserEmail } }).then((foundUser) => {
         if (foundUser !== null) {
-          foundGroup.addUser(foundUser).then(() => {
-            return res.send(foundUser);
-          });
+          foundGroup.addUser(foundUser).then(() => res.send(foundUser));
         } else {
           return res.send('User not found');
         }

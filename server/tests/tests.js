@@ -7,10 +7,8 @@ import fixtures from '../fixtures/testFixtures';
 dotenv.config();
 const request = supertest(app);
 
-console.log(process.env.NODE_ENV);
 
 describe('PostIt Tests', () => {
-
   describe('Database connection tests', () => {
     // Sync database before commencing testing
     beforeEach((done) => {
@@ -112,7 +110,7 @@ describe('PostIt Tests', () => {
       });
     });
     it('ensures proper response for successful user sign in', (done) => {
-      return request
+      request
         .post('/api/user/signin')
         .send(registeredUser)
         .expect((res) => {
@@ -126,7 +124,7 @@ describe('PostIt Tests', () => {
        });
     });
     it('ensures proper response for incorrect auth details', (done) => {
-      return request
+      request
         .post('/api/user/signin')
         .send(userWithIncorrectPassword)
         .expect((res) => {
@@ -140,7 +138,7 @@ describe('PostIt Tests', () => {
        });
     });
     it('ensures proper response if user creates a group with incomplete data', (done) => {
-      return request
+      request
         .post('/api/group')
         .send({ userId })
         .expect((res) => {
@@ -154,7 +152,7 @@ describe('PostIt Tests', () => {
        });
     });
     it('ensures all groups a user belongs to can be loaded', (done) => {
-      return request
+      request
         .get(`/api/group/${userId}/groups`)
         .expect((res) => {
           const isArray = res.body instanceof Array;
@@ -178,7 +176,7 @@ describe('PostIt Tests', () => {
       }).then(() => { done(); });
     });
     it('ensures proper response for successful user sign up', (done) => {
-      return request
+      request
         .post('/api/user/signup')
         .send(fixtures.newUser)
         .expect((res) => {
@@ -192,7 +190,7 @@ describe('PostIt Tests', () => {
        });
     });
     it('ensures proper response for sign up with incorrect data', (done) => {
-      return request
+      request
         .post('/api/user/signup')
         .send(fixtures.newUserWithMissingData)
         .expect((res) => {
@@ -240,7 +238,7 @@ describe('PostIt Tests', () => {
       });
     });
     it('ensures successfull group creation', (done) => {
-      return request
+      request
         .post('/api/group')
         .send(fixtures.newGroup)
         .expect((res) => {
@@ -254,7 +252,7 @@ describe('PostIt Tests', () => {
        });
     });
     it('ensures a user can be added to a group after it is created', (done) => {
-      return request
+      request
         .post(`/api/group/${groupId}/user`)
         .send({ email: 'taiwok@yahoo.com' })
         .expect((res) => {
@@ -280,7 +278,7 @@ describe('PostIt Tests', () => {
        });
     });
     it('ensures group can be created with no members added initially', (done) => {
-      return request
+      request
         .post('/api/group')
         .send(fixtures.newGroup)
         .expect((res) => {
@@ -294,7 +292,7 @@ describe('PostIt Tests', () => {
        });
     });
     it('ensures group can be created with a single member added initially', (done) => {
-      return request
+      request
         .post('/api/group')
         .send(fixtures.newGroupWithSingleMember)
         .expect((res) => {
@@ -308,7 +306,7 @@ describe('PostIt Tests', () => {
        });
     });
     it('ensures group can be created with multiple members added initially', (done) => {
-      return request
+      request
         .post('/api/group')
         .send(fixtures.newGroupWithMultipleMembers)
         .expect((res) => {
@@ -324,7 +322,7 @@ describe('PostIt Tests', () => {
   });
   describe('General app activities', () => {
     it('ensures sensible response for incorrect route', (done) => {
-      return request
+      request
         .get('/unregistered')
         .expect({ message: 'Api up and running' })
        .end((err) => {
@@ -335,7 +333,7 @@ describe('PostIt Tests', () => {
        });
     });
     it('ensures all registered users can be loaded from the database', (done) => {
-      return request
+      request
         .get('/api/group/members')
         .expect((res) => {
           const isArray = res.body instanceof Array;
@@ -351,7 +349,6 @@ describe('PostIt Tests', () => {
   });
   describe('Tests for CRUD activities in a particular group', () => {
     let groupId;
-    let newMemberEmail;
     const newMessage = fixtures.newMessage;
     const newMessageForRoute = fixtures.newMessageForRoute;
     beforeEach((done) => {
@@ -370,7 +367,7 @@ describe('PostIt Tests', () => {
       });
     });
     it('ensures successfull posting of messages to a particular group', (done) => {
-      return request
+      request
         .post(`/api/group/${groupId}/message`)
         .send(newMessageForRoute)
         .expect((res) => {
@@ -384,7 +381,7 @@ describe('PostIt Tests', () => {
        });
     });
     it('ensures all messages for a particular group can be loaded successfully', (done) => {
-      return request
+      request
         .get(`/api/group/${groupId}/messages`)
         .expect((res) => {
           const isArray = res.body instanceof Array;
@@ -398,7 +395,7 @@ describe('PostIt Tests', () => {
        });
     });
     it('ensures all members of a particular group can be loaded successfully', (done) => {
-      return request
+      request
         .get(`/api/group/${groupId}/members`)
         .expect((res) => {
           const isArray = res.body instanceof Array;
@@ -451,6 +448,9 @@ describe('PostIt Tests', () => {
     it('ensures Message model is created successfully', (done) => {
       models.Message.create(newMessage).then((createdMessage) => {
         expect(createdMessage.sentBy).toEqual('John Smith');
+        // Close connections to server and database
+        app.close();
+        models.sequelize.close();
         done();
       });
     });
