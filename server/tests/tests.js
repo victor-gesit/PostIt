@@ -25,20 +25,6 @@ describe('PostIt Tests', () => {
     });
   });
   describe('Testing routes with incorrect data', () => {
-    it('returns an error if info is not complete for group creation', (done) => {
-      request
-        .post('/api/group')
-        .send({}) // No field supplied for group creation
-        .expect((res) => {
-          expect(res.body.message).toEqual('Group not created');
-        })
-       .end((err) => {
-         if (err) {
-           return done(err);
-         }
-         done();
-       });
-    });
     it('returns an error if a user is to be added to a non-existent group id', (done) => {
       request
         .post('/api/group/unknowngroupid/user')
@@ -145,6 +131,20 @@ describe('PostIt Tests', () => {
         .send(userWithIncorrectPassword)
         .expect((res) => {
           expect(res.body.message).toEqual('Error During Signin');
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('ensures proper response if user creates a group with incomplete data', (done) => {
+      return request
+        .post('/api/group')
+        .send({ userId })
+        .expect((res) => {
+          expect(res.body.message).toEqual('Group not created');
         })
        .end((err) => {
          if (err) {
