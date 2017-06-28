@@ -25,6 +25,8 @@ app.get('/*', (req, res) => {
   res.status(200).send({ message: 'Api up and running' });
 });
 const port = process.env.PORT || 8002;
+
+models.sequelize.sync();
 const server = app.listen(port, () => {
   console.log(`Listening at port ${port}`);
 });
