@@ -40,7 +40,11 @@ describe('PostIt Tests', () => {
     it('returns an error a non-existent user attempts to create a group', (done) => {
       request
         .post('/api/group/')
-        .send(fixtures.newUser)
+        .send({
+          userId: '7229aca1-55f4-4873-86d3-0774ec7a0d7e', // Unregisted user Id
+          title: 'New Group',
+          description: 'A group created by an unregisterd user'
+        })
         .expect((res) => {
           expect(res.body.message).toEqual('User not found');
         })
