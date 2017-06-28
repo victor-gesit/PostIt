@@ -14,8 +14,13 @@ export default {
     const initialMembers = req.body.initialMembers;
 
     User.find({ where: { id: userId } }).then((creator) => {
+      let nameOfCreator = 'Unregistered';
       // Get name of creator
-      const nameOfCreator = `${creator.firstName} ${creator.lastName}`;
+      if (creator !== null) {
+        nameOfCreator = `${creator.firstName} ${creator.lastName}`;
+      } else {
+        return res.send({ message: 'User not found' });
+      }
       let newMembers = [];
       Group.build({
         createdBy: nameOfCreator,
@@ -35,7 +40,7 @@ export default {
         User.findAll({ where: { email: newMembers } }).then((retrievedMembers) => {
           createdGroup.addUsers(retrievedMembers).then(() => res.send(createdGroup));
         });
-      }).catch(() => res.send({ error: 'Incomplete Fields' }));
+      }).catch(err => res.send({ message: 'Group not created', error: err }));
     });
   },
   // Add a user to a group
@@ -44,14 +49,14 @@ export default {
     const newUserEmail = req.body.email;
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
       User.find({ where: { email: newUserEmail } }).then((foundUser) => {
-        foundGroup.addUser(foundUser).then(() => {
-          res.send(foundUser);
-        });
-      }).catch(() => {
-        res.send({ error: 'User not found' });
+        if (foundUser !== null) {
+          foundGroup.addUser(foundUser).then(() => res.send(foundUser));
+        } else {
+          return res.send('User not found');
+        }
       });
-    }).catch(() => {
-      res.send({ error: 'Group not found' });
+    }).catch((err) => {
+      res.send({ message: 'Group not found', error: err });
     });
   },
   // Post a message to a group
@@ -70,11 +75,9 @@ export default {
         foundGroup.addMessage(createdMessage).then(() => {
           res.send(createdMessage);
         });
-      }).catch(() => {
-        res.send({ error: 'Group not found' });
       });
-    }).catch(() => {
-      res.send({ error: 'Group not found' });
+    }).catch((err) => {
+      res.send({ message: 'Group not found', error: err });
     });
   },
   // Load messages from a particular group
@@ -84,8 +87,8 @@ export default {
       foundGroup.getMessages({ attributes: ['sentBy', 'body', 'createdAt'] }).then((groupMessages) => {
         res.send(groupMessages);
       });
-    }).catch(() => {
-      res.send({ error: 'Group not found' });
+    }).catch((err) => {
+      res.send({ message: 'Group not found', error: err });
     });
   },
   // Get the list of members in a particular group
@@ -96,8 +99,8 @@ export default {
         foundGroup.getUsers({ attributes: ['firstName', 'lastName', 'email'] }).then((groupMembers) => {
           res.send(groupMembers);
         });
-      }).catch(() => {
-        res.send({ error: 'Group not found' });
+      }).catch((err) => {
+        res.send({ message: 'Group not found', error: err });
       });
   },
   // Load all the groups that a user belongs to, for the message board
@@ -108,12 +111,12 @@ export default {
         .then((groupsBelongedTo) => {
           res.send(groupsBelongedTo);
         });
-    }).catch(() => {
-      res.send({ error: 'User not found' });
+    }).catch((err) => {
+      res.send({ message: 'User not found', error: err });
     });
   },
   // Load everyone registered on PostIt
-  getallusers: (rq, res) => {
+  getallusers: (req, res) => {
     User.findAll({ attributes: ['firstName', 'lastName', 'email'] }).then((allUsers) => {
       res.send(allUsers);
     });
