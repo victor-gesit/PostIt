@@ -27,8 +27,10 @@ export default class CreateGroup extends React.Component {
       // Method to add a member to the list of selected members
       addMember: (selected, memberEmail) => {
         if(selected) {
+          // Add member
           this.state.selectedMembers.push(memberEmail);
         } else {
+          // Remove member if added earlier
           const index = this.state.selectedMembers.indexOf(memberEmail);
           this.state.selectedMembers.splice(index, 1);
         }
@@ -113,7 +115,7 @@ class Body extends React.Component {
                     <textarea id="groupDescription" type="text" className="materialize-textarea" placeholder="Description" name="group-desc" defaultValue={""} />
                   </div>
                 </form>
-                <button className="btn" onClick={() => this.state.switchTab(event, 'members')}>Next &gt;&gt;</button>
+                <button className="btn" onClick={() => this.state.switchTab("add-members", 'members')}>Next &gt;&gt;</button>
               </div>
             </div>
           </div>
@@ -132,7 +134,7 @@ class Body extends React.Component {
                 </ul>
               </div>
               <div>
-                <button className="btn" onClick={() => this.state.switchTab(event, 'info')}>&lt;&lt; Group info</button>
+                <button className="btn" onClick={() => this.state.switchTab("defaultTab", 'info')}>&lt;&lt; Group info</button>
                 <button className="btn">Create group</button>
               </div>
             </div>
