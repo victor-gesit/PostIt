@@ -33327,8 +33327,10 @@ var CreateGroup = function (_React$Component) {
       // Method to add a member to the list of selected members
       addMember: function addMember(selected, memberEmail) {
         if (selected) {
+          // Add member
           _this.state.selectedMembers.push(memberEmail);
         } else {
+          // Remove member if added earlier
           var index = _this.state.selectedMembers.indexOf(memberEmail);
           _this.state.selectedMembers.splice(index, 1);
         }
@@ -33532,7 +33534,7 @@ var Body = function (_React$Component3) {
                   _react2.default.createElement(
                     'button',
                     { className: 'btn', onClick: function onClick() {
-                        return _this4.state.switchTab(event, 'members');
+                        return _this4.state.switchTab("add-members", 'members');
                       } },
                     'Next >>'
                   )
@@ -33575,7 +33577,7 @@ var Body = function (_React$Component3) {
                   _react2.default.createElement(
                     'button',
                     { className: 'btn', onClick: function onClick() {
-                        return _this4.state.switchTab(event, 'info');
+                        return _this4.state.switchTab("defaultTab", 'info');
                       } },
                     '<< Group info'
                   ),
@@ -33748,9 +33750,7 @@ var Nav = function (_React$Component2) {
 
   _createClass(Nav, [{
     key: 'componentDidMount',
-    value: function componentDidMount() {
-      _reactRouter.browserHistory.push('/');
-    }
+    value: function componentDidMount() {}
   }, {
     key: 'render',
     value: function render() {
@@ -33811,13 +33811,39 @@ var Nav = function (_React$Component2) {
 var Body = function (_React$Component3) {
   _inherits(Body, _React$Component3);
 
-  function Body() {
+  function Body(props) {
     _classCallCheck(this, Body);
 
-    return _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).apply(this, arguments));
+    var _this3 = _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).call(this, props));
+
+    _this3.signIn = _this3.signIn.bind(_this3);
+    return _this3;
   }
 
   _createClass(Body, [{
+    key: 'signIn',
+    value: function signIn(e) {
+      // Stop default button click action
+      console.log('Just arrived');
+      e.stopPropagation();
+      e.nativeEvent.stopImmediatePropagation();
+      fetch('https://postit-api-victor.herokuapp.com/', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: this.refs["email"].value,
+          password: this.refs["password"].value
+        })
+      }).then(function () {
+        console.log('I made it here');
+      }).catch(function () {
+        console.log('Somthins went wrong');
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -33918,7 +33944,7 @@ var Body = function (_React$Component3) {
                 'div',
                 { id: 'signinform', className: 'col s12 m6 l5' },
                 _react2.default.createElement(
-                  'form',
+                  'div',
                   { className: 'signin-form' },
                   _react2.default.createElement(
                     'div',
@@ -33932,13 +33958,13 @@ var Body = function (_React$Component3) {
                   _react2.default.createElement(
                     'div',
                     null,
-                    _react2.default.createElement('input', { type: 'text', name: 'email', placeholder: 'Email' })
+                    _react2.default.createElement('input', { type: 'text', ref: 'email', name: 'email', placeholder: 'Email' })
                   ),
-                  _react2.default.createElement('input', { type: 'text', name: 'password', placeholder: 'Password' }),
+                  _react2.default.createElement('input', { type: 'text', ref: 'password', name: 'password', placeholder: 'Password' }),
                   _react2.default.createElement('div', null),
                   _react2.default.createElement(
                     'button',
-                    { className: 'btn' },
+                    { onClick: this.signIn, className: 'btn' },
                     'Sign in'
                   ),
                   _react2.default.createElement('br', null),
@@ -35217,7 +35243,7 @@ _reactDom2.default.render(_react2.default.createElement(
   _react2.default.createElement(
     _reactRouterDom.Switch,
     null,
-    _react2.default.createElement(_reactRouter.Route, { path: '/', component: _CreateGroup2.default }),
+    _react2.default.createElement(_reactRouter.Route, { path: '/', component: _Index2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: 'signup', component: _Index2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: 'creategroup', component: _Index2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: 'messageboard', component: _MessageBoard2.default }),
