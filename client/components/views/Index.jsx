@@ -15,7 +15,6 @@ export default class Index extends React.Component {
 
 class Nav extends React.Component {
   componentDidMount() {
-    browserHistory.push('/');
   }
   render() {
     return(
@@ -36,6 +35,28 @@ class Nav extends React.Component {
 }
 
 class Body extends React.Component {
+  constructor(props) {
+    super(props);
+    this.signIn = this.signIn.bind(this);
+  }
+  signIn(e) {
+    // Stop default button click action
+    console.log('Just arrived');
+    e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
+    fetch('https://postit-api-victor.herokuapp.com/', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: this.refs["email"].value,
+        password: this.refs["password"].value,
+      })
+    }).then(() => {console.log('I made it here')})
+    .catch(() => { console.log('Somthins went wrong')})
+  }
   render() {
     return(
       <div id="body">
@@ -69,17 +90,17 @@ class Body extends React.Component {
               </div>
             </div>
             <div id="signinform" className="col s12 m6 l5">
-              <form className="signin-form">
+              <div className="signin-form">
                 <div>
                   <h3 className="center">Sign In</h3>
                 </div>
                 <div>
-                  <input type="text" name="email" placeholder="Email" />
+                  <input type="text" ref="email" name="email" placeholder="Email" />
                 </div>
-                <input type="text" name="password" placeholder="Password" />
+                <input type="text" ref="password" name="password" placeholder="Password" />
                 <div>
                 </div>
-                <button className="btn">Sign in</button>
+                <button onClick={this.signIn} className="btn">Sign in</button>
                 <br /><br />
                 <div>
                   <input id="signedin" className="teal-text" type="checkbox" name="signedin" />
@@ -88,7 +109,7 @@ class Body extends React.Component {
                 <div>
                   <p>Don't have an account? <a href="#">Sign up</a></p>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
         </div>
