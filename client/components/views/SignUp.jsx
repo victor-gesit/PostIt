@@ -1,6 +1,6 @@
 import React from 'react';
 
-class SignUp extends React.Component {
+export default class SignUp extends React.Component {
   render() {
     return(
       <div>
@@ -103,7 +103,3 @@ class Footer extends React.Component {
     );
   }
 }
-
-
-
-export {SignUp }
