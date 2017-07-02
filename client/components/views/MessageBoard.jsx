@@ -36,8 +36,8 @@ class Nav extends React.Component {
 class Body extends React.Component {
   render() {
     return(
-      <main>
-      <div>
+      <div id="body">
+      <div id="main">
         <h3 className="board-title center white-text">Message Board</h3>
         <div className="row">
           <div className="collection col s12 m8 l8 offset-m2 offset-l2">
@@ -64,7 +64,7 @@ class Body extends React.Component {
           </div>
         </div>
       </div>
-    </main>
+    </div>
     );
   }
 }
