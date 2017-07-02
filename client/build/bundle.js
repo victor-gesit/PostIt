@@ -24245,27 +24245,6 @@ function updateLink (link, options, obj) {
 "use strict";
 
 
-__webpack_require__(11);
-
-function switchTab(evt, tabName) {
-  var i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
-  document.getElementById(tabName).style.display = "block";
-  evt.currentTarget.className += " active";
-}
-window.switchTab = switchTab;
-// Load a default tab
-window.addEventListener("load", function () {
-  document.getElementById('defaultTab').click();
-}, false);
-
 /***/ }),
 /* 96 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -33312,6 +33291,8 @@ var _react = __webpack_require__(7);
 
 var _react2 = _interopRequireDefault(_react);
 
+__webpack_require__(11);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -33323,20 +33304,47 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var CreateGroup = function (_React$Component) {
   _inherits(CreateGroup, _React$Component);
 
-  function CreateGroup() {
+  function CreateGroup(props) {
     _classCallCheck(this, CreateGroup);
 
-    return _possibleConstructorReturn(this, (CreateGroup.__proto__ || Object.getPrototypeOf(CreateGroup)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (CreateGroup.__proto__ || Object.getPrototypeOf(CreateGroup)).call(this, props));
+
+    _this.state = {
+      selectedMembers: [],
+      registeredMembers: [{
+        email: "adebalogun@yahoo.com",
+        name: "Ade Balogun"
+      }, {
+        email: "johnsmith@yahoo.com",
+        name: "John Smith"
+      }, {
+        email: "joyokafor@yahoo.com",
+        name: "Joy Okafor"
+      }, {
+        email: "johnkennedy@yahoo.com",
+        name: "John Keneddy"
+      }],
+      // Method to add a member to the list of selected members
+      addMember: function addMember(selected, memberEmail) {
+        if (selected) {
+          _this.state.selectedMembers.push(memberEmail);
+        } else {
+          var index = _this.state.selectedMembers.indexOf(memberEmail);
+          _this.state.selectedMembers.splice(index, 1);
+        }
+      }
+    };
+    return _this;
   }
 
   _createClass(CreateGroup, [{
-    key: "render",
+    key: 'render',
     value: function render() {
       return _react2.default.createElement(
-        "div",
+        'div',
         null,
         _react2.default.createElement(Nav, null),
-        _react2.default.createElement(Body, null),
+        _react2.default.createElement(Body, { addMember: this.state.addMember, registeredMembers: this.state.registeredMembers }),
         _react2.default.createElement(Footer, null)
       );
     }
@@ -33344,6 +33352,9 @@ var CreateGroup = function (_React$Component) {
 
   return CreateGroup;
 }(_react2.default.Component);
+
+// Navigation Bar
+
 
 exports.default = CreateGroup;
 
@@ -33357,60 +33368,60 @@ var Nav = function (_React$Component2) {
   }
 
   _createClass(Nav, [{
-    key: "render",
+    key: 'render',
     value: function render() {
       return _react2.default.createElement(
-        "nav",
-        { className: "lime darken-4" },
+        'nav',
+        { className: 'lime darken-4' },
         _react2.default.createElement(
-          "div",
-          { className: "nav-wrapper" },
+          'div',
+          { className: 'nav-wrapper' },
           _react2.default.createElement(
-            "a",
-            { href: "#", id: "brand", className: "brand-logo lime darken-4" },
-            "PostIt"
+            'a',
+            { href: '#', id: 'brand', className: 'brand-logo lime darken-4' },
+            'PostIt'
           ),
           _react2.default.createElement(
-            "a",
-            { href: "#", "data-activates": "mobile-demo", className: "button-collapse" },
+            'a',
+            { href: '#', 'data-activates': 'mobile-demo', className: 'button-collapse' },
             _react2.default.createElement(
-              "i",
-              { className: "material-icons" },
-              "menu"
+              'i',
+              { className: 'material-icons' },
+              'menu'
             )
           ),
           _react2.default.createElement(
-            "ul",
-            { className: "right hide-on-med-and-down" },
+            'ul',
+            { className: 'right hide-on-med-and-down' },
             _react2.default.createElement(
-              "li",
+              'li',
               null,
               _react2.default.createElement(
-                "a",
-                { className: "waves-effect waves-light btn" },
-                "About PostIt"
+                'a',
+                { className: 'waves-effect waves-light btn' },
+                'About PostIt'
               )
             ),
             _react2.default.createElement(
-              "li",
+              'li',
               null,
               _react2.default.createElement(
-                "a",
-                { className: "waves-effect waves-light btn" },
-                "Sign out"
+                'a',
+                { className: 'waves-effect waves-light btn' },
+                'Sign out'
               )
             )
           ),
           _react2.default.createElement(
-            "ul",
-            { id: "mobile-demo", className: "side-nav" },
+            'ul',
+            { id: 'mobile-demo', className: 'side-nav' },
             _react2.default.createElement(
-              "li",
+              'li',
               null,
               _react2.default.createElement(
-                "a",
-                { href: "#", className: "black-text" },
-                "About PostIt"
+                'a',
+                { href: '#', className: 'black-text' },
+                'About PostIt'
               )
             )
           )
@@ -33422,173 +33433,157 @@ var Nav = function (_React$Component2) {
   return Nav;
 }(_react2.default.Component);
 
+// Page Body
+
+
 var Body = function (_React$Component3) {
   _inherits(Body, _React$Component3);
 
-  function Body() {
+  function Body(props) {
     _classCallCheck(this, Body);
 
-    return _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).apply(this, arguments));
+    var _this3 = _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).call(this, props));
+
+    _this3.state = {
+      selectedMembers: _this3.props.selectedMembers,
+      switchTab: function switchTab(button, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        _this3.refs[tabName].style.display = "block";
+        _this3.refs[button].className += " active";
+      }
+
+    };
+    return _this3;
   }
 
   _createClass(Body, [{
-    key: "render",
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.refs['defaultTab'].click();
+    }
+  }, {
+    key: 'render',
     value: function render() {
+      var _this4 = this;
+
       return _react2.default.createElement(
-        "div",
-        null,
+        'div',
+        { id: 'body' },
         _react2.default.createElement(
-          "div",
-          { className: "tab" },
+          'div',
+          { id: 'main' },
           _react2.default.createElement(
-            "button",
-            { className: "tablinks", id: "defaultTab", onclick: switchTab(event, 'info') },
-            "Group info"
+            'div',
+            { className: 'tab' },
+            _react2.default.createElement(
+              'button',
+              { className: 'tablinks', id: 'defaultTab', ref: 'defaultTab', onClick: function onClick() {
+                  return _this4.state.switchTab("defaultTab", 'info');
+                } },
+              'Group info'
+            ),
+            _react2.default.createElement(
+              'button',
+              { className: 'tablinks', id: 'add-members', ref: 'add-members', onClick: function onClick() {
+                  return _this4.state.switchTab("add-members", 'members');
+                } },
+              'Add members'
+            )
           ),
           _react2.default.createElement(
-            "button",
-            { className: "tablinks", id: "add-members", onclick: switchTab(event, 'members') },
-            "Add members"
-          )
-        ),
-        _react2.default.createElement(
-          "div",
-          { id: "info", className: "tabcontent" },
-          _react2.default.createElement(
-            "div",
-            { className: "row" },
+            'div',
+            { id: 'info', ref: 'info', className: 'tabcontent' },
             _react2.default.createElement(
-              "div",
-              { className: "col s10 m8 l6" },
+              'div',
+              { className: 'row' },
               _react2.default.createElement(
-                "div",
-                { className: "group-details" },
+                'div',
+                { className: 'col s10 m8 l6' },
                 _react2.default.createElement(
-                  "h4",
-                  { className: "center" },
-                  "Enter group details"
-                ),
-                _react2.default.createElement(
-                  "form",
-                  null,
+                  'div',
+                  { className: 'group-details' },
                   _react2.default.createElement(
-                    "div",
-                    null,
-                    _react2.default.createElement("input", { type: "text", name: "group-title", placeholder: "Group Title" })
+                    'h4',
+                    { className: 'center' },
+                    'Enter group details'
                   ),
                   _react2.default.createElement(
-                    "div",
+                    'form',
                     null,
-                    _react2.default.createElement("textarea", { id: "groupDescription", type: "text", className: "materialize-textarea", placeholder: "Description", name: "group-desc", defaultValue: "" })
+                    _react2.default.createElement(
+                      'div',
+                      null,
+                      _react2.default.createElement('input', { type: 'text', name: 'group-title', placeholder: 'Group Title' })
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      null,
+                      _react2.default.createElement('textarea', { id: 'groupDescription', type: 'text', className: 'materialize-textarea', placeholder: 'Description', name: 'group-desc', defaultValue: "" })
+                    )
+                  ),
+                  _react2.default.createElement(
+                    'button',
+                    { className: 'btn', onClick: function onClick() {
+                        return _this4.state.switchTab(event, 'members');
+                      } },
+                    'Next >>'
                   )
-                ),
-                _react2.default.createElement(
-                  "button",
-                  { className: "btn", onclick: "document.getElementById('add-members').click()" },
-                  "Next >>"
                 )
               )
             )
-          )
-        ),
-        _react2.default.createElement(
-          "div",
-          { id: "members", className: "tabcontent" },
+          ),
           _react2.default.createElement(
-            "div",
-            { className: "row" },
+            'div',
+            { id: 'members', ref: 'members', className: 'tabcontent' },
             _react2.default.createElement(
-              "div",
-              { className: "col s10 m8 l6" },
+              'div',
+              { className: 'row' },
               _react2.default.createElement(
-                "form",
-                null,
+                'div',
+                { className: 'col s10 m8 l6' },
                 _react2.default.createElement(
-                  "ul",
-                  { className: "collection with-header" },
+                  'div',
+                  null,
                   _react2.default.createElement(
-                    "li",
-                    { className: "collection-header" },
+                    'ul',
+                    { className: 'collection with-header' },
                     _react2.default.createElement(
-                      "h4",
-                      null,
-                      "Add members"
-                    )
-                  ),
-                  _react2.default.createElement(
-                    "li",
-                    { className: "collection-item" },
-                    _react2.default.createElement("input", { id: "cb1", type: "checkbox", name: "IDforAdeBalogun" }),
-                    _react2.default.createElement(
-                      "label",
-                      { htmlFor: "cb1" },
-                      "Ade Balogun ",
+                      'li',
+                      { className: 'collection-header' },
                       _react2.default.createElement(
-                        "small",
+                        'h4',
                         null,
-                        " adebalogun@yahoo.com"
+                        'Add members'
                       )
-                    )
-                  ),
-                  _react2.default.createElement(
-                    "li",
-                    { className: "collection-item" },
-                    _react2.default.createElement("input", { id: "cb2", type: "checkbox", name: "IDforAdeBalogun" }),
-                    _react2.default.createElement(
-                      "label",
-                      { htmlFor: "cb2" },
-                      "John Smith ",
-                      _react2.default.createElement(
-                        "small",
-                        null,
-                        "johnsmith@yahoo.com"
-                      )
-                    )
-                  ),
-                  _react2.default.createElement(
-                    "li",
-                    { className: "collection-item" },
-                    _react2.default.createElement("input", { id: "cb3", type: "checkbox", name: "IDforAdeBalogun" }),
-                    _react2.default.createElement(
-                      "label",
-                      { htmlFor: "cb3" },
-                      "Sani Danjuma ",
-                      _react2.default.createElement(
-                        "small",
-                        null,
-                        "sanidanjuma@gmail.com"
-                      )
-                    )
-                  ),
-                  _react2.default.createElement(
-                    "li",
-                    { className: "collection-item" },
-                    _react2.default.createElement("input", { id: "cb4", type: "checkbox", name: "IDforAdeBalogun" }),
-                    _react2.default.createElement(
-                      "label",
-                      { htmlFor: "cb4" },
-                      "Joy Okafor ",
-                      _react2.default.createElement(
-                        "small",
-                        null,
-                        "joyokafor@yahoo.com"
-                      )
-                    )
+                    ),
+                    this.props.registeredMembers.map(function (member, index) {
+                      return _react2.default.createElement(RegisteredMember, { addMember: _this4.props.addMember, key: index, data: member });
+                    })
                   )
-                )
-              ),
-              _react2.default.createElement(
-                "div",
-                null,
-                _react2.default.createElement(
-                  "button",
-                  { className: "btn", onclick: "document.getElementById('defaultTab').click()" },
-                  "<< Group info"
                 ),
                 _react2.default.createElement(
-                  "button",
-                  { className: "btn" },
-                  "Create group"
+                  'div',
+                  null,
+                  _react2.default.createElement(
+                    'button',
+                    { className: 'btn', onClick: function onClick() {
+                        return _this4.state.switchTab(event, 'info');
+                      } },
+                    '<< Group info'
+                  ),
+                  _react2.default.createElement(
+                    'button',
+                    { className: 'btn' },
+                    'Create group'
+                  )
                 )
               )
             )
@@ -33601,8 +33596,64 @@ var Body = function (_React$Component3) {
   return Body;
 }(_react2.default.Component);
 
-var Footer = function (_React$Component4) {
-  _inherits(Footer, _React$Component4);
+// Component to contain a member loaded from the database
+
+
+var RegisteredMember = function (_React$Component4) {
+  _inherits(RegisteredMember, _React$Component4);
+
+  function RegisteredMember(props) {
+    _classCallCheck(this, RegisteredMember);
+
+    var _this5 = _possibleConstructorReturn(this, (RegisteredMember.__proto__ || Object.getPrototypeOf(RegisteredMember)).call(this, props));
+
+    _this5.state = {
+      selected: false,
+      // Method to decide if a member is to be added or not
+      set: function set(state, email) {
+        _this5.state.selected = !_this5.state.selected;
+        _this5.props.addMember(_this5.state.selected, email);
+      }
+    };
+    return _this5;
+  }
+
+  _createClass(RegisteredMember, [{
+    key: 'render',
+    value: function render() {
+      var _this6 = this;
+
+      return _react2.default.createElement(
+        'li',
+        { className: 'collection-item' },
+        _react2.default.createElement('input', { id: this.props.data.email,
+          type: 'checkbox',
+          onClick: function onClick() {
+            return _this6.state.set(event, _this6.props.data.email);
+          },
+          ref: this.props.data.email }),
+        _react2.default.createElement(
+          'label',
+          { className: 'brown-text', htmlFor: this.props.data.email },
+          this.props.data.name,
+          ' ',
+          _react2.default.createElement(
+            'small',
+            { className: 'red-text' },
+            this.props.data.email
+          )
+        )
+      );
+    }
+  }]);
+
+  return RegisteredMember;
+}(_react2.default.Component);
+// Page Footer
+
+
+var Footer = function (_React$Component5) {
+  _inherits(Footer, _React$Component5);
 
   function Footer() {
     _classCallCheck(this, Footer);
@@ -33611,20 +33662,20 @@ var Footer = function (_React$Component4) {
   }
 
   _createClass(Footer, [{
-    key: "render",
+    key: 'render',
     value: function render() {
       return _react2.default.createElement(
-        "footer",
-        { className: "page-footer lime darken-4" },
+        'footer',
+        { className: 'page-footer lime darken-4' },
         _react2.default.createElement(
-          "div",
-          { className: "container" },
-          "Built by Victor Idongesit"
+          'div',
+          { className: 'container' },
+          'Built by Victor Idongesit'
         ),
         _react2.default.createElement(
-          "div",
-          { className: "footer-copyright" },
-          "    \xA9 Andela, 2017"
+          'div',
+          { className: 'footer-copyright' },
+          '    \xA9 Andela, 2017'
         )
       );
     }
@@ -33676,8 +33727,7 @@ var Index = function (_React$Component) {
         'div',
         null,
         _react2.default.createElement(Nav, null),
-        _react2.default.createElement(Body, null),
-        _react2.default.createElement(Footer, null)
+        _react2.default.createElement(Body, null)
       );
     }
   }]);
@@ -33772,152 +33822,157 @@ var Body = function (_React$Component3) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        null,
+        { id: 'body' },
         _react2.default.createElement(
           'div',
-          { className: 'fixed-action-btn hide-on-med-and-up' },
-          _react2.default.createElement(
-            'a',
-            { className: 'btn-floating btn-large red', href: '#signinform' },
-            _react2.default.createElement(
-              'i',
-              { className: 'large material-icons' },
-              'lock_outline'
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          null,
+          { id: 'main' },
           _react2.default.createElement(
             'div',
-            { className: 'row' },
+            { className: 'fixed-action-btn hide-on-med-and-up' },
+            _react2.default.createElement(
+              'a',
+              { className: 'btn-floating btn-large red', href: '#signinform' },
+              _react2.default.createElement(
+                'i',
+                { className: 'large material-icons' },
+                'lock_outline'
+              )
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            null,
             _react2.default.createElement(
               'div',
-              { className: 'col s12 m6 l7 center' },
+              { className: 'row' },
               _react2.default.createElement(
-                'h2',
-                { className: 'center white-text' },
-                'Why meet when you can PostIt?'
+                'div',
+                { className: 'col s12 m6 l7 center' },
+                _react2.default.createElement(
+                  'h2',
+                  { className: 'center white-text' },
+                  'Why meet when you can PostIt?'
+                ),
+                _react2.default.createElement(
+                  'div',
+                  { className: 'row' },
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'col s12 m12 l6 app-desc' },
+                    _react2.default.createElement(
+                      'i',
+                      { className: 'large material-icons' },
+                      'people'
+                    ),
+                    _react2.default.createElement(
+                      'h4',
+                      null,
+                      'Create teams of all sizes'
+                    )
+                  ),
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'col s12 m12 l6 app-desc' },
+                    _react2.default.createElement(
+                      'i',
+                      { className: 'large material-icons' },
+                      'perm_scan_wifi'
+                    ),
+                    _react2.default.createElement(
+                      'h4',
+                      null,
+                      'Send broadcast messages to team members'
+                    )
+                  ),
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'col s12 m12 l6 app-desc' },
+                    _react2.default.createElement(
+                      'i',
+                      { className: 'large material-icons' },
+                      'done_all'
+                    ),
+                    _react2.default.createElement(
+                      'h4',
+                      null,
+                      'Get receipt notifications'
+                    )
+                  ),
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'col s12 m12 l6 app-desc' },
+                    _react2.default.createElement(
+                      'i',
+                      { className: 'large material-icons' },
+                      'trending_up'
+                    ),
+                    _react2.default.createElement(
+                      'h4',
+                      null,
+                      'Achieve more in less time'
+                    )
+                  )
+                )
               ),
               _react2.default.createElement(
                 'div',
-                { className: 'row' },
+                { id: 'signinform', className: 'col s12 m6 l5' },
                 _react2.default.createElement(
-                  'div',
-                  { className: 'col s12 m12 l6 app-desc' },
+                  'form',
+                  { className: 'signin-form' },
                   _react2.default.createElement(
-                    'i',
-                    { className: 'large material-icons' },
-                    'people'
-                  ),
-                  _react2.default.createElement(
-                    'h4',
+                    'div',
                     null,
-                    'Create teams of all sizes'
-                  )
-                ),
-                _react2.default.createElement(
-                  'div',
-                  { className: 'col s12 m12 l6 app-desc' },
-                  _react2.default.createElement(
-                    'i',
-                    { className: 'large material-icons' },
-                    'perm_scan_wifi'
-                  ),
-                  _react2.default.createElement(
-                    'h4',
-                    null,
-                    'Send broadcast messages to team members'
-                  )
-                ),
-                _react2.default.createElement(
-                  'div',
-                  { className: 'col s12 m12 l6 app-desc' },
-                  _react2.default.createElement(
-                    'i',
-                    { className: 'large material-icons' },
-                    'done_all'
-                  ),
-                  _react2.default.createElement(
-                    'h4',
-                    null,
-                    'Get receipt notifications'
-                  )
-                ),
-                _react2.default.createElement(
-                  'div',
-                  { className: 'col s12 m12 l6 app-desc' },
-                  _react2.default.createElement(
-                    'i',
-                    { className: 'large material-icons' },
-                    'trending_up'
-                  ),
-                  _react2.default.createElement(
-                    'h4',
-                    null,
-                    'Achieve more in less time'
-                  )
-                )
-              )
-            ),
-            _react2.default.createElement(
-              'div',
-              { id: 'signinform', className: 'col s12 m6 l5' },
-              _react2.default.createElement(
-                'form',
-                { className: 'signin-form' },
-                _react2.default.createElement(
-                  'div',
-                  null,
-                  _react2.default.createElement(
-                    'h3',
-                    { className: 'center' },
-                    'Sign In'
-                  )
-                ),
-                _react2.default.createElement(
-                  'div',
-                  null,
-                  _react2.default.createElement('input', { type: 'text', name: 'email', placeholder: 'Email' })
-                ),
-                _react2.default.createElement('input', { type: 'text', name: 'password', placeholder: 'Password' }),
-                _react2.default.createElement('div', null),
-                _react2.default.createElement(
-                  'button',
-                  { className: 'btn' },
-                  'Sign in'
-                ),
-                _react2.default.createElement('br', null),
-                _react2.default.createElement('br', null),
-                _react2.default.createElement(
-                  'div',
-                  null,
-                  _react2.default.createElement('input', { id: 'signedin', className: 'teal-text', type: 'checkbox', name: 'signedin' }),
-                  _react2.default.createElement(
-                    'label',
-                    { htmlFor: 'signedin' },
-                    'Keep me signed in'
-                  )
-                ),
-                _react2.default.createElement(
-                  'div',
-                  null,
-                  _react2.default.createElement(
-                    'p',
-                    null,
-                    'Don\'t have an account? ',
                     _react2.default.createElement(
-                      'a',
-                      { href: '#' },
-                      'Sign up'
+                      'h3',
+                      { className: 'center' },
+                      'Sign In'
+                    )
+                  ),
+                  _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement('input', { type: 'text', name: 'email', placeholder: 'Email' })
+                  ),
+                  _react2.default.createElement('input', { type: 'text', name: 'password', placeholder: 'Password' }),
+                  _react2.default.createElement('div', null),
+                  _react2.default.createElement(
+                    'button',
+                    { className: 'btn' },
+                    'Sign in'
+                  ),
+                  _react2.default.createElement('br', null),
+                  _react2.default.createElement('br', null),
+                  _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement('input', { id: 'signedin', className: 'teal-text', type: 'checkbox', name: 'signedin' }),
+                    _react2.default.createElement(
+                      'label',
+                      { htmlFor: 'signedin' },
+                      'Keep me signed in'
+                    )
+                  ),
+                  _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement(
+                      'p',
+                      null,
+                      'Don\'t have an account? ',
+                      _react2.default.createElement(
+                        'a',
+                        { href: '#' },
+                        'Sign up'
+                      )
                     )
                   )
                 )
               )
             )
           )
-        )
+        ),
+        _react2.default.createElement(Footer, null)
       );
     }
   }]);
@@ -34095,11 +34150,11 @@ var Body = function (_React$Component3) {
     key: "render",
     value: function render() {
       return _react2.default.createElement(
-        "main",
-        null,
+        "div",
+        { id: "body" },
         _react2.default.createElement(
           "div",
-          null,
+          { id: "main" },
           _react2.default.createElement(
             "h3",
             { className: "board-title center white-text" },
@@ -34249,7 +34304,27 @@ var PostMessage = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (PostMessage.__proto__ || Object.getPrototypeOf(PostMessage)).call(this, props));
 
     _this.state = {
-      messages: [],
+      messages: [{
+        isComment: true,
+        sender: "Ade Balogun",
+        body: "I will not be able to make it to the meeting.",
+        info: "Post created 12:06:2017, 11:34am"
+      }, {
+        isComment: true,
+        sender: "John Smith",
+        body: "We will try to make up for your absence. Take care.",
+        info: "Post created 12:06:2017, 11:50am"
+      }, {
+        isComment: true,
+        sender: "Joy Okafor",
+        body: "Can we get someone to fill his place?",
+        info: "Post created 12:06:2017, 11:55am"
+      }, {
+        isComment: false,
+        sender: "John Keneddy",
+        body: "I will add a new member to take his place.",
+        info: "Post created 12:06:2017, 12:00pm"
+      }],
       members: [{ name: "Ade Balogun", role: "member" }, { name: "John Smith", role: "member" }, { name: "Joy Okafor", role: "member" }, { name: "John Kennedy", role: "admin" }]
     };
     return _this;
@@ -34262,14 +34337,16 @@ var PostMessage = function (_React$Component) {
         "div",
         null,
         _react2.default.createElement(Nav, { members: this.state.members }),
-        _react2.default.createElement(Body, { messages: this.state.messages, members: this.state.members }),
-        _react2.default.createElement(Footer, null)
+        _react2.default.createElement(Body, { messages: this.state.messages, members: this.state.members })
       );
     }
   }]);
 
   return PostMessage;
 }(_react2.default.Component);
+
+// Navigation Component
+
 
 exports.default = PostMessage;
 
@@ -34336,6 +34413,9 @@ var Nav = function (_React$Component2) {
   return Nav;
 }(_react2.default.Component);
 
+// Page Body Component
+
+
 var Body = function (_React$Component3) {
   _inherits(Body, _React$Component3);
 
@@ -34350,29 +34430,37 @@ var Body = function (_React$Component3) {
     value: function render() {
       return _react2.default.createElement(
         "div",
-        { className: "row" },
+        { id: "body" },
         _react2.default.createElement(
           "div",
-          { className: "col s12 m8 l9 messageboard" },
+          { id: "main", className: "row" },
           _react2.default.createElement(
             "div",
-            { className: "group-info" },
+            { className: "col s12 m8 l9 messageboard" },
             _react2.default.createElement(
-              "h5",
-              { className: "center" },
-              "Project NexBigThing"
-            )
+              "div",
+              { className: "group-info" },
+              _react2.default.createElement(
+                "h5",
+                { className: "center" },
+                "Project NexBigThing"
+              )
+            ),
+            _react2.default.createElement(Messages, { messages: this.props.messages }),
+            _react2.default.createElement(InputBox, null)
           ),
-          _react2.default.createElement(Messages, { messages: this.props.messages }),
-          _react2.default.createElement(InputBox, null)
+          _react2.default.createElement(TeamListLargeScreen, { members: this.props.members })
         ),
-        _react2.default.createElement(TeamListLargeScreen, { members: this.props.members })
+        _react2.default.createElement(Footer, null)
       );
     }
   }]);
 
   return Body;
 }(_react2.default.Component);
+
+// Page Footer Component
+
 
 var Footer = function (_React$Component4) {
   _inherits(Footer, _React$Component4);
@@ -34405,6 +34493,9 @@ var Footer = function (_React$Component4) {
 
   return Footer;
 }(_react2.default.Component);
+
+// Side Nav Component
+
 
 var TeamListSideNav = function (_React$Component5) {
   _inherits(TeamListSideNav, _React$Component5);
@@ -34450,6 +34541,9 @@ var TeamListSideNav = function (_React$Component5) {
   return TeamListSideNav;
 }(_react2.default.Component);
 
+// Team List, Visible on Large Screens
+
+
 var TeamListLargeScreen = function (_React$Component6) {
   _inherits(TeamListLargeScreen, _React$Component6);
 
@@ -34492,6 +34586,9 @@ var TeamListLargeScreen = function (_React$Component6) {
 
   return TeamListLargeScreen;
 }(_react2.default.Component);
+
+// Team Member Component
+
 
 var TeamMember = function (_React$Component7) {
   _inherits(TeamMember, _React$Component7);
@@ -34542,6 +34639,9 @@ var TeamMember = function (_React$Component7) {
   return TeamMember;
 }(_react2.default.Component);
 
+// Team Member Component, for Team List on Large Screens
+
+
 var TeamMemberLargeScreens = function (_React$Component8) {
   _inherits(TeamMemberLargeScreens, _React$Component8);
 
@@ -34591,6 +34691,9 @@ var TeamMemberLargeScreens = function (_React$Component8) {
   return TeamMemberLargeScreens;
 }(_react2.default.Component);
 
+// Messages Component
+
+
 var Messages = function (_React$Component9) {
   _inherits(Messages, _React$Component9);
 
@@ -34606,104 +34709,18 @@ var Messages = function (_React$Component9) {
       return _react2.default.createElement(
         "ul",
         { className: "messages row" },
-        _react2.default.createElement(
-          "li",
-          { className: "message card col s11" },
-          _react2.default.createElement(
-            "small",
-            { className: "sender-name" },
-            "Ade Balogun"
-          ),
-          _react2.default.createElement(
-            "div",
-            { className: "message-body white-text" },
-            "I will not be able to make it to the meeting"
-          ),
-          _react2.default.createElement(
-            "div",
-            { className: "message-info" },
-            _react2.default.createElement(
-              "small",
-              null,
-              "Post created 12:06:2017, 11:34am"
-            )
-          )
-        ),
-        _react2.default.createElement(
-          "li",
-          { className: "message card col s11" },
-          _react2.default.createElement(
-            "small",
-            { className: "sender-name" },
-            "John Smith"
-          ),
-          _react2.default.createElement(
-            "div",
-            { className: "message-body white-text" },
-            "We will try to make up for your absence. Take care."
-          ),
-          _react2.default.createElement(
-            "div",
-            { className: "message-info" },
-            _react2.default.createElement(
-              "small",
-              null,
-              "Post created 12:06:2017, 11:50am"
-            )
-          )
-        ),
-        _react2.default.createElement(
-          "li",
-          { className: "message card col s11" },
-          _react2.default.createElement(
-            "small",
-            { className: "sender-name" },
-            "Joy Okafor"
-          ),
-          _react2.default.createElement(
-            "div",
-            { className: "message-body white-text" },
-            "Can we get someone to fill his place?"
-          ),
-          _react2.default.createElement(
-            "div",
-            { className: "message-info" },
-            _react2.default.createElement(
-              "small",
-              null,
-              "Post created 12:06:2017, 12:00pm"
-            )
-          )
-        ),
-        _react2.default.createElement(
-          "li",
-          { className: "adminmessage card col s11 offset-s1" },
-          _react2.default.createElement(
-            "small",
-            { className: "sender-name" },
-            "John Keneddy"
-          ),
-          _react2.default.createElement(
-            "div",
-            { className: "message-body white-text" },
-            "Can we get someone to fill his place?"
-          ),
-          _react2.default.createElement(
-            "div",
-            { className: "message-info" },
-            _react2.default.createElement(
-              "small",
-              null,
-              "Post created 12:06:2017, 12:00pm"
-            )
-          )
-        )
+        this.props.messages.map(function (message, index) {
+          return _react2.default.createElement(Message, { key: index, data: message });
+        })
       );
     }
   }]);
 
   return Messages;
 }(_react2.default.Component);
+
+// Message Component
+
 
 var Message = function (_React$Component10) {
   _inherits(Message, _React$Component10);
@@ -34717,16 +34734,63 @@ var Message = function (_React$Component10) {
   _createClass(Message, [{
     key: "render",
     value: function render() {
-      return _react2.default.createElement(
-        "h2",
-        null,
-        "Message"
-      );
+      if (this.props.data.isComment) {
+        return _react2.default.createElement(
+          "li",
+          { className: "message card col s11" },
+          _react2.default.createElement(
+            "small",
+            { className: "sender-name" },
+            this.props.data.sender
+          ),
+          _react2.default.createElement(
+            "div",
+            { className: "message-body white-text" },
+            this.props.data.body
+          ),
+          _react2.default.createElement(
+            "div",
+            { className: "message-info" },
+            _react2.default.createElement(
+              "small",
+              null,
+              this.props.data.info
+            )
+          )
+        );
+      } else {
+        return _react2.default.createElement(
+          "li",
+          { className: "adminmessage card col s11 offset-s1" },
+          _react2.default.createElement(
+            "small",
+            { className: "sender-name" },
+            this.props.data.sender
+          ),
+          _react2.default.createElement(
+            "div",
+            { className: "message-body white-text" },
+            this.props.data.body
+          ),
+          _react2.default.createElement(
+            "div",
+            { className: "message-info" },
+            _react2.default.createElement(
+              "small",
+              null,
+              this.props.data.info
+            )
+          )
+        );
+      }
     }
   }]);
 
   return Message;
 }(_react2.default.Component);
+
+// InputBox Component
+
 
 var InputBox = function (_React$Component11) {
   _inherits(InputBox, _React$Component11);
@@ -34778,7 +34842,6 @@ var InputBox = function (_React$Component11) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.SignUp = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -34818,6 +34881,8 @@ var SignUp = function (_React$Component) {
 
   return SignUp;
 }(_react2.default.Component);
+
+exports.default = SignUp;
 
 var Nav = function (_React$Component2) {
   _inherits(Nav, _React$Component2);
@@ -35084,8 +35149,6 @@ var Footer = function (_React$Component4) {
   return Footer;
 }(_react2.default.Component);
 
-exports.SignUp = SignUp;
-
 /***/ }),
 /* 110 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -35154,7 +35217,7 @@ _reactDom2.default.render(_react2.default.createElement(
   _react2.default.createElement(
     _reactRouterDom.Switch,
     null,
-    _react2.default.createElement(_reactRouter.Route, { path: '/', component: _PostMessage2.default }),
+    _react2.default.createElement(_reactRouter.Route, { path: '/', component: _CreateGroup2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: 'signup', component: _Index2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: 'creategroup', component: _Index2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: 'messageboard', component: _MessageBoard2.default }),
@@ -36066,7 +36129,7 @@ exports = module.exports = __webpack_require__(58)(undefined);
 exports.push([module.i, "@import url(https://fonts.googleapis.com/icon?family=Material+Icons);", ""]);
 
 // module
-exports.push([module.i, "/* Style the tab */\ndiv.tab {\n  overflow: hidden;\n  border: 1px solid #ccc;\n  background-color: #f1f1f1; }\n\n/* Style the buttons inside the tab */\ndiv.tab button {\n  background-color: inherit;\n  float: left;\n  border: none;\n  outline: none;\n  cursor: pointer;\n  padding: 14px 16px;\n  transition: 0.3s; }\n\n/* Change background color of buttons on hover */\ndiv.tab button:hover {\n  background-color: #ddd; }\n\n/* Create an active/current tablink class */\ndiv.tab button.active {\n  background-color: #ccc; }\n\n/* Style the tab content */\n.tabcontent {\n  display: none;\n  padding: 6px 12px;\n  border: 1px solid #ccc;\n  border-top: none; }\n\nbody {\n  margin-top: 20px;\n  background-image: url(" + __webpack_require__(237) + ");\n  background-repeat: repeat-y;\n  background-position: center;\n  background-size: cover;\n  background-attachment: fixed; }\n\n#brand {\n  padding-left: 20px; }\n\n.signin-form {\n  margin-top: 20px;\n  padding: 20px;\n  border-style: solid;\n  border-radius: 20px;\n  border-color: black; }\n\n.signup-form {\n  margin-top: 20px;\n  padding: 20px;\n  border-style: solid;\n  border-radius: 20px;\n  border-color: black;\n  padding-bottom: 30px; }\n\n.group-details {\n  background-color: white;\n  padding: 20px; }\n\n.message {\n  padding: 10px;\n  margin: 2px;\n  background: rgba(205, 220, 57, 0.5); }\n\n.adminmessage {\n  padding: 10px;\n  margin: 2px;\n  background: rgba(244, 67, 54, 0.5); }\n\nbody {\n  display: flex;\n  min-height: 100vh;\n  flex-direction: column; }\n\nmain {\n  flex: 1 0 auto; }\n", ""]);
+exports.push([module.i, "/* Style the tab */\ndiv.tab {\n  overflow: hidden;\n  border: 1px solid #ccc;\n  background-color: #f1f1f1; }\n\n/* Style the buttons inside the tab */\ndiv.tab button {\n  background-color: inherit;\n  float: left;\n  border: none;\n  outline: none;\n  cursor: pointer;\n  padding: 14px 16px;\n  transition: 0.3s; }\n\n/* Change background color of buttons on hover */\ndiv.tab button:hover {\n  background-color: #ddd; }\n\n/* Create an active/current tablink class */\ndiv.tab button.active {\n  background-color: #ccc; }\n\n/* Style the tab content */\n.tabcontent {\n  display: none;\n  padding: 6px 12px;\n  border: 1px solid #ccc;\n  border-top: none; }\n\nbody {\n  margin-top: 20px;\n  background-image: url(" + __webpack_require__(237) + ");\n  background-repeat: repeat-y;\n  background-position: center;\n  background-size: cover;\n  background-attachment: fixed; }\n\n#brand {\n  padding-left: 20px; }\n\n.signin-form {\n  margin-top: 20px;\n  padding: 20px;\n  border-style: solid;\n  border-radius: 20px;\n  border-color: black; }\n\n.signup-form {\n  margin-top: 20px;\n  padding: 20px;\n  border-style: solid;\n  border-radius: 20px;\n  border-color: black;\n  padding-bottom: 30px; }\n\n.group-details {\n  background-color: white;\n  padding: 20px; }\n\n.message {\n  padding: 10px;\n  margin: 2px;\n  background: rgba(205, 220, 57, 0.5); }\n\n.adminmessage {\n  padding: 10px;\n  margin: 2px;\n  background: rgba(244, 67, 54, 0.5); }\n\n#body {\n  display: flex;\n  min-height: 92vh;\n  flex-direction: column; }\n\n#main {\n  flex: 1 0 auto; }\n\n.footer-copyright {\n  margin-left: 20px; }\n", ""]);
 
 // exports
 
