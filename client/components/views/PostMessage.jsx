@@ -4,7 +4,30 @@ export default class PostMessage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        messages: [],
+        messages: [{
+          isComment: true,
+          sender: "Ade Balogun",
+          body: "I will not be able to make it to the meeting.",
+          info: "Post created 12:06:2017, 11:34am"
+        },
+        {
+          isComment: true,
+          sender: "John Smith",
+          body: "We will try to make up for your absence. Take care.",
+          info: "Post created 12:06:2017, 11:50am"
+        },
+        {
+          isComment: true,
+          sender: "Joy Okafor",
+          body: "Can we get someone to fill his place?",
+          info: "Post created 12:06:2017, 11:55am"
+        },
+        {
+          isComment: false,
+          sender: "John Keneddy",
+          body: "I will add a new member to take his place.",
+          info: "Post created 12:06:2017, 12:00pm"
+        }],
         members: [ {name: "Ade Balogun", role: "member"},
          {name: "John Smith", role: "member"},
          {name: "Joy Okafor", role: "member"},
@@ -16,13 +39,12 @@ export default class PostMessage extends React.Component {
       <div>
         <Nav members={this.state.members}/>
         <Body messages= {this.state.messages} members={this.state.members}/>
-        <Footer/>
       </div>
     );
   }
 }
 
-
+// Navigation Component
 class Nav extends React.Component {
   render() {
     return(
@@ -42,26 +64,30 @@ class Nav extends React.Component {
   }
 }
 
+// Page Body Component
 class Body extends React.Component {
   render() {
     return(
-      <div className="row">
-        <div className="col s12 m8 l9 messageboard">
-          <div className="group-info">
-            <h5 className="center">Project NexBigThing</h5>
+      <div id="body">
+        <div id="main" className="row">
+          <div className="col s12 m8 l9 messageboard">
+            <div className="group-info">
+              <h5 className="center">Project NexBigThing</h5>
+            </div>
+            <Messages messages={this.props.messages}/>
+            {/* Message input box */}
+            <InputBox/>
           </div>
-          <Messages messages={this.props.messages}/>
-          {/* Message input box */}
-          <InputBox/>
+          {/*Side bar, visible only on large screens*/}
+          <TeamListLargeScreen members={this.props.members}/>
         </div>
-        {/*Side bar, visible only on large screens*/}
-        <TeamListLargeScreen members={this.props.members}/>
-
+        <Footer/>
       </div>
     );
   }
 }
 
+// Page Footer Component
 class Footer extends React.Component {
   render() {
       return (
@@ -73,6 +99,7 @@ class Footer extends React.Component {
   }
 }
 
+// Side Nav Component
 class TeamListSideNav extends React.Component {
   render() {
     return (
@@ -89,6 +116,7 @@ class TeamListSideNav extends React.Component {
   }
 }
 
+// Team List, Visible on Large Screens
 class TeamListLargeScreen extends React.Component {
   render() {
     return (
@@ -106,6 +134,7 @@ class TeamListLargeScreen extends React.Component {
   }
 }
 
+// Team Member Component
 class TeamMember extends React.Component {
   render(){
     if(this.props.data.role === "admin") {
@@ -120,6 +149,7 @@ class TeamMember extends React.Component {
   }
 }
 
+// Team Member Component, for Team List on Large Screens
 class TeamMemberLargeScreens extends React.Component {
   render(){
     if(this.props.data.role === "admin") {
@@ -133,43 +163,46 @@ class TeamMemberLargeScreens extends React.Component {
     }
   }
 }
+
+// Messages Component
 class Messages extends React.Component {
   render(){
     return (
       <ul className="messages row">
-        <li className="message card col s11">
-          <small className="sender-name">Ade Balogun</small>
-          <div className="message-body white-text">I will not be able to make it to the meeting</div>
-          <div className="message-info"><small>Post created 12:06:2017, 11:34am</small></div>
-        </li>
-        <li className="message card col s11">
-          <small className="sender-name">John Smith</small>
-          <div className="message-body white-text">We will try to make up for your absence. Take care.</div>
-          <div className="message-info"><small>Post created 12:06:2017, 11:50am</small></div>
-        </li>
-        <li className="message card col s11">
-          <small className="sender-name">Joy Okafor</small>
-          <div className="message-body white-text">Can we get someone to fill his place?</div>
-          <div className="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
-        </li>
-        <li className="adminmessage card col s11 offset-s1">
-          <small className="sender-name">John Keneddy</small>
-          <div className="message-body white-text">Can we get someone to fill his place?</div>
-          <div className="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
-        </li>
+        {
+          this.props.messages.map((message, index) => 
+            <Message key={index} data={message}/>
+          )
+        }
       </ul>
     );
   }
 }
 
+// Message Component
 class Message extends React.Component {
   render() {
-    return (
-      <h2>Message</h2>
-    );
+    if(this.props.data.isComment) {
+      return (
+        <li className="message card col s11">
+          <small className="sender-name">{this.props.data.sender}</small>
+          <div className="message-body white-text">{this.props.data.body}</div>
+          <div className="message-info"><small>{this.props.data.info}</small></div>
+        </li>
+      );
+    } else {
+      return (
+        <li className="adminmessage card col s11 offset-s1">
+          <small className="sender-name">{this.props.data.sender}</small>
+          <div className="message-body white-text">{this.props.data.body}</div>
+          <div className="message-info"><small>{this.props.data.info}</small></div>
+        </li>
+      )
+    }
   }
 }
 
+// InputBox Component
 class InputBox extends React.Component {
   render() {
     return(
