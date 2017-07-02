@@ -82,12 +82,18 @@ body {
     margin: 2px;
     background: rgba(244, 67, 54, .5);
 }
-body {
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
+
+.app-desc {
 }
 
-  main {
-    flex: 1 0 auto;
-  }
+#body {
+     display: flex;
+     min-height: 92vh;
+     flex-direction: column;
+ }
+ #main {
+     flex: 1 0 auto;
+ }
+ .footer-copyright {
+     margin-left: 20px;
+ }
