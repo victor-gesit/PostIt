@@ -7,7 +7,6 @@ export default class Index extends React.Component {
       <div>
         <Nav/>
         <Body/>
-        <Footer/>
       </div>
     );
   }
@@ -39,7 +38,8 @@ class Nav extends React.Component {
 class Body extends React.Component {
   render() {
     return(
-      <div>
+      <div id="body">
+      <div id="main">
         <div className="fixed-action-btn hide-on-med-and-up">
           <a className="btn-floating btn-large red" href="#signinform">
             <i className="large material-icons">lock_outline</i>
@@ -93,6 +93,8 @@ class Body extends React.Component {
           </div>
         </div>
       </div>
+      <Footer/>
+    </div>
     );
   }
 }
