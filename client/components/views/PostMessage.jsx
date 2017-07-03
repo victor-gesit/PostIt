@@ -3,7 +3,9 @@ import React from 'react';
 export default class PostMessage extends React.Component {
   constructor(props) {
     super(props);
+    this.getMessages = this.getMessages.bind(this);
     this.state = {
+        allMessages : [],
         messages: [{
           isComment: true,
           sender: "Ade Balogun",
@@ -33,6 +35,18 @@ export default class PostMessage extends React.Component {
          {name: "Joy Okafor", role: "member"},
          {name: "John Kennedy", role: "admin"} ]
     }
+  }
+  componentDidMount() {
+    this.getMessages((messages) => {
+      this.setState({allUsers});
+    });
+  }
+  getMessages(cb) {
+    const url = `https://postit-api-victor.herokuapp.com/api/group/${this.props.groupId}/messages`
+    fetch(url, {
+      method: 'GET'
+    }).then((res) => res.json())
+    .then((data) => cb(data))
   }
   render() {
     return(
