@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PostIt</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<script src="build/bundle.js"></script>
+</head>
+<nav class="lime darken-4">
+	<div class="nav-wrapper">
+		<a href="#" id="brand" class="brand-logo">PostIt</a>
+		<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+		<ul class="right hide-on-med-and-down">
+			<li><a href="#">About PostIt</a></li>
+		</ul>
+		<ul id="mobile-demo" class="side-nav">
+			<li><a href="#">About PostIt</a></li>
+		</ul>
+	</div>
+</nav>
+<body>
+  <div class="fixed-action-btn hide-on-med-and-up">
+    <a class="btn-floating btn-large red" href="#signinform">
+      <i class="large material-icons">lock_outline</i>
+    </a>
+  </div>
+<div>
+	<div class="row">
+		<div class="col s12 m6 l7 center">
+			<h2 class="center">Why meet when you can PostIt?</h2>
+			<div class="row">
+				<div class="col s12 m12 l6">
+					<i class="large material-icons">people</i>
+					<h4>Create teams of all sizes</h4>
+				</div>
+				<div class="col s12 m12 l6">
+					<i class="large material-icons">perm_scan_wifi</i>
+					<h4>Send broadcast messages to team members</h4>
+				</div>
+				<div class="col s12 m12 l6">
+					<i class="large material-icons">done_all</i>
+					<h4>Get receipt notifications</h4>
+				</div>
+				<div class="col s12 m12 l6">
+					<i class="large material-icons">trending_up</i>
+					<h4>Achieve more in less time</h4>
+				</div>
+		  </div>
+		</div>
+		<div id="signinform" class="col s12 m6 l5">
+			<form class="signin-form">
+				<div>
+					<h3 class="center" >Sign In</h3>
+				</div>
+				<div>
+					<input type="text" name="email" placeholder="Email">
+				</div>
+					<input type="text" name="password" placeholder="Password">
+				<div>
+					
+				</div>
+				<button class="btn" >Sign in</button>
+				<br><br>
+				<div>
+					<input id="signedin" class="teal-text" type="checkbox" name="signedin">
+					<label for="signedin" >Keep me signed in</label>
+				</div>
+				<div>
+					<p>Don't have an account? <a href="#">Sign up</a></p>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+</body>
+<footer class="page-footer lime darken-4">
+	<div class="container">Built by Victor Idongesit</div>
+	<div class="footer-copyright">    © Andela, 2017</div>
+</footer>
+</html>
