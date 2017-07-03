@@ -5,7 +5,7 @@ import { IndexRoute, Route } from 'react-router';
 // Styling
 import 'materialize-css/bin/materialize.css';
 import 'jquery/dist/jquery';
-import './scss/style.scss';
+import './scss/style.scss'; // Custom styling
 import './js/creategroup';
 import './js/materialize';
 
@@ -23,11 +23,12 @@ $(document).ready(() => {
 
 ReactDOM.render(<Router>
     <Switch>
-        <Route path='/' component={Home}/>
-        <Route path='signup' component={Home}/>
-        <Route path='creategroup' component={Home}/>
+        <Route path='/' component={CreateGroup}/>
+        <Route path='signup' component={SignUp}/>
+        <Route path='creategroup' component={SignUp}/>
         <Route path='messageboard' component={MessageBoard}/>
         <Route path='postmessage' component={PostMessage}/>
     </Switch>
   </Router>, document.getElementById('app'));
+
 
