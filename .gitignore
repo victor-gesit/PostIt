@@ -3,3 +3,4 @@ node_modules/
 .coveralls.yml
 server/*.env
 coverage
+.DS_Store
