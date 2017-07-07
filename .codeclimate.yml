@@ -18,6 +18,7 @@ exclude_paths:
 - "template/"
 - "client/js/jquerymin.js"
 - "client/"
+- "server/migrations"
 ratings:
    paths:
    - "server/**/*"
