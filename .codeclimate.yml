@@ -16,6 +16,7 @@ engines:
         enabled: false
 exclude_paths:
 - "template/"
+- "client/js/jquerymin.js"
 ratings:
    paths:
    - "server/**/*"
