@@ -5,7 +5,7 @@ export default class PostMessage extends React.Component {
     super(props);
     this.getMessages = this.getMessages.bind(this);
     this.state = {
-        allMessages : [],
+        allMessages : null,
         messages: [{
           isComment: true,
           sender: "Ade Balogun",
@@ -37,18 +37,52 @@ export default class PostMessage extends React.Component {
     }
   }
   componentDidMount() {
-    this.getMessages((messages) => {
-      this.setState({allUsers});
+    this.getMessages((allMessages) => {
+      this.setState({allMessages});
     });
   }
   getMessages(cb) {
-    const url = `https://postit-api-victor.herokuapp.com/api/group/${this.props.groupId}/messages`
+    const url = `https://postit-api-victor.herokuapp.com/api/group/${this.props.groupId}/messages`;
     fetch(url, {
       method: 'GET'
     }).then((res) => res.json())
-    .then((data) => cb(data))
+    .then((data) => cb(data));
+  }
+  getMembers(cb) {
+    const url = `https://postit-api-victor.herokuapp.com/api/group/${this.props.groupId}/members`;
+    fetch(url, {
+      method: 'GET'
+    }).then((res) => res.json())
+    .then((data) => cb(data));
   }
   render() {
+    if(!this.state.allMessages) {
+      return (
+        <div>
+        <Nav/>
+          <div id="body">
+            <div id="main">
+              <div className="preloader-background">
+                <div className="preloader-wrapper big active valign-wrapper">
+                  <div className="spinner-layer spinner-white-only">
+                    <div className="circle-clipper left">
+                      <div className="circle"></div>
+                    </div>
+                    <div className="gap-patch">
+                      <div className="circle"></div>
+                    </div>
+                    <div className="circle-clipper right">
+                      <div className="circle"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <Footer/>
+          </div>
+        </div>
+      )
+    }
     return(
       <div>
         <Nav members={this.state.members}/>
