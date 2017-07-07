@@ -6,24 +6,10 @@ import 'jquery';
 export default class CreateGroup extends React.Component {
   constructor(props) {
     super(props);
+    this.getUsers = this.getUsers.bind(this);
     this.state = {
+      allUsers: null,
       selectedMembers: [],
-      registeredMembers: [{
-        email: "adebalogun@yahoo.com",
-        name: "Ade Balogun",
-      },
-      {
-        email: "johnsmith@yahoo.com",
-        name: "John Smith",
-      },
-      {
-        email: "joyokafor@yahoo.com",
-        name: "Joy Okafor",
-      },
-      {
-        email: "johnkennedy@yahoo.com",
-        name: "John Keneddy",
-      }],
       // Method to add a member to the list of selected members
       addMember: (selected, memberEmail) => {
         if(selected) {
@@ -37,11 +23,45 @@ export default class CreateGroup extends React.Component {
       }
     }
   }
+  componentDidMount() {
+    this.getUsers((users) => {
+      let allUsers = users;
+      for(let i=0; i< users.length; i++) {
+        allUsers[i].name = `${users[i].firstName} ${users[i].lastName}`
+      }
+      console.log(allUsers);
+      this.setState({allUsers});
+    });
+  }
+  getUsers(cb) {
+    fetch('https://postit-api-victor.herokuapp.com/api/group/members', {
+      method: 'GET'
+    }).then((res) => res.json())
+    .then((data) => cb(data))
+  }
   render() {
+    if(!this.state.allUsers) {
+      return (
+        <div>
+          <Nav/>
+        <div className="preloader-wrapper big active valign-wrapper">
+          <div className="spinner-layer spinner-blue-only">
+            <div className="circle-clipper left">
+              <div className="circle"></div>
+            </div><div className="gap-patch">
+              <div className="circle"></div>
+            </div><div className="circle-clipper right">
+              <div className="circle"></div>
+            </div>
+          </div>
+        </div>
+        </div>
+      )
+    }
     return(
       <div>
         <Nav/>
-        <Body addMember={this.state.addMember} registeredMembers={this.state.registeredMembers}/>
+        <Body addMember={this.state.addMember} registeredMembers={this.state.allUsers}/>
         <Footer/>
       </div>
     );
@@ -93,6 +113,7 @@ class Body extends React.Component {
   }
   componentDidMount() {
     this.refs['defaultTab'].click();
+
   }
   render() {
     return(

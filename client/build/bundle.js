@@ -24727,6 +24727,7 @@ var _SignUp2 = _interopRequireDefault(_SignUp);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Routes
+// Custom styling
 $(document).ready(function () {
     $('.button-collapse').sideNav();
 });
@@ -24739,9 +24740,9 @@ _reactDom2.default.render(_react2.default.createElement(
     _react2.default.createElement(
         _reactRouterDom.Switch,
         null,
-        _react2.default.createElement(_reactRouter.Route, { path: '/', component: _Index2.default }),
-        _react2.default.createElement(_reactRouter.Route, { path: 'signup', component: _Index2.default }),
-        _react2.default.createElement(_reactRouter.Route, { path: 'creategroup', component: _Index2.default }),
+        _react2.default.createElement(_reactRouter.Route, { path: '/', component: _CreateGroup2.default }),
+        _react2.default.createElement(_reactRouter.Route, { path: 'signup', component: _SignUp2.default }),
+        _react2.default.createElement(_reactRouter.Route, { path: 'creategroup', component: _SignUp2.default }),
         _react2.default.createElement(_reactRouter.Route, { path: 'messageboard', component: _MessageBoard2.default }),
         _react2.default.createElement(_reactRouter.Route, { path: 'postmessage', component: _PostMessage2.default })
     )
@@ -48685,23 +48686,31 @@ var Body = function (_React$Component3) {
     key: 'signIn',
     value: function signIn(e) {
       // Stop default button click action
-      console.log('Just arrived');
-      e.stopPropagation();
-      e.nativeEvent.stopImmediatePropagation();
-      fetch('https://postit-api-victor.herokuapp.com/', {
+      console.log(this.refs['email'].value);
+
+      var details = {
+        email: this.refs['email'].value,
+        password: this.refs['password'].value
+      };
+
+      var formBody = [];
+      for (var property in details) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(details[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
+      }
+      formBody = formBody.join("&");
+      fetch('https://postit-api-victor.herokuapp.com/api/user/signin', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: JSON.stringify({
-          email: this.refs["email"].value,
-          password: this.refs["password"].value
-        })
-      }).then(function () {
-        console.log('I made it here');
-      }).catch(function () {
-        console.log('Somthins went wrong');
+        body: formBody
+      }).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        console.log(data);
       });
     }
   }, {
@@ -48934,21 +48943,10 @@ var CreateGroup = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (CreateGroup.__proto__ || Object.getPrototypeOf(CreateGroup)).call(this, props));
 
+    _this.getUsers = _this.getUsers.bind(_this);
     _this.state = {
+      allUsers: null,
       selectedMembers: [],
-      registeredMembers: [{
-        email: "adebalogun@yahoo.com",
-        name: "Ade Balogun"
-      }, {
-        email: "johnsmith@yahoo.com",
-        name: "John Smith"
-      }, {
-        email: "joyokafor@yahoo.com",
-        name: "Joy Okafor"
-      }, {
-        email: "johnkennedy@yahoo.com",
-        name: "John Keneddy"
-      }],
       // Method to add a member to the list of selected members
       addMember: function addMember(selected, memberEmail) {
         if (selected) {
@@ -48965,13 +48963,68 @@ var CreateGroup = function (_React$Component) {
   }
 
   _createClass(CreateGroup, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      this.getUsers(function (users) {
+        var allUsers = users;
+        for (var i = 0; i < users.length; i++) {
+          allUsers[i].name = users[i].firstName + ' ' + users[i].lastName;
+        }
+        console.log(allUsers);
+        _this2.setState({ allUsers: allUsers });
+      });
+    }
+  }, {
+    key: 'getUsers',
+    value: function getUsers(cb) {
+      fetch('https://postit-api-victor.herokuapp.com/api/group/members', {
+        method: 'GET'
+      }).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        return cb(data);
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
+      if (!this.state.allUsers) {
+        return _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement(Nav, null),
+          _react2.default.createElement(
+            'div',
+            { className: 'preloader-wrapper big active valign-wrapper' },
+            _react2.default.createElement(
+              'div',
+              { className: 'spinner-layer spinner-blue-only' },
+              _react2.default.createElement(
+                'div',
+                { className: 'circle-clipper left' },
+                _react2.default.createElement('div', { className: 'circle' })
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'gap-patch' },
+                _react2.default.createElement('div', { className: 'circle' })
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'circle-clipper right' },
+                _react2.default.createElement('div', { className: 'circle' })
+              )
+            )
+          )
+        );
+      }
       return _react2.default.createElement(
         'div',
         null,
         _react2.default.createElement(Nav, null),
-        _react2.default.createElement(Body, { addMember: this.state.addMember, registeredMembers: this.state.registeredMembers }),
+        _react2.default.createElement(Body, { addMember: this.state.addMember, registeredMembers: this.state.allUsers }),
         _react2.default.createElement(Footer, null)
       );
     }
@@ -49069,10 +49122,10 @@ var Body = function (_React$Component3) {
   function Body(props) {
     _classCallCheck(this, Body);
 
-    var _this3 = _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).call(this, props));
+    var _this4 = _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).call(this, props));
 
-    _this3.state = {
-      selectedMembers: _this3.props.selectedMembers,
+    _this4.state = {
+      selectedMembers: _this4.props.selectedMembers,
       switchTab: function switchTab(button, tabName) {
         var i, tabcontent, tablinks;
         tabcontent = document.getElementsByClassName("tabcontent");
@@ -49083,12 +49136,12 @@ var Body = function (_React$Component3) {
         for (i = 0; i < tablinks.length; i++) {
           tablinks[i].className = tablinks[i].className.replace(" active", "");
         }
-        _this3.refs[tabName].style.display = "block";
-        _this3.refs[button].className += " active";
+        _this4.refs[tabName].style.display = "block";
+        _this4.refs[button].className += " active";
       }
 
     };
-    return _this3;
+    return _this4;
   }
 
   _createClass(Body, [{
@@ -49099,7 +49152,7 @@ var Body = function (_React$Component3) {
   }, {
     key: 'render',
     value: function render() {
-      var _this4 = this;
+      var _this5 = this;
 
       return _react2.default.createElement(
         'div',
@@ -49113,14 +49166,14 @@ var Body = function (_React$Component3) {
             _react2.default.createElement(
               'button',
               { className: 'tablinks', id: 'defaultTab', ref: 'defaultTab', onClick: function onClick() {
-                  return _this4.state.switchTab("defaultTab", 'info');
+                  return _this5.state.switchTab("defaultTab", 'info');
                 } },
               'Group info'
             ),
             _react2.default.createElement(
               'button',
               { className: 'tablinks', id: 'add-members', ref: 'add-members', onClick: function onClick() {
-                  return _this4.state.switchTab("add-members", 'members');
+                  return _this5.state.switchTab("add-members", 'members');
                 } },
               'Add members'
             )
@@ -49159,7 +49212,7 @@ var Body = function (_React$Component3) {
                   _react2.default.createElement(
                     'button',
                     { className: 'btn', onClick: function onClick() {
-                        return _this4.state.switchTab("add-members", 'members');
+                        return _this5.state.switchTab("add-members", 'members');
                       } },
                     'Next >>'
                   )
@@ -49192,7 +49245,7 @@ var Body = function (_React$Component3) {
                       )
                     ),
                     this.props.registeredMembers.map(function (member, index) {
-                      return _react2.default.createElement(RegisteredMember, { addMember: _this4.props.addMember, key: index, data: member });
+                      return _react2.default.createElement(RegisteredMember, { addMember: _this5.props.addMember, key: index, data: member });
                     })
                   )
                 ),
@@ -49202,7 +49255,7 @@ var Body = function (_React$Component3) {
                   _react2.default.createElement(
                     'button',
                     { className: 'btn', onClick: function onClick() {
-                        return _this4.state.switchTab("defaultTab", 'info');
+                        return _this5.state.switchTab("defaultTab", 'info');
                       } },
                     '<< Group info'
                   ),
@@ -49232,23 +49285,23 @@ var RegisteredMember = function (_React$Component4) {
   function RegisteredMember(props) {
     _classCallCheck(this, RegisteredMember);
 
-    var _this5 = _possibleConstructorReturn(this, (RegisteredMember.__proto__ || Object.getPrototypeOf(RegisteredMember)).call(this, props));
+    var _this6 = _possibleConstructorReturn(this, (RegisteredMember.__proto__ || Object.getPrototypeOf(RegisteredMember)).call(this, props));
 
-    _this5.state = {
+    _this6.state = {
       selected: false,
       // Method to decide if a member is to be added or not
       set: function set(state, email) {
-        _this5.state.selected = !_this5.state.selected;
-        _this5.props.addMember(_this5.state.selected, email);
+        _this6.state.selected = !_this6.state.selected;
+        _this6.props.addMember(_this6.state.selected, email);
       }
     };
-    return _this5;
+    return _this6;
   }
 
   _createClass(RegisteredMember, [{
     key: 'render',
     value: function render() {
-      var _this6 = this;
+      var _this7 = this;
 
       return _react2.default.createElement(
         'li',
@@ -49256,7 +49309,7 @@ var RegisteredMember = function (_React$Component4) {
         _react2.default.createElement('input', { id: this.props.data.email,
           type: 'checkbox',
           onClick: function onClick() {
-            return _this6.state.set(event, _this6.props.data.email);
+            return _this7.state.set(event, _this7.props.data.email);
           },
           ref: this.props.data.email }),
         _react2.default.createElement(
@@ -49602,7 +49655,9 @@ var PostMessage = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (PostMessage.__proto__ || Object.getPrototypeOf(PostMessage)).call(this, props));
 
+    _this.getMessages = _this.getMessages.bind(_this);
     _this.state = {
+      allMessages: [],
       messages: [{
         isComment: true,
         sender: "Ade Balogun",
@@ -49630,6 +49685,27 @@ var PostMessage = function (_React$Component) {
   }
 
   _createClass(PostMessage, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      this.getMessages(function (messages) {
+        _this2.setState({ allUsers: allUsers });
+      });
+    }
+  }, {
+    key: "getMessages",
+    value: function getMessages(cb) {
+      var url = "https://postit-api-victor.herokuapp.com/api/group/" + this.props.groupId + "/messages";
+      fetch(url, {
+        method: 'GET'
+      }).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        return cb(data);
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
       return _react2.default.createElement(
@@ -50148,6 +50224,8 @@ var _react = __webpack_require__(5);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRouter = __webpack_require__(8);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -50156,32 +50234,31 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var SignUp = function (_React$Component) {
-  _inherits(SignUp, _React$Component);
+var Index = function (_React$Component) {
+  _inherits(Index, _React$Component);
 
-  function SignUp() {
-    _classCallCheck(this, SignUp);
+  function Index() {
+    _classCallCheck(this, Index);
 
-    return _possibleConstructorReturn(this, (SignUp.__proto__ || Object.getPrototypeOf(SignUp)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Index.__proto__ || Object.getPrototypeOf(Index)).apply(this, arguments));
   }
 
-  _createClass(SignUp, [{
-    key: "render",
+  _createClass(Index, [{
+    key: 'render',
     value: function render() {
       return _react2.default.createElement(
-        "div",
+        'div',
         null,
         _react2.default.createElement(Nav, null),
-        _react2.default.createElement(Body, null),
-        _react2.default.createElement(Footer, null)
+        _react2.default.createElement(Body, null)
       );
     }
   }]);
 
-  return SignUp;
+  return Index;
 }(_react2.default.Component);
 
-exports.default = SignUp;
+exports.default = Index;
 
 var Nav = function (_React$Component2) {
   _inherits(Nav, _React$Component2);
@@ -50193,51 +50270,54 @@ var Nav = function (_React$Component2) {
   }
 
   _createClass(Nav, [{
-    key: "render",
+    key: 'componentDidMount',
+    value: function componentDidMount() {}
+  }, {
+    key: 'render',
     value: function render() {
       return _react2.default.createElement(
-        "nav",
-        { className: "lime darken-4" },
+        'nav',
+        { className: 'lime darken-4' },
         _react2.default.createElement(
-          "div",
-          { className: "nav-wrapper" },
+          'div',
+          { className: 'nav-wrapper' },
           _react2.default.createElement(
-            "a",
-            { href: "#", id: "brand", className: "brand-logo" },
-            "PostIt"
+            'a',
+            { href: '#', id: 'brand', className: 'brand-logo' },
+            'PostIt'
           ),
           _react2.default.createElement(
-            "a",
-            { href: "#", "data-activates": "mobile-demo", className: "button-collapse" },
+            'a',
+            { href: '#', 'data-activates': 'mobile-demo', className: 'button-collapse' },
             _react2.default.createElement(
-              "i",
-              { className: "material-icons" },
-              "menu"
+              'i',
+              { className: 'material-icons' },
+              'menu'
             )
           ),
           _react2.default.createElement(
-            "ul",
-            { className: "right hide-on-med-and-down" },
+            'ul',
+            { className: 'right hide-on-med-and-down' },
             _react2.default.createElement(
-              "li",
+              'li',
               null,
               _react2.default.createElement(
-                "a",
-                { href: "#" },
-                "About PostIt"
+                'a',
+                { href: '#' },
+                'About PostIt'
               )
             )
           ),
           _react2.default.createElement(
-            "ul",
-            { id: "mobile-demo", className: "side-nav" },
+            'ul',
+            { id: 'mobile-demo', className: 'side-nav' },
             _react2.default.createElement(
-              "li",
+              'li',
               null,
               _react2.default.createElement(
-                "a",
-                { href: "#" },
-                "About PostIt"
+                'a',
+                { href: '#' },
+                'About PostIt'
               )
             )
           )
@@ -50252,163 +50332,121 @@ var Nav = function (_React$Component2) {
 var Body = function (_React$Component3) {
   _inherits(Body, _React$Component3);
 
-  function Body() {
+  function Body(props) {
     _classCallCheck(this, Body);
 
-    return _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).apply(this, arguments));
+    var _this3 = _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).call(this, props));
+
+    _this3.signUp = _this3.signUp.bind(_this3);
+    return _this3;
   }
 
   _createClass(Body, [{
-    key: "render",
+    key: 'signUp',
+    value: function signUp(e) {
+      // Stop default button click action
+
+      var details = {
+        firstName: this.refs['firstName'].value,
+        lastName: this.refs['lastName'].value,
+        phone: this.refs['phone'].value,
+        email: this.refs['email'].value,
+        password: this.refs['password'].value
+      };
+      console.log(details);
+      var formBody = [];
+      for (var property in details) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(details[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
+      }
+      formBody = formBody.join("&");
+      fetch('https://postit-api-victor.herokuapp.com/api/user/signup', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formBody
+      }).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        console.log(data);
+      });
+    }
+  }, {
+    key: 'render',
     value: function render() {
       return _react2.default.createElement(
-        "div",
-        null,
+        'div',
+        { id: 'body' },
         _react2.default.createElement(
-          "div",
-          { className: "fixed-action-btn hide-on-med-and-up" },
+          'div',
+          { id: 'main' },
           _react2.default.createElement(
-            "a",
-            { className: "btn-floating btn-large red", href: "#signinform" },
+            'div',
+            { className: 'row' },
+            _react2.default.createElement('div', { className: 'col s2 m3 l4' }),
             _react2.default.createElement(
-              "i",
-              { className: "large material-icons" },
-              "lock_outline"
+              'div',
+              { className: 'col s8 m6 l4 signup-form' },
+              _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(
+                  'h3',
+                  { className: 'center' },
+                  'Sign Up'
+                )
+              ),
+              _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement('input', { type: 'text', ref: 'firstName', className: 'white-text', name: 'fname', placeholder: 'First Name' })
+              ),
+              _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement('input', { type: 'text', ref: 'lastName', className: 'white-text', name: 'lname', placeholder: 'Last Name' })
+              ),
+              _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement('input', { type: 'text', ref: 'phone', className: 'white-text', name: 'number', placeholder: 'Phone Number' })
+              ),
+              _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement('input', { type: 'text', ref: 'email', className: 'white-text', name: 'email', placeholder: 'Email' })
+              ),
+              _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement('input', { type: 'password', ref: 'password', name: 'password', placeholder: 'Password' })
+              ),
+              _react2.default.createElement(
+                'button',
+                { className: 'btn', onClick: this.signUp },
+                'Sign up'
+              ),
+              _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  'Already have an account? ',
+                  _react2.default.createElement(
+                    'a',
+                    { href: '#' },
+                    'Sign in'
+                  )
+                )
+              )
             )
           )
         ),
-        _react2.default.createElement(
-          "div",
-          null,
-          _react2.default.createElement(
-            "div",
-            { className: "row" },
-            _react2.default.createElement(
-              "div",
-              { className: "col s12 m6 l7 center" },
-              _react2.default.createElement(
-                "h2",
-                { className: "center" },
-                "Why meet when you can PostIt?"
-              ),
-              _react2.default.createElement(
-                "div",
-                { className: "row" },
-                _react2.default.createElement(
-                  "div",
-                  { className: "col s12 m12 l6" },
-                  _react2.default.createElement(
-                    "i",
-                    { className: "large material-icons" },
-                    "people"
-                  ),
-                  _react2.default.createElement(
-                    "h4",
-                    null,
-                    "Create teams of all sizes"
-                  )
-                ),
-                _react2.default.createElement(
-                  "div",
-                  { className: "col s12 m12 l6" },
-                  _react2.default.createElement(
-                    "i",
-                    { className: "large material-icons" },
-                    "perm_scan_wifi"
-                  ),
-                  _react2.default.createElement(
-                    "h4",
-                    null,
-                    "Send broadcast messages to team members"
-                  )
-                ),
-                _react2.default.createElement(
-                  "div",
-                  { className: "col s12 m12 l6" },
-                  _react2.default.createElement(
-                    "i",
-                    { className: "large material-icons" },
-                    "done_all"
-                  ),
-                  _react2.default.createElement(
-                    "h4",
-                    null,
-                    "Get receipt notifications"
-                  )
-                ),
-                _react2.default.createElement(
-                  "div",
-                  { className: "col s12 m12 l6" },
-                  _react2.default.createElement(
-                    "i",
-                    { className: "large material-icons" },
-                    "trending_up"
-                  ),
-                  _react2.default.createElement(
-                    "h4",
-                    null,
-                    "Achieve more in less time"
-                  )
-                )
-              )
-            ),
-            _react2.default.createElement(
-              "div",
-              { id: "signinform", className: "col s12 m6 l5" },
-              _react2.default.createElement(
-                "form",
-                { className: "signin-form" },
-                _react2.default.createElement(
-                  "div",
-                  null,
-                  _react2.default.createElement(
-                    "h3",
-                    { className: "center" },
-                    "Sign In"
-                  )
-                ),
-                _react2.default.createElement(
-                  "div",
-                  null,
-                  _react2.default.createElement("input", { type: "text", name: "email", placeholder: "Email" })
-                ),
-                _react2.default.createElement("input", { type: "text", name: "password", placeholder: "Password" }),
-                _react2.default.createElement("div", null),
-                _react2.default.createElement(
-                  "button",
-                  { className: "btn" },
-                  "Sign in"
-                ),
-                _react2.default.createElement("br", null),
-                _react2.default.createElement("br", null),
-                _react2.default.createElement(
-                  "div",
-                  null,
-                  _react2.default.createElement("input", { id: "signedin", className: "teal-text", type: "checkbox", name: "signedin" }),
-                  _react2.default.createElement(
-                    "label",
-                    { htmlFor: "signedin" },
-                    "Keep me signed in"
-                  )
-                ),
-                _react2.default.createElement(
-                  "div",
-                  null,
-                  _react2.default.createElement(
-                    "p",
-                    null,
-                    "Don't have an account? ",
-                    _react2.default.createElement(
-                      "a",
-                      { href: "#" },
-                      "Sign up"
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
+        _react2.default.createElement(Footer, null)
       );
     }
   }]);
@@ -50426,20 +50464,20 @@ var Footer = function (_React$Component4) {
   }
 
   _createClass(Footer, [{
-    key: "render",
+    key: 'render',
     value: function render() {
       return _react2.default.createElement(
-        "footer",
-        { className: "page-footer lime darken-4" },
+        'footer',
+        { className: 'page-footer lime darken-4' },
         _react2.default.createElement(
-          "div",
-          { className: "container" },
-          "Built by Victor Idongesit"
+          'div',
+          { className: 'container' },
+          'Built by Victor Idongesit'
         ),
         _react2.default.createElement(
-          "div",
-          { className: "footer-copyright" },
-          "    \xA9 Andela, 2017"
+          'div',
+          { className: 'footer-copyright' },
+          '    \xA9 Andela, 2017'
         )
       );
     }

@@ -41,21 +41,29 @@ class Body extends React.Component {
   }
   signIn(e) {
     // Stop default button click action
-    console.log('Just arrived');
-    e.stopPropagation();
-    e.nativeEvent.stopImmediatePropagation();
-    fetch('https://postit-api-victor.herokuapp.com/', {
+    console.log(this.refs['email'].value);
+
+    var details = {
+        email: this.refs['email'].value,
+        password: this.refs['password'].value
+    };
+
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    fetch('https://postit-api-victor.herokuapp.com/api/user/signin', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: JSON.stringify({
-        email: this.refs["email"].value,
-        password: this.refs["password"].value,
-      })
-    }).then(() => {console.log('I made it here')})
-    .catch(() => { console.log('Somthins went wrong')})
+      body: formBody
+    }).then((res) => res.json())
+    .then((data) => { console.log(data)})
   }
   render() {
     return(
