@@ -39,22 +39,58 @@ export default class CreateGroup extends React.Component {
     }).then((res) => res.json())
     .then((data) => cb(data))
   }
+  createGroup(e) {
+    // Stop default button click action
+    console.log(this.refs['email'].value);
+
+    var details = {
+        title: this.refs['password'].value,
+        description: this.refs['description'].value,
+        initialMembers: this.state.selectedMembers
+    };
+
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    fetch('https://postit-api-victor.herokuapp.com/api/group', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: formBody
+    }).then((res) => res.json())
+    .then((data) => { console.log(data)})
+  }
   render() {
     if(!this.state.allUsers) {
       return (
         <div>
-          <Nav/>
-        <div className="preloader-wrapper big active valign-wrapper">
-          <div className="spinner-layer spinner-blue-only">
-            <div className="circle-clipper left">
-              <div className="circle"></div>
-            </div><div className="gap-patch">
-              <div className="circle"></div>
-            </div><div className="circle-clipper right">
-              <div className="circle"></div>
+        <Nav/>
+          <div id="body">
+            <div id="main">
+              <div className="preloader-background">
+                <div className="preloader-wrapper big active valign-wrapper">
+                  <div className="spinner-layer spinner-white-only">
+                    <div className="circle-clipper left">
+                      <div className="circle"></div>
+                    </div>
+                    <div className="gap-patch">
+                      <div className="circle"></div>
+                    </div>
+                    <div className="circle-clipper right">
+                      <div className="circle"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+          <Footer/>
           </div>
-        </div>
         </div>
       )
     }
@@ -62,7 +98,6 @@ export default class CreateGroup extends React.Component {
       <div>
         <Nav/>
         <Body addMember={this.state.addMember} registeredMembers={this.state.allUsers}/>
-        <Footer/>
       </div>
     );
   }
@@ -162,6 +197,7 @@ class Body extends React.Component {
           </div>
         </div>
       </div>
+      <Footer/>
       </div>
     );
   }
