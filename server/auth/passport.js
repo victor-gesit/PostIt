@@ -36,10 +36,13 @@ passport.use('local.signup', new LocalStrategy(
         email: req.body.email,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
+        phone: req.body.phone
       });
       newUser.password = req.body.password;
       newUser.save().then((savedUser) => {
         done(null, savedUser);
+      }).catch((err) => {
+        done(err, false);
       });
     });
   }
