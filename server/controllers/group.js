@@ -40,7 +40,7 @@ export default {
         User.findAll({ where: { email: newMembers } }).then((retrievedMembers) => {
           createdGroup.addUsers(retrievedMembers).then(() => res.send(createdGroup));
         });
-      }).catch(err => res.send({ message: 'Group not created', error: err }));
+      }).catch(err => res.send({ message: 'Group not created', error: err.errors }));
     });
   },
   // Add a user to a group
@@ -52,7 +52,7 @@ export default {
         if (foundUser !== null) {
           foundGroup.addUser(foundUser).then(() => res.send(foundUser));
         } else {
-          return res.send('User not found');
+          return res.send({ message: 'User not found' });
         }
       });
     }).catch((err) => {
@@ -63,7 +63,7 @@ export default {
   postmessage: (req, res) => {
     const groupId = req.params.id;
     const sentBy = req.body.sender;
-    const isComment = req.body.isComment === 'comment';
+    const isComment = req.body.isComment === 'true';
     const messageBody = req.body.message;
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
       Message.build({
@@ -75,16 +75,16 @@ export default {
         foundGroup.addMessage(createdMessage).then(() => {
           res.send(createdMessage);
         });
-      });
-    }).catch((err) => {
-      res.send({ message: 'Group not found', error: err });
-    });
+      }).catch(err =>
+        res.send({ message: 'Message not sent', error: err }));
+    }).catch(err =>
+      res.send({ message: 'Group not found', error: err }));
   },
   // Load messages from a particular group
   getmessages: (req, res) => {
     const groupId = req.params.id;
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
-      foundGroup.getMessages({ attributes: ['sentBy', 'body', 'createdAt'] }).then((groupMessages) => {
+      foundGroup.getMessages({ attributes: ['sentBy', 'body', 'createdAt', 'isComment'] }).then((groupMessages) => {
         res.send(groupMessages);
       });
     }).catch((err) => {
