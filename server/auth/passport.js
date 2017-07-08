@@ -27,10 +27,18 @@ passport.use('local.signup', new LocalStrategy(
   },
   (req, email, password, done) => {
     User.find({ where: {
-      email
+      $or: [
+        { email },
+        { phone: req.body.phone }
+      ]
     } }).then((user) => {
       if (user) {
-        return done(null, false, { message: 'Email already in use' });
+        if (user.email === email) {
+          return done({ details: 'Email already is linked to another account' }, false);
+        }
+        if (user.phone === req.body.phone) {
+          return done({ details: 'Phone number is linked to another account' });
+        }
       }
       const newUser = User.build({
         email: req.body.email,

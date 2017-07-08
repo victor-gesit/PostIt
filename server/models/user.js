@@ -31,7 +31,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     email: {
       type: DataTypes.STRING,
-      unique: true,
+      unique: {
+        args: true,
+        msg: 'Email is already in use'
+      },
       allowNull: false,
       validate: {
         isEmail: {
@@ -53,14 +56,11 @@ module.exports = (sequelize, DataTypes) => {
     phone: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
       validate: {
         len: {
           args: [7, 19],
           msg: 'Phone number length is invalid'
-        },
-        unique: {
-          args: true,
-          msg: 'This phone number is already in use'
         },
         not: {
           args: ['[a-z]', 'i'],
