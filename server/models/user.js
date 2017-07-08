@@ -50,6 +50,20 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
+    phone: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: {
+          args: [7, 19],
+          msg: 'Phone number length is invalid'
+        },
+        not: {
+          args: ['[a-z]', 'i'],
+          msg: 'Phone number can only contain numbers'
+        }
+      }
+    }
   });
   User.associate = (models) => {
     User.belongsToMany(models.Group, {
