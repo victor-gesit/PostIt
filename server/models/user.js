@@ -61,7 +61,7 @@ module.exports = (sequelize, DataTypes) => {
         unique: {
           args: true,
           msg: 'This phone number is already in use'
-        }
+        },
         not: {
           args: ['[a-z]', 'i'],
           msg: 'Phone number can only contain numbers'
