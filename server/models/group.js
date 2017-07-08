@@ -13,17 +13,21 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         len: {
           args: [1, 100],
-          msg: 'Creator name must have more than one characters'
+          msg: 'Creator name must have one or more characters'
         }
       }
     },
     title: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: {
+        args: true,
+        msg: 'A group already exists with this title',
+      },
       validate: {
         len: {
           args: [1, 1000],
-          msg: 'Title of group must have more than one characters'
+          msg: 'Title of group must have one or more characters'
         }
       }
     },
@@ -33,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         len: {
           args: [4, 1000],
-          msg: 'Description of group must have more than four characters'
+          msg: 'Description of group must have four or more characters'
         }
       }
     },
