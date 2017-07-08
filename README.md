@@ -37,18 +37,18 @@ PostIt is a simple application that allows friends and colleagues create groups 
   * `firstName` The first name of the new user
   * `lastName`  The last name of the new user
   * `email`     Email address of the new user
+  *  `phone`  The phone number of the new user
   * `password` A secure password
 
 * POST `/api/user/signin` Use this route to sign in to the application. The following fields are required:
-  * `email`     Email address of the new user
-  * `password` A secure password
+  * `email`     Email address of a registered user
+  * `password` The password for the account
 
 * POST `/api/group` Use this route to create a new group. The following fields are required:
   * `userId` The id of a registered user
   * `title`  The title of the group
   * `description`     A description of the purpose of the group
-    * _Optional Field_
-  * `initialMembers` An email address, or array of email addresses of registered members, to be added to newly created group. `Note`: The creator is automatically added to the group
+  * `initialMembers` (_Optional Field_) An email address, or array of email addresses of registered members, to be added to newly created group. `Note`: The creator is automatically added to the group
 
 * POST `/api/group/<groupId>/user` Use this route to add a user to a pre-existing group
   * `email` The email address of a user registered on the application
