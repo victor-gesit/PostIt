@@ -9,11 +9,23 @@ module.exports = (sequelize, DataTypes) => {
     },
     sentBy: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        len: {
+          args: [1, 100],
+          msg: 'Name of sender must have one or more characters'
+        }
+      }
     },
     body: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        len: {
+          args: [1, 100000],
+          msg: 'Body of message must have one or more characters'
+        }
+      }
     },
     isComment: {
       type: DataTypes.BOOLEAN

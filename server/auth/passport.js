@@ -30,16 +30,19 @@ passport.use('local.signup', new LocalStrategy(
       email
     } }).then((user) => {
       if (user) {
-        return done(null, false, { message: 'Username already in use' });
+        return done(null, false, { message: 'Email already in use' });
       }
       const newUser = User.build({
         email: req.body.email,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
+        phone: req.body.phone
       });
       newUser.password = req.body.password;
       newUser.save().then((savedUser) => {
         done(null, savedUser);
+      }).catch((err) => {
+        done(err, false);
       });
     });
   }

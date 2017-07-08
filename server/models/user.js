@@ -11,21 +11,63 @@ module.exports = (sequelize, DataTypes) => {
     },
     firstName: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        len: {
+          args: [1, 100],
+          msg: 'First name of user must have more than one characters'
+        }
+      }
     },
     lastName: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        len: {
+          args: [1, 100],
+          msg: 'Last name of user must have more than one characters'
+        }
+      }
     },
     email: {
       type: DataTypes.STRING,
       unique: true,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        isEmail: {
+          args: true,
+          msg: 'An invalid email was supplied'
+        }
+      }
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        len: {
+          args: [7, 1000],
+          msg: 'Password must have 8 or more characters'
+        }
+      }
     },
+    phone: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: {
+          args: [7, 19],
+          msg: 'Phone number length is invalid'
+        },
+        unique: {
+          args: true,
+          msg: 'This phone number is already in use'
+        },
+        not: {
+          args: ['[a-z]', 'i'],
+          msg: 'Phone number can only contain numbers'
+        }
+      }
+    }
   });
   User.associate = (models) => {
     User.belongsToMany(models.Group, {

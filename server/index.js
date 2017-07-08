@@ -29,7 +29,7 @@ app.use('/api/user', auth);
 app.use('/api/group', group);
 
 // Random route
-app.get('/*', (req, res) => {
+app.use('/*', (req, res) => {
   res.status(200).send({ message: 'Api up and running' });
 });
 const port = process.env.PORT || 8002;
