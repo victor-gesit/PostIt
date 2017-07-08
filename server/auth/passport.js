@@ -30,7 +30,7 @@ passport.use('local.signup', new LocalStrategy(
       email
     } }).then((user) => {
       if (user) {
-        return done(null, false, { message: 'Username already in use' });
+        return done(null, false, { message: 'Email already in use' });
       }
       const newUser = User.build({
         email: req.body.email,
