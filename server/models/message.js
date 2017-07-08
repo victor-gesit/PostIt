@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         len: {
           args: [1, 100],
-          msg: 'Name of sender must have more than 1 characters'
+          msg: 'Name of sender must have one or more characters'
         }
       }
     },
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         len: {
           args: [1, 100000],
-          msg: 'Body of message must have more than 1 characters'
+          msg: 'Body of message must have one or more characters'
         }
       }
     },
