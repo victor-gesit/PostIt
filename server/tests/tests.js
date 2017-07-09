@@ -227,6 +227,7 @@ describe('PostIt Tests', () => {
     // Delete previous records and populate db with test data
     let groupId;
     const newGroup = fixtures.newGroup;
+    const newGroup2 = fixtures.newGroup2;
     const newGroupWithMultipleMembers = fixtures.newGroupWithMultipleMembers;
     const newGroupWithSingleMember = fixtures.newGroupWithSingleMember;
     beforeEach((done) => {
@@ -242,6 +243,7 @@ describe('PostIt Tests', () => {
         }).then(() => {
           models.User.create(fixtures.newUser).then((createdUser) => {
             newGroup.userId = createdUser.id;
+            newGroup2.userId = createdUser.id;
             newGroupWithMultipleMembers.userId = createdUser.id;
             newGroupWithSingleMember.userId = createdUser.id;
           }).then(() => {
@@ -258,9 +260,10 @@ describe('PostIt Tests', () => {
     it('ensures successfull group creation', (done) => {
       request
         .post('/api/group')
-        .send(fixtures.newGroup)
+        .send(fixtures.newGroup2)
         .expect((res) => {
-          expect(res.body.title).toEqual(fixtures.newGroup.title);
+          console.log(res.body);
+          expect(res.body.title).toEqual(fixtures.newGroup2.title);
         })
        .end((err) => {
          if (err) {
@@ -287,7 +290,7 @@ describe('PostIt Tests', () => {
       request
         .post(`/api/group/${groupId}/user`)
         .send({ email: 'unregistered@email.com' })
-        .expect({})
+        .expect({ message: 'User not found' })
        .end((err) => {
          if (err) {
            return done(err);
@@ -298,9 +301,9 @@ describe('PostIt Tests', () => {
     it('ensures group can be created with no members added initially', (done) => {
       request
         .post('/api/group')
-        .send(fixtures.newGroup)
+        .send(fixtures.newGroup2)
         .expect((res) => {
-          expect(res.body.title).toEqual(fixtures.newGroup.title);
+          expect(res.body.title).toEqual(fixtures.newGroup2.title);
         })
        .end((err) => {
          if (err) {
@@ -458,8 +461,8 @@ describe('PostIt Tests', () => {
       });
     });
     it('ensures Group model is created successfully', (done) => {
-      models.Group.create(newGroup).then((createdGroup) => {
-        expect(createdGroup.createdBy).toEqual('Jane Doe');
+      models.Group.create(fixtures.newGroup2).then((createdGroup) => {
+        expect(createdGroup.createdBy).toEqual('John Doe');
         done();
       });
     });
