@@ -262,7 +262,6 @@ describe('PostIt Tests', () => {
         .post('/api/group')
         .send(fixtures.newGroup2)
         .expect((res) => {
-          console.log(res.body);
           expect(res.body.title).toEqual(fixtures.newGroup2.title);
         })
        .end((err) => {
@@ -432,7 +431,7 @@ describe('PostIt Tests', () => {
   });
   describe('Model tests', () => {
     const newUser = fixtures.newUser;
-    const newGroup = fixtures.newGroup;
+    const newGroup2 = fixtures.newGroup2;
     const newMessage = fixtures.newMessage;
     let groupId;
     beforeEach((done) => {
@@ -461,7 +460,7 @@ describe('PostIt Tests', () => {
       });
     });
     it('ensures Group model is created successfully', (done) => {
-      models.Group.create(fixtures.newGroup2).then((createdGroup) => {
+      models.Group.create(newGroup2).then((createdGroup) => {
         expect(createdGroup.createdBy).toEqual('John Doe');
         done();
       });
