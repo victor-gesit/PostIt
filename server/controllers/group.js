@@ -75,8 +75,7 @@ export default {
         foundGroup.addMessage(createdMessage).then(() => {
           res.send(createdMessage);
         });
-      }).catch(err =>
-        res.send({ message: 'Message not sent', error: err }));
+      });
     }).catch(err =>
       res.send({ message: 'Group not found', error: err }));
   },
