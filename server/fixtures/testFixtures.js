@@ -3,17 +3,20 @@ export default {
     firstName: 'Taiwo',
     lastName: 'Okonkwo',
     email: 'taiwok@yahoo.com',
+    phone: '08031234567',
     password: 'taiwookonkwo'
   },
   newUser2: {
     firstName: 'Sani',
     lastName: 'Adeleke',
+    phone: '07031234567',
     email: 'saniadeleke@gmail.com',
     password: 'saniadeleke'
   },
   newUser3: {
     firstName: 'James',
     lastName: 'Janet',
+    phone: '09031234567',
     email: 'jamesjanet@github.com',
     password: 'jamesjanet'
   },
@@ -22,9 +25,14 @@ export default {
     title: 'A Test Group',
     description: 'This group is created to test the Group model'
   },
+  newGroup2: {
+    createdBy: 'John Doe',
+    title: 'Another test Group',
+    description: 'This group is for sharing random thoughts'
+  },
   newGroupForRoutes: {
-    title: 'A Test Group',
-    description: 'This group is created to test the Group model',
+    title: 'Another Test Group',
+    description: 'This group is created to test the Group model, for the third time',
     userId: null
   },
   newMessage: {
@@ -35,7 +43,7 @@ export default {
   newMessageForRoute: {
     sender: 'John Smith',
     message: 'All team members are to submit their work this afternoon',
-    isComment: 'comment'
+    isComment: 'true'
   },
   registeredUser: {
     email: 'taiwok@yahoo.com',
