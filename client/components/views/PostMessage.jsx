@@ -4,29 +4,34 @@ export default class PostMessage extends React.Component {
   constructor(props) {
     super(props);
     this.getMessages = this.getMessages.bind(this);
+    this.getMembers = this.getMembers.bind(this);
+    this.getFormattedTimeStamp = this.getFormattedTimeStamp.bind(this);
+    this.postMessage = this.postMessage.bind(this);
     this.state = {
         allMessages : null,
+        allMembers: null,
+        emptyMessages: [],
         messages: [{
           isComment: true,
-          sender: "Ade Balogun",
+          sentBy: "Ade Balogun",
           body: "I will not be able to make it to the meeting.",
           info: "Post created 12:06:2017, 11:34am"
         },
         {
           isComment: true,
-          sender: "John Smith",
+          sentBy: "John Smith",
           body: "We will try to make up for your absence. Take care.",
           info: "Post created 12:06:2017, 11:50am"
         },
         {
           isComment: true,
-          sender: "Joy Okafor",
+          sentBy: "Joy Okafor",
           body: "Can we get someone to fill his place?",
           info: "Post created 12:06:2017, 11:55am"
         },
         {
           isComment: false,
-          sender: "John Keneddy",
+          sentBy: "John Keneddy",
           body: "I will add a new member to take his place.",
           info: "Post created 12:06:2017, 12:00pm"
         }],
@@ -38,18 +43,86 @@ export default class PostMessage extends React.Component {
   }
   componentDidMount() {
     this.getMessages((allMessages) => {
+      this.state.allMessages = allMessages;
+      for(let i = 0; i < allMessages.length; i++) {
+        this.getFormattedTimeStamp(allMessages[i].createdAt, (formattedDate) => {
+          this.state.allMessages[i].info = `Post created ${formattedDate}`;
+        });
+      }
       this.setState({allMessages});
     });
+    this.getMembers((allMembers) => {
+      this.setState({allMembers});
+    });
   }
+  /**
+   * 
+   * @param {String} time The default time format
+   * @param {Function} callback A callback that takes the formatted time stamp
+   */
+  getFormattedTimeStamp(timeStamp, callback) {
+    const months = ['January', 'February', 'March', 'April',
+      'May', 'June', 'July', 'August', 'September', 'October',
+      'November', 'December'
+    ]
+    const year = timeStamp.slice(0,4);
+    const monthString = timeStamp.slice(5,7);
+    const month = months[parseInt(monthString) -1];
+    const dayString = timeStamp.slice(8, 10);
+    const day = parseInt(dayString);
+    const hour = timeStamp.slice(11, 13);
+    const minute = timeStamp.slice(14,16);
+    const formattedTime = `${month} ${day}, ${year}, at ${hour}:${minute}`;
+    callback(formattedTime);
+  }
+  // Post a message to a group
+  postMessage(messageBody) {
+    const url = `https://postit-api-victor.herokuapp.com/api/group/542d52a8-45ee-4ea8-bdd1-9baf3b8588ee/message`
+    var details = {
+        sender: 'Client Side',
+        isComment: false,
+        message: messageBody
+    };
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: formBody
+    }).then((res) => res.json())
+    .then((data) => {
+      // Append message info to the message
+      console.log(data);
+      console.log("#*#****************");
+      this.getFormattedTimeStamp(data.createdAt, (formattedDate) => {
+        data.info = `Post created ${formattedDate}`;
+        let previousMessages = this.state.allMessages;
+        previousMessages.push(data);
+        this.setState({ allMessages: previousMessages });
+      });
+    });
+  }
+  // Load all messages from a group
   getMessages(cb) {
-    const url = `https://postit-api-victor.herokuapp.com/api/group/${this.props.groupId}/messages`;
+    const url = `https://postit-api-victor.herokuapp.com/api/group/542d52a8-45ee-4ea8-bdd1-9baf3b8588ee/messages`;
     fetch(url, {
       method: 'GET'
     }).then((res) => res.json())
-    .then((data) => cb(data));
+    .then((data) => {
+      cb(data)
+    });
   }
+  // Load all the members of a group
   getMembers(cb) {
-    const url = `https://postit-api-victor.herokuapp.com/api/group/${this.props.groupId}/members`;
+    const url = `https://postit-api-victor.herokuapp.com/api/group/542d52a8-45ee-4ea8-bdd1-9baf3b8588ee/members`;
     fetch(url, {
       method: 'GET'
     }).then((res) => res.json())
@@ -57,9 +130,10 @@ export default class PostMessage extends React.Component {
   }
   render() {
     if(!this.state.allMessages) {
+      // Run a spinner, until messages are loaded
       return (
         <div>
-        <Nav/>
+        <Nav members= {this.state.members}/>
           <div id="body">
             <div id="main">
               <div className="preloader-background">
@@ -86,7 +160,7 @@ export default class PostMessage extends React.Component {
     return(
       <div>
         <Nav members={this.state.members}/>
-        <Body messages= {this.state.messages} members={this.state.members}/>
+        <Body postMessage= {this.postMessage} messages= {this.state.allMessages} members={this.state.members}/>
       </div>
     );
   }
@@ -99,12 +173,12 @@ class Nav extends React.Component {
       <nav className="lime darken-4">
         <div className="nav-wrapper">
           <a href="#" id="brand" className="brand-logo">PostIt</a>
-          <a href="#" data-activates="mobile-demo" className="button-collapse"><i className="material-icons">menu</i></a>
-          <ul className="right hide-on-med-and-down">
-            <li><a className="waves-effect waves-light btn">About PostIt</a>{/*</li*/}
-            </li><li><a className="waves-effect waves-light btn">Sign out</a>{/*</li*/}
-            </li>
-          </ul>
+            <a href="#" data-activates="mobile-demo" className="button-collapse"><i className="material-icons">menu</i></a>
+              <ul className="right hide-on-med-and-down">
+                <li><a className="waves-effect waves-light btn">About PostIt</a>{/*</li*/}
+                </li><li><a className="waves-effect waves-light btn">Sign out</a>{/*</li*/}
+                </li>
+              </ul>
           <TeamListSideNav members={this.props.members}/>
         </div>
       </nav>
@@ -124,7 +198,7 @@ class Body extends React.Component {
             </div>
             <Messages messages={this.props.messages}/>
             {/* Message input box */}
-            <InputBox/>
+            <InputBox postMessage={this.props.postMessage}/>
           </div>
           {/*Side bar, visible only on large screens*/}
           <TeamListLargeScreen members={this.props.members}/>
@@ -214,14 +288,28 @@ class TeamMemberLargeScreens extends React.Component {
 
 // Messages Component
 class Messages extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      messages: this.props.messages,
+    }
+  };
+
   render(){
+  const noMessages = this.props.messages.length === 0;
     return (
-      <ul className="messages row">
-        {
-          this.props.messages.map((message, index) => 
-            <Message key={index} data={message}/>
-          )
-        }
+      <ul>
+        {noMessages ? (
+          <h3 className="center">No Messages</h3>
+        ) : (
+        <div className="messages row">
+          {
+            this.props.messages.map((message, index) => 
+              <Message key={index} data={message}/>
+            )
+          }
+        </div>
+        )}
       </ul>
     );
   }
@@ -233,7 +321,7 @@ class Message extends React.Component {
     if(this.props.data.isComment) {
       return (
         <li className="message card col s11">
-          <small className="sender-name">{this.props.data.sender}</small>
+          <small className="sender-name">{this.props.data.sentBy}</small>
           <div className="message-body white-text">{this.props.data.body}</div>
           <div className="message-info"><small>{this.props.data.info}</small></div>
         </li>
@@ -241,7 +329,7 @@ class Message extends React.Component {
     } else {
       return (
         <li className="adminmessage card col s11 offset-s1">
-          <small className="sender-name">{this.props.data.sender}</small>
+          <small className="sender-name">{this.props.data.sentBy}</small>
           <div className="message-body white-text">{this.props.data.body}</div>
           <div className="message-info"><small>{this.props.data.info}</small></div>
         </li>
@@ -252,14 +340,22 @@ class Message extends React.Component {
 
 // InputBox Component
 class InputBox extends React.Component {
+  constructor(props) {
+    super(props);
+    this.sendMessage = this.sendMessage.bind(this);
+  }
+  sendMessage(event) {
+    const message = this.refs["messageBody"].value;
+    this.props.postMessage(message);
+  };
   render() {
     return(
       <div className="message-input-box row">
         <div className="col s9">
-          <input className="white-text" type="text" name="mymessage" />
+          <input className="white-text" ref="messageBody" type="text" name="mymessage" />
         </div>
         <div className="col s3">
-          <button className="btn"><i className="material-icons">send</i></button>
+          <button onClick={this.sendMessage} className="btn"><i className="material-icons">send</i></button>
         </div>
       </div>
     );
