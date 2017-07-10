@@ -49701,26 +49701,31 @@ var PostMessage = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (PostMessage.__proto__ || Object.getPrototypeOf(PostMessage)).call(this, props));
 
     _this.getMessages = _this.getMessages.bind(_this);
+    _this.getMembers = _this.getMembers.bind(_this);
+    _this.getFormattedTimeStamp = _this.getFormattedTimeStamp.bind(_this);
+    _this.postMessage = _this.postMessage.bind(_this);
     _this.state = {
       allMessages: null,
+      allMembers: null,
+      emptyMessages: [],
       messages: [{
         isComment: true,
-        sender: "Ade Balogun",
+        sentBy: "Ade Balogun",
         body: "I will not be able to make it to the meeting.",
         info: "Post created 12:06:2017, 11:34am"
       }, {
         isComment: true,
-        sender: "John Smith",
+        sentBy: "John Smith",
         body: "We will try to make up for your absence. Take care.",
         info: "Post created 12:06:2017, 11:50am"
       }, {
         isComment: true,
-        sender: "Joy Okafor",
+        sentBy: "Joy Okafor",
         body: "Can we get someone to fill his place?",
         info: "Post created 12:06:2017, 11:55am"
       }, {
         isComment: false,
-        sender: "John Keneddy",
+        sentBy: "John Keneddy",
         body: "I will add a new member to take his place.",
         info: "Post created 12:06:2017, 12:00pm"
       }],
@@ -49735,25 +49740,104 @@ var PostMessage = function (_React$Component) {
       var _this2 = this;
 
       this.getMessages(function (allMessages) {
+        _this2.state.allMessages = allMessages;
+
+        var _loop = function _loop(i) {
+          _this2.getFormattedTimeStamp(allMessages[i].createdAt, function (formattedDate) {
+            _this2.state.allMessages[i].info = "Post created " + formattedDate;
+          });
+        };
+
+        for (var i = 0; i < allMessages.length; i++) {
+          _loop(i);
+        }
         _this2.setState({ allMessages: allMessages });
       });
+      this.getMembers(function (allMembers) {
+        _this2.setState({ allMembers: allMembers });
+      });
     }
+    /**
+     * 
+     * @param {String} time The default time format
+     * @param {Function} callback A callback that takes the formatted time stamp
+     */
+
+  }, {
+    key: "getFormattedTimeStamp",
+    value: function getFormattedTimeStamp(timeStamp, callback) {
+      var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      var year = timeStamp.slice(0, 4);
+      var monthString = timeStamp.slice(5, 7);
+      var month = months[parseInt(monthString) - 1];
+      var dayString = timeStamp.slice(8, 10);
+      var day = parseInt(dayString);
+      var hour = timeStamp.slice(11, 13);
+      var minute = timeStamp.slice(14, 16);
+      var formattedTime = month + " " + day + ", " + year + ", at " + hour + ":" + minute;
+      callback(formattedTime);
+    }
+    // Post a message to a group
+
+  }, {
+    key: "postMessage",
+    value: function postMessage(messageBody) {
+      var _this3 = this;
+
+      var url = "https://postit-api-victor.herokuapp.com/api/group/542d52a8-45ee-4ea8-bdd1-9baf3b8588ee/message";
+      var details = {
+        sender: 'Client Side',
+        isComment: false,
+        message: messageBody
+      };
+      var formBody = [];
+      for (var property in details) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(details[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
+      }
+      formBody = formBody.join("&");
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formBody
+      }).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        // Append message info to the message
+        console.log(data);
+        console.log("#*#****************");
+        _this3.getFormattedTimeStamp(data.createdAt, function (formattedDate) {
+          data.info = "Post created " + formattedDate;
+          var previousMessages = _this3.state.allMessages;
+          previousMessages.push(data);
+          _this3.setState({ allMessages: previousMessages });
+        });
+      });
+    }
+    // Load all messages from a group
+
   }, {
     key: "getMessages",
     value: function getMessages(cb) {
-      var url = "https://postit-api-victor.herokuapp.com/api/group/" + this.props.groupId + "/messages";
+      var url = "https://postit-api-victor.herokuapp.com/api/group/542d52a8-45ee-4ea8-bdd1-9baf3b8588ee/messages";
       fetch(url, {
         method: 'GET'
       }).then(function (res) {
         return res.json();
       }).then(function (data) {
-        return cb(data);
+        cb(data);
       });
     }
+    // Load all the members of a group
+
   }, {
     key: "getMembers",
     value: function getMembers(cb) {
-      var url = "https://postit-api-victor.herokuapp.com/api/group/" + this.props.groupId + "/members";
+      var url = "https://postit-api-victor.herokuapp.com/api/group/542d52a8-45ee-4ea8-bdd1-9baf3b8588ee/members";
       fetch(url, {
         method: 'GET'
       }).then(function (res) {
@@ -49766,10 +49850,11 @@ var PostMessage = function (_React$Component) {
     key: "render",
     value: function render() {
       if (!this.state.allMessages) {
+        // Run a spinner, until messages are loaded
         return _react2.default.createElement(
           "div",
           null,
-          _react2.default.createElement(Nav, null),
+          _react2.default.createElement(Nav, { members: this.state.members }),
           _react2.default.createElement(
             "div",
             { id: "body" },
@@ -49812,7 +49897,7 @@ var PostMessage = function (_React$Component) {
         "div",
         null,
         _react2.default.createElement(Nav, { members: this.state.members }),
-        _react2.default.createElement(Body, { messages: this.state.messages, members: this.state.members })
+        _react2.default.createElement(Body, { postMessage: this.postMessage, messages: this.state.allMessages, members: this.state.members })
       );
     }
   }]);
@@ -49922,7 +50007,7 @@ var Body = function (_React$Component3) {
               )
             ),
             _react2.default.createElement(Messages, { messages: this.props.messages }),
-            _react2.default.createElement(InputBox, null)
+            _react2.default.createElement(InputBox, { postMessage: this.props.postMessage })
           ),
           _react2.default.createElement(TeamListLargeScreen, { members: this.props.members })
         ),
@@ -50172,21 +50257,35 @@ var TeamMemberLargeScreens = function (_React$Component8) {
 var Messages = function (_React$Component9) {
   _inherits(Messages, _React$Component9);
 
-  function Messages() {
+  function Messages(props) {
     _classCallCheck(this, Messages);
 
-    return _possibleConstructorReturn(this, (Messages.__proto__ || Object.getPrototypeOf(Messages)).apply(this, arguments));
+    var _this11 = _possibleConstructorReturn(this, (Messages.__proto__ || Object.getPrototypeOf(Messages)).call(this, props));
+
+    _this11.state = {
+      messages: _this11.props.messages
+    };
+    return _this11;
   }
 
   _createClass(Messages, [{
     key: "render",
     value: function render() {
+      var noMessages = this.props.messages.length === 0;
       return _react2.default.createElement(
         "ul",
-        { className: "messages row" },
-        this.props.messages.map(function (message, index) {
-          return _react2.default.createElement(Message, { key: index, data: message });
-        })
+        null,
+        noMessages ? _react2.default.createElement(
+          "h3",
+          { className: "center" },
+          "No Messages"
+        ) : _react2.default.createElement(
+          "div",
+          { className: "messages row" },
+          this.props.messages.map(function (message, index) {
+            return _react2.default.createElement(Message, { key: index, data: message });
+          })
+        )
       );
     }
   }]);
@@ -50216,7 +50315,7 @@ var Message = function (_React$Component10) {
           _react2.default.createElement(
             "small",
             { className: "sender-name" },
-            this.props.data.sender
+            this.props.data.sentBy
           ),
           _react2.default.createElement(
             "div",
@@ -50240,7 +50339,7 @@ var Message = function (_React$Component10) {
           _react2.default.createElement(
             "small",
             { className: "sender-name" },
-            this.props.data.sender
+            this.props.data.sentBy
           ),
           _react2.default.createElement(
             "div",
@@ -50270,13 +50369,22 @@ var Message = function (_React$Component10) {
 var InputBox = function (_React$Component11) {
   _inherits(InputBox, _React$Component11);
 
-  function InputBox() {
+  function InputBox(props) {
     _classCallCheck(this, InputBox);
 
-    return _possibleConstructorReturn(this, (InputBox.__proto__ || Object.getPrototypeOf(InputBox)).apply(this, arguments));
+    var _this13 = _possibleConstructorReturn(this, (InputBox.__proto__ || Object.getPrototypeOf(InputBox)).call(this, props));
+
+    _this13.sendMessage = _this13.sendMessage.bind(_this13);
+    return _this13;
   }
 
   _createClass(InputBox, [{
+    key: "sendMessage",
+    value: function sendMessage(event) {
+      var message = this.refs["messageBody"].value;
+      this.props.postMessage(message);
+    }
+  }, {
     key: "render",
     value: function render() {
       return _react2.default.createElement(
@@ -50285,14 +50393,14 @@ var InputBox = function (_React$Component11) {
         _react2.default.createElement(
           "div",
           { className: "col s9" },
-          _react2.default.createElement("input", { className: "white-text", type: "text", name: "mymessage" })
+          _react2.default.createElement("input", { className: "white-text", ref: "messageBody", type: "text", name: "mymessage" })
         ),
         _react2.default.createElement(
           "div",
           { className: "col s3" },
           _react2.default.createElement(
             "button",
-            { className: "btn" },
+            { onClick: this.sendMessage, className: "btn" },
             _react2.default.createElement(
               "i",
               { className: "material-icons" },
