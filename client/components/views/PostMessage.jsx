@@ -11,6 +11,7 @@ export default class PostMessage extends React.Component {
         allMessages : null,
         allMembers: null,
         emptyMessages: [],
+        creatorEmail: "victor4l@yahoo.com",
         messages: [{
           isComment: true,
           sentBy: "Ade Balogun",
@@ -38,9 +39,10 @@ export default class PostMessage extends React.Component {
         members: [ {name: "Ade Balogun", role: "member"},
          {name: "John Smith", role: "member"},
          {name: "Joy Okafor", role: "member"},
-         {name: "John Kennedy", role: "admin"} ]
+         {name: "John Kennedy", role: "creator"} ]
     }
   }
+
   componentDidMount() {
     this.getMessages((allMessages) => {
       this.state.allMessages = allMessages;
@@ -51,7 +53,15 @@ export default class PostMessage extends React.Component {
       }
       this.setState({allMessages});
     });
-    this.getMembers((allMembers) => {
+    this.getMembers((members) => {
+      let allMembers = members;
+      for(let i=0; i< members.length; i++) {
+        allMembers[i].name = `${members[i].firstName} ${members[i].lastName}`
+        if(allMembers[i].email === this.state.creatorEmail){
+          allMembers[i].role = "creator";
+        };
+      }
+      console.log(allMembers);
       this.setState({allMembers});
     });
   }
@@ -75,7 +85,11 @@ export default class PostMessage extends React.Component {
     const formattedTime = `${month} ${day}, ${year}, at ${hour}:${minute}`;
     callback(formattedTime);
   }
-  // Post a message to a group
+  /**
+   * 
+   * @param {String} messageBody The content of the message to be posted
+   * @param {Boolean} isPost A boolean to indicate if the message is a comment or a post
+   */
   postMessage(messageBody, isPost) {
     const url = `https://postit-api-victor.herokuapp.com/api/group/542d52a8-45ee-4ea8-bdd1-9baf3b8588ee/message`
     var details = {
@@ -109,22 +123,22 @@ export default class PostMessage extends React.Component {
     });
   }
   // Load all messages from a group
-  getMessages(cb) {
+  getMessages(callback) {
     const url = `https://postit-api-victor.herokuapp.com/api/group/542d52a8-45ee-4ea8-bdd1-9baf3b8588ee/messages`;
     fetch(url, {
       method: 'GET'
     }).then((res) => res.json())
     .then((data) => {
-      cb(data)
+      callback(data)
     });
   }
   // Load all the members of a group
-  getMembers(cb) {
+  getMembers(callback) {
     const url = `https://postit-api-victor.herokuapp.com/api/group/542d52a8-45ee-4ea8-bdd1-9baf3b8588ee/members`;
     fetch(url, {
       method: 'GET'
     }).then((res) => res.json())
-    .then((data) => cb(data));
+    .then((data) => callback(data));
   }
   render() {
     if(!this.state.allMessages) {
@@ -157,8 +171,8 @@ export default class PostMessage extends React.Component {
     }
     return(
       <div>
-        <Nav members={this.state.members}/>
-        <Body postMessage= {this.postMessage} messages= {this.state.allMessages} members={this.state.members}/>
+        <Nav members={this.state.allMembers}/>
+        <Body postMessage= {this.postMessage} messages= {this.state.allMessages} members={this.state.allMembers}/>
       </div>
     );
   }
@@ -190,7 +204,7 @@ class Body extends React.Component {
     return(
       <div id="body">
         <div id="main" className="row">
-          <div className="col s12 m8 l9 messageboard">
+          <div className="col s12 m8 offset-m1 l9 messageboard">
             <div className="group-info">
               <h5 className="center">Project NexBigThing</h5>
             </div>
@@ -222,6 +236,15 @@ class Footer extends React.Component {
 // Side Nav Component
 class TeamListSideNav extends React.Component {
   render() {
+    if(!this.props.members) {
+      return (
+        <ul id="mobile-demo" className="side-nav">
+          <li><a href="#"><i className="large material-icons teal-text">people_outline</i>Group Members</a></li>
+          <li><div className="divider" /></li>
+          <li><em>Loading...</em></li>
+        </ul>
+      );
+    }
     return (
       <ul id="mobile-demo" className="side-nav">
         <li><a href="#"><i className="large material-icons teal-text">people_outline</i>Group Members</a></li>
@@ -239,6 +262,16 @@ class TeamListSideNav extends React.Component {
 // Team List, Visible on Large Screens
 class TeamListLargeScreen extends React.Component {
   render() {
+    if(!this.props.members) {
+      return (
+        <ul id="mobile-demo" className="side-nav">
+          <li><a href="#"><i className="large material-icons teal-text">people_outline</i>Group Members</a></li>
+          <li><div className="divider" /></li>
+          {/*Show 'Loading', until the members list is updated*/}
+          <li><em>Loading...</em></li>
+        </ul>
+      );
+    }
     return (
       <div id="members-list" className="m4 l3 hide-on-med-and-down">
         <ul className="collection with-header">
@@ -257,7 +290,7 @@ class TeamListLargeScreen extends React.Component {
 // Team Member Component
 class TeamMember extends React.Component {
   render(){
-    if(this.props.data.role === "admin") {
+    if(this.props.data.role === "creator") {
       return (
         <li><a href="#"><i className="material-icons red-text">person</i>{this.props.data.name}</a></li>
       );
@@ -272,13 +305,13 @@ class TeamMember extends React.Component {
 // Team Member Component, for Team List on Large Screens
 class TeamMemberLargeScreens extends React.Component {
   render(){
-    if(this.props.data.role === "admin") {
+    if(this.props.data.role === "creator") {
       return (
-        <li className="collection-item">John Kennedy<a className="secondary-content"><i className="material-icons red-text">person</i></a></li>
+        <li className="collection-item">{this.props.data.name}<a className="secondary-content"><i className="material-icons red-text">person</i></a></li>
       );
     } else {
       return (
-        <li className="collection-item">Ade Balogun<a className="secondary-content"><i className="material-icons">person</i></a></li>
+        <li className="collection-item">{this.props.data.name}<a className="secondary-content"><i className="material-icons">person</i></a></li>
       )
     }
   }
