@@ -48944,6 +48944,7 @@ var CreateGroup = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (CreateGroup.__proto__ || Object.getPrototypeOf(CreateGroup)).call(this, props));
 
     _this.getUsers = _this.getUsers.bind(_this);
+    _this.createGroup = _this.createGroup.bind(_this);
     _this.state = {
       allUsers: null,
       selectedMembers: [],
@@ -48972,7 +48973,6 @@ var CreateGroup = function (_React$Component) {
         for (var i = 0; i < users.length; i++) {
           allUsers[i].name = users[i].firstName + ' ' + users[i].lastName;
         }
-        console.log(allUsers);
         _this2.setState({ allUsers: allUsers });
       });
     }
@@ -48989,14 +48989,14 @@ var CreateGroup = function (_React$Component) {
     }
   }, {
     key: 'createGroup',
-    value: function createGroup(e) {
+    value: function createGroup(title, description) {
       // Stop default button click action
-      console.log(this.refs['email'].value);
 
       var details = {
-        title: this.refs['password'].value,
-        description: this.refs['description'].value,
-        initialMembers: this.state.selectedMembers
+        title: title,
+        description: description,
+        initialMembers: this.state.selectedMembers,
+        userId: "ac74fb7e-bcb9-476e-a336-5378c961b94f"
       };
 
       var formBody = [];
@@ -49069,7 +49069,7 @@ var CreateGroup = function (_React$Component) {
         'div',
         null,
         _react2.default.createElement(Nav, null),
-        _react2.default.createElement(Body, { addMember: this.state.addMember, registeredMembers: this.state.allUsers })
+        _react2.default.createElement(Body, { createGroup: this.createGroup, addMember: this.state.addMember, registeredMembers: this.state.allUsers })
       );
     }
   }]);
@@ -49168,6 +49168,7 @@ var Body = function (_React$Component3) {
 
     var _this4 = _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).call(this, props));
 
+    _this4.createGroup = _this4.createGroup.bind(_this4);
     _this4.state = {
       selectedMembers: _this4.props.selectedMembers,
       switchTab: function switchTab(button, tabName) {
@@ -49189,6 +49190,13 @@ var Body = function (_React$Component3) {
   }
 
   _createClass(Body, [{
+    key: 'createGroup',
+    value: function createGroup(event) {
+      var title = this.refs["title"].value;
+      var description = this.refs["description"].value;
+      this.props.createGroup(title, description);
+    }
+  }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
       this.refs['defaultTab'].click();
@@ -49245,12 +49253,12 @@ var Body = function (_React$Component3) {
                     _react2.default.createElement(
                       'div',
                       null,
-                      _react2.default.createElement('input', { type: 'text', name: 'group-title', placeholder: 'Group Title' })
+                      _react2.default.createElement('input', { type: 'text', ref: 'title', name: 'group-title', placeholder: 'Group Title' })
                     ),
                     _react2.default.createElement(
                       'div',
                       null,
-                      _react2.default.createElement('textarea', { id: 'groupDescription', type: 'text', className: 'materialize-textarea', placeholder: 'Description', name: 'group-desc', defaultValue: "" })
+                      _react2.default.createElement('textarea', { id: 'groupDescription', ref: 'description', type: 'text', className: 'materialize-textarea', placeholder: 'Description', name: 'group-desc', defaultValue: "" })
                     )
                   ),
                   _react2.default.createElement(
@@ -49305,7 +49313,7 @@ var Body = function (_React$Component3) {
                   ),
                   _react2.default.createElement(
                     'button',
-                    { className: 'btn' },
+                    { className: 'btn', onClick: this.createGroup },
                     'Create group'
                   )
                 )
@@ -49701,30 +49709,36 @@ var PostMessage = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (PostMessage.__proto__ || Object.getPrototypeOf(PostMessage)).call(this, props));
 
     _this.getMessages = _this.getMessages.bind(_this);
+    _this.getMembers = _this.getMembers.bind(_this);
+    _this.getFormattedTimeStamp = _this.getFormattedTimeStamp.bind(_this);
+    _this.postMessage = _this.postMessage.bind(_this);
     _this.state = {
       allMessages: null,
+      allMembers: null,
+      emptyMessages: [],
+      creatorEmail: "victor4l@yahoo.com",
       messages: [{
         isComment: true,
-        sender: "Ade Balogun",
+        sentBy: "Ade Balogun",
         body: "I will not be able to make it to the meeting.",
         info: "Post created 12:06:2017, 11:34am"
       }, {
         isComment: true,
-        sender: "John Smith",
+        sentBy: "John Smith",
         body: "We will try to make up for your absence. Take care.",
         info: "Post created 12:06:2017, 11:50am"
       }, {
         isComment: true,
-        sender: "Joy Okafor",
+        sentBy: "Joy Okafor",
         body: "Can we get someone to fill his place?",
         info: "Post created 12:06:2017, 11:55am"
       }, {
         isComment: false,
-        sender: "John Keneddy",
+        sentBy: "John Keneddy",
         body: "I will add a new member to take his place.",
         info: "Post created 12:06:2017, 12:00pm"
       }],
-      members: [{ name: "Ade Balogun", role: "member" }, { name: "John Smith", role: "member" }, { name: "Joy Okafor", role: "member" }, { name: "John Kennedy", role: "admin" }]
+      members: [{ name: "Ade Balogun", role: "member" }, { name: "John Smith", role: "member" }, { name: "Joy Okafor", role: "member" }, { name: "John Kennedy", role: "creator" }]
     };
     return _this;
   }
@@ -49735,41 +49749,131 @@ var PostMessage = function (_React$Component) {
       var _this2 = this;
 
       this.getMessages(function (allMessages) {
+        _this2.state.allMessages = allMessages;
+
+        var _loop = function _loop(i) {
+          _this2.getFormattedTimeStamp(allMessages[i].createdAt, function (formattedDate) {
+            _this2.state.allMessages[i].info = "Post created " + formattedDate;
+          });
+        };
+
+        for (var i = 0; i < allMessages.length; i++) {
+          _loop(i);
+        }
         _this2.setState({ allMessages: allMessages });
       });
-    }
-  }, {
-    key: "getMessages",
-    value: function getMessages(cb) {
-      var url = "https://postit-api-victor.herokuapp.com/api/group/" + this.props.groupId + "/messages";
-      fetch(url, {
-        method: 'GET'
-      }).then(function (res) {
-        return res.json();
-      }).then(function (data) {
-        return cb(data);
+      this.getMembers(function (members) {
+        var allMembers = members;
+        for (var i = 0; i < members.length; i++) {
+          allMembers[i].name = members[i].firstName + " " + members[i].lastName;
+          if (allMembers[i].email === _this2.state.creatorEmail) {
+            allMembers[i].role = "creator";
+          };
+        }
+        console.log(allMembers);
+        _this2.setState({ allMembers: allMembers });
       });
     }
+    /**
+     * 
+     * @param {String} time The default time format
+     * @param {Function} callback A callback that takes the formatted time stamp
+     */
+
   }, {
-    key: "getMembers",
-    value: function getMembers(cb) {
-      var url = "https://postit-api-victor.herokuapp.com/api/group/" + this.props.groupId + "/members";
+    key: "getFormattedTimeStamp",
+    value: function getFormattedTimeStamp(timeStamp, callback) {
+      var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      var year = timeStamp.slice(0, 4);
+      var monthString = timeStamp.slice(5, 7);
+      var month = months[parseInt(monthString) - 1];
+      var dayString = timeStamp.slice(8, 10);
+      var day = parseInt(dayString);
+      var hour = timeStamp.slice(11, 13);
+      var minute = timeStamp.slice(14, 16);
+      var formattedTime = month + " " + day + ", " + year + ", at " + hour + ":" + minute;
+      callback(formattedTime);
+    }
+    /**
+     * 
+     * @param {String} messageBody The content of the message to be posted
+     * @param {Boolean} isPost A boolean to indicate if the message is a comment or a post
+     */
+
+  }, {
+    key: "postMessage",
+    value: function postMessage(messageBody, isPost) {
+      var _this3 = this;
+
+      var url = "https://postit-api-victor.herokuapp.com/api/group/542d52a8-45ee-4ea8-bdd1-9baf3b8588ee/message";
+      var details = {
+        sender: 'Client Side',
+        isComment: !isPost,
+        message: messageBody
+      };
+      var formBody = [];
+      for (var property in details) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(details[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
+      }
+      formBody = formBody.join("&");
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formBody
+      }).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        // Append message info to the message
+        _this3.getFormattedTimeStamp(data.createdAt, function (formattedDate) {
+          data.info = "Post created " + formattedDate;
+          var previousMessages = _this3.state.allMessages;
+          previousMessages.push(data);
+          _this3.setState({ allMessages: previousMessages });
+        });
+      });
+    }
+    // Load all messages from a group
+
+  }, {
+    key: "getMessages",
+    value: function getMessages(callback) {
+      var url = "https://postit-api-victor.herokuapp.com/api/group/542d52a8-45ee-4ea8-bdd1-9baf3b8588ee/messages";
       fetch(url, {
         method: 'GET'
       }).then(function (res) {
         return res.json();
       }).then(function (data) {
-        return cb(data);
+        callback(data);
+      });
+    }
+    // Load all the members of a group
+
+  }, {
+    key: "getMembers",
+    value: function getMembers(callback) {
+      var url = "https://postit-api-victor.herokuapp.com/api/group/542d52a8-45ee-4ea8-bdd1-9baf3b8588ee/members";
+      fetch(url, {
+        method: 'GET'
+      }).then(function (res) {
+        return res.json();
+      }).then(function (data) {
+        return callback(data);
       });
     }
   }, {
     key: "render",
     value: function render() {
       if (!this.state.allMessages) {
+        // Run a spinner, until messages are loaded
         return _react2.default.createElement(
           "div",
           null,
-          _react2.default.createElement(Nav, null),
+          _react2.default.createElement(Nav, { members: this.state.members }),
           _react2.default.createElement(
             "div",
             { id: "body" },
@@ -49811,8 +49915,8 @@ var PostMessage = function (_React$Component) {
       return _react2.default.createElement(
         "div",
         null,
-        _react2.default.createElement(Nav, { members: this.state.members }),
-        _react2.default.createElement(Body, { messages: this.state.messages, members: this.state.members })
+        _react2.default.createElement(Nav, { members: this.state.allMembers }),
+        _react2.default.createElement(Body, { postMessage: this.postMessage, messages: this.state.allMessages, members: this.state.allMembers })
       );
     }
   }]);
@@ -49911,7 +50015,7 @@ var Body = function (_React$Component3) {
           { id: "main", className: "row" },
           _react2.default.createElement(
             "div",
-            { className: "col s12 m8 l9 messageboard" },
+            { className: "col s12 m8 offset-m1 l9 messageboard" },
             _react2.default.createElement(
               "div",
               { className: "group-info" },
@@ -49922,7 +50026,7 @@ var Body = function (_React$Component3) {
               )
             ),
             _react2.default.createElement(Messages, { messages: this.props.messages }),
-            _react2.default.createElement(InputBox, null)
+            _react2.default.createElement(InputBox, { postMessage: this.props.postMessage })
           ),
           _react2.default.createElement(TeamListLargeScreen, { members: this.props.members })
         ),
@@ -49984,6 +50088,40 @@ var TeamListSideNav = function (_React$Component5) {
   _createClass(TeamListSideNav, [{
     key: "render",
     value: function render() {
+      if (!this.props.members) {
+        return _react2.default.createElement(
+          "ul",
+          { id: "mobile-demo", className: "side-nav" },
+          _react2.default.createElement(
+            "li",
+            null,
+            _react2.default.createElement(
+              "a",
+              { href: "#" },
+              _react2.default.createElement(
+                "i",
+                { className: "large material-icons teal-text" },
+                "people_outline"
+              ),
+              "Group Members"
+            )
+          ),
+          _react2.default.createElement(
+            "li",
+            null,
+            _react2.default.createElement("div", { className: "divider" })
+          ),
+          _react2.default.createElement(
+            "li",
+            null,
+            _react2.default.createElement(
+              "em",
+              null,
+              "Loading..."
+            )
+          )
+        );
+      }
       return _react2.default.createElement(
         "ul",
         { id: "mobile-demo", className: "side-nav" },
@@ -50031,6 +50169,40 @@ var TeamListLargeScreen = function (_React$Component6) {
   _createClass(TeamListLargeScreen, [{
     key: "render",
     value: function render() {
+      if (!this.props.members) {
+        return _react2.default.createElement(
+          "ul",
+          { id: "mobile-demo", className: "side-nav" },
+          _react2.default.createElement(
+            "li",
+            null,
+            _react2.default.createElement(
+              "a",
+              { href: "#" },
+              _react2.default.createElement(
+                "i",
+                { className: "large material-icons teal-text" },
+                "people_outline"
+              ),
+              "Group Members"
+            )
+          ),
+          _react2.default.createElement(
+            "li",
+            null,
+            _react2.default.createElement("div", { className: "divider" })
+          ),
+          _react2.default.createElement(
+            "li",
+            null,
+            _react2.default.createElement(
+              "em",
+              null,
+              "Loading..."
+            )
+          )
+        );
+      }
       return _react2.default.createElement(
         "div",
         { id: "members-list", className: "m4 l3 hide-on-med-and-down" },
@@ -50077,7 +50249,7 @@ var TeamMember = function (_React$Component7) {
   _createClass(TeamMember, [{
     key: "render",
     value: function render() {
-      if (this.props.data.role === "admin") {
+      if (this.props.data.role === "creator") {
         return _react2.default.createElement(
           "li",
           null,
@@ -50129,11 +50301,11 @@ var TeamMemberLargeScreens = function (_React$Component8) {
   _createClass(TeamMemberLargeScreens, [{
     key: "render",
     value: function render() {
-      if (this.props.data.role === "admin") {
+      if (this.props.data.role === "creator") {
         return _react2.default.createElement(
           "li",
           { className: "collection-item" },
-          "John Kennedy",
+          this.props.data.name,
           _react2.default.createElement(
             "a",
             { className: "secondary-content" },
@@ -50148,7 +50320,7 @@ var TeamMemberLargeScreens = function (_React$Component8) {
         return _react2.default.createElement(
           "li",
           { className: "collection-item" },
-          "Ade Balogun",
+          this.props.data.name,
           _react2.default.createElement(
             "a",
             { className: "secondary-content" },
@@ -50172,21 +50344,35 @@ var TeamMemberLargeScreens = function (_React$Component8) {
 var Messages = function (_React$Component9) {
   _inherits(Messages, _React$Component9);
 
-  function Messages() {
+  function Messages(props) {
     _classCallCheck(this, Messages);
 
-    return _possibleConstructorReturn(this, (Messages.__proto__ || Object.getPrototypeOf(Messages)).apply(this, arguments));
+    var _this11 = _possibleConstructorReturn(this, (Messages.__proto__ || Object.getPrototypeOf(Messages)).call(this, props));
+
+    _this11.state = {
+      messages: _this11.props.messages
+    };
+    return _this11;
   }
 
   _createClass(Messages, [{
     key: "render",
     value: function render() {
+      var noMessages = this.props.messages.length === 0;
       return _react2.default.createElement(
         "ul",
-        { className: "messages row" },
-        this.props.messages.map(function (message, index) {
-          return _react2.default.createElement(Message, { key: index, data: message });
-        })
+        null,
+        noMessages ? _react2.default.createElement(
+          "h3",
+          { className: "center" },
+          "No Messages"
+        ) : _react2.default.createElement(
+          "div",
+          { className: "messages row" },
+          this.props.messages.map(function (message, index) {
+            return _react2.default.createElement(Message, { key: index, data: message });
+          })
+        )
       );
     }
   }]);
@@ -50216,7 +50402,7 @@ var Message = function (_React$Component10) {
           _react2.default.createElement(
             "small",
             { className: "sender-name" },
-            this.props.data.sender
+            this.props.data.sentBy
           ),
           _react2.default.createElement(
             "div",
@@ -50240,7 +50426,7 @@ var Message = function (_React$Component10) {
           _react2.default.createElement(
             "small",
             { className: "sender-name" },
-            this.props.data.sender
+            this.props.data.sentBy
           ),
           _react2.default.createElement(
             "div",
@@ -50270,13 +50456,25 @@ var Message = function (_React$Component10) {
 var InputBox = function (_React$Component11) {
   _inherits(InputBox, _React$Component11);
 
-  function InputBox() {
+  function InputBox(props) {
     _classCallCheck(this, InputBox);
 
-    return _possibleConstructorReturn(this, (InputBox.__proto__ || Object.getPrototypeOf(InputBox)).apply(this, arguments));
+    var _this13 = _possibleConstructorReturn(this, (InputBox.__proto__ || Object.getPrototypeOf(InputBox)).call(this, props));
+
+    _this13.sendMessage = _this13.sendMessage.bind(_this13);
+    return _this13;
   }
 
   _createClass(InputBox, [{
+    key: "sendMessage",
+    value: function sendMessage(event) {
+      var message = this.refs["messageBody"].value;
+      var isPost = this.refs["checked"].checked;
+      this.props.postMessage(message, isPost);
+      // Clear input box
+      this.refs["messageBody"].value = "";
+    }
+  }, {
     key: "render",
     value: function render() {
       return _react2.default.createElement(
@@ -50284,15 +50482,25 @@ var InputBox = function (_React$Component11) {
         { className: "message-input-box row" },
         _react2.default.createElement(
           "div",
-          { className: "col s9" },
-          _react2.default.createElement("input", { className: "white-text", type: "text", name: "mymessage" })
+          { className: "col s8" },
+          _react2.default.createElement("input", { className: "white-text", ref: "messageBody", type: "text", name: "mymessage" })
         ),
         _react2.default.createElement(
           "div",
-          { className: "col s3" },
+          { className: "col s2 switch" },
+          _react2.default.createElement(
+            "label",
+            null,
+            _react2.default.createElement("input", { ref: "checked", type: "checkbox" }),
+            _react2.default.createElement("span", { className: "lever" })
+          )
+        ),
+        _react2.default.createElement(
+          "div",
+          { className: "col s2" },
           _react2.default.createElement(
             "button",
-            { className: "btn" },
+            { onClick: this.sendMessage, className: "btn" },
             _react2.default.createElement(
               "i",
               { className: "material-icons" },

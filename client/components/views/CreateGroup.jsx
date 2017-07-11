@@ -7,6 +7,7 @@ export default class CreateGroup extends React.Component {
   constructor(props) {
     super(props);
     this.getUsers = this.getUsers.bind(this);
+    this.createGroup = this.createGroup.bind(this);
     this.state = {
       allUsers: null,
       selectedMembers: [],
@@ -29,7 +30,6 @@ export default class CreateGroup extends React.Component {
       for(let i=0; i< users.length; i++) {
         allUsers[i].name = `${users[i].firstName} ${users[i].lastName}`
       }
-      console.log(allUsers);
       this.setState({allUsers});
     });
   }
@@ -39,14 +39,14 @@ export default class CreateGroup extends React.Component {
     }).then((res) => res.json())
     .then((data) => cb(data))
   }
-  createGroup(e) {
+  createGroup(title, description) {
     // Stop default button click action
-    console.log(this.refs['email'].value);
 
     var details = {
-        title: this.refs['password'].value,
-        description: this.refs['description'].value,
-        initialMembers: this.state.selectedMembers
+        title: title,
+        description: description,
+        initialMembers: this.state.selectedMembers,
+        userId: "ac74fb7e-bcb9-476e-a336-5378c961b94f"
     };
 
     var formBody = [];
@@ -97,7 +97,7 @@ export default class CreateGroup extends React.Component {
     return(
       <div>
         <Nav/>
-        <Body addMember={this.state.addMember} registeredMembers={this.state.allUsers}/>
+        <Body createGroup={this.createGroup} addMember={this.state.addMember} registeredMembers={this.state.allUsers}/>
       </div>
     );
   }
@@ -128,6 +128,7 @@ class Nav extends React.Component {
 class Body extends React.Component {
   constructor(props) {
     super(props);
+    this.createGroup = this.createGroup.bind(this);
     this.state = {
       selectedMembers : this.props.selectedMembers,
       switchTab: (button, tabName) => {
@@ -146,9 +147,13 @@ class Body extends React.Component {
 
     }
   }
+  createGroup(event) {
+    const title = this.refs["title"].value;
+    const description = this.refs["description"].value;
+    this.props.createGroup(title,description);
+  }
   componentDidMount() {
     this.refs['defaultTab'].click();
-
   }
   render() {
     return(
@@ -165,10 +170,10 @@ class Body extends React.Component {
                 <h4 className="center">Enter group details</h4>
                 <form>
                   <div>
-                    <input type="text" name="group-title" placeholder="Group Title" />
+                    <input type="text" ref="title" name="group-title" placeholder="Group Title" />
                   </div>
                   <div>
-                    <textarea id="groupDescription" type="text" className="materialize-textarea" placeholder="Description" name="group-desc" defaultValue={""} />
+                    <textarea id="groupDescription" ref="description" type="text" className="materialize-textarea" placeholder="Description" name="group-desc" defaultValue={""} />
                   </div>
                 </form>
                 <button className="btn" onClick={() => this.state.switchTab("add-members", 'members')}>Next &gt;&gt;</button>
@@ -191,7 +196,7 @@ class Body extends React.Component {
               </div>
               <div>
                 <button className="btn" onClick={() => this.state.switchTab("defaultTab", 'info')}>&lt;&lt; Group info</button>
-                <button className="btn">Create group</button>
+                <button className="btn" onClick={this.createGroup}>Create group</button>
               </div>
             </div>
           </div>
