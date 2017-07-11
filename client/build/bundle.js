@@ -57,7 +57,7 @@
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "./";
+/******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 100);
@@ -24729,23 +24729,23 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Routes
 // Custom styling
 $(document).ready(function () {
-    $('.button-collapse').sideNav();
+  $('.button-collapse').sideNav();
 });
 // Styling
 
 
 _reactDom2.default.render(_react2.default.createElement(
-    _reactRouterDom.BrowserRouter,
+  _reactRouterDom.BrowserRouter,
+  null,
+  _react2.default.createElement(
+    _reactRouterDom.Switch,
     null,
-    _react2.default.createElement(
-        _reactRouterDom.Switch,
-        null,
-        _react2.default.createElement(_reactRouter.Route, { path: '/', component: _PostMessage2.default }),
-        _react2.default.createElement(_reactRouter.Route, { path: 'signup', component: _SignUp2.default }),
-        _react2.default.createElement(_reactRouter.Route, { path: 'creategroup', component: _SignUp2.default }),
-        _react2.default.createElement(_reactRouter.Route, { path: 'messageboard', component: _MessageBoard2.default }),
-        _react2.default.createElement(_reactRouter.Route, { path: 'postmessage', component: _PostMessage2.default })
-    )
+    _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _Index2.default }),
+    _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/signup', component: _SignUp2.default }),
+    _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/creategroup', component: _CreateGroup2.default }),
+    _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/messageboard', component: _MessageBoard2.default }),
+    _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/postmessage', component: _PostMessage2.default })
+  )
 ), document.getElementById('app'));
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)))
 
@@ -50482,11 +50482,6 @@ var InputBox = function (_React$Component11) {
         { className: "message-input-box row" },
         _react2.default.createElement(
           "div",
-          { className: "col s8" },
-          _react2.default.createElement("input", { className: "white-text", ref: "messageBody", type: "text", name: "mymessage" })
-        ),
-        _react2.default.createElement(
-          "div",
           { className: "col s2 switch" },
           _react2.default.createElement(
             "label",
@@ -50494,6 +50489,11 @@ var InputBox = function (_React$Component11) {
             _react2.default.createElement("input", { ref: "checked", type: "checkbox" }),
             _react2.default.createElement("span", { className: "lever" })
           )
+        ),
+        _react2.default.createElement(
+          "div",
+          { className: "col s8" },
+          _react2.default.createElement("input", { className: "white-text", ref: "messageBody", type: "text", name: "mymessage" })
         ),
         _react2.default.createElement(
           "div",
