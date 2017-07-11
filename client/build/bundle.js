@@ -49781,13 +49781,13 @@ var PostMessage = function (_React$Component) {
 
   }, {
     key: "postMessage",
-    value: function postMessage(messageBody) {
+    value: function postMessage(messageBody, isPost) {
       var _this3 = this;
 
       var url = "https://postit-api-victor.herokuapp.com/api/group/542d52a8-45ee-4ea8-bdd1-9baf3b8588ee/message";
       var details = {
         sender: 'Client Side',
-        isComment: false,
+        isComment: !isPost,
         message: messageBody
       };
       var formBody = [];
@@ -49808,8 +49808,6 @@ var PostMessage = function (_React$Component) {
         return res.json();
       }).then(function (data) {
         // Append message info to the message
-        console.log(data);
-        console.log("#*#****************");
         _this3.getFormattedTimeStamp(data.createdAt, function (formattedDate) {
           data.info = "Post created " + formattedDate;
           var previousMessages = _this3.state.allMessages;
@@ -50382,7 +50380,10 @@ var InputBox = function (_React$Component11) {
     key: "sendMessage",
     value: function sendMessage(event) {
       var message = this.refs["messageBody"].value;
-      this.props.postMessage(message);
+      var isPost = this.refs["checked"].checked;
+      this.props.postMessage(message, isPost);
+      // Clear input box
+      this.refs["messageBody"].value = "";
     }
   }, {
     key: "render",
@@ -50392,12 +50393,22 @@ var InputBox = function (_React$Component11) {
         { className: "message-input-box row" },
         _react2.default.createElement(
           "div",
-          { className: "col s9" },
+          { className: "col s8" },
           _react2.default.createElement("input", { className: "white-text", ref: "messageBody", type: "text", name: "mymessage" })
         ),
         _react2.default.createElement(
           "div",
-          { className: "col s3" },
+          { className: "col s2 switch" },
+          _react2.default.createElement(
+            "label",
+            null,
+            _react2.default.createElement("input", { ref: "checked", type: "checkbox" }),
+            _react2.default.createElement("span", { className: "lever" })
+          )
+        ),
+        _react2.default.createElement(
+          "div",
+          { className: "col s2" },
           _react2.default.createElement(
             "button",
             { onClick: this.sendMessage, className: "btn" },
