@@ -23,7 +23,7 @@ $(document).ready(() => {
 
 ReactDOM.render(<Router>
     <Switch>
-        <Route path='/' component={PostMessage}/>
+        <Route path='/' component={CreateGroup}/>
         <Route path='signup' component={SignUp}/>
         <Route path='creategroup' component={SignUp}/>
         <Route path='messageboard' component={MessageBoard}/>
