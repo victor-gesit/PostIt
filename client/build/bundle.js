@@ -24740,7 +24740,7 @@ _reactDom2.default.render(_react2.default.createElement(
     _react2.default.createElement(
         _reactRouterDom.Switch,
         null,
-        _react2.default.createElement(_reactRouter.Route, { path: '/', component: _PostMessage2.default }),
+        _react2.default.createElement(_reactRouter.Route, { path: '/', component: _CreateGroup2.default }),
         _react2.default.createElement(_reactRouter.Route, { path: 'signup', component: _SignUp2.default }),
         _react2.default.createElement(_reactRouter.Route, { path: 'creategroup', component: _SignUp2.default }),
         _react2.default.createElement(_reactRouter.Route, { path: 'messageboard', component: _MessageBoard2.default }),
@@ -48944,6 +48944,7 @@ var CreateGroup = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (CreateGroup.__proto__ || Object.getPrototypeOf(CreateGroup)).call(this, props));
 
     _this.getUsers = _this.getUsers.bind(_this);
+    _this.createGroup = _this.createGroup.bind(_this);
     _this.state = {
       allUsers: null,
       selectedMembers: [],
@@ -48972,7 +48973,6 @@ var CreateGroup = function (_React$Component) {
         for (var i = 0; i < users.length; i++) {
           allUsers[i].name = users[i].firstName + ' ' + users[i].lastName;
         }
-        console.log(allUsers);
         _this2.setState({ allUsers: allUsers });
       });
     }
@@ -48989,14 +48989,14 @@ var CreateGroup = function (_React$Component) {
     }
   }, {
     key: 'createGroup',
-    value: function createGroup(e) {
+    value: function createGroup(title, description) {
       // Stop default button click action
-      console.log(this.refs['email'].value);
 
       var details = {
-        title: this.refs['password'].value,
-        description: this.refs['description'].value,
-        initialMembers: this.state.selectedMembers
+        title: title,
+        description: description,
+        initialMembers: this.state.selectedMembers,
+        userId: "ac74fb7e-bcb9-476e-a336-5378c961b94f"
       };
 
       var formBody = [];
@@ -49069,7 +49069,7 @@ var CreateGroup = function (_React$Component) {
         'div',
         null,
         _react2.default.createElement(Nav, null),
-        _react2.default.createElement(Body, { addMember: this.state.addMember, registeredMembers: this.state.allUsers })
+        _react2.default.createElement(Body, { createGroup: this.createGroup, addMember: this.state.addMember, registeredMembers: this.state.allUsers })
       );
     }
   }]);
@@ -49168,6 +49168,7 @@ var Body = function (_React$Component3) {
 
     var _this4 = _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).call(this, props));
 
+    _this4.createGroup = _this4.createGroup.bind(_this4);
     _this4.state = {
       selectedMembers: _this4.props.selectedMembers,
       switchTab: function switchTab(button, tabName) {
@@ -49189,6 +49190,13 @@ var Body = function (_React$Component3) {
   }
 
   _createClass(Body, [{
+    key: 'createGroup',
+    value: function createGroup(event) {
+      var title = this.refs["title"].value;
+      var description = this.refs["description"].value;
+      this.props.createGroup(title, description);
+    }
+  }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
       this.refs['defaultTab'].click();
@@ -49245,12 +49253,12 @@ var Body = function (_React$Component3) {
                     _react2.default.createElement(
                       'div',
                       null,
-                      _react2.default.createElement('input', { type: 'text', name: 'group-title', placeholder: 'Group Title' })
+                      _react2.default.createElement('input', { type: 'text', ref: 'title', name: 'group-title', placeholder: 'Group Title' })
                     ),
                     _react2.default.createElement(
                       'div',
                       null,
-                      _react2.default.createElement('textarea', { id: 'groupDescription', type: 'text', className: 'materialize-textarea', placeholder: 'Description', name: 'group-desc', defaultValue: "" })
+                      _react2.default.createElement('textarea', { id: 'groupDescription', ref: 'description', type: 'text', className: 'materialize-textarea', placeholder: 'Description', name: 'group-desc', defaultValue: "" })
                     )
                   ),
                   _react2.default.createElement(
@@ -49305,7 +49313,7 @@ var Body = function (_React$Component3) {
                   ),
                   _react2.default.createElement(
                     'button',
-                    { className: 'btn' },
+                    { className: 'btn', onClick: this.createGroup },
                     'Create group'
                   )
                 )
