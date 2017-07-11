@@ -31,6 +31,10 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
+    creatorEmail: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     description: {
       type: DataTypes.TEXT,
       allowNull: false,
