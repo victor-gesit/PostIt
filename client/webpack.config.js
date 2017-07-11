@@ -6,12 +6,12 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, './build'),
     filename: './bundle.js',
-    publicPath: './'
   },
   watch: true,
   devtool: 'source-map',
   devServer: {
-    contentBase: './'
+    contentBase: './',
+    historyApiFallback: true
   },
   plugins: [
     new webpack.ProvidePlugin({
