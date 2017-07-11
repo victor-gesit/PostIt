@@ -76,11 +76,11 @@ export default class PostMessage extends React.Component {
     callback(formattedTime);
   }
   // Post a message to a group
-  postMessage(messageBody) {
+  postMessage(messageBody, isPost) {
     const url = `https://postit-api-victor.herokuapp.com/api/group/542d52a8-45ee-4ea8-bdd1-9baf3b8588ee/message`
     var details = {
         sender: 'Client Side',
-        isComment: false,
+        isComment: !isPost,
         message: messageBody
     };
     var formBody = [];
@@ -100,8 +100,6 @@ export default class PostMessage extends React.Component {
     }).then((res) => res.json())
     .then((data) => {
       // Append message info to the message
-      console.log(data);
-      console.log("#*#****************");
       this.getFormattedTimeStamp(data.createdAt, (formattedDate) => {
         data.info = `Post created ${formattedDate}`;
         let previousMessages = this.state.allMessages;
@@ -346,15 +344,21 @@ class InputBox extends React.Component {
   }
   sendMessage(event) {
     const message = this.refs["messageBody"].value;
-    this.props.postMessage(message);
+    const isPost = this.refs["checked"].checked;
+    this.props.postMessage(message, isPost);
+    // Clear input box
+    this.refs["messageBody"].value="";
   };
   render() {
     return(
       <div className="message-input-box row">
-        <div className="col s9">
+        <div className="col s8">
           <input className="white-text" ref="messageBody" type="text" name="mymessage" />
         </div>
-        <div className="col s3">
+        <div className="col s2 switch">
+          <label><input ref="checked"  type="checkbox"/><span  className="lever"></span></label>
+        </div>
+        <div className="col s2">
           <button onClick={this.sendMessage} className="btn"><i className="material-icons">send</i></button>
         </div>
       </div>
