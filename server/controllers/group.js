@@ -26,6 +26,7 @@ export default {
         createdBy: nameOfCreator,
         title: req.body.title,
         description: req.body.description,
+        creatorEmail: creator.email
       }).save().then((createdGroup) => {
         newMembers.push(creator.email);
         // Add new members if specified
