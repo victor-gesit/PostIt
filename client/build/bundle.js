@@ -24740,7 +24740,7 @@ _reactDom2.default.render(_react2.default.createElement(
     _react2.default.createElement(
         _reactRouterDom.Switch,
         null,
-        _react2.default.createElement(_reactRouter.Route, { path: '/', component: _CreateGroup2.default }),
+        _react2.default.createElement(_reactRouter.Route, { path: '/', component: _PostMessage2.default }),
         _react2.default.createElement(_reactRouter.Route, { path: 'signup', component: _SignUp2.default }),
         _react2.default.createElement(_reactRouter.Route, { path: 'creategroup', component: _SignUp2.default }),
         _react2.default.createElement(_reactRouter.Route, { path: 'messageboard', component: _MessageBoard2.default }),
@@ -49716,6 +49716,7 @@ var PostMessage = function (_React$Component) {
       allMessages: null,
       allMembers: null,
       emptyMessages: [],
+      creatorEmail: "victor4l@yahoo.com",
       messages: [{
         isComment: true,
         sentBy: "Ade Balogun",
@@ -49737,7 +49738,7 @@ var PostMessage = function (_React$Component) {
         body: "I will add a new member to take his place.",
         info: "Post created 12:06:2017, 12:00pm"
       }],
-      members: [{ name: "Ade Balogun", role: "member" }, { name: "John Smith", role: "member" }, { name: "Joy Okafor", role: "member" }, { name: "John Kennedy", role: "admin" }]
+      members: [{ name: "Ade Balogun", role: "member" }, { name: "John Smith", role: "member" }, { name: "Joy Okafor", role: "member" }, { name: "John Kennedy", role: "creator" }]
     };
     return _this;
   }
@@ -49761,7 +49762,15 @@ var PostMessage = function (_React$Component) {
         }
         _this2.setState({ allMessages: allMessages });
       });
-      this.getMembers(function (allMembers) {
+      this.getMembers(function (members) {
+        var allMembers = members;
+        for (var i = 0; i < members.length; i++) {
+          allMembers[i].name = members[i].firstName + " " + members[i].lastName;
+          if (allMembers[i].email === _this2.state.creatorEmail) {
+            allMembers[i].role = "creator";
+          };
+        }
+        console.log(allMembers);
         _this2.setState({ allMembers: allMembers });
       });
     }
@@ -49785,7 +49794,11 @@ var PostMessage = function (_React$Component) {
       var formattedTime = month + " " + day + ", " + year + ", at " + hour + ":" + minute;
       callback(formattedTime);
     }
-    // Post a message to a group
+    /**
+     * 
+     * @param {String} messageBody The content of the message to be posted
+     * @param {Boolean} isPost A boolean to indicate if the message is a comment or a post
+     */
 
   }, {
     key: "postMessage",
@@ -49828,28 +49841,28 @@ var PostMessage = function (_React$Component) {
 
   }, {
     key: "getMessages",
-    value: function getMessages(cb) {
+    value: function getMessages(callback) {
       var url = "https://postit-api-victor.herokuapp.com/api/group/542d52a8-45ee-4ea8-bdd1-9baf3b8588ee/messages";
       fetch(url, {
         method: 'GET'
       }).then(function (res) {
         return res.json();
       }).then(function (data) {
-        cb(data);
+        callback(data);
       });
     }
     // Load all the members of a group
 
   }, {
     key: "getMembers",
-    value: function getMembers(cb) {
+    value: function getMembers(callback) {
       var url = "https://postit-api-victor.herokuapp.com/api/group/542d52a8-45ee-4ea8-bdd1-9baf3b8588ee/members";
       fetch(url, {
         method: 'GET'
       }).then(function (res) {
         return res.json();
       }).then(function (data) {
-        return cb(data);
+        return callback(data);
       });
     }
   }, {
@@ -49902,8 +49915,8 @@ var PostMessage = function (_React$Component) {
       return _react2.default.createElement(
         "div",
         null,
-        _react2.default.createElement(Nav, { members: this.state.members }),
-        _react2.default.createElement(Body, { postMessage: this.postMessage, messages: this.state.allMessages, members: this.state.members })
+        _react2.default.createElement(Nav, { members: this.state.allMembers }),
+        _react2.default.createElement(Body, { postMessage: this.postMessage, messages: this.state.allMessages, members: this.state.allMembers })
       );
     }
   }]);
@@ -50002,7 +50015,7 @@ var Body = function (_React$Component3) {
           { id: "main", className: "row" },
           _react2.default.createElement(
             "div",
-            { className: "col s12 m8 l9 messageboard" },
+            { className: "col s12 m8 offset-m1 l9 messageboard" },
             _react2.default.createElement(
               "div",
               { className: "group-info" },
@@ -50075,6 +50088,40 @@ var TeamListSideNav = function (_React$Component5) {
   _createClass(TeamListSideNav, [{
     key: "render",
     value: function render() {
+      if (!this.props.members) {
+        return _react2.default.createElement(
+          "ul",
+          { id: "mobile-demo", className: "side-nav" },
+          _react2.default.createElement(
+            "li",
+            null,
+            _react2.default.createElement(
+              "a",
+              { href: "#" },
+              _react2.default.createElement(
+                "i",
+                { className: "large material-icons teal-text" },
+                "people_outline"
+              ),
+              "Group Members"
+            )
+          ),
+          _react2.default.createElement(
+            "li",
+            null,
+            _react2.default.createElement("div", { className: "divider" })
+          ),
+          _react2.default.createElement(
+            "li",
+            null,
+            _react2.default.createElement(
+              "em",
+              null,
+              "Loading..."
+            )
+          )
+        );
+      }
       return _react2.default.createElement(
         "ul",
         { id: "mobile-demo", className: "side-nav" },
@@ -50122,6 +50169,40 @@ var TeamListLargeScreen = function (_React$Component6) {
   _createClass(TeamListLargeScreen, [{
     key: "render",
     value: function render() {
+      if (!this.props.members) {
+        return _react2.default.createElement(
+          "ul",
+          { id: "mobile-demo", className: "side-nav" },
+          _react2.default.createElement(
+            "li",
+            null,
+            _react2.default.createElement(
+              "a",
+              { href: "#" },
+              _react2.default.createElement(
+                "i",
+                { className: "large material-icons teal-text" },
+                "people_outline"
+              ),
+              "Group Members"
+            )
+          ),
+          _react2.default.createElement(
+            "li",
+            null,
+            _react2.default.createElement("div", { className: "divider" })
+          ),
+          _react2.default.createElement(
+            "li",
+            null,
+            _react2.default.createElement(
+              "em",
+              null,
+              "Loading..."
+            )
+          )
+        );
+      }
       return _react2.default.createElement(
         "div",
         { id: "members-list", className: "m4 l3 hide-on-med-and-down" },
@@ -50168,7 +50249,7 @@ var TeamMember = function (_React$Component7) {
   _createClass(TeamMember, [{
     key: "render",
     value: function render() {
-      if (this.props.data.role === "admin") {
+      if (this.props.data.role === "creator") {
         return _react2.default.createElement(
           "li",
           null,
@@ -50220,11 +50301,11 @@ var TeamMemberLargeScreens = function (_React$Component8) {
   _createClass(TeamMemberLargeScreens, [{
     key: "render",
     value: function render() {
-      if (this.props.data.role === "admin") {
+      if (this.props.data.role === "creator") {
         return _react2.default.createElement(
           "li",
           { className: "collection-item" },
-          "John Kennedy",
+          this.props.data.name,
           _react2.default.createElement(
             "a",
             { className: "secondary-content" },
@@ -50239,7 +50320,7 @@ var TeamMemberLargeScreens = function (_React$Component8) {
         return _react2.default.createElement(
           "li",
           { className: "collection-item" },
-          "Ade Balogun",
+          this.props.data.name,
           _react2.default.createElement(
             "a",
             { className: "secondary-content" },
