@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Switch } from 'react-router-dom';
-import { IndexRoute, Route } from 'react-router';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { IndexRoute } from 'react-router';
 // Styling
 import 'materialize-css/bin/materialize.css';
 import 'jquery/dist/jquery';
@@ -21,14 +21,15 @@ $(document).ready(() => {
   $('.button-collapse').sideNav();
 }); 
 
-ReactDOM.render(<Router>
-    <Switch>
-        <Route path='/' component={PostMessage}/>
-        <Route path='signup' component={SignUp}/>
-        <Route path='creategroup' component={SignUp}/>
-        <Route path='messageboard' component={MessageBoard}/>
-        <Route path='postmessage' component={PostMessage}/>
-    </Switch>
-  </Router>, document.getElementById('app'));
+ReactDOM.render(
+    <BrowserRouter>
+      <Switch>
+        <Route exact path='/' component={Home}/>
+        <Route exact path='/signup' component={SignUp}/>
+        <Route exact path='/creategroup' component={CreateGroup}/>
+        <Route exact path='/messageboard' component={MessageBoard}/>
+        <Route exact path='/postmessage' component={PostMessage}/>
+      </Switch>
+    </BrowserRouter>, document.getElementById('app'));
 
 
