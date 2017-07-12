@@ -385,11 +385,11 @@ class InputBox extends React.Component {
   render() {
     return(
       <div className="message-input-box row">
-        <div className="col s8">
-          <input className="white-text" ref="messageBody" type="text" name="mymessage" />
-        </div>
         <div className="col s2 switch">
           <label><input ref="checked"  type="checkbox"/><span  className="lever"></span></label>
+        </div>
+        <div className="col s8">
+          <input className="white-text" ref="messageBody" type="text" name="mymessage" />
         </div>
         <div className="col s2">
           <button onClick={this.sendMessage} className="btn"><i className="material-icons">send</i></button>

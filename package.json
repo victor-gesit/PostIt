@@ -40,7 +40,8 @@
     "raw-loader": "^0.5.1",
     "sass-loader": "^6.0.5",
     "style-loader": "^0.18.2",
-    "webpack": "^2.6.1"
+    "webpack": "^2.6.1",
+    "webpack-dev-server": "^2.5.1"
   },
   "dependencies": {
     "babel-register": "^6.24.1",
