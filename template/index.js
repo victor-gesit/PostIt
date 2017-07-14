@@ -1,5 +1,6 @@
-import 'materialize-css/bin/materialize.css';
+
 import 'jquery/dist/jquery';
+import 'materialize-css/bin/materialize.css';
 import './scss/style.scss';
 import './js/creategroup';
 

@@ -36,8 +36,7 @@ div.tab button.active {
 }
 
 body {
-    margin-top: 20px;
-	background-image: url("../images/wood1.jpg");
+	background-image: url("../images/map.jpeg");
 	background-repeat: repeat-y;
 	background-position: center;
 	background-size: cover;
@@ -88,7 +87,40 @@ body {
   flex-direction: column;
 }
 
-  main {
-    flex: 1 0 auto;
-  }
-  
+main {
+  flex: 1 0 auto;
+}
+
+.transparent-body {
+  background: rgba(255, 255, 255, .0);
+}
+.shift-left {
+  margin-left: 10px;
+}
+
+body {
+     display: flex;
+     min-height: 100vh;
+     flex-direction: column;
+ }
+ #main {
+     flex: 1 0 auto;
+ }
+.revealed {
+    margin: 30px;
+}
+
+.send-button {
+    position: relative;
+    right: 10px;
+    top: 10px;
+}
+
+.group-info {
+    overflow: auto;
+    height: 70px;
+}
+
+.dropdowns {
+    width: auto !important;
+}

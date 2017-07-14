@@ -4,9 +4,9 @@
 	<title>PostIt</title>
 	<script src="build/bundle.js"></script>
 </head>
-<nav class="lime darken-4">
+<nav  class="teal darken-4" role="navigation" >
 	<div class="nav-wrapper">
-		<a href="#" id="brand" class="brand-logo lime darken-4">PostIt</a>
+		<a href="#" id="brand" class="brand-logo">PostIt</a>
 		<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
 		<ul class="right hide-on-med-and-down">
 			<li><a class="waves-effect waves-light btn">About PostIt</a></</li>
@@ -18,7 +18,7 @@
 	</div>
 </nav>
 <body>
-
+<div id="main">
 <div class="tab">
   <button class="tablinks" id="defaultTab" onclick="switchTab(event, 'info')">Group info</button>
   <button class="tablinks" id="add-members" onclick="switchTab(event, 'members')">Add members</button>
@@ -26,7 +26,7 @@
 
 <div id="info" class="tabcontent">
 	<div class="row">
-		<div class="col s10 m8 l6">
+		<div class="col s12 m8 offset-m2 offset-l3 l6">
 			<div class="group-details">
 			<h4 class="center">Enter group details</h4>
 			<form>
@@ -46,7 +46,7 @@
 
 <div id="members" class="tabcontent">
 	<div class="row">
-		<div class="col s10 m8 l6">
+		<div class="col s12 m8 offset-m2 l6 offset-l3">
 			<form>
 				<ul class="collection with-header">
 					<li class="collection-header"><h4>Add members</h4></li>
@@ -68,16 +68,18 @@
 					</li>
 				</ul>
 			</form>
-			<div>
-				<button class="btn" onclick="document.getElementById('defaultTab').click()"><< Group info</button>
-				<button class="btn">Create group</button>
+			<div class="row">
+				<button class="btn col s8 offset-s2 m5 l5" onclick="document.getElementById('defaultTab').click()"><< Group info</button>
+				<div class="col s12 m2 s2"><br></div>
+				<button class="btn col s8 offset-s2 m5 l5">Create group</button>
 			</div>
 		</div>
 	</div>
 </div>
-</body>
-<footer>
-	<div>Built by Victor Idongesit</div>
-	<div>© Andela, 2017</div>
+</div>
+<footer class="page-footer teal darken-4">
+	<div class="shift-left white-text">Built by Victor Idongesit</div>
+	<div class="footer-copyright shift-left">    © Andela, 2017</div>
 </footer>
+</body>
 </html>
