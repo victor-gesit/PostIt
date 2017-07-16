@@ -4,6 +4,7 @@
 	<title>PostIt</title>
 	<script type="text/javascript" src="build/bundle.js"></script>
 </head>
+<div class="navbar-fixed">
 <nav class="pink darken-4">
 	<div class="nav-wrapper">
 		<a href="#" id="brand" class="brand-logo">PostIt</a>
@@ -11,23 +12,44 @@
 		<ul class="right hide-on-med-and-down">
 			<li>
 				<!-- Dropdown Trigger -->
-				<a class='dropdown-button' href='#' data-activates='dropdown1'><i class="material-icons red-text tootipped" data-tooltip:"View notifications">notifications_active</i></a>
-
+				<ul>
+					<li>
+						<a class='dropdown-button tooltipped' data-position="bottom" data-delay="1000" data-tooltip="View notifications" href='#' data-activates='dropdown1'>
+							<i class="material-icons red-text tootipped">notifications_active</i>
+						</a>
+					</li>
+				</ul>
 				<!-- Dropdown Structure -->
 				<ul id='dropdown1' class='dropdowns dropdown-content'>
-					<li class=""><a href="#" class="brown-text text-darken-4">NextBigThing<span class="badge new red">4</span></a></li>
-					<li class=""><a href="#" class="brown-text text-darken-4">DisruptiveTech<span class="badge new red">4</span></a></li>
+					<li class=""><a href="#" class="brown-text text-darken-4">NextBigThing<span class="badge new pink">4</span></a></li>
+					<li class=""><a href="#" class="brown-text text-darken-4">DisruptiveTech<span class="badge new pink">4</span></a></li>
 					<li class="divider"></li>
 				</ul>
 			</li>
-			<li><a class="waves-effect waves-light"><i class="material-icons">info</i></a></li>
-			<li><a class="waves-effect waves-light btn">Sign out</a></li>
+			<li><a class="waves-effect white-text waves-light">About PostIt</a></li>
+			<li><a class="waves-effect waves-light black btn">Sign out</a></li>
 		</ul>
 		<ul id="mobile-demo" class="side-nav">
-			<li><a href="#">About PostIt</a></li>
+			<li>
+			   <div class="user-details">
+					<div class="background">
+						<img src="images/fire2.png">
+					</div>
+			  </div>
+			  <ul class="collection">
+				  <li class="collection-item avatar black-text">
+					<i class="material-icons purple circle">person</i>
+					<span class="title black-text">Philip Newmann</span>
+					<p>philip@newmann.com<br>08033322425</p>
+				  </li>
+			  </ul>
+			</li>
+			<li><a href="#"><i class="large material-icons black-text">info</i>About PostIt</a></li>
 		</ul>
+
 	</div>
 </nav>
+</div>
 <body>
 <div id="main">
 	<h3 class="board-title center black-text">Message Board</h3>
@@ -37,11 +59,11 @@
 		<div class="col s12 m6 l4">
 			<div class="card">
 				<div class="card-image waves-effect waves-block waves-light">
-					<img class="activator tooltipped" data-position="top" data-delay="50" data-tooltip="Click for group info" src="images/fire2.png">
+					<img class="activator tooltipped" data-position="top" data-delay="1000" data-tooltip="Click for group info" src="images/fire2.png">
 				</div>
 				<div class="card-content">
 					<div>
-						<a href="#" class="card-title grey-text text-darken-4">NextBigThing<span class="badge new red">4</span></a>
+						<a href="#" class="card-title grey-text text-darken-4">NextBigThing<span class="badge new pink">4</span></a>
 						<p class="blue-text">Created by Johnson Thomas</p>
 					</div>
 				</div>
@@ -52,7 +74,7 @@
 					<hr>
 				</div>
 				<div class="group-info">	
-					<p class="teal-text">This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!</p>
+					<p class="black-text">This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!</p>
 					<hr>
 				</div>
 				</div>
@@ -62,11 +84,11 @@
 		<div class="col s12 m6 l4">
 			<div class="card">
 				<div class="card-image waves-effect waves-block waves-light">
-					<img class="activator tooltipped" data-position="top" data-delay="50" data-tooltip="Click for group info" src="images/fire2.png">
+					<img class="activator tooltipped" data-position="top" data-delay="1000" data-tooltip="Click for group info" src="images/fire2.png">
 				</div>
 				<div class="card-content">
 					<div>
-						<a href="#" class="card-title grey-text text-darken-4">DisruptiveTech<span class="badge new red">3</span></a>
+						<a href="#" class="card-title grey-text text-darken-4">DisruptiveTech<span class="badge new pink">3</span></a>
 						<p class="blue-text">Created by Jane Doe</p>
 					</div>
 				</div>
@@ -77,7 +99,7 @@
 					<hr>
 				</div>
 				<div class="group-info">	
-					<p class="teal-text">This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!</p>
+					<p class="black-text">This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!</p>
 					<hr>
 				</div>
 				</div>	
@@ -87,7 +109,7 @@
 		<div class="col s12 m6 l4">
 			<div class="card">
 				<div class="card-image waves-effect waves-block waves-light">
-					<img class="activator tooltipped" data-position="top" data-delay="50" data-tooltip="Click for group info" src="images/fire2.png">
+					<img class="activator tooltipped" data-position="top" data-delay="1000" data-tooltip="Click for group info" src="images/fire2.png">
 				</div>
 				<div class="card-content">
 					<div>
@@ -102,7 +124,7 @@
 					<hr>
 				</div>
 				<div class="group-info">	
-					<p class="teal-text">This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!</p>
+					<p class="black-text">This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!</p>
 					<hr>
 				</div>
 				</div>
@@ -110,18 +132,19 @@
 		</div>
 	</div>
 	<!--End of Groups-->
-	<ul class="pagination center">
-		<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
-		<li class="active"><a href="#!">1</a></li>
-		<li class="waves-effect"><a href="#!">2</a></li>
-		<li class="waves-effect"><a href="#!">3</a></li>
-		<li class="waves-effect"><a href="#!">4</a></li>
-		<li class="waves-effect"><a href="#!">5</a></li>
-		<li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
-	</ul>
 </div>
 </div>
-<footer class="page-footer pink darken-4 darken-4">
+	<!--Pagination-->
+<ul class="pagination center">
+	<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+	<li class="active pink"><a href="#!">1</a></li>
+	<li class="waves-effect"><a href="#!">2</a></li>
+	<li class="waves-effect"><a href="#!">3</a></li>
+	<li class="waves-effect"><a href="#!">4</a></li>
+	<li class="waves-effect"><a href="#!">5</a></li>
+	<li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+</ul>
+<footer class="page-footer pink darken-4">
 	<div class="shift-left white-text">Built by Victor Idongesit</div>
 	<div class="footer-copyright shift-left">    © Andela, 2017</div>
 </footer>

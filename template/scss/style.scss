@@ -73,13 +73,13 @@ body {
 .message {
 	padding: 10px;
     margin: 2px;
-    background: rgba(205, 220, 57, .5);
+    background: rgba(0, 0, 0, .5);
 }
 
 .adminmessage {
 	padding: 10px;
     margin: 2px;
-    background: rgba(244, 67, 54, .5);
+    background: rgba(136, 14, 79, .5);
 }
 body {
   display: flex;
@@ -119,8 +119,53 @@ body {
 .group-info {
     overflow: auto;
     height: 70px;
+    font-family: 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .dropdowns {
     width: auto !important;
+}
+
+
+
+.input-field {
+    float: left;
+    width: 85%;
+}
+.send-button {
+    float:right;
+    width: 12%;
+}
+
+.members-list-container {
+    height: 400px;
+    position: fixed;
+    right: 30px;
+    bottom: 80px;
+    border: solid;
+    padding: 20px;
+
+}
+
+.members-list {
+    height: 200px;
+    overflow: auto;
+    width: auto !important;
+}
+.project-title {
+    padding: 10px;
+    background: rgba(255, 255, 255, .5);
+    width: 200px;
+}
+
+.searchbox {
+    background: rgba(0, 0, 0, .5);
+    height: 50px;
+}
+.members-list-side-nav {
+    height: 200px;
+    overflow: auto;
+}
+.navbar-fixed {
+    z-index: 9999;
 }
