@@ -19,7 +19,7 @@ export default {
       if (creator !== null) {
         nameOfCreator = `${creator.firstName} ${creator.lastName}`;
       } else {
-        return res.send({ message: 'User not found' });
+        return res.status(404).send({ message: 'User not found' });
       }
       let newMembers = [];
       Group.build({
@@ -41,7 +41,7 @@ export default {
         User.findAll({ where: { email: newMembers } }).then((retrievedMembers) => {
           createdGroup.addUsers(retrievedMembers).then(() => res.send(createdGroup));
         });
-      }).catch(err => res.send({ message: 'Group not created', error: err.errors }));
+      }).catch(err => res.status(400).send({ message: 'Group not created', error: err.errors }));
     });
   },
   // Add a user to a group
@@ -53,32 +53,39 @@ export default {
         if (foundUser !== null) {
           foundGroup.addUser(foundUser).then(() => res.send(foundUser));
         } else {
-          return res.send({ message: 'User not found' });
+          return res.status(404).send({ message: 'User not found' });
         }
       });
     }).catch((err) => {
-      res.send({ message: 'Group not found', error: err });
+      res.status(404).send({ message: 'Group not found', error: err });
     });
   },
   // Post a message to a group
   postmessage: (req, res) => {
     const groupId = req.params.id;
-    const sentBy = req.body.sender;
-    const isComment = req.body.isComment === 'true';
+    let isCommentString = req.body.isComment;
+    if (isCommentString !== null && isCommentString !== undefined) {
+      isCommentString = isCommentString.toLowerCase();
+    }
+    const isComment = isCommentString === 'true';
     const messageBody = req.body.message;
+    const senderId = req.body.senderId;
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
-      Message.build({
-        isComment,
-        sentBy,
-        body: messageBody,
-        groupId
-      }).save().then((createdMessage) => {
-        foundGroup.addMessage(createdMessage).then(() => {
-          res.send(createdMessage);
-        });
-      });
+      foundGroup.getUsers({ where: { id: senderId } }).then((users) => {
+        if (users.length === 0) {
+          return res.status(404).send({ message: 'User does not belong to this group' });
+        }
+        Message.build({
+          isComment,
+          sentBy: `${users[0].firstName} ${users[0].lastName}`,
+          body: messageBody,
+          groupId
+        }).save().then((createdMessage) => {
+          foundGroup.addMessage(createdMessage).then(() => res.status(200).send(createdMessage));
+        }).catch(err => res.status(400).send({ message: 'Missing field', error: err }));
+      }).catch(err => res.status(400).send({ message: 'Invalid User Id', error: err }));
     }).catch(err =>
-      res.send({ message: 'Group not found', error: err }));
+      res.status(404).send({ message: 'Group not found', error: err }));
   },
   // Load messages from a particular group
   getmessages: (req, res) => {
@@ -88,7 +95,11 @@ export default {
         res.send(groupMessages);
       });
     }).catch((err) => {
-      res.send({ message: 'Group not found', error: err });
+      // Check if it's a sequelize error or group doesn't exist
+      if (err.constructor === TypeError) {
+        return res.status(404).send({ message: 'Group not found', error: err });
+      }
+      return res.status(400).send({ message: 'Invalid Group Id', error: err });
     });
   },
   // Get the list of members in a particular group
@@ -97,28 +108,14 @@ export default {
     Group.find({ where: { id: groupId } })
       .then((foundGroup) => {
         foundGroup.getUsers({ attributes: ['firstName', 'lastName', 'email'] }).then((groupMembers) => {
-          res.send(groupMembers);
+          res.status(200).send(groupMembers);
         });
       }).catch((err) => {
-        res.send({ message: 'Group not found', error: err });
+        // Check if it's a sequelize error or group doesn't exist
+        if (err.constructor === TypeError) {
+          return res.status(404).send({ message: 'Group not found', error: err });
+        }
+        return res.status(400).send({ message: 'Invalid Group Id', error: err });
       });
-  },
-  // Load all the groups that a user belongs to, for the message board
-  messageboard: (req, res) => {
-    const userId = req.params.userId;
-    User.find({ where: { id: userId } }).then((foundUser) => {
-      foundUser.getGroups()
-        .then((groupsBelongedTo) => {
-          res.send(groupsBelongedTo);
-        });
-    }).catch((err) => {
-      res.send({ message: 'User not found', error: err });
-    });
-  },
-  // Load everyone registered on PostIt
-  getallusers: (req, res) => {
-    User.findAll({ attributes: ['firstName', 'lastName', 'email'] }).then((allUsers) => {
-      res.send(allUsers);
-    });
   }
 };
