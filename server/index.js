@@ -2,8 +2,9 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import logger from 'morgan';
 import group from './routes/group';
+import user from './routes/user';
+import general from './routes/general';
 import models from './models';
-import auth from './routes/auth';
 
 // Get the content of the ./auth/passport file
 
@@ -22,12 +23,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
-// User routes
-app.use('/api/user', auth);
+// Authentication/User routes
+app.use('/api/user', user);
 
 // Group routes
 app.use('/api/group', group);
 
+// General API Requests
+app.use('/api', general);
 // Random route
 app.use('/*', (req, res) => {
   res.status(200).send({ message: 'Api up and running' });
