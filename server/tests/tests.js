@@ -23,6 +23,21 @@ describe('PostIt Tests', () => {
     });
   });
   describe('Testing routes with incorrect data', () => {
+    const newUser = fixtures.newUser;
+    const newMessage = fixtures.newMessageForRoute;
+    // Clean up User table, and then create  sample user
+    beforeEach((done) => {
+      models.User.destroy({
+        where: {},
+        cascade: true,
+        truncate: true
+      }).then(() => {
+        models.User.create(newUser).then((createdUser) => {
+          newMessage.senderId = createdUser.id;
+          done();
+        });
+      });
+    });
     it('returns an error if a user is to be added to a non-existent group id', (done) => {
       request
         .post('/api/group/unknowngroupid/user')
@@ -37,13 +52,66 @@ describe('PostIt Tests', () => {
          done();
        });
     });
-    it('returns an error a non-existent user attempts to create a group', (done) => {
+    it('returns an error when an invalid UUID is supplied for user id during search for groups', (done) => {
+      request
+        .get('/api/user/invaliduuidcode/groups')
+        .expect((res) => {
+          expect(res.body.message).toEqual('Invalid User Id');
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('returns an error when an invalid UUID is supplied for group id when loading messages', (done) => {
+      request
+        .get('/api/group/invalidgroupid/messages')
+        .expect((res) => {
+          expect(res.body.message).toEqual('Invalid Group Id');
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('returns an error when an invalid UUID is supplied for group id when loading group members', (done) => {
+      request
+        .get('/api/group/invalidgroupid/members')
+        .expect((res) => {
+          expect(res.body.message).toEqual('Invalid Group Id');
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('returns an error when an invalid UUID is supplied for group id when posting message to a grouhp', (done) => {
+      request
+        .post('/api/group/invalidgroupid/message')
+        .send(fixtures.newMessageForRoute)
+        .expect((res) => {
+          expect(res.body.message).toEqual('Invalid Group Id');
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('returns error when a non-existent user attempts to create a group', (done) => {
       request
         .post('/api/group/')
         .send({
           userId: '7229aca1-55f4-4873-86d3-0774ec7a0d7e', // Unregisted user Id
           title: 'New Group',
-          description: 'A group created by an unregisterd user'
+          description: 'A group created by an unregistered user'
         })
         .expect((res) => {
           expect(res.body.message).toEqual('User not found');
@@ -57,8 +125,8 @@ describe('PostIt Tests', () => {
     });
     it('returns an error if a message is to be posted to a non-existent group id', (done) => {
       request
-        .post('/api/group/unknowngroupid/message')
-        .send(fixtures.newMessage)
+        .post('/api/group/34998203-58d2-4854-9003-8092e5035ae8/message') // Unregistered group id
+        .send(newMessage)
         .expect((res) => {
           expect(res.body.message).toEqual('Group not found');
         })
@@ -71,7 +139,7 @@ describe('PostIt Tests', () => {
     });
     it('returns an error if you attempt to load messages from a non-existent group id', (done) => {
       request
-        .get('/api/group/unknowngroupid/messages')
+        .get('/api/group/34998203-58d2-4854-9003-8092e5035ae8/messages') // Unregistered group id
         .expect((res) => {
           expect(res.body.message).toEqual('Group not found');
         })
@@ -84,7 +152,7 @@ describe('PostIt Tests', () => {
     });
     it('returns an error if you attempt to load members from a non-existent group id', (done) => {
       request
-        .get('/api/group/unknowngroupid/members')
+        .get('/api/group/34998203-58d2-4854-9003-8092e5035ae8/members') // Unregistered group id
         .expect((res) => {
           expect(res.body.message).toEqual('Group not found');
         })
@@ -97,7 +165,7 @@ describe('PostIt Tests', () => {
     });
     it('returns error if you attempt to load the groups for a non-existent user', (done) => {
       request
-        .get('/api/group/nonexistentuserId/groups')
+        .get('/api/user/34998203-58d2-4854-9003-8092e5035ae8/groups')
         .expect((res) => {
           expect(res.body.message).toEqual('User not found');
         })
@@ -171,7 +239,7 @@ describe('PostIt Tests', () => {
     });
     it('ensures all groups a user belongs to can be loaded', (done) => {
       request
-        .get(`/api/group/${userId}/groups`)
+        .get(`/api/user/${userId}/groups`)
         .expect((res) => {
           const isArray = res.body instanceof Array;
           expect(isArray).toEqual(true);
@@ -243,9 +311,13 @@ describe('PostIt Tests', () => {
         }).then(() => {
           models.User.create(fixtures.newUser).then((createdUser) => {
             newGroup.userId = createdUser.id;
+            newGroup.creatorEmail = createdUser.email;
             newGroup2.userId = createdUser.id;
+            newGroup2.creatorEmail = createdUser.email;
             newGroupWithMultipleMembers.userId = createdUser.id;
+            newGroupWithMultipleMembers.creatorEmail = createdUser.email;
             newGroupWithSingleMember.userId = createdUser.id;
+            newGroupWithSingleMember.creatorEmail = createdUser.email;
           }).then(() => {
             models.User.bulkCreate([fixtures.newUser2, fixtures.newUser3]).then(() => {
               models.Group.create(newGroup).then((createdGroup) => {
@@ -285,7 +357,7 @@ describe('PostIt Tests', () => {
           done();
         });
     });
-    it('returns an empty object if an unregisterd user is to be added to a group', (done) => {
+    it('returns an empty object if an unregistered user is to be added to a group', (done) => {
       request
         .post(`/api/group/${groupId}/user`)
         .send({ email: 'unregistered@email.com' })
@@ -354,7 +426,7 @@ describe('PostIt Tests', () => {
     });
     it('ensures all registered users can be loaded from the database', (done) => {
       request
-        .get('/api/group/members')
+        .get('/api/members')
         .expect((res) => {
           const isArray = res.body instanceof Array;
           expect(isArray).toEqual(true);
@@ -377,11 +449,22 @@ describe('PostIt Tests', () => {
         cascade: true,
         truncate: true
       }).then(() => {
-        models.Group.create(fixtures.newGroup).then((createdGroup) => {
-          groupId = createdGroup.id;
-          newMessage.groupId = createdGroup.id;
-          models.Message.create(newMessage).then(() => {
-            done();
+        models.User.destroy({
+          where: {},
+          cascade: true,
+          truncate: true
+        }).then(() => {
+          models.User.create(fixtures.newUser).then((createdUser) => {
+            models.Group.create(fixtures.newGroup).then((createdGroup) => {
+              createdGroup.addUser(createdUser).then(() => {
+                groupId = createdGroup.id;
+                newMessage.groupId = createdGroup.id;
+                newMessageForRoute.senderId = createdUser.id;
+                models.Message.create(newMessage).then(() => {
+                  done();
+                });
+              });
+            });
           });
         });
       });
@@ -392,6 +475,66 @@ describe('PostIt Tests', () => {
         .send(newMessageForRoute)
         .expect((res) => {
           expect(res.body.body).toEqual(newMessageForRoute.message);
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('ensures successfull posting of messages to a group, with isComment field not defined', (done) => {
+      newMessageForRoute.isComment = undefined;
+      request
+        .post(`/api/group/${groupId}/message`)
+        .send(newMessageForRoute)
+        .expect((res) => {
+          expect(res.body.body).toEqual(newMessageForRoute.message);
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('ensures non member of a group cannot post message to the group', (done) => {
+      newMessageForRoute.senderId = '34998203-58d2-4854-9003-8092e5035ae8';
+      request
+        .post(`/api/group/${groupId}/message`)
+        .send(newMessageForRoute)
+        .expect((res) => {
+          expect(res.body.message).toEqual('User does not belong to this group');
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('ensures proper response when an invalid UUID is supplied for user id when posting a message', (done) => {
+      newMessageForRoute.senderId = 'thisIsInvalidUUID';
+      request
+        .post(`/api/group/${groupId}/message`)
+        .send(newMessageForRoute)
+        .expect((res) => {
+          expect(res.body.message).toEqual('Invalid User Id');
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('ensures proper response when incomplete fields are supplied when posting a message', (done) => {
+      newMessageForRoute.message = undefined;
+      request
+        .post(`/api/group/${groupId}/message`)
+        .send(newMessageForRoute)
+        .expect((res) => {
+          expect(res.body.message).toEqual('Incomplete fields');
         })
        .end((err) => {
          if (err) {
