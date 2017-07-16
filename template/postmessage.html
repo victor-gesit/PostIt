@@ -4,31 +4,83 @@
 	<title>PostIt</title>
 	<script type="text/javascript" src="build/bundle.js"></script>
 </head>
-<nav class="lime darken-4">
+<div class="navbar-fixed">
+<nav class="pink darken-4">
 	<div class="nav-wrapper">
 		<a href="#" id="brand" class="brand-logo">PostIt</a>
 		<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
 		<ul class="right hide-on-med-and-down">
-			<li><a class="waves-effect waves-light btn">About PostIt</a></</li>
-			<li><a class="waves-effect waves-light btn">Sign out</a></</li>
+			<li>
+				<!-- Dropdown Trigger -->
+				<ul>
+					<li>
+						<a class='dropdown-button tooltipped' data-position="bottom" data-delay="1000" data-tooltip="View notifications" href='#' data-activates='dropdown1'>
+							<i class="material-icons red-text tootipped">notifications_active</i>
+						</a>
+					</li>
+				</ul>
+				<!-- Dropdown Structure -->
+				<ul id='dropdown1' class='dropdowns dropdown-content'>
+					<li class=""><a href="#" class="brown-text text-darken-4">NextBigThing<span class="badge new pink">4</span></a></li>
+					<li class=""><a href="#" class="brown-text text-darken-4">DisruptiveTech<span class="badge new pink">4</span></a></li>
+					<li class="divider"></li>
+				</ul>
+			</li>
+			<li><a class="waves-effect white-text waves-light">About PostIt</a></li>
+			<li><a class="waves-effect waves-light black btn">Sign out</a></li>
 		</ul>
 		<ul id="mobile-demo" class="side-nav">
+			<li>
+			   <div class="user-details">
+					<div class="background">
+						<img src="images/fire2.png">
+					</div>
+			  </div>
+			  <ul class="collection">
+				  <li class="collection-item avatar black-text">
+					<i class="material-icons purple circle">person</i>
+					<span class="title black-text">Philip Newmann</span>
+					<p>philip@newmann.com<br>08033322425</p>
+				  </li>
+			  </ul>
+			</li>
 			<li><a href="#"><i class="large material-icons teal-text">people_outline</i>Group Members</a></li>
-			<li><div class="divider"></div></li>
-			<li><a href="#"><i class="material-icons teal-text">person</i>Ade Balogun</a></li>
-			<li><a href="#"><i class="material-icons teal-text">person</i>John Smith</a></li>
-			<li><a href="#"><i class="material-icons teal-text">person</i>Joy Okafor</a></li>
-			<li><a href="#"><i class="material-icons red-text">person</i>John Kennedy</a></li>
-			<li><div class="divider"></div></li>
-			<li><a href="#"><i class="material-icons black-text">info</i>About PostIt</a>
+			<div class="row searchbox valign-wrapper">
+				<div class="col s9">
+					<input type="search" class="black-text">
+				</div>
+				<div class="col s3">
+			    <span><i class="material-icons black-text">search</i></span>
+				</div>
+			</div>
+			<ul class="members-list-side-nav">
+				<li><a href="#"><i class="material-icons teal-text">person</i>Obi Nna</a></li>
+				<li><a href="#"><i class="material-icons teal-text">person</i>John Doe</a></li>
+				<li><a href="#"><i class="material-icons teal-text">person</i>Jane Amaka</a></li>
+				<li><a href="#"><i class="material-icons teal-text">person</i>Obi Nna</a></li>
+				<li><a href="#"><i class="material-icons teal-text">person</i>John Doe</a></li>
+				<li><a href="#"><i class="material-icons teal-text">person</i>Jane Amaka</a></li>
+				<li><a href="#"><i class="material-icons teal-text">person</i>Obi Nna</a></li>
+				<li><a href="#"><i class="material-icons teal-text">person</i>John Doe</a></li>
+				<li><a href="#"><i class="material-icons teal-text">person</i>Jane Amaka</a></li>
+				<li><a href="#"><i class="material-icons teal-text">person</i>Obi Nna</a></li>
+				<li><a href="#"><i class="material-icons teal-text">person</i>John Doe</a></li>
+				<li><a href="#"><i class="material-icons teal-text">person</i>Jane Amaka</a></li>
+			</ul>
+			<hr>
+			<li><a href="#"><i class="large material-icons black-text">info</i>About PostIt</a></li>
+			<li><a href="#"><i class="large material-icons red-text">info</i>Sign Out</a></li>
 		</ul>
+
 	</div>
 </nav>
+</div>
 <body>
+<div>
 <div class="row">
-	<div class="col s12 m8 l9 messageboard">
-		<div class="group-info">
-			<h5 class="center">Project NexBigThing</h5>
+	<div class="col s12 m10 offset-m1 l9 messageboard">
+		<div class="group-info center row">
+			<h5 class="col s12 m8 l8 offset-m2 offset-l2">Project NexBigThing</h5>
 		</div>
 		<ul class="messages row">
 			<li class="message card col s11">
@@ -51,32 +103,90 @@
 				<div class="message-body white-text">Can we get someone to fill his place?</div>
 				<div class="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
 			</li>
+			<li class="message card col s11">
+				<small class="sender-name">Ade Balogun</small>
+				<div class="message-body white-text">I will not be able to make it to the meeting</div>
+				<div class="message-info"><small>Post created 12:06:2017, 11:34am</small></div>
+			</li>
+			<li class="message card col s11">
+				<small class="sender-name">John Smith</small>
+				<div class="message-body white-text">We will try to make up for your absence. Take care.</div>
+				<div class="message-info"><small>Post created 12:06:2017, 11:50am</small></div>
+			</li>
+			<li class="message card col s11">
+				<small class="sender-name">Joy Okafor</small>
+				<div class="message-body white-text">Can we get someone to fill his place?</div>
+				<div class="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+			</li>
+			<li class="adminmessage card col s11 offset-s1">
+				<small class="sender-name">John Keneddy</small>
+				<div class="message-body white-text">Can we get someone to fill his place?</div>
+				<div class="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+			</li>
+			<li class="adminmessage card col s11 offset-s1">
+				<small class="sender-name">John Keneddy</small>
+				<div class="message-body white-text">Can we get someone to fill his place?</div>
+				<div class="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+			</li>
+			<li class="message card col s11">
+				<small class="sender-name">Ade Balogun</small>
+				<div class="message-body white-text">I will not be able to make it to the meeting</div>
+				<div class="message-info"><small>Post created 12:06:2017, 11:34am</small></div>
+			</li>
+			<li class="message card col s11">
+				<small class="sender-name">John Smith</small>
+				<div class="message-body white-text">We will try to make up for your absence. Take care.</div>
+				<div class="message-info"><small>Post created 12:06:2017, 11:50am</small></div>
+			</li>
+			<li class="message card col s11">
+				<small class="sender-name">Joy Okafor</small>
+				<div class="message-body white-text">Can we get someone to fill his place?</div>
+				<div class="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+			</li>
+			<li class="adminmessage card col s11 offset-s1">
+				<small class="sender-name">John Keneddy</small>
+				<div class="message-body white-text">Can we get someone to fill his place?</div>
+				<div class="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+			</li>
 		</ul>
-
-		<!-- Message input box -->
-		<div class="message-input-box row">
-			<div class="col s9">
-				<input class="white-text" type="text" name="mymessage">
-			</div>
-			<div class="col s3">
-				<button class="btn"><i class="material-icons">send</i></button>
-			</div>
-		</div>
 	</div>
 	<!--Side bar, visible only on large screens-->
-	<div id="members-list" class="m4 l3 hide-on-med-and-down">
-		<ul class="collection with-header">
-			<li class="collection-header">Members<a class="secondary-content"><i class="material-icons">people_outline</i></a></li>
-			<li class="collection-item">Ade Balogun<a class="secondary-content"><i class="material-icons">person</i></a></li>
-			<li class="collection-item">John Smith<a class="secondary-content"><i class="material-icons">person</i></a></li>
-			<li class="collection-item">Joy Okafor<a class="secondary-content"><i class="material-icons">person</i></a></li>
-			<li class="collection-item">John Kennedy<a class="secondary-content"><i class="material-icons red-text">person</i></a></li>
-		</ul>
+	<div class="members-list-container m4 l3 hide-on-med-and-down">
+			<div class="row searchbox valign-wrapper">
+				<div class="col s9">
+					<input type="search" class="black-text">
+				</div>
+				<div class="col s3">
+			    <span><i class="material-icons black-text">search</i></span>
+				</div>
+			</div>
+		<div>Project NextBigThing <span class="badge">24</span></div>
+		<hr>
+		<span>Members List</span>
+        <ul class="collection members-list">
+            <li class="collection-item">Ade Balogun<a class="secondary-content"><i class="material-icons">person</i></a></li>
+            <li class="collection-item">John Smith<a class="secondary-content"><i class="material-icons">person</i></a></li>
+            <li class="collection-item">Joy Okafor<a class="secondary-content"><i class="material-icons">person</i></a></li>
+            <li class="collection-item">John Kennedy Balogun<a class="secondary-content"><i class="material-icons red-text">person</i></a></li>
+            <li class="collection-item">Ade Balogun<a class="secondary-content"><i class="material-icons">person</i></a></li>
+            <li class="collection-item">John Smith<a class="secondary-content"><i class="material-icons">person</i></a></li>
+            <li class="collection-item">Joy Okafor<a class="secondary-content"><i class="material-icons">person</i></a></li>
+            <li class="collection-item">John Kennedy<a class="secondary-content"><i class="material-icons red-text">person</i></a></li>
+        </ul>
+
+	</div>
+</div>
+</div>
+				<!-- Message Input Box -->
+<div class="message-input-box">
+	<div class="">
+		<div class="input-field">
+			<input class="white-text" type="text" name="mymessage">
+		</div>
+		<div class="send-button">
+			<button class="btn"><i class="material-icons">send</i></button>
+		</div>
 	</div>
 </div>
 </body>
-<footer class="page-footer lime darken-4">
-	<div class="container">Built by Victor Idongesit</div>
-	<div class="footer-copyright">    © Andela, 2017</div>
-</footer>
 </html>
