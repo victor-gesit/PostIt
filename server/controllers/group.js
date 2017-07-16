@@ -82,10 +82,15 @@ export default {
           groupId
         }).save().then((createdMessage) => {
           foundGroup.addMessage(createdMessage).then(() => res.status(200).send(createdMessage));
-        }).catch(err => res.status(400).send({ message: 'Missing field', error: err }));
+        }).catch(err => res.status(400).send({ message: 'Incomplete fields', error: err }));
       }).catch(err => res.status(400).send({ message: 'Invalid User Id', error: err }));
-    }).catch(err =>
-      res.status(404).send({ message: 'Group not found', error: err }));
+    }).catch((err) => {
+      // Check if it's a sequelize error or group doesn't exist
+      if (err.constructor === TypeError) {
+        return res.status(404).send({ message: 'Group not found', error: err });
+      }
+      return res.status(400).send({ message: 'Invalid Group Id', error: err });
+    });
   },
   // Load messages from a particular group
   getmessages: (req, res) => {
