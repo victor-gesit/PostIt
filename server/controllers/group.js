@@ -64,7 +64,7 @@ export default {
         }
       });
     }).catch(() => {
-      res.status(404).send({ message: 'Group not found' });
+      return res.status(404).send({ message: 'Group not found' });
     });
   },
   // Post a message to a group
@@ -104,7 +104,7 @@ export default {
     const groupId = req.params.id;
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
       foundGroup.getMessages({ attributes: ['sentBy', 'body', 'createdAt', 'isComment'] }).then((groupMessages) => {
-        res.send(groupMessages);
+        return res.send(groupMessages);
       });
     }).catch((err) => {
       // Check if it's a sequelize error or group doesn't exist
@@ -120,7 +120,7 @@ export default {
     Group.find({ where: { id: groupId } })
       .then((foundGroup) => {
         foundGroup.getUsers({ attributes: ['firstName', 'lastName', 'email'] }).then((groupMembers) => {
-          res.status(200).send(groupMembers);
+          return res.status(200).send(groupMembers);
         });
       }).catch((err) => {
         // Check if it's a sequelize error or group doesn't exist
