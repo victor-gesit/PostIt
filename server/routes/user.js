@@ -53,7 +53,7 @@ router.post('/signup',
     console.log('A USER');
     console.log(user);
     console.log('BEFORE ATTEMPTING TO CREATE A TOKEN');
-    console.log('+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_')
+    console.log('+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_');
     const token = jwt.sign(user, jwtSecret, {
       expiresIn: '2 days' // expires in 48 hours
     });
@@ -64,7 +64,7 @@ router.post('/signup',
     // Failure during signup
     console.log('FAILED HERE 6666666666666666666666666666666666666666666666666666666666666666');
     console.log(err);
-    res.send({ error: err, message: 'Error During Signup' });
+    return res.send({ error: err, message: 'Error During Signup' });
   }
 );
 
