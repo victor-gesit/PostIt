@@ -59,6 +59,7 @@ router.post('/signup',
   }, (err, req, res, next) => {
     // Failure during signup
     console.log('FAILED HERE 6666666666666666666666666666666666666666666666666666666666666666');
+    console.log(err);
     res.send({ error: err, message: 'Error During Signup' });
   }
 );
