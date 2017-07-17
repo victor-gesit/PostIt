@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/victor4l/PostIt.svg?branch=develop)](https://travis-ci.org/victor4l/PostIt)
-[![Coverage Status](https://coveralls.io/repos/github/victor4l/PostIt/badge.svg?branch=setup%2Ftests)](https://coveralls.io/github/victor4l/PostIt?branch=setup%2Ftests)
+[![Coverage Status](https://coveralls.io/repos/github/victor4l/PostIt/badge.svg?branch=develop)](https://coveralls.io/github/victor4l/PostIt?branch=develop)
 [![Code Climate](https://codeclimate.com/github/victor4l/PostIt/badges/gpa.svg)](https://codeclimate.com/github/victor4l/PostIt)
 [![Issue Count](https://codeclimate.com/github/victor4l/PostIt/badges/issue_count.svg)](https://codeclimate.com/github/victor4l/PostIt)
 
