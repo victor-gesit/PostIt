@@ -55,13 +55,13 @@ export default {
         if (foundUsers.length === 0) {
           return res.status(403).send({ message: 'Adder is not member of the group' });
         }
-      });
-      User.find({ where: { email: newUserEmail } }).then((foundUser) => {
-        if (foundUser !== null) {
-          foundGroup.addUser(foundUser).then(() => res.send(foundUser));
-        } else {
-          return res.status(404).send({ message: 'User not found' });
-        }
+        User.find({ where: { email: newUserEmail } }).then((foundUser) => {
+          if (foundUser !== null) {
+            foundGroup.addUser(foundUser).then(() => res.send(foundUser));
+          } else {
+            return res.status(404).send({ message: 'User not found' });
+          }
+        });
       });
     }).catch(() => {
       return res.status(404).send({ message: 'Group not found' });
