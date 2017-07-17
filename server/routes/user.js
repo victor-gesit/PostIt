@@ -53,9 +53,12 @@ router.post('/signup',
     const token = jwt.sign(user, jwtSecret, {
       expiresIn: '2 days' // expires in 48 hours
     });
+    console.log('TOKEN IS HERE NEXT +++++++++++++++++++++++++++++++++++++++++++++++++++++');
+    console.log(token);
     return res.send({ user, token, message: 'Successfull Signup' });
   }, (err, req, res, next) => {
     // Failure during signup
+    console.log('FAILED HERE 6666666666666666666666666666666666666666666666666666666666666666');
     res.send({ error: err, message: 'Error During Signup' });
   }
 );
