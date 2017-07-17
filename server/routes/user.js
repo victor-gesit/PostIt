@@ -50,6 +50,10 @@ router.post('/signup',
       email: req.user.email,
       phone: req.user.phone,
     };
+    console.log('A USER');
+    console.log(user);
+    console.log('BEFORE ATTEMPTING TO CREATE A TOKEN');
+    console.log('+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_')
     const token = jwt.sign(user, jwtSecret, {
       expiresIn: '2 days' // expires in 48 hours
     });
