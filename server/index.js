@@ -1,13 +1,14 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import logger from 'morgan';
+import dotenv from 'dotenv';
 import group from './routes/group';
 import user from './routes/user';
 import general from './routes/general';
 import models from './models';
 
-// Get the content of the ./auth/passport file
 
+dotenv.config();
 const app = express();
 // Middlewares
 

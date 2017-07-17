@@ -41,23 +41,30 @@ export default {
         User.findAll({ where: { email: newMembers } }).then((retrievedMembers) => {
           createdGroup.addUsers(retrievedMembers).then(() => res.send(createdGroup));
         });
-      }).catch(err => res.status(400).send({ message: 'Group not created', error: err.errors }));
-    });
+      }).catch(err => res.status(400).send({ error: err, message: 'Group not created' }));
+    }).catch(() => res.status(403).send({ message: 'Supply a valid user id' }));
   },
   // Add a user to a group
   adduser: (req, res) => {
     const groupId = req.params.id;
     const newUserEmail = req.body.email;
+    const adderId = req.body.adderId;
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
-      User.find({ where: { email: newUserEmail } }).then((foundUser) => {
-        if (foundUser !== null) {
-          foundGroup.addUser(foundUser).then(() => res.send(foundUser));
-        } else {
-          return res.status(404).send({ message: 'User not found' });
+      foundGroup.getUsers({ where: { id: adderId } }).then((foundUsers) => {
+        // Check to see if the adder belongs to the group
+        if (foundUsers.length === 0) {
+          return res.status(403).send({ message: 'Adder is not member of the group' });
         }
+        User.find({ where: { email: newUserEmail } }).then((foundUser) => {
+          if (foundUser !== null) {
+            foundGroup.addUser(foundUser).then(() => res.send(foundUser));
+          } else {
+            return res.status(404).send({ message: 'User not found' });
+          }
+        });
       });
-    }).catch((err) => {
-      res.status(404).send({ message: 'Group not found', error: err });
+    }).catch(() => {
+      return res.status(404).send({ message: 'Group not found' });
     });
   },
   // Post a message to a group
@@ -82,14 +89,14 @@ export default {
           groupId
         }).save().then((createdMessage) => {
           foundGroup.addMessage(createdMessage).then(() => res.status(200).send(createdMessage));
-        }).catch(err => res.status(400).send({ message: 'Incomplete fields', error: err }));
-      }).catch(err => res.status(400).send({ message: 'Invalid User Id', error: err }));
+        }).catch(() => res.status(400).send({ message: 'Incomplete fields' }));
+      }).catch(() => res.status(400).send({ message: 'Invalid User Id' }));
     }).catch((err) => {
       // Check if it's a sequelize error or group doesn't exist
       if (err.constructor === TypeError) {
-        return res.status(404).send({ message: 'Group not found', error: err });
+        return res.status(404).send({ message: 'Group not found' });
       }
-      return res.status(400).send({ message: 'Invalid Group Id', error: err });
+      return res.status(400).send({ message: 'Invalid Group Id' });
     });
   },
   // Load messages from a particular group
@@ -97,14 +104,14 @@ export default {
     const groupId = req.params.id;
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
       foundGroup.getMessages({ attributes: ['sentBy', 'body', 'createdAt', 'isComment'] }).then((groupMessages) => {
-        res.send(groupMessages);
+        return res.send(groupMessages);
       });
     }).catch((err) => {
       // Check if it's a sequelize error or group doesn't exist
       if (err.constructor === TypeError) {
-        return res.status(404).send({ message: 'Group not found', error: err });
+        return res.status(404).send({ message: 'Group not found' });
       }
-      return res.status(400).send({ message: 'Invalid Group Id', error: err });
+      return res.status(400).send({ message: 'Invalid Group Id' });
     });
   },
   // Get the list of members in a particular group
@@ -113,14 +120,14 @@ export default {
     Group.find({ where: { id: groupId } })
       .then((foundGroup) => {
         foundGroup.getUsers({ attributes: ['firstName', 'lastName', 'email'] }).then((groupMembers) => {
-          res.status(200).send(groupMembers);
+          return res.status(200).send(groupMembers);
         });
       }).catch((err) => {
         // Check if it's a sequelize error or group doesn't exist
         if (err.constructor === TypeError) {
-          return res.status(404).send({ message: 'Group not found', error: err });
+          return res.status(404).send({ message: 'Group not found' });
         }
-        return res.status(400).send({ message: 'Invalid Group Id', error: err });
+        return res.status(400).send({ message: 'Invalid Group Id' });
       });
   }
 };
