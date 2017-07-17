@@ -1,10 +1,14 @@
 import express from 'express';
 import passport from 'passport';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 import models from '../models';
 import '../auth/passport';
+import tokenValidator from '../auth/tokenValidator';
 
+dotenv.config();
 const User = models.User;
-
+const jwtSecret = process.env.JWT_SECRET;
 // Load passport configuration
 
 const router = express.Router();
@@ -14,21 +18,50 @@ router.use(passport.session());
 // Authentication Routes
 router.post('/signin',
   passport.authenticate('local.signin', { failWithError: true }),
-  (req, res, next) =>
+  (req, res) => {
     // Successful signin
-    res.send({ user: req.user, message: 'Successful Signin' }), (err, req, res, next) =>
+    // if user is found and password is right
+    // create a token
+    const user = {
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      email: req.user.email,
+      phone: req.user.phone,
+    };
+    const token = jwt.sign(user, jwtSecret, {
+      expiresIn: '2 days' // expires in 48 hours
+    });
+    res.send({ user, token, message: 'Successful Signin' });
+  }, (err, req, res, next) =>
     // Failure during signin
     res.send({ error: err, message: 'Error During Signin' })
 );
 
 router.post('/signup',
   passport.authenticate('local.signup', { failWithError: true }),
-  (req, res, next) =>
+  (req, res, next) => {
     // Successful signup
-    res.send({ user: req.user, message: 'Successfull Signup' }), (err, req, res, next) =>
+    // if user is found and password is right
+    // create a token
+    const user = {
+      id: req.user.id,
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      email: req.user.email,
+      phone: req.user.phone,
+    };
+    const token = jwt.sign(user, jwtSecret, {
+      expiresIn: '2 days' // expires in 48 hours
+    });
+    return res.send({ user, token, message: 'Successfull Signup' });
+  }, (err, req, res, next) => {
     // Failure during signup
-    res.send({ error: err, message: 'Error During Signup' })
+    res.send({ error: err, message: 'Error During Signup' });
+  }
 );
+
+// Validate token before accessing this route
+router.use(tokenValidator.validateToken);
 
 // Loading all groups a user belongs to
 router.get('/:userId/groups', (req, res) => {

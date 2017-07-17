@@ -1,7 +1,10 @@
 import express from 'express';
 import groupController from '../controllers/group';
+import tokenValidator from '../auth/tokenValidator';
 
 const router = express.Router();
+// Validate token
+router.use(tokenValidator.validateToken);
 
 router.post('/', groupController.create);
 router.post('/:id/user', groupController.adduser);
