@@ -45,25 +45,33 @@ PostIt is a simple application that allows friends and colleagues create groups 
   * `password` The password for the account
 
 * POST `/api/group` Use this route to create a new group. The following fields are required:
-  * `userId` The id of a registered user
+  * `userId` The id of a registered user who is considered the creator of the group
   * `title`  The title of the group
   * `description`     A description of the purpose of the group
-  * `initialMembers` (_Optional Field_) An email address, or array of email addresses of registered members, to be added to newly created group. `Note`: The creator is automatically added to the group
+  * `initialMembers` (_Optional Field_) An email address, or array of email addresses of registered members, to be added to the newly created group. `Note`: The creator is automatically added to the group
+  
+  * Send a token in the header, with variable name `x-access-token`
 
 * POST `/api/group/<groupId>/user` Use this route to add a user to a pre-existing group
   * `email` The email address of a user registered on the application
   * `groupId` The `id` of a group into which the user is to be added 
+  * `adderId` The `id` of the person adding someone to the group. `NB`: The adder must be a member of the group
 
+  * Send a token in the header, with variable name `x-access-token`
 
 * POST `/api/group/<groupId>/message` Use this route to post a message to a group
   * `message` The body of the message to be posted to the group
-  * `sender` The name of the sender of the message
+  * `senderId` The id of the sender of the message. The sender must be a member of the group
   * `isComment` A string indicating whether the message is a comment or a post. The options are `comment` and `post` 
 
-* GET `/api/group/<groupId>/messages` Use this route to lost messages made to a group
+* GET `/api/group/<groupId>/messages` Use this route to load messages made to a group
+  * Send a token in the header, with variable name `x-access-token`
 * GET `/api/group/<groupId>/members` Use this route to load all the members of a particular group
-* GET `/api/group/members` Use this route to load all registered members 
-
+  * Send a token in the header, with variable name `x-access-token`
+* GET `/api/members` Use this route to load all registered members
+  * Send a token in the header, with variable name `x-access-token`
+* GET `/api/groups` Use this route to load all groups created on PostIt
+  * Send a token in the header, with variable name `x-access-token`
 
 
 ### On Heroku
