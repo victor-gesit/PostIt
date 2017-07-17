@@ -1,10 +1,12 @@
 import passport from 'passport';
 import passportLocal from 'passport-local';
 import bcrypt from 'bcrypt-nodejs';
+import dotenv from 'dotenv';
 import models from '../models';
 
 const User = models.User;
 
+dotenv.config();
 
 const LocalStrategy = passportLocal.Strategy;
 passport.serializeUser((user, done) => {
@@ -24,8 +26,6 @@ passport.use('local.signup', new LocalStrategy(
     passReqToCallback: true
   },
   (req, email, password, done) => {
-    console.log('A REQUEST JUST ARRIVED PASSPOR');
-    console.log(req);
     User.find({ where: {
       $or: [
         { email },
