@@ -68,7 +68,7 @@ export default {
         }
         // Find the new users and add them to the group
         User.findAll({ where: { email: newMembers } }).then((foundMembers) => {
-          if (foundMembers !== null) {
+          if (foundMembers !== null && foundMembers.length !== 0) {
             foundGroup.addUser(foundMembers).then(() => res.send(foundMembers));
           } else {
             return res.status(404).send({ message: 'User not found' });
