@@ -13,8 +13,9 @@ describe('PostIt Tests', () => {
   describe('Database connection tests', () => {
     // Sync database before commencing testing
     beforeEach((done) => {
-      models.sequelize.sync();
-      done();
+      models.sequelize.sync().then(() => {
+        done();
+      });
     });
     it('ensures database connection is established', (done) => {
       models.sequelize.authenticate().then((err) => {
@@ -31,20 +32,6 @@ describe('PostIt Tests', () => {
         truncate: true,
         cascade: true
       }).then(() => { done(); });
-    });
-    it('ensures proper response for incorrect auth details', (done) => {
-      request
-        .post('/api/user/signin')
-        .send(fixtures.userWithIncorrectPassword)
-        .expect((res) => {
-          expect(res.body.message).toEqual('Error During Signin');
-        })
-       .end((err) => {
-         if (err) {
-           return done(err);
-         }
-         done();
-       });
     });
     it('ensures proper response for successful user sign up', (done) => {
       request
