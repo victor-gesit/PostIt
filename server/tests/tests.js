@@ -19,6 +19,8 @@ describe('PostIt Tests', () => {
     });
     it('ensures database connection is established', (done) => {
       models.sequelize.authenticate().then((err) => {
+        console.log('An Error Occured Here +_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_');
+        console.log(err);
         expect(err).toEqual(null);
         done();
       });
