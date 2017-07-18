@@ -14,4 +14,10 @@ router.get('/:id/messages', groupController.getmessages);
 // Get group members
 router.get('/:id/members', groupController.getmembers);
 
+// Delete group members
+router.delete('/:id/members', groupController.deleteMembers);
+
+// Delete a group
+router.delete('/:id/delete', groupController.deleteGroup);
+
 export default router;

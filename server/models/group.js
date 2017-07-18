@@ -52,6 +52,7 @@ module.exports = (sequelize, DataTypes) => {
     });
     Group.hasMany(models.Message, {
       foreignKey: 'groupId',
+      onDelete: 'CASCADE'
     });
   };
   return Group;

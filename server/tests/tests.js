@@ -415,7 +415,7 @@ describe('PostIt Tests', () => {
         .set('x-access-token', token)
         .send({ email: 'taiwok@yahoo.com', adderId: aCreatedUser.id })
         .expect((res) => {
-          expect(res.body.email).toEqual('taiwok@yahoo.com');
+          expect(res.body[0].email).toEqual('taiwok@yahoo.com');
         })
         .end((err) => {
           if (err) {

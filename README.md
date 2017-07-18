@@ -73,7 +73,16 @@ PostIt is a simple application that allows friends and colleagues create groups 
 * GET `/api/groups` Use this route to load all groups created on PostIt
   * Send a token in the header, with variable name `x-access-token`
 
+* DELETE  `/api/group/<groupId>/members` Use this route to delete members from a group
+  * `ownerId` The id of the creator of the group (Only group creator can delete members)
+  * `email` The email, or array of emails, of the members to be deleted
+    * Send a token in the header, with the variable name `x-access-token`
+    * The creator of the group cannot be deleted. Delete the entire group instead.
 
+* DELETE `/api/group/<groupId>/delete` Use this route to delete a group
+  * `ownerId` The id of the creator of the group (Only the group creator can delete the group)
+    * Send a token in the header, with the variable name `x-access-token`
+    
 ### On Heroku
 * A sample of the API is hosted [here](https://postit-api-victor.herokuapp.com/). However, you could create your own copy on `Heroku`, to connect your own team members. A guide to hosting an app on 
 `Heroku` is available [here](https://devcenter.heroku.com/articles/getting-started-with-nodejs#introduction)
