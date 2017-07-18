@@ -62,7 +62,8 @@ PostIt is a simple application that allows friends and colleagues create groups 
 * POST `/api/group/<groupId>/message` Use this route to post a message to a group
   * `message` The body of the message to be posted to the group
   * `senderId` The id of the sender of the message. The sender must be a member of the group
-  * `isComment` A string indicating whether the message is a comment or a post. The options are `comment` and `post` 
+  * `isComment` A string indicating whether the message is a comment or a post. The options are `true` and `false`. It is case insensitive.
+  * `priority` A string indicating the priority of the group. It could be `normal`, `urgent` or `critical`. It is case insensitive
 
 * GET `/api/group/<groupId>/messages` Use this route to load messages made to a group
   * Send a token in the header, with variable name `x-access-token`
