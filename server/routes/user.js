@@ -31,10 +31,10 @@ router.post('/signin',
     const token = jwt.sign(user, jwtSecret, {
       expiresIn: '2 days' // expires in 48 hours
     });
-    res.send({ user, token, message: 'Successful Signin' });
+    res.status(202).send({ user, token, message: 'Successful Signin' });
   }, (err, req, res, next) =>
     // Failure during signin
-    res.send({ error: err, message: 'Error During Signin' })
+    res.status(401).send({ error: err, message: 'Error During Signin' })
 );
 
 router.post('/signup',
@@ -53,10 +53,10 @@ router.post('/signup',
     const token = jwt.sign(user, jwtSecret, {
       expiresIn: '2 days' // expires in 48 hours
     });
-    return res.send({ user, token, message: 'Successfull Signup' });
+    return res.status(201).send({ user, token, message: 'Successfull Signup' });
   }, (err, req, res, next) => {
     // Failure during signup
-    res.send({ error: err, message: 'Error During Signup' });
+    res.status(400).send({ error: err, message: 'Error During Signup' });
   }
 );
 

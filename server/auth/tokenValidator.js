@@ -8,13 +8,13 @@ export default {
     if (token) {
       jwt.verify(token, jwtSecret, (err, decoded) => {
         if (err) {
-          return res.status(403).send({ message: 'Could not authenticate token', error: err });
+          return res.status(401).send({ message: 'Could not authenticate token', error: err });
         }
         req.decoded = decoded;
         next();
       });
     } else {
-      return res.status(403).send({ message: 'No token provided', success: false });
+      return res.status(401).send({ message: 'No token provided', success: false });
     }
   }
 };
