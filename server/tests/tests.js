@@ -10,18 +10,10 @@ const request = supertest(app);
 
 describe('PostIt Tests', () => {
   let token;
-  describe('Database connection tests', () => {
+  describe('Establish a database connection', () => {
     // Sync database before commencing testing
     beforeEach((done) => {
       models.sequelize.sync().then(() => {
-        done();
-      });
-    });
-    it('ensures database connection is established', (done) => {
-      models.sequelize.authenticate().then((err) => {
-        console.log('An Error Occured Here +_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_');
-        console.log(err);
-        expect(err).toEqual(null);
         done();
       });
     });
