@@ -82,9 +82,13 @@ export default {
   // Post a message to a group
   postmessage: (req, res) => {
     const groupId = req.params.id;
+    let priority = req.body.priority;
     let isCommentString = req.body.isComment;
     if (isCommentString !== null && isCommentString !== undefined) {
       isCommentString = isCommentString.toLowerCase();
+    }
+    if (priority !== null && priority !== undefined) {
+      priority = priority.toLowerCase();
     }
     const isComment = isCommentString === 'true';
     const messageBody = req.body.message;
@@ -98,10 +102,11 @@ export default {
           isComment,
           sentBy: `${users[0].firstName} ${users[0].lastName}`,
           body: messageBody,
-          groupId
+          groupId,
+          priority
         }).save().then((createdMessage) => {
           foundGroup.addMessage(createdMessage).then(() => res.status(200).send(createdMessage));
-        }).catch(() => res.status(400).send({ success: false, message: 'Incomplete fields' }));
+        }).catch(() => res.status(400).send({ success: false, message: 'Incomplete fields. Specify senderId, message and priority (normal, urgent or critical)' }));
       }).catch(() => res.status(400).send({ success: false, message: 'Invalid User Id' }));
     }).catch((err) => {
       // Check if it's a sequelize error or group doesn't exist
