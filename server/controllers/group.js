@@ -42,7 +42,7 @@ export default {
           createdGroup.addUsers(retrievedMembers).then(() => res.send(createdGroup));
         });
       }).catch(err => res.status(400).send({ error: err, message: 'Group not created' }));
-    }).catch(() => res.status(403).send({ message: 'Supply a valid user id' }));
+    }).catch(() => res.status(401).send({ message: 'Supply a valid user id' }));
   },
   // Add a user to a group
   adduser: (req, res) => {
@@ -80,7 +80,7 @@ export default {
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
       foundGroup.getUsers({ where: { id: senderId } }).then((users) => {
         if (users.length === 0) {
-          return res.status(404).send({ message: 'User does not belong to this group' });
+          return res.status(403).send({ message: 'User does not belong to this group' });
         }
         Message.build({
           isComment,

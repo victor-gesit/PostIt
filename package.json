@@ -65,6 +65,7 @@
     "materialize-css": "^0.98.2",
     "morgan": "^1.8.2",
     "passport": "^0.3.2",
+    "passport-jwt": "^2.2.1",
     "passport-local": "^1.0.0",
     "pg": "^6.2.4",
     "pg-hstore": "^2.3.2",
