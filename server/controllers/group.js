@@ -159,7 +159,6 @@ export default {
       }
     }
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
-      console.log(foundGroup);
       foundGroup.getUsers({ where: { id: ownerId } }).then((foundUsers) => {
         // Check to see if the adder belongs to the group
         if (foundUsers.length === 0) {
@@ -169,13 +168,19 @@ export default {
           return res.status(403).send({ success: false, message: 'You are not the creator of this group' });
         }
         foundGroup.getUsers({ where: { email: toBeDeleted } }).then((inGroupAndToBeDeleted) => {
-          foundGroup.remove(inGroupAndToBeDeleted).then(() => {
+          if (inGroupAndToBeDeleted.length === 0) {
+            return res.status(404).send({ success: false, message: 'The person to be deleted is not a member of the group' });
+          }
+          if (foundGroup.creatorEmail === foundUsers[0].email) {
+            return res.status(403).send({ success: false, message: 'You cannot delete the group creator. Delete the group instead' });
+          }
+          foundGroup.removeUsers(inGroupAndToBeDeleted).then(() => {
             return res.status(200).send({ success: true, message: 'Members deleted successfully' });
           });
         });
       });
     }).catch(() => {
-      return res.status(404).send({ message: 'Group not found' });
+      return res.status(404).send({ success: false, message: 'Group not found' });
     });
   },
   // Deleting a group
