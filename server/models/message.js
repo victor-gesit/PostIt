@@ -17,6 +17,16 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
+    priority: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+      validate: {
+        isIn: {
+          args: [['normal', 'urgent', 'critical']],
+          msg: 'Message priority is either normal, urgent or critical'
+        }
+      }
+    },
     body: {
       type: DataTypes.TEXT,
       allowNull: false,
