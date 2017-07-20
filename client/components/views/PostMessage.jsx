@@ -1,6 +1,8 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
-export default class PostMessage extends React.Component {
+
+class PostMessage extends React.Component {
   constructor(props) {
     super(props);
     this.getMessages = this.getMessages.bind(this);
@@ -398,3 +400,17 @@ class InputBox extends React.Component {
     );
   }
 }
+
+
+function mapStateToProps(state) {
+  return {
+  groups: state.groups,
+  dataError: state.dataError,
+  userDetails: state.userDetails,
+  allPostItUsers: state.allPostItUsers,
+  allPostItGroups: state.allPostItGroups,
+  dataLoading: state.dataLoading
+  };
+}
+
+export default connect(mapStateToProps)(PostMessage);
