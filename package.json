@@ -71,9 +71,12 @@
     "pg-hstore": "^2.3.2",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
+    "react-redux": "^5.0.5",
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
+    "redux": "^3.7.2",
     "sequelize": "^4.1.0",
+    "superagent": "^3.5.2",
     "supertest": "^3.0.0",
     "url-loader": "^0.5.9"
   }
