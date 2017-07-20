@@ -5,43 +5,12 @@ import { connect } from 'react-redux';
 class PostMessage extends React.Component {
   constructor(props) {
     super(props);
-    this.getMessages = this.getMessages.bind(this);
-    this.getMembers = this.getMembers.bind(this);
     this.getFormattedTimeStamp = this.getFormattedTimeStamp.bind(this);
-    this.postMessage = this.postMessage.bind(this);
     this.state = {
         allMessages : null,
         allMembers: null,
         emptyMessages: [],
-        creatorEmail: "victor4l@yahoo.com",
-        messages: [{
-          isComment: true,
-          sentBy: "Ade Balogun",
-          body: "I will not be able to make it to the meeting.",
-          info: "Post created 12:06:2017, 11:34am"
-        },
-        {
-          isComment: true,
-          sentBy: "John Smith",
-          body: "We will try to make up for your absence. Take care.",
-          info: "Post created 12:06:2017, 11:50am"
-        },
-        {
-          isComment: true,
-          sentBy: "Joy Okafor",
-          body: "Can we get someone to fill his place?",
-          info: "Post created 12:06:2017, 11:55am"
-        },
-        {
-          isComment: false,
-          sentBy: "John Keneddy",
-          body: "I will add a new member to take his place.",
-          info: "Post created 12:06:2017, 12:00pm"
-        }],
-        members: [ {name: "Ade Balogun", role: "member"},
-         {name: "John Smith", role: "member"},
-         {name: "Joy Okafor", role: "member"},
-         {name: "John Kennedy", role: "creator"} ]
+        creatorEmail: "victor4l@yahoo.com"
     }
   }
 
@@ -92,85 +61,8 @@ class PostMessage extends React.Component {
    * @param {String} messageBody The content of the message to be posted
    * @param {Boolean} isPost A boolean to indicate if the message is a comment or a post
    */
-  postMessage(messageBody, isPost) {
-    const url = `https://postit-api-victor.herokuapp.com/api/group/542d52a8-45ee-4ea8-bdd1-9baf3b8588ee/message`
-    var details = {
-        sender: 'Client Side',
-        isComment: !isPost,
-        message: messageBody
-    };
-    var formBody = [];
-    for (var property in details) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(details[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
-    }
-    formBody = formBody.join("&");
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: formBody
-    }).then((res) => res.json())
-    .then((data) => {
-      // Append message info to the message
-      this.getFormattedTimeStamp(data.createdAt, (formattedDate) => {
-        data.info = `Post created ${formattedDate}`;
-        let previousMessages = this.state.allMessages;
-        previousMessages.push(data);
-        this.setState({ allMessages: previousMessages });
-      });
-    });
-  }
-  // Load all messages from a group
-  getMessages(callback) {
-    const url = `https://postit-api-victor.herokuapp.com/api/group/542d52a8-45ee-4ea8-bdd1-9baf3b8588ee/messages`;
-    fetch(url, {
-      method: 'GET'
-    }).then((res) => res.json())
-    .then((data) => {
-      callback(data)
-    });
-  }
-  // Load all the members of a group
-  getMembers(callback) {
-    const url = `https://postit-api-victor.herokuapp.com/api/group/542d52a8-45ee-4ea8-bdd1-9baf3b8588ee/members`;
-    fetch(url, {
-      method: 'GET'
-    }).then((res) => res.json())
-    .then((data) => callback(data));
-  }
+
   render() {
-    if(!this.state.allMessages) {
-      // Run a spinner, until messages are loaded
-      return (
-        <div>
-        <Nav members= {this.state.members}/>
-          <div id="body">
-            <div id="main">
-              <div className="preloader-background">
-                <div className="preloader-wrapper big active valign-wrapper">
-                  <div className="spinner-layer spinner-white-only">
-                    <div className="circle-clipper left">
-                      <div className="circle"></div>
-                    </div>
-                    <div className="gap-patch">
-                      <div className="circle"></div>
-                    </div>
-                    <div className="circle-clipper right">
-                      <div className="circle"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          <Footer/>
-          </div>
-        </div>
-      )
-    }
     return(
       <div>
         <Nav members={this.state.allMembers}/>
@@ -184,18 +76,76 @@ class PostMessage extends React.Component {
 class Nav extends React.Component {
   render() {
     return(
-      <nav className="lime darken-4">
-        <div className="nav-wrapper">
-          <a href="#" id="brand" className="brand-logo">PostIt</a>
+      <div className="navbar-fixed">
+        <nav className="pink darken-4">
+          <div className="nav-wrapper">
+            <a href="#" id="brand" className="brand-logo">PostIt</a>
             <a href="#" data-activates="mobile-demo" className="button-collapse"><i className="material-icons">menu</i></a>
-              <ul className="right hide-on-med-and-down">
-                <li><a className="waves-effect waves-light btn">About PostIt</a>{/*</li*/}
-                </li><li><a className="waves-effect waves-light btn">Sign out</a>{/*</li*/}
-                </li>
+            <ul className="right hide-on-med-and-down">
+              <li>
+                {/* Dropdown Trigger */}
+                <ul>
+                  <li>
+                    <a className="dropdown-button tooltipped" data-position="bottom" data-delay={1000} data-tooltip="View notifications" href="#" data-activates="dropdown1">
+                      <i className="material-icons red-text tootipped">notifications_active</i>
+                    </a>
+                  </li>
+                </ul>
+                {/* Dropdown Structure */}
+                <ul id="dropdown1" className="dropdowns dropdown-content">
+                  <li className><a href="#" className="brown-text text-darken-4">NextBigThing<span className="badge new pink">4</span></a></li>
+                  <li className><a href="#" className="brown-text text-darken-4">DisruptiveTech<span className="badge new pink">4</span></a></li>
+                  <li className="divider" />
+                </ul>
+              </li>
+              <li><a className="waves-effect white-text waves-light">About PostIt</a></li>
+              <li><a className="waves-effect waves-light black btn">Sign out</a></li>
+            </ul>
+            <ul id="mobile-demo" className="side-nav">
+              <li>
+                <div className="user-details">
+                  <div className="background">
+                    <img src="images/fire2.png" />
+                  </div>
+                </div>
+                <ul className="collection">
+                  <li className="collection-item avatar black-text">
+                    <i className="material-icons purple circle">person</i>
+                    <span className="title black-text">Philip Newmann</span>
+                    <p>philip@newmann.com<br />08033322425</p>
+                  </li>
+                </ul>
+              </li>
+              <li><a href="#"><i className="large material-icons teal-text">people_outline</i>Group Members</a></li>
+              <div className="row searchbox valign-wrapper">
+                <div className="col s9">
+                  <input type="search" className="black-text" />
+                </div>
+                <div className="col s3">
+                  <span><i className="material-icons black-text">search</i></span>
+                </div>
+              </div>
+              <ul className="members-list-side-nav">
+                <li><a href="#"><i className="material-icons teal-text">person</i>Obi Nna</a></li>
+                <li><a href="#"><i className="material-icons teal-text">person</i>John Doe</a></li>
+                <li><a href="#"><i className="material-icons teal-text">person</i>Jane Amaka</a></li>
+                <li><a href="#"><i className="material-icons teal-text">person</i>Obi Nna</a></li>
+                <li><a href="#"><i className="material-icons teal-text">person</i>John Doe</a></li>
+                <li><a href="#"><i className="material-icons teal-text">person</i>Jane Amaka</a></li>
+                <li><a href="#"><i className="material-icons teal-text">person</i>Obi Nna</a></li>
+                <li><a href="#"><i className="material-icons teal-text">person</i>John Doe</a></li>
+                <li><a href="#"><i className="material-icons teal-text">person</i>Jane Amaka</a></li>
+                <li><a href="#"><i className="material-icons teal-text">person</i>Obi Nna</a></li>
+                <li><a href="#"><i className="material-icons teal-text">person</i>John Doe</a></li>
+                <li><a href="#"><i className="material-icons teal-text">person</i>Jane Amaka</a></li>
               </ul>
-          <TeamListSideNav members={this.props.members}/>
-        </div>
-      </nav>
+              <hr />
+              <li><a href="#"><i className="large material-icons black-text">info</i>About PostIt</a></li>
+              <li><a href="#"><i className="large material-icons red-text">info</i>Sign Out</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
     );
   }
 }
@@ -205,19 +155,106 @@ class Body extends React.Component {
   render() {
     return(
       <div id="body">
-        <div id="main" className="row">
-          <div className="col s12 m8 offset-m1 l9 messageboard">
-            <div className="group-info">
-              <h5 className="center">Project NexBigThing</h5>
+      <div>
+        <div className="row">
+          <div className="col s12 m10 offset-m1 l9 messageboard">
+            <div className="group-info center row">
+              <h5 className="col s12 m8 l8 offset-m2 offset-l2">Project NexBigThing</h5>
             </div>
-            <Messages messages={this.props.messages}/>
-            {/* Message input box */}
-            <InputBox postMessage={this.props.postMessage}/>
+            <ul className="messages row">
+              <li className="message card col s11">
+                <small className="sender-name">Ade Balogun</small>
+                <div className="message-body white-text">I will not be able to make it to the meeting</div>
+                <div className="message-info"><small>Post created 12:06:2017, 11:34am</small></div>
+              </li>
+              <li className="message card col s11">
+                <small className="sender-name">John Smith</small>
+                <div className="message-body white-text">We will try to make up for your absence. Take care.</div>
+                <div className="message-info"><small>Post created 12:06:2017, 11:50am</small></div>
+              </li>
+              <li className="message card col s11">
+                <small className="sender-name">Joy Okafor</small>
+                <div className="message-body white-text">Can we get someone to fill his place?</div>
+                <div className="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+              </li>
+              <li className="adminmessage card col s11 offset-s1">
+                <small className="sender-name">John Keneddy</small>
+                <div className="message-body white-text">Can we get someone to fill his place?</div>
+                <div className="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+              </li>
+              <li className="message card col s11">
+                <small className="sender-name">Ade Balogun</small>
+                <div className="message-body white-text">I will not be able to make it to the meeting</div>
+                <div className="message-info"><small>Post created 12:06:2017, 11:34am</small></div>
+              </li>
+              <li className="message card col s11">
+                <small className="sender-name">John Smith</small>
+                <div className="message-body white-text">We will try to make up for your absence. Take care.</div>
+                <div className="message-info"><small>Post created 12:06:2017, 11:50am</small></div>
+              </li>
+              <li className="message card col s11">
+                <small className="sender-name">Joy Okafor</small>
+                <div className="message-body white-text">Can we get someone to fill his place?</div>
+                <div className="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+              </li>
+              <li className="adminmessage card col s11 offset-s1">
+                <small className="sender-name">John Keneddy</small>
+                <div className="message-body white-text">Can we get someone to fill his place?</div>
+                <div className="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+              </li>
+              <li className="adminmessage card col s11 offset-s1">
+                <small className="sender-name">John Keneddy</small>
+                <div className="message-body white-text">Can we get someone to fill his place?</div>
+                <div className="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+              </li>
+              <li className="message card col s11">
+                <small className="sender-name">Ade Balogun</small>
+                <div className="message-body white-text">I will not be able to make it to the meeting</div>
+                <div className="message-info"><small>Post created 12:06:2017, 11:34am</small></div>
+              </li>
+              <li className="message card col s11">
+                <small className="sender-name">John Smith</small>
+                <div className="message-body white-text">We will try to make up for your absence. Take care.</div>
+                <div className="message-info"><small>Post created 12:06:2017, 11:50am</small></div>
+              </li>
+              <li className="message card col s11">
+                <small className="sender-name">Joy Okafor</small>
+                <div className="message-body white-text">Can we get someone to fill his place?</div>
+                <div className="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+              </li>
+              <li className="adminmessage card col s11 offset-s1">
+                <small className="sender-name">John Keneddy</small>
+                <div className="message-body white-text">Can we get someone to fill his place?</div>
+                <div className="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+              </li>
+            </ul>
           </div>
           {/*Side bar, visible only on large screens*/}
-          <TeamListLargeScreen members={this.props.members}/>
+          <div className="members-list-container m4 l3 hide-on-med-and-down">
+            <div className="row searchbox valign-wrapper">
+              <div className="col s9">
+                <input type="search" className="black-text" />
+              </div>
+              <div className="col s3">
+                <span><i className="material-icons black-text">search</i></span>
+              </div>
+            </div>
+            <div>Project NextBigThing <span className="badge">24</span></div>
+            <hr />
+            <span>Members List</span>
+              <ul className="collection members-list">
+                <li className="collection-item">Ade Balogun<a className="secondary-content"><i className="material-icons">person</i></a></li>
+                <li className="collection-item">John Smith<a className="secondary-content"><i className="material-icons">person</i></a></li>
+                <li className="collection-item">Joy Okafor<a className="secondary-content"><i className="material-icons">person</i></a></li>
+                <li className="collection-item">John Kennedy Balogun<a className="secondary-content"><i className="material-icons red-text">person</i></a></li>
+                <li className="collection-item">Ade Balogun<a className="secondary-content"><i className="material-icons">person</i></a></li>
+                <li className="collection-item">John Smith<a className="secondary-content"><i className="material-icons">person</i></a></li>
+                <li className="collection-item">Joy Okafor<a className="secondary-content"><i className="material-icons">person</i></a></li>
+                <li className="collection-item">John Kennedy<a className="secondary-content"><i className="material-icons red-text">person</i></a></li>
+            </ul>
+          </div>
         </div>
-        <Footer/>
+      </div>
       </div>
     );
   }

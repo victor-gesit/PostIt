@@ -25,6 +25,7 @@ let store = createStore(postItApp, {}, applyMiddleware(dataService));
 
 
 
+
 $(document).ready(() => {
   $('.button-collapse').sideNav();
 }); 
