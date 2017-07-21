@@ -2,22 +2,18 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import logger from 'morgan';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import group from './routes/group';
 import user from './routes/user';
 import general from './routes/general';
 import models from './models';
 
-
 dotenv.config();
 const app = express();
 // Middlewares
 
-// CORS
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
+// Cross Origin Resource Sharing
+app.use(cors());
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
