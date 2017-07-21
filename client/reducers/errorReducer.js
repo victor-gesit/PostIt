@@ -1,66 +1,45 @@
-const errorReducer = (state = [], action) => {
+const errorReducer = (state = {}, action) => {
   switch (action.type) {
+    case 'SIGN_IN_ERROR':
+      return {
+        errored: true,
+        message: action.message
+      };
+    case 'SIGN_UP_ERROR':
+      return {
+        errored: true,
+        message: action.message
+      };
     case 'ADD_MEMBER_ERROR':
-      return [
-        ...state,
-        // The new member details come here
-        /*
-        {
-          email: action.email,
-          groupId: action.groupId,
-          adderId: action.adderId,
-        }
-        */
-      ];
+      return {
+        errored: true,
+        message: action.message
+      };
     case 'DELETE_MEMBER_ERROR':
-      return [
-        // Perform actions to modify the state and remove the member
-        ...state,
-        {
-          ownerId: action.ownerId,
-          groupId: action.groupId,
-          email: action.email,
-        }
-      ];
+      return {
+        errored: true,
+        message: action.message
+      };
     case 'GET_GROUP_MEMBERS_ERROR':
-      return [
-        // The gotten group members go here
-
-        // ...state,
-        // {
-        //   groupId: action.groupId,
-        // }
-      ];
+      return {
+        errored: true,
+        message: action.message
+      };
     case 'GET_ALL_GROUPS_ERROR':
-      return [
-        // The gotten group goes here
-        
-        // ...state,
-        // {
-        //   groupId: action.groupId,
-        // }
-      ];
+      return {
+        errored: true,
+        message: action.message
+      };
     case 'POST_MESSAGE_ERROR':
-      return [
-        ...state,
-        {
-          // message: action.message,
-          // priority: action.priority,
-          // isComment: action.isComment,
-          // senderId: action.senderId
-          
-          // New message is put here
-        }
-      ];
+      return {
+        errored: true,
+        message: action.message
+      };
     case 'GET_MESSAGES_ERROR':
-      return [
-      //   ...state,
-      //   {
-      //     groupId: action.groupId,
-      //   }
-
-      // G
-      ];
+      return {
+        errored: true,
+        message: action.message
+      };
     default:
       return state;
   }
