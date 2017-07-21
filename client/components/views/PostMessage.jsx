@@ -15,26 +15,8 @@ class PostMessage extends React.Component {
   }
 
   componentDidMount() {
-    this.getMessages((allMessages) => {
-      this.state.allMessages = allMessages;
-      for(let i = 0; i < allMessages.length; i++) {
-        this.getFormattedTimeStamp(allMessages[i].createdAt, (formattedDate) => {
-          this.state.allMessages[i].info = `Post created ${formattedDate}`;
-        });
-      }
-      this.setState({allMessages});
-    });
-    this.getMembers((members) => {
-      let allMembers = members;
-      for(let i=0; i< members.length; i++) {
-        allMembers[i].name = `${members[i].firstName} ${members[i].lastName}`
-        if(allMembers[i].email === this.state.creatorEmail){
-          allMembers[i].role = "creator";
-        };
-      }
-      console.log(allMembers);
-      this.setState({allMembers});
-    });
+    let state = this;
+    //console.log(this.props.history.push('/'));
   }
   /**
    * 
@@ -441,12 +423,15 @@ class InputBox extends React.Component {
 
 function mapStateToProps(state) {
   return {
-  groups: state.groups,
-  dataError: state.dataError,
-  userDetails: state.userDetails,
-  allPostItUsers: state.allPostItUsers,
-  allPostItGroups: state.allPostItGroups,
-  dataLoading: state.dataLoading
+    groups: state.groups,
+    apiError: state.apiError,
+    allPostItUsers: state.allPostItUsers,
+    allPostItGroups: state.allPostItGroups,
+    dataLoading: state.dataLoading,
+    appInfo: {
+      userDetails: state.appInfo.userDetails,
+      authState: state.appInfo.authState
+    }
   };
 }
 
