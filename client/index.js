@@ -20,15 +20,24 @@ import MessageBoard from './components/views/MessageBoard.jsx';
 import PostMessage from './components/views/PostMessage.jsx';
 import SignUp from './components/views/SignUp.jsx';
 
-
-let store = createStore(postItApp, {}, applyMiddleware(dataService));
-
-
-
-
 $(document).ready(() => {
   $('.button-collapse').sideNav();
 }); 
+
+
+const appStore = {
+  groups: { 1: { members: { 1: {}, 2: {}}, groupId: '1', messages: [], about: { }}, 2: {} }, // This will contain all the groups and everything about each
+  apiError: { errored: false, message: null }, // This indicates any error during queries to the API
+  appInfo: {
+    userDetails: { firstName: 'a', lastName: 'a', id: 'a', token: 'a', email: '', phone: ''},
+    authState: { signedIn: false, redirect: false },
+  },
+  postItInfo: { members: {1: {}, 2: {}}, groups: {1: {}, 2: {}}}
+}
+
+
+let store = createStore(postItApp, appStore, applyMiddleware(dataService));
+
 
 ReactDOM.render(
     <BrowserRouter>
@@ -39,70 +48,3 @@ ReactDOM.render(
 );
 
 
-/*
-ReactDOM.render(
-    <BrowserRouter>
-      <App/>
-    </BrowserRouter>, document.getElementById('app'));
-
-*/
-
-const appStore = {
-  groups: { 1: { members: { 1: {}, 2: {}}, groupId: '1', messages: [], about: { }}, 2: {} }, // This will contain all the groups and everything about each
-  dataError: 'a', // This indicates any error during queries to the API
-  userDetails: { // This contains all the details about the user. It is populated at signup/in
-    id: 1,
-    firstName: '1',
-    lastName: '1',
-    email: '1',
-    token: '1'
-  },
-  allPostItUsers: { 1: {}, 2: {} }, // This will contain all the members registered on postIt.
-  allPostItGroups: []
-
-}
-
-// const userReducer = (state = {}, action) => {
-//   switch (action.type) {
-//     case 'CHANGE_NAME': {
-//       state.name = 'FROM USER REDUCER';
-//       break;
-//     }
-//     case 'CHANGE_AGE': {
-//       state.age = action.age;
-//       break;
-//     }
-//     default: return state;
-//   }
-//   return state;
-// };
-
-// const tweetReducer = (state = {}, action) => {
-//   switch (action.type) {
-//     case 'CHANGE_NAME': {
-//       state = [...state, 'abracadabra'];
-//       break;
-//     }
-//     case 'CHANGE_AGE': {
-//       state.age = action.age;
-//       break;
-//     }
-//     default: return state;
-//   }
-//   return state;
-// };
-
-// const reducers = combineReducers({
-//   user: userReducer,
-//   tweets: tweetReducer
-// });
-
-
-// const store = createStore(reducers, { tweets: ['nkechi'] });
-
-// store.subscribe(() => {
-//   console.log('Store changed, ', store.getState());
-// });
-
-// store.dispatch({ type: 'CHANGE_NAME', payload: 'Victor' });
-// // store.dispatch({ type: 'CHANGE_AGE', payload: 25 });
