@@ -1,16 +1,56 @@
 import request from 'superagent';
 
 const dataService = store => next => (action) => {
-  /*
-  Pass all actions through by default
-  */
+  // Pass all actions through by default
   next(action);
+  const url = 'http://localhost:8002/api';
   switch (action.type) {
+    case 'SIGN_IN':
+      request.post(`${url}/user/signin`)
+        .send({
+          email: action.email,
+          password: action.password,
+        })
+        .end((err, res) => {
+          if (err) {
+            return next({
+              type: 'SIGN_IN_ERROR',
+              err
+            });
+          }
+          const userDetails = res.body;
+          next({
+            type: 'SIGN_IN_SUCCESS',
+            userDetails
+          });
+        });
+      break;
+
+    case 'SIGN_UP':
+      request.post(`${url}/user/signup`)
+        .send({
+          firstName: action.firstName,
+          lastName: action.lastName,
+          email: action.email,
+          phone: action.phone,
+          password: action.password,
+        })
+        .end((err, res) => {
+          if (err) {
+            return next({
+              type: 'SIGN_UP_ERROR',
+              err
+            });
+          }
+          const userDetails = res.body;
+          next({
+            type: 'SIGN_UP_SUCCESS',
+            userDetails
+          });
+        });
+      break;
     case 'POST_MESSAGE':
-      /*
-      In case we receive an action to send an API request, send the appropriate request
-      */
-      request.post(`https://posit-api-victor/api/group/${action.groupId}/message`)
+      request.post(`${url}/group/${action.groupId}/message`)
         .set('x-access-token', action.token)
         .send({
           message: action.message,
@@ -20,30 +60,20 @@ const dataService = store => next => (action) => {
         })
         .end((err, res) => {
           if (err) {
-            /*
-            in case there is any error, dispatch an action containing the error
-            */
             return next({
               type: 'POST_MESSAGE_ERROR',
               err
             });
           }
-          const data = JSON.parse(res.text);
-          /*
-          Once data is received, dispatch an action telling the application
-          that data was received successfully, along with the parsed data
-          */
+          const message = res.body;
           next({
             type: 'POST_MESSAGE_SUCCESS',
-            data
+            message
           });
         });
       break;
     case 'ADD_MEMBER':
-      /*
-      In case we receive an action to send an API request, send the appropriate request
-      */
-      request.post(`https://posit-api-victor/api/group/${action.groupId}/user`)
+      request.post(`${url}/group/${action.groupId}/user`)
         .set('x-access-token', action.token)
         .send({
           email: action.email,
@@ -51,57 +81,39 @@ const dataService = store => next => (action) => {
         })
         .end((err, res) => {
           if (err) {
-            /*
-            in case there is any error, dispatch an action containing the error
-            */
             return next({
               type: 'ADD_MEMBER_SUCCESS',
               err
             });
           }
-          const data = JSON.parse(res.text);
-          /*
-          Once data is received, dispatch an action telling the application
-          that data was received successfully, along with the parsed data
-          */
+          const members = res.body;
           next({
             type: 'ADD_MEMBER_ERROR',
-            data
+            members
           });
         });
       break;
+
     case 'DELETE_A_GROUP':
-      /*
-      In case we receive an action to send an API request, send the appropriate request
-      */
       request
-        .delete(`https://posit-api-victor/api/group/${action.groupId}/delete`)
+        .delete(`${url}/group/${action.groupId}/delete`)
         .end((err, res) => {
           if (err) {
-            /*
-            in case there is any error, dispatch an action containing the error
-            */
             return next({
               type: 'DELETE_A_GROUP_ERROR',
               err
             });
           }
-          const data = JSON.parse(res.text);
-          /*
-          Once data is received, dispatch an action telling the application
-          that data was received successfully, along with the parsed data
-          */
+          const data = res.body;
           next({
             type: 'DELETE_A_GROUP_SUCCESS',
             data
           });
         });
       break;
+
     case 'CREATE_GROUP':
-      /*
-      In case we receive an action to send an API request, send the appropriate request
-      */
-      request.post('https://posit-api-victor/api/group')
+      request.post(`${url}/group`)
         .set('x-access-token', action.token)
         .send({
           userId: action.email,
@@ -111,196 +123,133 @@ const dataService = store => next => (action) => {
         })
         .end((err, res) => {
           if (err) {
-            /*
-            in case there is any error, dispatch an action containing the error
-            */
             return next({
               type: 'CREATE_GROUP_ERROR',
               err
             });
           }
-          const data = JSON.parse(res.text);
-          /*
-          Once data is received, dispatch an action telling the application
-          that data was received successfully, along with the parsed data
-          */
+          const data = res.body;
           next({
             type: 'CREATE_GROUP_SUCCESS',
             data
           });
         });
       break;
+
     case 'GET_MESSAGES':
-      /*
-      In case we receive an action to send an API request, send the appropriate request
-      */
       request
-        .get(`https://posit-api-victor/api/group/${action.groupId}/messages`)
+        .get(`${url}/group/${action.groupId}/messages`)
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
-            /*
-            in case there is any error, dispatch an action containing the error
-            */
             return next({
               type: 'GET_MESSAGES_ERROR',
               err
             });
           }
-          const data = JSON.parse(res.text);
-          /*
-          Once data is received, dispatch an action telling the application
-          that data was received successfully, along with the parsed data
-          */
+          const messages = res.body;
           next({
             type: 'GET_MESSAGES_SUCCESS',
-            data
+            messages
           });
         });
       break;
     case 'GET_GROUP_MEMBERS':
-      /*
-      In case we receive an action to send an API request, send the appropriate request
-      */
+
       request
-        .get(`https://posit-api-victor/api/group/${groupId}/members`)
+        .get(`${url}/group/${action.groupId}/members`)
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
-            /*
-            in case there is any error, dispatch an action containing the error
-            */
             return next({
               type: 'GET_GROUP_MEMBERS_ERROR',
               err
             });
           }
-          const members = JSON.parse(res.text);
-          /*
-          Once data is received, dispatch an action telling the application
-          that data was received successfully, along with the parsed data
-          */
+          const members = res.body;
           next({
             type: 'GET_GROUP_MEMBERS_SUCCESS',
             data: { members, groupId: action.groupId }
           });
         });
       break;
+
     case 'GET_POST_IT_MEMBERS':
-      /*
-      In case we receive an action to send an API request, send the appropriate request
-      */
       request
-        .get('https://posit-api-victor/api/members')
+        .get(`${url}/members`)
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
-            /*
-            in case there is any error, dispatch an action containing the error
-            */
             return next({
               type: 'GET_POST_IT_MEMBERS_ERROR',
               err
             });
           }
-          const data = JSON.parse(res.text);
-          /*
-          Once data is received, dispatch an action telling the application
-          that data was received successfully, along with the parsed data
-          */
+          const postItUsers = res.body;
           next({
             type: 'GET_POST_IT_MEMBERS_SUCCESS',
-            data
+            postItUsers
           });
         });
       break;
+
     case 'GET_ALL_GROUPS':
-      /*
-      In case we receive an action to send an API request, send the appropriate request
-      */
       request
-        .get('https://posit-api-victor/api/groups')
+        .get(`${url}/groups`)
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
-            /*
-            in case there is any error, dispatch an action containing the error
-            */
             return next({
               type: 'GET_ALL_GROUPS_ERROR',
               err
             });
           }
-          const data = JSON.parse(res.text);
-          /*
-          Once data is received, dispatch an action telling the application
-          that data was received successfully, along with the parsed data
-          */
+          const postItGroups = res.body;
           next({
             type: 'GET_ALL_GROUPS_SUCCESS',
-            data
+            postItGroups
           });
         });
       break;
+
     case 'GET_ALL_GROUPS_FOR_A_USER':
-      /*
-      In case we receive an action to send an API request, send the appropriate request
-      */
       request
-        .get(`https://posit-api-victor/api/user/${action.userId}/groups`)
+        .get(`${url}/user/${action.userId}/groups`)
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
-            /*
-            in case there is any error, dispatch an action containing the error
-            */
             return next({
               type: 'GET_ALL_GROUPS_FOR_A_USER_ERROR',
               err
             });
           }
-          const data = JSON.parse(res.text);
-          /*
-          Once data is received, dispatch an action telling the application
-          that data was received successfully, along with the parsed data
-          */
+          const data = res.body;
           next({
             type: 'GET_ALL_GROUPS__FOR_A_USER_SUCCESS',
             data
           });
         });
       break;
+
     case 'DELETE_GROUP_MEMBER':
-      /*
-      In case we receive an action to send an API request, send the appropriate request
-      */
       request
-        .delete(`https://posit-api-victor/api/group/${action.groupId}/members`)
+        .delete(`${url}/group/${action.groupId}/members`)
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
-            /*
-            in case there is any error, dispatch an action containing the error
-            */
             return next({
               type: 'DELETE_GROUP_MEMBER_ERROR',
               err
             });
           }
-          const data = JSON.parse(res.text);
-          /*
-          Once data is received, dispatch an action telling the application
-          that data was received successfully, along with the parsed data
-          */
+          const data = res.body;
           next({
             type: 'DELETE_GROUP_MEMBER_SUCCESS',
             data
           });
         });
       break;
-    /*
-    Do nothing if the action does not interest us
-    */
+
     default:
       break;
   }

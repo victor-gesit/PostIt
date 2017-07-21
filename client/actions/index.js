@@ -1,3 +1,23 @@
+export const signIn = (email, password) => {
+  console.log(email);
+  return {
+    type: 'SIGN_IN',
+    email,
+    password
+  };
+};
+
+export const signUp = (firstName, lastName, email, password, phone) => {
+  return {
+    type: 'SIGN_UP',
+    firstName,
+    lastName,
+    email,
+    password,
+    phone
+  };
+};
+
 export const postMessage = (senderId, message, priority, isComment) => {
   return {
     type: 'POST_MESSAGE',
@@ -51,7 +71,7 @@ export const getGroupMembers = (groupId) => {
 
 export const getPostItMembers = () => {
   return {
-    type: 'GET_POSTIT_MEMBERS',
+    type: 'GET_POST_IT_MEMBERS',
   };
 };
 
