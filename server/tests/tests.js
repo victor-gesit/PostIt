@@ -40,7 +40,7 @@ describe('PostIt Tests', () => {
         .send(fixtures.newUser)
         .expect((res) => {
           token = res.body.token; // Instantiate a token for the rest of the test process
-          expect(res.body.error).toEqual(null);
+          expect(res.body.message).toEqual('Successful Sign up');
         })
        .end((err) => {
          if (err) {
@@ -49,12 +49,12 @@ describe('PostIt Tests', () => {
          done();
        });
     });
-    it('ensures proper response for sign up with incorrect data', (done) => {
+    it('ensures proper response for sign up with incomplete data', (done) => {
       request
         .post('/api/user/signup')
         .send(fixtures.newUserWithMissingData)
         .expect((res) => {
-          expect(res.body.message).toEqual('Error During Signup');
+          expect(res.body.message).toEqual('Missing credentials');
           done();
         })
        .end((err) => {
@@ -296,7 +296,7 @@ describe('PostIt Tests', () => {
         .post('/api/user/signin')
         .send(userWithIncorrectPassword)
         .expect((res) => {
-          expect(res.body.message).toEqual('Error During Signin');
+          expect(res.body.message).toEqual('Invalid password');
         })
        .end((err) => {
          if (err) {
@@ -309,9 +309,9 @@ describe('PostIt Tests', () => {
       request
         .post('/api/group')
         .set('x-access-token', token)
-        .send({ userId })
+        .send({ creatorId: userId })
         .expect((res) => {
-          expect(res.body.message).toEqual('Group not created');
+          expect(res.body.message).toEqual('Incomplete fields');
         })
        .end((err) => {
          if (err) {
@@ -325,7 +325,7 @@ describe('PostIt Tests', () => {
         .get(`/api/user/${userId}/groups`)
         .set('x-access-token', token)
         .expect((res) => {
-          const isArray = res.body instanceof Array;
+          const isArray = res.body.rows instanceof Array;
           expect(isArray).toEqual(true);
         })
        .end((err) => {
@@ -357,13 +357,13 @@ describe('PostIt Tests', () => {
         }).then(() => {
           models.User.create(fixtures.newUser).then((createdUser) => {
             aCreatedUser = createdUser;
-            newGroup.userId = createdUser.id;
+            newGroup.creatorId = createdUser.id;
             newGroup.creatorEmail = createdUser.email;
-            newGroup2.userId = createdUser.id;
+            newGroup2.creatorId = createdUser.id;
             newGroup2.creatorEmail = createdUser.email;
-            newGroupWithMultipleMembers.userId = createdUser.id;
+            newGroupWithMultipleMembers.creatorId = createdUser.id;
             newGroupWithMultipleMembers.creatorEmail = createdUser.email;
-            newGroupWithSingleMember.userId = createdUser.id;
+            newGroupWithSingleMember.creatorId = createdUser.id;
             newGroupWithSingleMember.creatorEmail = createdUser.email;
           }).then(() => {
             models.User.bulkCreate([fixtures.newUser2, fixtures.newUser3]).then(() => {
@@ -384,7 +384,7 @@ describe('PostIt Tests', () => {
         .set('x-access-token', token)
         .send(fixtures.newGroup2)
         .expect((res) => {
-          expect(res.body.title).toEqual(fixtures.newGroup2.title);
+          expect(res.body.createdGroup.title).toEqual(fixtures.newGroup2.title);
         })
        .end((err) => {
          if (err) {
@@ -394,13 +394,13 @@ describe('PostIt Tests', () => {
        });
     });
     it('ensures proper response when an invalid user id is supplied during group creation', (done) => {
-      newGroup2.userId = 'invaliduserid';
+      newGroup2.creatorId = 'invaliduserid';
       request
         .post('/api/group')
         .set('x-access-token', token)
-        .send(fixtures.newGroup2)
+        .send(newGroup2)
         .expect((res) => {
-          expect(res.body).toEqual({ message: 'Supply a valid user id' });
+          expect(res.body.message).toEqual('Supply a valid user id');
         })
        .end((err) => {
          if (err) {
@@ -430,7 +430,7 @@ describe('PostIt Tests', () => {
         .set('x-access-token', token)
         .send({ email: 'taiwok@yahoo.com', adderId: '34998203-58d2-4854-9003-8092e5035ae8' }) // Unknown ID
         .expect((res) => {
-          expect(res.body).toEqual({ message: 'Adder is not member of the group' });
+          expect(res.body.message).toEqual('Adder is not member of the group');
         })
         .end((err) => {
           if (err) {
@@ -444,7 +444,7 @@ describe('PostIt Tests', () => {
         .post(`/api/group/${groupId}/user`)
         .set('x-access-token', token)
         .send({ email: 'unregistered@email.com', adderId: aCreatedUser.id })
-        .expect({ message: 'User not found' })
+        .expect({ success: false, message: 'User not found' })
        .end((err) => {
          if (err) {
            return done(err);
@@ -458,7 +458,7 @@ describe('PostIt Tests', () => {
         .set('x-access-token', token)
         .send(fixtures.newGroup2)
         .expect((res) => {
-          expect(res.body.title).toEqual(fixtures.newGroup2.title);
+          expect(res.body.createdGroup.title).toEqual(fixtures.newGroup2.title);
         })
        .end((err) => {
          if (err) {
@@ -473,7 +473,7 @@ describe('PostIt Tests', () => {
         .set('x-access-token', token)
         .send(fixtures.newGroupWithSingleMember)
         .expect((res) => {
-          expect(res.body.title).toEqual(fixtures.newGroupWithSingleMember.title);
+          expect(res.body.createdGroup.title).toEqual(fixtures.newGroupWithSingleMember.title);
         })
        .end((err) => {
          if (err) {
@@ -488,7 +488,7 @@ describe('PostIt Tests', () => {
         .set('x-access-token', token)
         .send(fixtures.newGroupWithMultipleMembers)
         .expect((res) => {
-          expect(res.body.title).toEqual(fixtures.newGroupWithMultipleMembers.title);
+          expect(res.body.createdGroup.title).toEqual(fixtures.newGroupWithMultipleMembers.title);
         })
        .end((err) => {
          if (err) {
@@ -526,7 +526,7 @@ describe('PostIt Tests', () => {
         .get('/api/members')
         .set('x-access-token', token)
         .expect((res) => {
-          const isArray = res.body instanceof Array;
+          const isArray = res.body.rows instanceof Array;
           expect(isArray).toEqual(true);
         })
        .end((err) => {
@@ -541,7 +541,7 @@ describe('PostIt Tests', () => {
         .get('/api/groups')
         .set('x-access-token', token)
         .expect((res) => {
-          const isArray = res.body instanceof Array;
+          const isArray = res.body.rows instanceof Array;
           expect(isArray).toEqual(true);
         })
        .end((err) => {
@@ -588,7 +588,7 @@ describe('PostIt Tests', () => {
         .set('x-access-token', token)
         .send(newMessageForRoute)
         .expect((res) => {
-          expect(res.body.body).toEqual(newMessageForRoute.message);
+          expect(res.body.body).toEqual(newMessageForRoute.body);
         })
        .end((err) => {
          if (err) {
@@ -604,7 +604,7 @@ describe('PostIt Tests', () => {
         .set('x-access-token', token)
         .send(newMessageForRoute)
         .expect((res) => {
-          expect(res.body.body).toEqual(newMessageForRoute.message);
+          expect(res.body.body).toEqual(newMessageForRoute.body);
         })
        .end((err) => {
          if (err) {
@@ -646,13 +646,13 @@ describe('PostIt Tests', () => {
        });
     });
     it('ensures proper response when incomplete fields are supplied when posting a message', (done) => {
-      newMessageForRoute.message = undefined;
+      newMessageForRoute.body = undefined;
       request
         .post(`/api/group/${groupId}/message`)
         .set('x-access-token', token)
         .send(newMessageForRoute)
         .expect((res) => {
-          expect(res.body.message).toEqual('Incomplete fields');
+          expect(res.body.message).toEqual('Incomplete fields. Specify senderId, message and priority (normal, urgent or critical)');
         })
        .end((err) => {
          if (err) {
@@ -666,7 +666,7 @@ describe('PostIt Tests', () => {
         .get(`/api/group/${groupId}/messages`)
         .set('x-access-token', token)
         .expect((res) => {
-          const isArray = res.body instanceof Array;
+          const isArray = res.body.rows instanceof Array;
           expect(isArray).toEqual(true);
         })
        .end((err) => {
@@ -681,7 +681,7 @@ describe('PostIt Tests', () => {
         .get(`/api/group/${groupId}/members`)
         .set('x-access-token', token)
         .expect((res) => {
-          const isArray = res.body instanceof Array;
+          const isArray = res.body.rows instanceof Array;
           expect(isArray).toEqual(true);
         })
        .end((err) => {
