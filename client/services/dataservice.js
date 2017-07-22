@@ -15,7 +15,7 @@ const dataService = store => next => (action) => {
           if (err) {
             return next({
               type: 'SIGN_IN_ERROR',
-              err
+              message: err.message
             });
           }
           const userDetails = res.body;
@@ -39,7 +39,7 @@ const dataService = store => next => (action) => {
           if (err) {
             return next({
               type: 'SIGN_UP_ERROR',
-              err
+              message: err.message
             });
           }
           const userDetails = res.body;
@@ -62,7 +62,7 @@ const dataService = store => next => (action) => {
           if (err) {
             return next({
               type: 'POST_MESSAGE_ERROR',
-              err
+              message: err.message
             });
           }
           const message = res.body;
@@ -83,7 +83,7 @@ const dataService = store => next => (action) => {
           if (err) {
             return next({
               type: 'ADD_MEMBER_SUCCESS',
-              err
+              message: err.message
             });
           }
           const members = res.body;
@@ -101,7 +101,7 @@ const dataService = store => next => (action) => {
           if (err) {
             return next({
               type: 'DELETE_A_GROUP_ERROR',
-              err
+              message: err.message
             });
           }
           const data = res.body;
@@ -125,7 +125,7 @@ const dataService = store => next => (action) => {
           if (err) {
             return next({
               type: 'CREATE_GROUP_ERROR',
-              err
+              message: err.message
             });
           }
           const data = res.body;
@@ -144,7 +144,7 @@ const dataService = store => next => (action) => {
           if (err) {
             return next({
               type: 'GET_MESSAGES_ERROR',
-              err
+              message: err.message
             });
           }
           const messages = res.body;
@@ -163,7 +163,7 @@ const dataService = store => next => (action) => {
           if (err) {
             return next({
               type: 'GET_GROUP_MEMBERS_ERROR',
-              err
+              message: err.message
             });
           }
           const members = res.body;
@@ -182,7 +182,7 @@ const dataService = store => next => (action) => {
           if (err) {
             return next({
               type: 'GET_POST_IT_MEMBERS_ERROR',
-              err
+              message: err.message
             });
           }
           const postItUsers = res.body;
@@ -201,7 +201,7 @@ const dataService = store => next => (action) => {
           if (err) {
             return next({
               type: 'GET_ALL_GROUPS_ERROR',
-              err
+              message: err.message
             });
           }
           const postItGroups = res.body;
@@ -220,7 +220,7 @@ const dataService = store => next => (action) => {
           if (err) {
             return next({
               type: 'GET_ALL_GROUPS_FOR_A_USER_ERROR',
-              err
+              message: err.message
             });
           }
           const data = res.body;
@@ -239,7 +239,7 @@ const dataService = store => next => (action) => {
           if (err) {
             return next({
               type: 'DELETE_GROUP_MEMBER_ERROR',
-              err
+              message: err.message
             });
           }
           const data = res.body;

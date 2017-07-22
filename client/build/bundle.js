@@ -25783,9 +25783,11 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(65);
 
-var _reactRouter = __webpack_require__(9);
-
 var _actions = __webpack_require__(310);
+
+var _reactNotificationSystem = __webpack_require__(321);
+
+var _reactNotificationSystem2 = _interopRequireDefault(_reactNotificationSystem);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -25805,9 +25807,6 @@ var Index = function (_React$Component) {
   }
 
   _createClass(Index, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {}
-  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -25832,9 +25831,6 @@ var Nav = function (_React$Component2) {
   }
 
   _createClass(Nav, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {}
-  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -26040,10 +26036,18 @@ var SignInForm = function (_React$Component4) {
     var _this4 = _possibleConstructorReturn(this, (SignInForm.__proto__ || Object.getPrototypeOf(SignInForm)).call(this, props));
 
     _this4.signIn = _this4.signIn.bind(_this4);
+    _this4.showNotification = _this4.showNotification.bind(_this4);
+    _this4._notificationSystem = null;
+    _this4.state = {};
     return _this4;
   }
 
   _createClass(SignInForm, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this._notificationSystem = this.notificationRef;
+    }
+  }, {
     key: 'signIn',
     value: function signIn(e) {
       var email = this.email.value;
@@ -26051,16 +26055,46 @@ var SignInForm = function (_React$Component4) {
       this.props._that.props.signIn(email, password);
     }
   }, {
+    key: 'showNotification',
+    value: function showNotification(level, message) {
+      this._notificationSystem.addNotification({
+        message: message,
+        level: level
+      });
+    }
+  }, {
     key: 'componentWillUpdate',
     value: function componentWillUpdate() {
-      this.props._that.props.appInfo;
-      this.props._that.props.history.push('/postmessage');
+      var isSignedIn = this.props._that.props.appInfo.authState.signedIn;
+      var redirect = this.props._that.props.appInfo.authState.redirect;
+      var errorMessage = this.props._that.props.apiError.message;
+      if (isSignedIn) {
+        this.props._that.props.history.push('/messageboard');
+      } else {
+        if (errorMessage) {
+          this.showNotification('success', errorMessage);
+          this.props._that.props.resetErrorLog();
+        }
+      }
     }
   }, {
     key: 'render',
     value: function render() {
       var _this5 = this;
 
+      var style = {
+        NotificationItem: {
+          DefaultStyle: {
+            margin: '100px 5px 2px 1px',
+            position: 'fixed',
+            width: '320px'
+          },
+
+          success: {
+            color: 'red'
+          }
+        }
+      };
       return _react2.default.createElement(
         'div',
         { id: 'signinform', className: 'col s12 m6 l5' },
@@ -26070,6 +26104,9 @@ var SignInForm = function (_React$Component4) {
           _react2.default.createElement(
             'div',
             { className: 'row' },
+            _react2.default.createElement(_reactNotificationSystem2.default, { className: 'notification', style: style, ref: function ref(notificationRef) {
+                _this5.notificationRef = notificationRef;
+              } }),
             _react2.default.createElement(
               'div',
               null,
@@ -26183,7 +26220,10 @@ function mapStateToProps(state) {
   return {
     apiError: state.apiError,
     dataLoading: state.dataLoading,
-    appInfo: state.appInfo
+    appInfo: {
+      userDetails: state.appInfo.userDetails,
+      authState: state.appInfo.authState
+    }
   };
 }
 
@@ -26191,6 +26231,9 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
     signIn: function signIn(email, password) {
       return dispatch((0, _actions.signIn)(email, password));
+    },
+    resetErrorLog: function resetErrorLog() {
+      return dispatch((0, _actions.resetErrorLog)());
     }
   };
 };
@@ -26722,6 +26765,10 @@ var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactPaginate = __webpack_require__(326);
+
+var _reactPaginate2 = _interopRequireDefault(_reactPaginate);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -26740,10 +26787,10 @@ var MessageBoard = function (_React$Component) {
   }
 
   _createClass(MessageBoard, [{
-    key: "render",
+    key: 'render',
     value: function render() {
       return _react2.default.createElement(
-        "div",
+        'div',
         null,
         _react2.default.createElement(Nav, null),
         _react2.default.createElement(Body, null),
@@ -26765,160 +26812,160 @@ var Nav = function (_React$Component2) {
   }
 
   _createClass(Nav, [{
-    key: "render",
+    key: 'render',
     value: function render() {
       return _react2.default.createElement(
-        "div",
-        { className: "navbar-fixed" },
+        'div',
+        { className: 'navbar-fixed' },
         _react2.default.createElement(
-          "nav",
-          { className: "pink darken-4" },
+          'nav',
+          { className: 'pink darken-4' },
           _react2.default.createElement(
-            "div",
-            { className: "nav-wrapper" },
+            'div',
+            { className: 'nav-wrapper' },
             _react2.default.createElement(
-              "a",
-              { href: "#", id: "brand", className: "brand-logo" },
-              "PostIt"
+              'a',
+              { href: '#', id: 'brand', className: 'brand-logo' },
+              'PostIt'
             ),
             _react2.default.createElement(
-              "a",
-              { href: "#", "data-activates": "mobile-demo", className: "button-collapse" },
+              'a',
+              { href: '#', 'data-activates': 'mobile-demo', className: 'button-collapse' },
               _react2.default.createElement(
-                "i",
-                { className: "material-icons" },
-                "menu"
+                'i',
+                { className: 'material-icons' },
+                'menu'
               )
             ),
             _react2.default.createElement(
-              "ul",
-              { className: "right hide-on-med-and-down" },
+              'ul',
+              { className: 'right hide-on-med-and-down' },
               _react2.default.createElement(
-                "li",
+                'li',
                 null,
                 _react2.default.createElement(
-                  "ul",
+                  'ul',
                   null,
                   _react2.default.createElement(
-                    "li",
+                    'li',
                     null,
                     _react2.default.createElement(
-                      "a",
-                      { className: "dropdown-button tooltipped", "data-position": "bottom", "data-delay": 1000, "data-tooltip": "View notifications", href: "#", "data-activates": "dropdown1" },
+                      'a',
+                      { className: 'dropdown-button tooltipped', 'data-position': 'bottom', 'data-delay': 1000, 'data-tooltip': 'View notifications', href: '#', 'data-activates': 'dropdown1' },
                       _react2.default.createElement(
-                        "i",
-                        { className: "material-icons red-text tootipped" },
-                        "notifications_active"
+                        'i',
+                        { className: 'material-icons red-text tootipped' },
+                        'notifications_active'
                       )
                     )
                   )
                 ),
                 _react2.default.createElement(
-                  "ul",
-                  { id: "dropdown1", className: "dropdowns dropdown-content" },
+                  'ul',
+                  { id: 'dropdown1', className: 'dropdowns dropdown-content' },
                   _react2.default.createElement(
-                    "li",
+                    'li',
                     { className: true },
                     _react2.default.createElement(
-                      "a",
-                      { href: "#", className: "brown-text text-darken-4" },
-                      "NextBigThing",
+                      'a',
+                      { href: '#', className: 'brown-text text-darken-4' },
+                      'NextBigThing',
                       _react2.default.createElement(
-                        "span",
-                        { className: "badge new pink" },
-                        "4"
+                        'span',
+                        { className: 'badge new pink' },
+                        '4'
                       )
                     )
                   ),
                   _react2.default.createElement(
-                    "li",
+                    'li',
                     { className: true },
                     _react2.default.createElement(
-                      "a",
-                      { href: "#", className: "brown-text text-darken-4" },
-                      "DisruptiveTech",
+                      'a',
+                      { href: '#', className: 'brown-text text-darken-4' },
+                      'DisruptiveTech',
                       _react2.default.createElement(
-                        "span",
-                        { className: "badge new pink" },
-                        "4"
+                        'span',
+                        { className: 'badge new pink' },
+                        '4'
                       )
                     )
                   ),
-                  _react2.default.createElement("li", { className: "divider" })
+                  _react2.default.createElement('li', { className: 'divider' })
                 )
               ),
               _react2.default.createElement(
-                "li",
+                'li',
                 null,
                 _react2.default.createElement(
-                  "a",
-                  { className: "waves-effect white-text waves-light" },
-                  "About PostIt"
+                  'a',
+                  { className: 'waves-effect white-text waves-light' },
+                  'About PostIt'
                 )
               ),
               _react2.default.createElement(
-                "li",
+                'li',
                 null,
                 _react2.default.createElement(
-                  "a",
-                  { className: "waves-effect waves-light black btn" },
-                  "Sign out"
+                  'a',
+                  { className: 'waves-effect waves-light black btn' },
+                  'Sign out'
                 )
               )
             ),
             _react2.default.createElement(
-              "ul",
-              { id: "mobile-demo", className: "side-nav" },
+              'ul',
+              { id: 'mobile-demo', className: 'side-nav' },
               _react2.default.createElement(
-                "li",
+                'li',
                 null,
                 _react2.default.createElement(
-                  "div",
-                  { className: "user-details" },
+                  'div',
+                  { className: 'user-details' },
                   _react2.default.createElement(
-                    "div",
-                    { className: "background" },
-                    _react2.default.createElement("img", { src: "images/fire2.png" })
+                    'div',
+                    { className: 'background' },
+                    _react2.default.createElement('img', { src: 'images/fire2.png' })
                   )
                 ),
                 _react2.default.createElement(
-                  "ul",
-                  { className: "collection" },
+                  'ul',
+                  { className: 'collection' },
                   _react2.default.createElement(
-                    "li",
-                    { className: "collection-item avatar black-text" },
+                    'li',
+                    { className: 'collection-item avatar black-text' },
                     _react2.default.createElement(
-                      "i",
-                      { className: "material-icons purple circle" },
-                      "person"
+                      'i',
+                      { className: 'material-icons purple circle' },
+                      'person'
                     ),
                     _react2.default.createElement(
-                      "span",
-                      { className: "title black-text" },
-                      "Philip Newmann"
+                      'span',
+                      { className: 'title black-text' },
+                      'Philip Newmann'
                     ),
                     _react2.default.createElement(
-                      "p",
+                      'p',
                       null,
-                      "philip@newmann.com",
-                      _react2.default.createElement("br", null),
-                      "08033322425"
+                      'philip@newmann.com',
+                      _react2.default.createElement('br', null),
+                      '08033322425'
                     )
                   )
                 )
               ),
               _react2.default.createElement(
-                "li",
+                'li',
                 null,
                 _react2.default.createElement(
-                  "a",
-                  { href: "#" },
+                  'a',
+                  { href: '#' },
                   _react2.default.createElement(
-                    "i",
-                    { className: "large material-icons black-text" },
-                    "info"
+                    'i',
+                    { className: 'large material-icons black-text' },
+                    'info'
                   ),
-                  "About PostIt"
+                  'About PostIt'
                 )
               )
             )
@@ -26941,214 +26988,43 @@ var Body = function (_React$Component3) {
   }
 
   _createClass(Body, [{
-    key: "render",
+    key: 'render',
     value: function render() {
+      var story = ['obi', 'is', 'a', 'very', 'good', 'boy', 'but', 'and', 'he', 'has'];
       return _react2.default.createElement(
-        "div",
-        { id: "body" },
+        'div',
+        { id: 'body' },
         _react2.default.createElement(
-          "div",
-          { id: "main" },
+          'div',
+          { id: 'main' },
           _react2.default.createElement(
-            "h3",
-            { className: "board-title center black-text" },
-            "Message Board"
+            'h3',
+            { className: 'board-title center black-text' },
+            'Message Board'
           ),
           _react2.default.createElement(
-            "div",
-            { className: "row" },
-            _react2.default.createElement(
-              "div",
-              { className: "col s12 m6 l4" },
-              _react2.default.createElement(
-                "div",
-                { className: "card" },
-                _react2.default.createElement(
-                  "div",
-                  { className: "card-image waves-effect waves-block waves-light" },
-                  _react2.default.createElement("img", { className: "activator tooltipped", "data-position": "top", "data-delay": 1000, "data-tooltip": "Click for group info", src: "images/fire2.png" })
-                ),
-                _react2.default.createElement(
-                  "div",
-                  { className: "card-content" },
-                  _react2.default.createElement(
-                    "div",
-                    null,
-                    _react2.default.createElement(
-                      "a",
-                      { href: "#", className: "card-title grey-text text-darken-4" },
-                      "NextBigThing",
-                      _react2.default.createElement(
-                        "span",
-                        { className: "badge new pink" },
-                        "4"
-                      )
-                    ),
-                    _react2.default.createElement(
-                      "p",
-                      { className: "blue-text" },
-                      "Created by Johnson Thomas"
-                    )
-                  )
-                ),
-                _react2.default.createElement(
-                  "div",
-                  { className: "card-reveal" },
-                  _react2.default.createElement(
-                    "div",
-                    null,
-                    _react2.default.createElement(
-                      "span",
-                      { className: "card-title purple-text text-darken-4" },
-                      "Project NextBigThing",
-                      _react2.default.createElement(
-                        "i",
-                        { className: "material-icons right" },
-                        "close"
-                      )
-                    ),
-                    _react2.default.createElement("hr", null)
-                  ),
-                  _react2.default.createElement(
-                    "div",
-                    { className: "group-info" },
-                    _react2.default.createElement(
-                      "p",
-                      { className: "black-text" },
-                      "This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!"
-                    ),
-                    _react2.default.createElement("hr", null)
-                  )
-                )
-              )
-            ),
-            _react2.default.createElement(
-              "div",
-              { className: "col s12 m6 l4" },
-              _react2.default.createElement(
-                "div",
-                { className: "card" },
-                _react2.default.createElement(
-                  "div",
-                  { className: "card-image waves-effect waves-block waves-light" },
-                  _react2.default.createElement("img", { className: "activator tooltipped", "data-position": "top", "data-delay": 1000, "data-tooltip": "Click for group info", src: "images/fire2.png" })
-                ),
-                _react2.default.createElement(
-                  "div",
-                  { className: "card-content" },
-                  _react2.default.createElement(
-                    "div",
-                    null,
-                    _react2.default.createElement(
-                      "a",
-                      { href: "#", className: "card-title grey-text text-darken-4" },
-                      "DisruptiveTech",
-                      _react2.default.createElement(
-                        "span",
-                        { className: "badge new pink" },
-                        "3"
-                      )
-                    ),
-                    _react2.default.createElement(
-                      "p",
-                      { className: "blue-text" },
-                      "Created by Jane Doe"
-                    )
-                  )
-                ),
-                _react2.default.createElement(
-                  "div",
-                  { className: "card-reveal" },
-                  _react2.default.createElement(
-                    "div",
-                    null,
-                    _react2.default.createElement(
-                      "span",
-                      { className: "card-title purple-text text-darken-4" },
-                      "Project DisruptiveIt",
-                      _react2.default.createElement(
-                        "i",
-                        { className: "material-icons right" },
-                        "close"
-                      )
-                    ),
-                    _react2.default.createElement("hr", null)
-                  ),
-                  _react2.default.createElement(
-                    "div",
-                    { className: "group-info" },
-                    _react2.default.createElement(
-                      "p",
-                      { className: "black-text" },
-                      "This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!"
-                    ),
-                    _react2.default.createElement("hr", null)
-                  )
-                )
-              )
-            ),
-            _react2.default.createElement(
-              "div",
-              { className: "col s12 m6 l4" },
-              _react2.default.createElement(
-                "div",
-                { className: "card" },
-                _react2.default.createElement(
-                  "div",
-                  { className: "card-image waves-effect waves-block waves-light" },
-                  _react2.default.createElement("img", { className: "activator tooltipped", "data-position": "top", "data-delay": 1000, "data-tooltip": "Click for group info", src: "images/fire2.png" })
-                ),
-                _react2.default.createElement(
-                  "div",
-                  { className: "card-content" },
-                  _react2.default.createElement(
-                    "div",
-                    null,
-                    _react2.default.createElement(
-                      "a",
-                      { href: "#", className: "card-title grey-text text-darken-4" },
-                      "MakeItHappen"
-                    ),
-                    _react2.default.createElement(
-                      "p",
-                      { className: "blue-text" },
-                      "Created by John Roe"
-                    )
-                  )
-                ),
-                _react2.default.createElement(
-                  "div",
-                  { className: "card-reveal" },
-                  _react2.default.createElement(
-                    "div",
-                    null,
-                    _react2.default.createElement(
-                      "span",
-                      { className: "card-title purple-text text-darken-4" },
-                      "Project MakeItHappen",
-                      _react2.default.createElement(
-                        "i",
-                        { className: "material-icons right" },
-                        "close"
-                      )
-                    ),
-                    _react2.default.createElement("hr", null)
-                  ),
-                  _react2.default.createElement(
-                    "div",
-                    { className: "group-info" },
-                    _react2.default.createElement(
-                      "p",
-                      { className: "black-text" },
-                      "This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!"
-                    ),
-                    _react2.default.createElement("hr", null)
-                  )
-                )
-              )
-            )
+            'div',
+            { className: 'row' },
+            story.map(function (word, index) {
+              return _react2.default.createElement(Group, { key: index });
+            })
           )
         ),
+        _react2.default.createElement(_reactPaginate2.default, { previousLabel: "previous",
+          nextLabel: "next",
+          breakLabel: _react2.default.createElement(
+            'a',
+            { href: '' },
+            '...'
+          ),
+          breakClassName: "break-me",
+          pageCount: 20,
+          marginPagesDisplayed: 2,
+          pageRangeDisplayed: 5,
+          onPageChange: this.handlePageClick,
+          containerClassName: "pagination",
+          subContainerClassName: "pages pagination",
+          activeClassName: "active" }),
         _react2.default.createElement(Pagination, null)
       );
     }
@@ -27167,20 +27043,20 @@ var Footer = function (_React$Component4) {
   }
 
   _createClass(Footer, [{
-    key: "render",
+    key: 'render',
     value: function render() {
       return _react2.default.createElement(
-        "footer",
-        { className: "page-footer pink darken-4" },
+        'footer',
+        { className: 'page-footer pink darken-4' },
         _react2.default.createElement(
-          "div",
-          { className: "shift-left white-text" },
-          "Built by Victor Idongesit"
+          'div',
+          { className: 'shift-left white-text' },
+          'Built by Victor Idongesit'
         ),
         _react2.default.createElement(
-          "div",
-          { className: "footer-copyright shift-left" },
-          "    \xA9 Andela, 2017"
+          'div',
+          { className: 'footer-copyright shift-left' },
+          '    \xA9 Andela, 2017'
         )
       );
     }
@@ -27199,79 +27075,79 @@ var Pagination = function (_React$Component5) {
   }
 
   _createClass(Pagination, [{
-    key: "render",
+    key: 'render',
     value: function render() {
       return _react2.default.createElement(
-        "ul",
-        { className: "pagination center" },
+        'ul',
+        { className: 'pagination center' },
         _react2.default.createElement(
-          "li",
-          { className: "disabled" },
+          'li',
+          { className: 'disabled' },
           _react2.default.createElement(
-            "a",
-            { href: "#!" },
+            'a',
+            { href: '#!' },
             _react2.default.createElement(
-              "i",
-              { className: "material-icons" },
-              "chevron_left"
+              'i',
+              { className: 'material-icons' },
+              'chevron_left'
             )
           )
         ),
         _react2.default.createElement(
-          "li",
-          { className: "active pink" },
+          'li',
+          { className: 'active pink' },
           _react2.default.createElement(
-            "a",
-            { href: "#!" },
-            "1"
+            'a',
+            { href: '#!' },
+            '1'
           )
         ),
         _react2.default.createElement(
-          "li",
-          { className: "waves-effect" },
+          'li',
+          { className: 'waves-effect' },
           _react2.default.createElement(
-            "a",
-            { href: "#!" },
-            "2"
+            'a',
+            { href: '#!' },
+            '2'
           )
         ),
         _react2.default.createElement(
-          "li",
-          { className: "waves-effect" },
+          'li',
+          { className: 'waves-effect' },
           _react2.default.createElement(
-            "a",
-            { href: "#!" },
-            "3"
+            'a',
+            { href: '#!' },
+            '3'
           )
         ),
         _react2.default.createElement(
-          "li",
-          { className: "waves-effect" },
+          'li',
+          { className: 'waves-effect' },
           _react2.default.createElement(
-            "a",
-            { href: "#!" },
-            "4"
+            'a',
+            { href: '#!' },
+            '4'
           )
         ),
         _react2.default.createElement(
-          "li",
-          { className: "waves-effect" },
+          'li',
+          { className: 'waves-effect' },
           _react2.default.createElement(
-            "a",
-            { href: "#!" },
-            "5"
+            'a',
+            { href: '#!' },
+            '5'
           )
         ),
         _react2.default.createElement(
-          "li",
-          { className: "waves-effect" },
+          'li',
+          { className: 'waves-effect' },
           _react2.default.createElement(
-            "a",
-            { href: "#!" },
+            'a',
+            { href: '#!' },
             _react2.default.createElement(
-              "i",
-              { className: "material-icons" },
-              "chevron_right"
+              'i',
+              { className: 'material-icons' },
+              'chevron_right'
             )
           )
         )
@@ -27280,6 +27156,89 @@ var Pagination = function (_React$Component5) {
   }]);
 
   return Pagination;
+}(_react2.default.Component);
+
+var Group = function (_React$Component6) {
+  _inherits(Group, _React$Component6);
+
+  function Group() {
+    _classCallCheck(this, Group);
+
+    return _possibleConstructorReturn(this, (Group.__proto__ || Object.getPrototypeOf(Group)).apply(this, arguments));
+  }
+
+  _createClass(Group, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { className: 'col s12 m6 l4' },
+        _react2.default.createElement(
+          'div',
+          { className: 'card' },
+          _react2.default.createElement(
+            'div',
+            { className: 'card-image waves-effect waves-block waves-light' },
+            _react2.default.createElement('img', { className: 'activator tooltipped', 'data-position': 'top', 'data-delay': 1000, 'data-tooltip': 'Click for group info', src: 'images/fire2.png' })
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'card-content' },
+            _react2.default.createElement(
+              'div',
+              null,
+              _react2.default.createElement(
+                'a',
+                { href: '#', className: 'card-title grey-text text-darken-4' },
+                'NextBigThing',
+                _react2.default.createElement(
+                  'span',
+                  { className: 'badge new pink' },
+                  '4'
+                )
+              ),
+              _react2.default.createElement(
+                'p',
+                { className: 'blue-text' },
+                'Created by Johnson Thomas'
+              )
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'card-reveal' },
+            _react2.default.createElement(
+              'div',
+              null,
+              _react2.default.createElement(
+                'span',
+                { className: 'card-title purple-text text-darken-4' },
+                'Project NextBigThing',
+                _react2.default.createElement(
+                  'i',
+                  { className: 'material-icons right' },
+                  'close'
+                )
+              ),
+              _react2.default.createElement('hr', null)
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'group-info' },
+              _react2.default.createElement(
+                'p',
+                { className: 'black-text' },
+                'This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!'
+              ),
+              _react2.default.createElement('hr', null)
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return Group;
 }(_react2.default.Component);
 
 exports.default = MessageBoard;
@@ -41973,41 +41932,71 @@ var errorReducer = function errorReducer() {
         errored: true,
         message: action.message
       };
-    case 'SIGN_UP_ERROR':
-      return {
-        errored: true,
-        message: action.message
-      };
     case 'ADD_MEMBER_ERROR':
-      return {
-        errored: true,
-        message: action.message
-      };
+      return Object.assign({}, state, {
+        message: action.message,
+        errored: true
+      });
+    case 'ADD_MEMBER_SUCCESS':
+      return Object.assign({}, state, {
+        message: action.message,
+        errored: false
+      });
     case 'DELETE_MEMBER_ERROR':
-      return {
-        errored: true,
-        message: action.message
-      };
+      return Object.assign({}, state, {
+        message: action.message,
+        errored: true
+      });
+    case 'DELETE_MEMBER_SUCCESS':
+      return Object.assign({}, state, {
+        message: action.message,
+        errored: false
+      });
     case 'GET_GROUP_MEMBERS_ERROR':
-      return {
-        errored: true,
-        message: action.message
-      };
+      return Object.assign({}, state, {
+        message: action.message,
+        errored: true
+      });
+    case 'GET_GROUP_MEMBERS_SUCCESS':
+      return Object.assign({}, state, {
+        message: action.message,
+        errored: false
+      });
     case 'GET_ALL_GROUPS_ERROR':
-      return {
-        errored: true,
-        message: action.message
-      };
+      return Object.assign({}, state, {
+        message: action.message,
+        errored: true
+      });
+    case 'GET_ALL_GROUPS_SUCCESS':
+      return Object.assign({}, state, {
+        message: action.message,
+        errored: true
+      });
     case 'POST_MESSAGE_ERROR':
-      return {
-        errored: true,
-        message: action.message
-      };
+      return Object.assign({}, state, {
+        message: action.message,
+        errored: true
+      });
+    case 'POST_MESSAGE_SUCCESS':
+      return Object.assign({}, state, {
+        message: action.message,
+        errored: false
+      });
     case 'GET_MESSAGES_ERROR':
-      return {
-        errored: true,
-        message: action.message
-      };
+      return Object.assign({}, state, {
+        message: action.message,
+        errored: true
+      });
+    case 'GET_MESSAGES_SUCCESS':
+      return Object.assign({}, state, {
+        message: action.message,
+        errored: false
+      });
+    case 'RESET_ERROR_LOG':
+      return Object.assign({}, state, {
+        message: null,
+        errored: false
+      });
     default:
       return state;
   }
@@ -42157,9 +42146,10 @@ var userReducer = function userReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var action = arguments[1];
 
+  var userDetails = action.userDetails;
   switch (action.type) {
     case 'SIGN_IN_SUCCESS':
-      return action.userDetails;
+      return Object.assign({}, userDetails);
     case 'SIGN_UP_SUCCESS':
       return action.userDetails;
     default:
@@ -42180,19 +42170,19 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var structurePostItMembersFromDb = function structurePostItMembersFromDb(state, allMembers) {
-  var appState = Object.assign({}, state);
+  var postItMembers = Object.assign({}, state);
   for (var i = 0; i < allMembers.length; i += 1) {
-    appState.members[allMembers[i].id] = allMembers[i];
+    postItMembers.members[allMembers[i].id] = allMembers[i];
   }
-  return appState;
+  return postItMembers;
 };
 
 var structurePostitGroupsFromDb = function structurePostitGroupsFromDb(state, allGroups) {
-  var appState = Object.assign({}, state);
+  var postItGroups = Object.assign({}, state);
   for (var i = 0; i < allGroups.length; i += 1) {
-    appState.groups[allGroups[i].id] = allGroups[i];
+    postItGroups.groups[allGroups[i].id] = allGroups[i];
   }
-  return appState;
+  return postItGroups;
 };
 
 var postItInfoReducer = function postItInfoReducer() {
@@ -42314,13 +42304,13 @@ var authStateReducer = function authStateReducer() {
   var authState = Object.assign({}, state);
   switch (action.type) {
     case 'SIGN_IN_SUCCESS':
-      return Object.assign({}, state, { signedIn: true, redirect: true });
+      return Object.assign({}, state, { signedIn: true, message: action.message, redirect: true });
     case 'SIGN_UP_SUCCESS':
-      return Object.assign({}, state, { signedIn: true, redirect: true });
-    case 'SIGN_IN_FAILURE':
-      return Object.assign({}, state, { signedIn: false, redirect: false });
-    case 'SIGN_UP_FAILURE':
-      return Object.assign({}, state, { signedIn: false, redirect: false });
+      return Object.assign({}, state, { signedIn: true, message: action.messsage, redirect: true });
+    case 'SIGN_IN_ERROR':
+      return Object.assign({}, state, { signedIn: false, message: action.messsage, redirect: false });
+    case 'SIGN_UP_ERROR':
+      return Object.assign({}, state, { signedIn: false, message: action.messsage, redirect: false });
     default:
       return authState;
   }
@@ -45208,7 +45198,7 @@ var dataService = function dataService(store) {
             if (err) {
               return next({
                 type: 'SIGN_IN_ERROR',
-                err: err
+                message: err.message
               });
             }
             var userDetails = res.body;
@@ -45230,7 +45220,7 @@ var dataService = function dataService(store) {
             if (err) {
               return next({
                 type: 'SIGN_UP_ERROR',
-                err: err
+                message: err.message
               });
             }
             var userDetails = res.body;
@@ -45250,7 +45240,7 @@ var dataService = function dataService(store) {
             if (err) {
               return next({
                 type: 'POST_MESSAGE_ERROR',
-                err: err
+                message: err.message
               });
             }
             var message = res.body;
@@ -45268,7 +45258,7 @@ var dataService = function dataService(store) {
             if (err) {
               return next({
                 type: 'ADD_MEMBER_SUCCESS',
-                err: err
+                message: err.message
               });
             }
             var members = res.body;
@@ -45284,7 +45274,7 @@ var dataService = function dataService(store) {
             if (err) {
               return next({
                 type: 'DELETE_A_GROUP_ERROR',
-                err: err
+                message: err.message
               });
             }
             var data = res.body;
@@ -45305,7 +45295,7 @@ var dataService = function dataService(store) {
             if (err) {
               return next({
                 type: 'CREATE_GROUP_ERROR',
-                err: err
+                message: err.message
               });
             }
             var data = res.body;
@@ -45321,7 +45311,7 @@ var dataService = function dataService(store) {
             if (err) {
               return next({
                 type: 'GET_MESSAGES_ERROR',
-                err: err
+                message: err.message
               });
             }
             var messages = res.body;
@@ -45337,7 +45327,7 @@ var dataService = function dataService(store) {
             if (err) {
               return next({
                 type: 'GET_GROUP_MEMBERS_ERROR',
-                err: err
+                message: err.message
               });
             }
             var members = res.body;
@@ -45353,7 +45343,7 @@ var dataService = function dataService(store) {
             if (err) {
               return next({
                 type: 'GET_POST_IT_MEMBERS_ERROR',
-                err: err
+                message: err.message
               });
             }
             var postItUsers = res.body;
@@ -45369,7 +45359,7 @@ var dataService = function dataService(store) {
             if (err) {
               return next({
                 type: 'GET_ALL_GROUPS_ERROR',
-                err: err
+                message: err.message
               });
             }
             var postItGroups = res.body;
@@ -45385,7 +45375,7 @@ var dataService = function dataService(store) {
             if (err) {
               return next({
                 type: 'GET_ALL_GROUPS_FOR_A_USER_ERROR',
-                err: err
+                message: err.message
               });
             }
             var data = res.body;
@@ -45401,7 +45391,7 @@ var dataService = function dataService(store) {
             if (err) {
               return next({
                 type: 'DELETE_GROUP_MEMBER_ERROR',
-                err: err
+                message: err.message
               });
             }
             var data = res.body;
@@ -47628,7 +47618,7 @@ exports = module.exports = __webpack_require__(114)(undefined);
 exports.push([module.i, "@import url(https://fonts.googleapis.com/icon?family=Material+Icons);", ""]);
 
 // module
-exports.push([module.i, "/* Style the tab */\ndiv.tab {\n  overflow: hidden;\n  border: 1px solid #ccc;\n  background-color: #f1f1f1; }\n\n/* Style the buttons inside the tab */\ndiv.tab button {\n  background-color: inherit;\n  float: left;\n  border: none;\n  outline: none;\n  cursor: pointer;\n  padding: 14px 16px;\n  transition: 0.3s; }\n\n/* Change background color of buttons on hover */\ndiv.tab button:hover {\n  background-color: #ddd; }\n\n/* Create an active/current tablink class */\ndiv.tab button.active {\n  background-color: #ccc; }\n\n/* Style the tab content */\n.tabcontent {\n  display: none;\n  padding: 6px 12px;\n  border: 1px solid #ccc;\n  border-top: none; }\n\n#body {\n  background-image: url(" + __webpack_require__(303) + ");\n  background-repeat: repeat-y;\n  background-position: center;\n  background-size: cover;\n  background-attachment: fixed; }\n\n#brand {\n  padding-left: 20px; }\n\n.signin-form {\n  margin-top: 20px;\n  padding: 20px;\n  border-style: solid;\n  border-radius: 20px;\n  border-color: black; }\n\n.signup-form {\n  margin-top: 20px;\n  padding: 20px;\n  border-style: solid;\n  border-radius: 20px;\n  border-color: black;\n  padding-bottom: 30px; }\n\n.group-details {\n  background-color: white;\n  padding: 20px; }\n\n.message {\n  padding: 10px;\n  margin: 2px;\n  background: rgba(0, 0, 0, 0.5); }\n\n.adminmessage {\n  padding: 10px;\n  margin: 2px;\n  background: rgba(136, 14, 79, 0.5); }\n\n#body {\n  display: flex;\n  min-height: 100vh;\n  flex-direction: column; }\n\nmain {\n  flex: 1 0 auto; }\n\n.transparent-body {\n  background: rgba(255, 255, 255, 0); }\n\n.shift-left {\n  margin-left: 10px; }\n\n#main {\n  flex: 1 0 auto; }\n\n.revealed {\n  margin: 30px; }\n\n.send-button {\n  position: relative;\n  right: 10px;\n  top: 10px; }\n\n.group-info {\n  overflow: auto;\n  height: 70px;\n  font-family: 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; }\n\n.dropdowns {\n  width: auto !important; }\n\n.input-field {\n  float: left;\n  width: 85%; }\n\n.send-button {\n  float: right;\n  width: 12%; }\n\n.members-list-container {\n  height: 400px;\n  position: fixed;\n  right: 30px;\n  bottom: 80px;\n  border: solid;\n  padding: 20px; }\n\n.members-list {\n  height: 200px;\n  overflow: auto;\n  width: auto !important; }\n\n.project-title {\n  padding: 10px;\n  background: rgba(255, 255, 255, 0.5);\n  width: 200px; }\n\n.searchbox {\n  background: rgba(0, 0, 0, 0.5);\n  height: 50px; }\n\n.members-list-side-nav {\n  height: 200px;\n  overflow: auto; }\n\n.navbar-fixed {\n  z-index: 9999; }\n\n::-webkit-input-placeholder {\n  color: rgba(0, 0, 0, 0.5); }\n\n/* label underline focus color */\n.input-field input[type=text]:focus {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n.input-field input[type=password]:focus {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n.input-field input[type=email]:focus {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n.input-field input[type=text]:focus + label {\n  color: #000; }\n\n.input-field input[type=password]:focus + label {\n  color: #000; }\n\n.input-field input[type=email]:focus + label {\n  color: #000; }\n\n.input-field input[type=text].valid {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n/* invalid color */\n.input-field input[type=email].invalid {\n  border-bottom: 1px solid #880e4f;\n  box-shadow: 0 1px 0 0 #880e4f; }\n", ""]);
+exports.push([module.i, "/* Style the tab */\ndiv.tab {\n  overflow: hidden;\n  border: 1px solid #ccc;\n  background-color: #f1f1f1; }\n\n/* Style the buttons inside the tab */\ndiv.tab button {\n  background-color: inherit;\n  float: left;\n  border: none;\n  outline: none;\n  cursor: pointer;\n  padding: 14px 16px;\n  transition: 0.3s; }\n\n/* Change background color of buttons on hover */\ndiv.tab button:hover {\n  background-color: #ddd; }\n\n/* Create an active/current tablink class */\ndiv.tab button.active {\n  background-color: #ccc; }\n\n/* Style the tab content */\n.tabcontent {\n  display: none;\n  padding: 6px 12px;\n  border: 1px solid #ccc;\n  border-top: none; }\n\n#body {\n  background-image: url(" + __webpack_require__(303) + ");\n  background-repeat: repeat-y;\n  background-position: center;\n  background-size: cover;\n  background-attachment: fixed; }\n\n#brand {\n  padding-left: 20px; }\n\n.signin-form {\n  margin-top: 20px;\n  padding: 20px;\n  border-style: solid;\n  border-radius: 20px;\n  border-color: black; }\n\n.signup-form {\n  margin-top: 20px;\n  padding: 20px;\n  border-style: solid;\n  border-radius: 20px;\n  border-color: black;\n  padding-bottom: 30px; }\n\n.group-details {\n  background-color: white;\n  padding: 20px; }\n\n.message {\n  padding: 10px;\n  margin: 2px;\n  background: rgba(0, 0, 0, 0.5); }\n\n.adminmessage {\n  padding: 10px;\n  margin: 2px;\n  background: rgba(136, 14, 79, 0.5); }\n\n#body {\n  display: flex;\n  min-height: 100vh;\n  flex-direction: column; }\n\nmain {\n  flex: 1 0 auto; }\n\n.transparent-body {\n  background: rgba(255, 255, 255, 0); }\n\n.shift-left {\n  margin-left: 10px; }\n\n#main {\n  flex: 1 0 auto; }\n\n.revealed {\n  margin: 30px; }\n\n.send-button {\n  position: relative;\n  right: 10px;\n  top: 10px; }\n\n.group-info {\n  overflow: auto;\n  height: 70px;\n  font-family: 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; }\n\n.dropdowns {\n  width: auto !important; }\n\n.input-field {\n  float: left;\n  width: 85%; }\n\n.send-button {\n  float: right;\n  width: 12%; }\n\n.members-list-container {\n  height: 400px;\n  position: fixed;\n  right: 30px;\n  bottom: 80px;\n  border: solid;\n  padding: 20px; }\n\n.members-list {\n  height: 200px;\n  overflow: auto;\n  width: auto !important; }\n\n.project-title {\n  padding: 10px;\n  background: rgba(255, 255, 255, 0.5);\n  width: 200px; }\n\n.searchbox {\n  background: rgba(0, 0, 0, 0.5);\n  height: 50px; }\n\n.members-list-side-nav {\n  height: 200px;\n  overflow: auto; }\n\n.navbar-fixed {\n  z-index: 9999; }\n\n::-webkit-input-placeholder {\n  color: rgba(0, 0, 0, 0.5); }\n\n/* label underline focus color */\n.input-field input[type=text]:focus {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n.input-field input[type=password]:focus {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n.input-field input[type=email]:focus {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n.input-field input[type=text]:focus + label {\n  color: #000; }\n\n.input-field input[type=password]:focus + label {\n  color: #000; }\n\n.input-field input[type=email]:focus + label {\n  color: #000; }\n\n.input-field input[type=text].valid {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n/* invalid color */\n.input-field input[type=email].invalid {\n  border-bottom: 1px solid #880e4f;\n  box-shadow: 0 1px 0 0 #880e4f; }\n\n.notification {\n  z-index: -200000; }\n", ""]);
 
 // exports
 
@@ -56678,7 +56668,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var signIn = exports.signIn = function signIn(email, password) {
-  console.log(email);
   return {
     type: 'SIGN_IN',
     email: email,
@@ -56766,6 +56755,12 @@ var deleteMember = exports.deleteMember = function deleteMember(ownerId, email, 
     ownerId: ownerId,
     email: email,
     groupId: groupId
+  };
+};
+
+var resetErrorLog = exports.resetErrorLog = function resetErrorLog() {
+  return {
+    type: 'RESET_ERROR_LOG'
   };
 };
 
@@ -56872,6 +56867,1958 @@ var Header = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = Header;
+
+/***/ }),
+/* 312 */,
+/* 313 */,
+/* 314 */,
+/* 315 */,
+/* 316 */,
+/* 317 */,
+/* 318 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright 2013-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ */
+
+
+
+var React = __webpack_require__(4);
+var factory = __webpack_require__(135);
+
+if (typeof React === 'undefined') {
+  throw Error(
+    'create-react-class could not find the React object. If you are using script tags, ' +
+      'make sure that React is being loaded before create-react-class.'
+  );
+}
+
+// Hack to grab NoopUpdateQueue from isomorphic React
+var ReactNoopUpdateQueue = new React.Component().updater;
+
+module.exports = factory(
+  React.Component,
+  React.isValidElement,
+  ReactNoopUpdateQueue
+);
+
+
+/***/ }),
+/* 319 */
+/***/ (function(module, exports) {
+
+var CONSTANTS = {
+
+  // Positions
+  positions: {
+    tl: 'tl',
+    tr: 'tr',
+    tc: 'tc',
+    bl: 'bl',
+    br: 'br',
+    bc: 'bc'
+  },
+
+  // Levels
+  levels: {
+    success: 'success',
+    error: 'error',
+    warning: 'warning',
+    info: 'info'
+  },
+
+  // Notification defaults
+  notification: {
+    title: null,
+    message: null,
+    level: null,
+    position: 'tr',
+    autoDismiss: 5,
+    dismissible: true,
+    action: null
+  }
+};
+
+
+module.exports = CONSTANTS;
+
+
+/***/ }),
+/* 320 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+
+
+/* eslint-disable no-unused-vars */
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+function toObject(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (err) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+module.exports = shouldUseNative() ? Object.assign : function (target, source) {
+	var from;
+	var to = toObject(target);
+	var symbols;
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = Object(arguments[s]);
+
+		for (var key in from) {
+			if (hasOwnProperty.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
+
+		if (getOwnPropertySymbols) {
+			symbols = getOwnPropertySymbols(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
+		}
+	}
+
+	return to;
+};
+
+
+/***/ }),
+/* 321 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var React = __webpack_require__(4);
+var createReactClass = __webpack_require__(318);
+var PropTypes = __webpack_require__(8);
+var merge = __webpack_require__(320);
+var NotificationContainer = __webpack_require__(322);
+var Constants = __webpack_require__(319);
+var Styles = __webpack_require__(325);
+
+var NotificationSystem = createReactClass({
+
+  uid: 3400,
+
+  _isMounted: false,
+
+  _getStyles: {
+    overrideStyle: {},
+
+    overrideWidth: null,
+
+    setOverrideStyle: function(style) {
+      this.overrideStyle = style;
+    },
+
+    wrapper: function() {
+      if (!this.overrideStyle) return {};
+      return merge({}, Styles.Wrapper, this.overrideStyle.Wrapper);
+    },
+
+    container: function(position) {
+      var override = this.overrideStyle.Containers || {};
+      if (!this.overrideStyle) return {};
+
+      this.overrideWidth = Styles.Containers.DefaultStyle.width;
+
+      if (override.DefaultStyle && override.DefaultStyle.width) {
+        this.overrideWidth = override.DefaultStyle.width;
+      }
+
+      if (override[position] && override[position].width) {
+        this.overrideWidth = override[position].width;
+      }
+
+      return merge({}, Styles.Containers.DefaultStyle, Styles.Containers[position], override.DefaultStyle, override[position]);
+    },
+
+    elements: {
+      notification: 'NotificationItem',
+      title: 'Title',
+      messageWrapper: 'MessageWrapper',
+      dismiss: 'Dismiss',
+      action: 'Action',
+      actionWrapper: 'ActionWrapper'
+    },
+
+    byElement: function(element) {
+      var self = this;
+      return function(level) {
+        var _element = self.elements[element];
+        var override = self.overrideStyle[_element] || {};
+        if (!self.overrideStyle) return {};
+        return merge({}, Styles[_element].DefaultStyle, Styles[_element][level], override.DefaultStyle, override[level]);
+      };
+    }
+  },
+
+  _didNotificationRemoved: function(uid) {
+    var notification;
+    var notifications = this.state.notifications.filter(function(toCheck) {
+      if (toCheck.uid === uid) {
+        notification = toCheck;
+        return false;
+      }
+      return true;
+    });
+
+    if (this._isMounted) {
+      this.setState({ notifications: notifications });
+    }
+
+    if (notification && notification.onRemove) {
+      notification.onRemove(notification);
+    }
+  },
+
+  getInitialState: function() {
+    return {
+      notifications: []
+    };
+  },
+
+  propTypes: {
+    style: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.object
+    ]),
+    noAnimation: PropTypes.bool,
+    allowHTML: PropTypes.bool
+  },
+
+  getDefaultProps: function() {
+    return {
+      style: {},
+      noAnimation: false,
+      allowHTML: false
+    };
+  },
+
+  addNotification: function(notification) {
+    var _notification = merge({}, Constants.notification, notification);
+    var notifications = this.state.notifications;
+    var i;
+
+    if (!_notification.level) {
+      throw new Error('notification level is required.');
+    }
+
+    if (Object.keys(Constants.levels).indexOf(_notification.level) === -1) {
+      throw new Error('\'' + _notification.level + '\' is not a valid level.');
+    }
+
+    if (isNaN(_notification.autoDismiss)) {
+      throw new Error('\'autoDismiss\' must be a number.');
+    }
+
+    if (Object.keys(Constants.positions).indexOf(_notification.position) === -1) {
+      throw new Error('\'' + _notification.position + '\' is not a valid position.');
+    }
+
+    // Some preparations
+    _notification.position = _notification.position.toLowerCase();
+    _notification.level = _notification.level.toLowerCase();
+    _notification.autoDismiss = parseInt(_notification.autoDismiss, 10);
+
+    _notification.uid = _notification.uid || this.uid;
+    _notification.ref = 'notification-' + _notification.uid;
+    this.uid += 1;
+
+    // do not add if the notification already exists based on supplied uid
+    for (i = 0; i < notifications.length; i++) {
+      if (notifications[i].uid === _notification.uid) {
+        return false;
+      }
+    }
+
+    notifications.push(_notification);
+
+    if (typeof _notification.onAdd === 'function') {
+      notification.onAdd(_notification);
+    }
+
+    this.setState({
+      notifications: notifications
+    });
+
+    return _notification;
+  },
+
+  getNotificationRef: function(notification) {
+    var self = this;
+    var foundNotification = null;
+
+    Object.keys(this.refs).forEach(function(container) {
+      if (container.indexOf('container') > -1) {
+        Object.keys(self.refs[container].refs).forEach(function(_notification) {
+          var uid = notification.uid ? notification.uid : notification;
+          if (_notification === 'notification-' + uid) {
+            // NOTE: Stop iterating further and return the found notification.
+            // Since UIDs are uniques and there won't be another notification found.
+            foundNotification = self.refs[container].refs[_notification];
+            return;
+          }
+        });
+      }
+    });
+
+    return foundNotification;
+  },
+
+  removeNotification: function(notification) {
+    var foundNotification = this.getNotificationRef(notification);
+    return foundNotification && foundNotification._hideNotification();
+  },
+
+  editNotification: function(notification, newNotification) {
+    var foundNotification = null;
+    // NOTE: Find state notification to update by using
+    // `setState` and forcing React to re-render the component.
+    var uid = notification.uid ? notification.uid : notification;
+
+    var newNotifications = this.state.notifications.filter(function(stateNotification) {
+      if (uid === stateNotification.uid) {
+        foundNotification = stateNotification;
+        return false;
+      }
+
+      return true;
+    });
+
+
+    if (!foundNotification) {
+      return;
+    }
+
+    newNotifications.push(
+      merge(
+        {},
+        foundNotification,
+        newNotification
+      )
+    );
+
+    this.setState({
+      notifications: newNotifications
+    });
+  },
+
+  clearNotifications: function() {
+    var self = this;
+    Object.keys(this.refs).forEach(function(container) {
+      if (container.indexOf('container') > -1) {
+        Object.keys(self.refs[container].refs).forEach(function(_notification) {
+          self.refs[container].refs[_notification]._hideNotification();
+        });
+      }
+    });
+  },
+
+  componentDidMount: function() {
+    this._getStyles.setOverrideStyle(this.props.style);
+    this._isMounted = true;
+  },
+
+  componentWillUnmount: function() {
+    this._isMounted = false;
+  },
+
+  render: function() {
+    var self = this;
+    var containers = null;
+    var notifications = this.state.notifications;
+
+    if (notifications.length) {
+      containers = Object.keys(Constants.positions).map(function(position) {
+        var _notifications = notifications.filter(function(notification) {
+          return position === notification.position;
+        });
+
+        if (!_notifications.length) {
+          return null;
+        }
+
+        return (
+          React.createElement(NotificationContainer, {
+            ref:  'container-' + position, 
+            key:  position, 
+            position:  position, 
+            notifications:  _notifications, 
+            getStyles:  self._getStyles, 
+            onRemove:  self._didNotificationRemoved, 
+            noAnimation:  self.props.noAnimation, 
+            allowHTML:  self.props.allowHTML}
+          )
+        );
+      });
+    }
+
+
+    return (
+      React.createElement("div", {className: "notifications-wrapper", style:  this._getStyles.wrapper() }, 
+         containers 
+      )
+    );
+  }
+});
+
+module.exports = NotificationSystem;
+
+
+/***/ }),
+/* 322 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var React = __webpack_require__(4);
+var createReactClass = __webpack_require__(318);
+var PropTypes = __webpack_require__(8);
+var NotificationItem = __webpack_require__(323);
+var Constants = __webpack_require__(319);
+
+var NotificationContainer = createReactClass({
+
+  propTypes: {
+    position: PropTypes.string.isRequired,
+    notifications: PropTypes.array.isRequired,
+    getStyles: PropTypes.object
+  },
+
+  _style: {},
+
+  componentWillMount: function() {
+    // Fix position if width is overrided
+    this._style = this.props.getStyles.container(this.props.position);
+
+    if (this.props.getStyles.overrideWidth && (this.props.position === Constants.positions.tc || this.props.position === Constants.positions.bc)) {
+      this._style.marginLeft = -(this.props.getStyles.overrideWidth / 2);
+    }
+  },
+
+  render: function() {
+    var self = this;
+    var notifications;
+
+    if ([Constants.positions.bl, Constants.positions.br, Constants.positions.bc].indexOf(this.props.position) > -1) {
+      this.props.notifications.reverse();
+    }
+
+    notifications = this.props.notifications.map(function(notification) {
+      return (
+        React.createElement(NotificationItem, {
+          ref:  'notification-' + notification.uid, 
+          key:  notification.uid, 
+          notification:  notification, 
+          getStyles:  self.props.getStyles, 
+          onRemove:  self.props.onRemove, 
+          noAnimation:  self.props.noAnimation, 
+          allowHTML:  self.props.allowHTML, 
+          children:  self.props.children}
+        )
+      );
+    });
+
+    return (
+      React.createElement("div", {className:  'notifications-' + this.props.position, style:  this._style}, 
+         notifications 
+      )
+    );
+  }
+});
+
+
+module.exports = NotificationContainer;
+
+
+/***/ }),
+/* 323 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var React = __webpack_require__(4);
+var createReactClass = __webpack_require__(318);
+var PropTypes = __webpack_require__(8);
+var ReactDOM = __webpack_require__(138);
+var Constants = __webpack_require__(319);
+var Helpers = __webpack_require__(324);
+var merge = __webpack_require__(320);
+
+/* From Modernizr */
+var whichTransitionEvent = function() {
+  var el = document.createElement('fakeelement');
+  var transition;
+  var transitions = {
+    transition: 'transitionend',
+    OTransition: 'oTransitionEnd',
+    MozTransition: 'transitionend',
+    WebkitTransition: 'webkitTransitionEnd'
+  };
+
+  Object.keys(transitions).forEach(function(transitionKey) {
+    if (el.style[transitionKey] !== undefined) {
+      transition = transitions[transitionKey];
+    }
+  });
+
+  return transition;
+};
+
+var NotificationItem = createReactClass({
+
+  propTypes: {
+    notification: PropTypes.object,
+    getStyles: PropTypes.object,
+    onRemove: PropTypes.func,
+    allowHTML: PropTypes.bool,
+    noAnimation: PropTypes.bool,
+    children: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.element
+    ])
+  },
+
+  getDefaultProps: function() {
+    return {
+      noAnimation: false,
+      onRemove: function() {},
+      allowHTML: false
+    };
+  },
+
+  getInitialState: function() {
+    return {
+      visible: undefined,
+      removed: false
+    };
+  },
+
+  componentWillMount: function() {
+    var getStyles = this.props.getStyles;
+    var level = this.props.notification.level;
+
+    this._noAnimation = this.props.noAnimation;
+
+    this._styles = {
+      notification: getStyles.byElement('notification')(level),
+      title: getStyles.byElement('title')(level),
+      dismiss: getStyles.byElement('dismiss')(level),
+      messageWrapper: getStyles.byElement('messageWrapper')(level),
+      actionWrapper: getStyles.byElement('actionWrapper')(level),
+      action: getStyles.byElement('action')(level)
+    };
+
+    if (!this.props.notification.dismissible) {
+      this._styles.notification.cursor = 'default';
+    }
+  },
+
+  _styles: {},
+
+  _notificationTimer: null,
+
+  _height: 0,
+
+  _noAnimation: null,
+
+  _isMounted: false,
+
+  _removeCount: 0,
+
+  _getCssPropertyByPosition: function() {
+    var position = this.props.notification.position;
+    var css = {};
+
+    switch (position) {
+    case Constants.positions.tl:
+    case Constants.positions.bl:
+      css = {
+        property: 'left',
+        value: -200
+      };
+      break;
+
+    case Constants.positions.tr:
+    case Constants.positions.br:
+      css = {
+        property: 'right',
+        value: -200
+      };
+      break;
+
+    case Constants.positions.tc:
+      css = {
+        property: 'top',
+        value: -100
+      };
+      break;
+
+    case Constants.positions.bc:
+      css = {
+        property: 'bottom',
+        value: -100
+      };
+      break;
+
+    default:
+    }
+
+    return css;
+  },
+
+  _defaultAction: function(event) {
+    var notification = this.props.notification;
+
+    event.preventDefault();
+    this._hideNotification();
+    if (typeof notification.action.callback === 'function') {
+      notification.action.callback();
+    }
+  },
+
+  _hideNotification: function() {
+    if (this._notificationTimer) {
+      this._notificationTimer.clear();
+    }
+
+    if (this._isMounted) {
+      this.setState({
+        visible: false,
+        removed: true
+      });
+    }
+
+    if (this._noAnimation) {
+      this._removeNotification();
+    }
+  },
+
+  _removeNotification: function() {
+    this.props.onRemove(this.props.notification.uid);
+  },
+
+  _dismiss: function() {
+    if (!this.props.notification.dismissible) {
+      return;
+    }
+
+    this._hideNotification();
+  },
+
+  _showNotification: function() {
+    var self = this;
+    setTimeout(function() {
+      if (self._isMounted) {
+        self.setState({
+          visible: true
+        });
+      }
+    }, 50);
+  },
+
+  _onTransitionEnd: function() {
+    if (this._removeCount > 0) return;
+    if (this.state.removed) {
+      this._removeCount++;
+      this._removeNotification();
+    }
+  },
+
+  componentDidMount: function() {
+    var self = this;
+    var transitionEvent = whichTransitionEvent();
+    var notification = this.props.notification;
+    var element = ReactDOM.findDOMNode(this);
+
+    this._height = element.offsetHeight;
+
+    this._isMounted = true;
+
+    // Watch for transition end
+    if (!this._noAnimation) {
+      if (transitionEvent) {
+        element.addEventListener(transitionEvent, this._onTransitionEnd);
+      } else {
+        this._noAnimation = true;
+      }
+    }
+
+
+    if (notification.autoDismiss) {
+      this._notificationTimer = new Helpers.Timer(function() {
+        self._hideNotification();
+      }, notification.autoDismiss * 1000);
+    }
+
+    this._showNotification();
+  },
+
+  _handleMouseEnter: function() {
+    var notification = this.props.notification;
+    if (notification.autoDismiss) {
+      this._notificationTimer.pause();
+    }
+  },
+
+  _handleMouseLeave: function() {
+    var notification = this.props.notification;
+    if (notification.autoDismiss) {
+      this._notificationTimer.resume();
+    }
+  },
+
+  componentWillUnmount: function() {
+    var element = ReactDOM.findDOMNode(this);
+    var transitionEvent = whichTransitionEvent();
+    element.removeEventListener(transitionEvent, this._onTransitionEnd);
+    this._isMounted = false;
+  },
+
+  _allowHTML: function(string) {
+    return { __html: string };
+  },
+
+  render: function() {
+    var notification = this.props.notification;
+    var className = 'notification notification-' + notification.level;
+    var notificationStyle = merge({}, this._styles.notification);
+    var cssByPos = this._getCssPropertyByPosition();
+    var dismiss = null;
+    var actionButton = null;
+    var title = null;
+    var message = null;
+
+    if (this.state.visible) {
+      className += ' notification-visible';
+    } else if (this.state.visible === false) {
+      className += ' notification-hidden';
+    }
+
+    if (!notification.dismissible) {
+      className += ' notification-not-dismissible';
+    }
+
+    if (this.props.getStyles.overrideStyle) {
+      if (!this.state.visible && !this.state.removed) {
+        notificationStyle[cssByPos.property] = cssByPos.value;
+      }
+
+      if (this.state.visible && !this.state.removed) {
+        notificationStyle.height = this._height;
+        notificationStyle[cssByPos.property] = 0;
+      }
+
+      if (this.state.removed) {
+        notificationStyle.overlay = 'hidden';
+        notificationStyle.height = 0;
+        notificationStyle.marginTop = 0;
+        notificationStyle.paddingTop = 0;
+        notificationStyle.paddingBottom = 0;
+      }
+      notificationStyle.opacity = this.state.visible ? this._styles.notification.isVisible.opacity : this._styles.notification.isHidden.opacity;
+    }
+
+    if (notification.title) {
+      title = React.createElement("h4", {className: "notification-title", style:  this._styles.title},  notification.title);
+    }
+
+    if (notification.message) {
+      if (this.props.allowHTML) {
+        message = (
+          React.createElement("div", {className: "notification-message", style:  this._styles.messageWrapper, dangerouslySetInnerHTML:  this._allowHTML(notification.message) })
+        );
+      } else {
+        message = (
+          React.createElement("div", {className: "notification-message", style:  this._styles.messageWrapper},  notification.message)
+        );
+      }
+    }
+
+    if (notification.dismissible) {
+      dismiss = React.createElement("span", {className: "notification-dismiss", style:  this._styles.dismiss}, "×");
+    }
+
+    if (notification.action) {
+      actionButton = (
+        React.createElement("div", {className: "notification-action-wrapper", style:  this._styles.actionWrapper}, 
+          React.createElement("button", {className: "notification-action-button", 
+            onClick:  this._defaultAction, 
+            style:  this._styles.action}, 
+               notification.action.label
+          )
+        )
+      );
+    }
+
+    if (notification.children) {
+      actionButton = notification.children;
+    }
+
+    return (
+      React.createElement("div", {className:  className, onClick:  this._dismiss, onMouseEnter:  this._handleMouseEnter, onMouseLeave:  this._handleMouseLeave, style:  notificationStyle }, 
+         title, 
+         message, 
+         dismiss, 
+         actionButton 
+      )
+    );
+  }
+
+});
+
+module.exports = NotificationItem;
+
+
+/***/ }),
+/* 324 */
+/***/ (function(module, exports) {
+
+var Helpers = {
+  Timer: function(callback, delay) {
+    var timerId;
+    var start;
+    var remaining = delay;
+
+    this.pause = function() {
+      clearTimeout(timerId);
+      remaining -= new Date() - start;
+    };
+
+    this.resume = function() {
+      start = new Date();
+      clearTimeout(timerId);
+      timerId = setTimeout(callback, remaining);
+    };
+
+    this.clear = function() {
+      clearTimeout(timerId);
+    };
+
+    this.resume();
+  }
+};
+
+module.exports = Helpers;
+
+
+/***/ }),
+/* 325 */
+/***/ (function(module, exports) {
+
+// Used for calculations
+var defaultWidth = 320;
+var defaultColors = {
+  success: {
+    rgb: '94, 164, 0',
+    hex: '#5ea400'
+  },
+  error: {
+    rgb: '236, 61, 61',
+    hex: '#ec3d3d'
+  },
+  warning: {
+    rgb: '235, 173, 23',
+    hex: '#ebad1a'
+  },
+  info: {
+    rgb: '54, 156, 199',
+    hex: '#369cc7'
+  }
+};
+var defaultShadowOpacity = '0.9';
+
+var STYLES = {
+
+  Wrapper: {},
+  Containers: {
+    DefaultStyle: {
+      fontFamily: 'inherit',
+      position: 'fixed',
+      width: defaultWidth,
+      padding: '0 10px 10px 10px',
+      zIndex: 9998,
+      WebkitBoxSizing: 'border-box',
+      MozBoxSizing: 'border-box',
+      boxSizing: 'border-box',
+      height: 'auto'
+    },
+
+    tl: {
+      top: '0px',
+      bottom: 'auto',
+      left: '0px',
+      right: 'auto'
+    },
+
+    tr: {
+      top: '0px',
+      bottom: 'auto',
+      left: 'auto',
+      right: '0px'
+    },
+
+    tc: {
+      top: '0px',
+      bottom: 'auto',
+      margin: '0 auto',
+      left: '50%',
+      marginLeft: -(defaultWidth / 2)
+    },
+
+    bl: {
+      top: 'auto',
+      bottom: '0px',
+      left: '0px',
+      right: 'auto'
+    },
+
+    br: {
+      top: 'auto',
+      bottom: '0px',
+      left: 'auto',
+      right: '0px'
+    },
+
+    bc: {
+      top: 'auto',
+      bottom: '0px',
+      margin: '0 auto',
+      left: '50%',
+      marginLeft: -(defaultWidth / 2)
+    }
+
+  },
+
+  NotificationItem: {
+    DefaultStyle: {
+      position: 'relative',
+      width: '100%',
+      cursor: 'pointer',
+      borderRadius: '2px',
+      fontSize: '13px',
+      margin: '10px 0 0',
+      padding: '10px',
+      display: 'block',
+      WebkitBoxSizing: 'border-box',
+      MozBoxSizing: 'border-box',
+      boxSizing: 'border-box',
+      opacity: 0,
+      transition: '0.3s ease-in-out',
+      WebkitTransform: 'translate3d(0, 0, 0)',
+      transform: 'translate3d(0, 0, 0)',
+      willChange: 'transform, opacity',
+
+      isHidden: {
+        opacity: 0
+      },
+
+      isVisible: {
+        opacity: 1
+      }
+    },
+
+    success: {
+      borderTop: '2px solid ' + defaultColors.success.hex,
+      backgroundColor: '#f0f5ea',
+      color: '#4b583a',
+      WebkitBoxShadow: '0 0 1px rgba(' + defaultColors.success.rgb + ',' + defaultShadowOpacity + ')',
+      MozBoxShadow: '0 0 1px rgba(' + defaultColors.success.rgb + ',' + defaultShadowOpacity + ')',
+      boxShadow: '0 0 1px rgba(' + defaultColors.success.rgb + ',' + defaultShadowOpacity + ')'
+    },
+
+    error: {
+      borderTop: '2px solid ' + defaultColors.error.hex,
+      backgroundColor: '#f4e9e9',
+      color: '#412f2f',
+      WebkitBoxShadow: '0 0 1px rgba(' + defaultColors.error.rgb + ',' + defaultShadowOpacity + ')',
+      MozBoxShadow: '0 0 1px rgba(' + defaultColors.error.rgb + ',' + defaultShadowOpacity + ')',
+      boxShadow: '0 0 1px rgba(' + defaultColors.error.rgb + ',' + defaultShadowOpacity + ')'
+    },
+
+    warning: {
+      borderTop: '2px solid ' + defaultColors.warning.hex,
+      backgroundColor: '#f9f6f0',
+      color: '#5a5343',
+      WebkitBoxShadow: '0 0 1px rgba(' + defaultColors.warning.rgb + ',' + defaultShadowOpacity + ')',
+      MozBoxShadow: '0 0 1px rgba(' + defaultColors.warning.rgb + ',' + defaultShadowOpacity + ')',
+      boxShadow: '0 0 1px rgba(' + defaultColors.warning.rgb + ',' + defaultShadowOpacity + ')'
+    },
+
+    info: {
+      borderTop: '2px solid ' + defaultColors.info.hex,
+      backgroundColor: '#e8f0f4',
+      color: '#41555d',
+      WebkitBoxShadow: '0 0 1px rgba(' + defaultColors.info.rgb + ',' + defaultShadowOpacity + ')',
+      MozBoxShadow: '0 0 1px rgba(' + defaultColors.info.rgb + ',' + defaultShadowOpacity + ')',
+      boxShadow: '0 0 1px rgba(' + defaultColors.info.rgb + ',' + defaultShadowOpacity + ')'
+    }
+  },
+
+  Title: {
+    DefaultStyle: {
+      fontSize: '14px',
+      margin: '0 0 5px 0',
+      padding: 0,
+      fontWeight: 'bold'
+    },
+
+    success: {
+      color: defaultColors.success.hex
+    },
+
+    error: {
+      color: defaultColors.error.hex
+    },
+
+    warning: {
+      color: defaultColors.warning.hex
+    },
+
+    info: {
+      color: defaultColors.info.hex
+    }
+
+  },
+
+  MessageWrapper: {
+    DefaultStyle: {
+      margin: 0,
+      padding: 0
+    }
+  },
+
+  Dismiss: {
+    DefaultStyle: {
+      fontFamily: 'Arial',
+      fontSize: '17px',
+      position: 'absolute',
+      top: '4px',
+      right: '5px',
+      lineHeight: '15px',
+      backgroundColor: '#dededf',
+      color: '#ffffff',
+      borderRadius: '50%',
+      width: '14px',
+      height: '14px',
+      fontWeight: 'bold',
+      textAlign: 'center'
+    },
+
+    success: {
+      color: '#f0f5ea',
+      backgroundColor: '#b0ca92'
+    },
+
+    error: {
+      color: '#f4e9e9',
+      backgroundColor: '#e4bebe'
+    },
+
+    warning: {
+      color: '#f9f6f0',
+      backgroundColor: '#e1cfac'
+    },
+
+    info: {
+      color: '#e8f0f4',
+      backgroundColor: '#a4becb'
+    }
+  },
+
+  Action: {
+    DefaultStyle: {
+      background: '#ffffff',
+      borderRadius: '2px',
+      padding: '6px 20px',
+      fontWeight: 'bold',
+      margin: '10px 0 0 0',
+      border: 0
+    },
+
+    success: {
+      backgroundColor: defaultColors.success.hex,
+      color: '#ffffff'
+    },
+
+    error: {
+      backgroundColor: defaultColors.error.hex,
+      color: '#ffffff'
+    },
+
+    warning: {
+      backgroundColor: defaultColors.warning.hex,
+      color: '#ffffff'
+    },
+
+    info: {
+      backgroundColor: defaultColors.info.hex,
+      color: '#ffffff'
+    }
+  },
+
+  ActionWrapper: {
+    DefaultStyle: {
+      margin: 0,
+      padding: 0
+    }
+  }
+};
+
+module.exports = STYLES;
+
+
+/***/ }),
+/* 326 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _PaginationBoxView = __webpack_require__(327);
+
+var _PaginationBoxView2 = _interopRequireDefault(_PaginationBoxView);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = _PaginationBoxView2.default;
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+/* 327 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(4);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(8);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _classnames = __webpack_require__(328);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+var _reactAddonsCreateFragment = __webpack_require__(329);
+
+var _reactAddonsCreateFragment2 = _interopRequireDefault(_reactAddonsCreateFragment);
+
+var _PageView = __webpack_require__(330);
+
+var _PageView2 = _interopRequireDefault(_PageView);
+
+var _BreakView = __webpack_require__(331);
+
+var _BreakView2 = _interopRequireDefault(_BreakView);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var PaginationBoxView = function (_Component) {
+  _inherits(PaginationBoxView, _Component);
+
+  function PaginationBoxView(props) {
+    _classCallCheck(this, PaginationBoxView);
+
+    var _this = _possibleConstructorReturn(this, (PaginationBoxView.__proto__ || Object.getPrototypeOf(PaginationBoxView)).call(this, props));
+
+    _this.handlePreviousPage = function (evt) {
+      evt.preventDefault ? evt.preventDefault() : evt.returnValue = false;
+      if (_this.state.selected > 0) {
+        _this.handlePageSelected(_this.state.selected - 1, evt);
+      }
+    };
+
+    _this.handleNextPage = function (evt) {
+      evt.preventDefault ? evt.preventDefault() : evt.returnValue = false;
+      if (_this.state.selected < _this.props.pageCount - 1) {
+        _this.handlePageSelected(_this.state.selected + 1, evt);
+      }
+    };
+
+    _this.handlePageSelected = function (selected, evt) {
+      evt.preventDefault ? evt.preventDefault() : evt.returnValue = false;
+
+      if (_this.state.selected === selected) return;
+
+      _this.setState({ selected: selected });
+
+      // Call the callback with the new selected item:
+      _this.callCallback(selected);
+    };
+
+    _this.callCallback = function (selectedItem) {
+      if (typeof _this.props.onPageChange !== "undefined" && typeof _this.props.onPageChange === "function") {
+        _this.props.onPageChange({ selected: selectedItem });
+      }
+    };
+
+    _this.pagination = function () {
+      var items = {};
+
+      if (_this.props.pageCount <= _this.props.pageRangeDisplayed) {
+
+        for (var index = 0; index < _this.props.pageCount; index++) {
+          items['key' + index] = _this.getPageElement(index);
+        }
+      } else {
+
+        var leftSide = _this.props.pageRangeDisplayed / 2;
+        var rightSide = _this.props.pageRangeDisplayed - leftSide;
+
+        if (_this.state.selected > _this.props.pageCount - _this.props.pageRangeDisplayed / 2) {
+          rightSide = _this.props.pageCount - _this.state.selected;
+          leftSide = _this.props.pageRangeDisplayed - rightSide;
+        } else if (_this.state.selected < _this.props.pageRangeDisplayed / 2) {
+          leftSide = _this.state.selected;
+          rightSide = _this.props.pageRangeDisplayed - leftSide;
+        }
+
+        var _index = void 0;
+        var page = void 0;
+        var breakView = void 0;
+        var createPageView = function createPageView(index) {
+          return _this.getPageElement(index);
+        };
+
+        for (_index = 0; _index < _this.props.pageCount; _index++) {
+
+          page = _index + 1;
+
+          if (page <= _this.props.marginPagesDisplayed) {
+            items['key' + _index] = createPageView(_index);
+            continue;
+          }
+
+          if (page > _this.props.pageCount - _this.props.marginPagesDisplayed) {
+            items['key' + _index] = createPageView(_index);
+            continue;
+          }
+
+          if (_index >= _this.state.selected - leftSide && _index <= _this.state.selected + rightSide) {
+            items['key' + _index] = createPageView(_index);
+            continue;
+          }
+
+          var keys = Object.keys(items);
+          var breakLabelKey = keys[keys.length - 1];
+          var breakLabelValue = items[breakLabelKey];
+
+          if (_this.props.breakLabel && breakLabelValue !== breakView) {
+            breakView = _react2.default.createElement(_BreakView2.default, {
+              breakLabel: _this.props.breakLabel,
+              breakClassName: _this.props.breakClassName
+            });
+
+            items['key' + _index] = breakView;
+          }
+        }
+      }
+
+      return items;
+    };
+
+    _this.state = {
+      selected: props.initialPage ? props.initialPage : props.forcePage ? props.forcePage : 0
+    };
+    return _this;
+  }
+
+  _createClass(PaginationBoxView, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      // Call the callback with the initialPage item:
+      if (typeof this.props.initialPage !== 'undefined' && !this.props.disableInitialCallback) {
+        this.callCallback(this.props.initialPage);
+      }
+    }
+  }, {
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(nextProps) {
+      if (typeof nextProps.forcePage !== 'undefined' && this.props.forcePage !== nextProps.forcePage) {
+        this.setState({ selected: nextProps.forcePage });
+      }
+    }
+  }, {
+    key: 'hrefBuilder',
+    value: function hrefBuilder(pageIndex) {
+      if (this.props.hrefBuilder && pageIndex !== this.state.selected && pageIndex >= 0 && pageIndex < this.props.pageCount) {
+        return this.props.hrefBuilder(pageIndex + 1);
+      }
+    }
+  }, {
+    key: 'getPageElement',
+    value: function getPageElement(index) {
+      return _react2.default.createElement(_PageView2.default, {
+        onClick: this.handlePageSelected.bind(null, index),
+        selected: this.state.selected === index,
+        pageClassName: this.props.pageClassName,
+        pageLinkClassName: this.props.pageLinkClassName,
+        activeClassName: this.props.activeClassName,
+        extraAriaContext: this.props.extraAriaContext,
+        href: this.hrefBuilder(index),
+        page: index + 1 });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var disabled = this.props.disabledClassName;
+
+      var previousClasses = (0, _classnames2.default)(this.props.previousClassName, _defineProperty({}, disabled, this.state.selected === 0));
+
+      var nextClasses = (0, _classnames2.default)(this.props.nextClassName, _defineProperty({}, disabled, this.state.selected === this.props.pageCount - 1));
+
+      return _react2.default.createElement(
+        'ul',
+        { className: this.props.containerClassName },
+        _react2.default.createElement(
+          'li',
+          { className: previousClasses },
+          _react2.default.createElement(
+            'a',
+            { onClick: this.handlePreviousPage,
+              className: this.props.previousLinkClassName,
+              href: this.hrefBuilder(this.state.selected - 1),
+              tabIndex: '0',
+              onKeyPress: this.handlePreviousPage },
+            this.props.previousLabel
+          )
+        ),
+        (0, _reactAddonsCreateFragment2.default)(this.pagination()),
+        _react2.default.createElement(
+          'li',
+          { className: nextClasses },
+          _react2.default.createElement(
+            'a',
+            { onClick: this.handleNextPage,
+              className: this.props.nextLinkClassName,
+              href: this.hrefBuilder(this.state.selected + 1),
+              tabIndex: '0',
+              onKeyPress: this.handleNextPage },
+            this.props.nextLabel
+          )
+        )
+      );
+    }
+  }]);
+
+  return PaginationBoxView;
+}(_react.Component);
+
+PaginationBoxView.propTypes = {
+  pageCount: _propTypes2.default.number.isRequired,
+  pageRangeDisplayed: _propTypes2.default.number.isRequired,
+  marginPagesDisplayed: _propTypes2.default.number.isRequired,
+  previousLabel: _propTypes2.default.node,
+  nextLabel: _propTypes2.default.node,
+  breakLabel: _propTypes2.default.node,
+  hrefBuilder: _propTypes2.default.func,
+  onPageChange: _propTypes2.default.func,
+  initialPage: _propTypes2.default.number,
+  forcePage: _propTypes2.default.number,
+  disableInitialCallback: _propTypes2.default.bool,
+  containerClassName: _propTypes2.default.string,
+  pageClassName: _propTypes2.default.string,
+  pageLinkClassName: _propTypes2.default.string,
+  activeClassName: _propTypes2.default.string,
+  previousClassName: _propTypes2.default.string,
+  nextClassName: _propTypes2.default.string,
+  previousLinkClassName: _propTypes2.default.string,
+  nextLinkClassName: _propTypes2.default.string,
+  disabledClassName: _propTypes2.default.string,
+  breakClassName: _propTypes2.default.string
+};
+PaginationBoxView.defaultProps = {
+  pageCount: 10,
+  pageRangeDisplayed: 2,
+  marginPagesDisplayed: 3,
+  activeClassName: "selected",
+  previousClassName: "previous",
+  nextClassName: "next",
+  previousLabel: "Previous",
+  nextLabel: "Next",
+  breakLabel: "...",
+  disabledClassName: "disabled",
+  disableInitialCallback: false
+};
+exports.default = PaginationBoxView;
+;
+//# sourceMappingURL=PaginationBoxView.js.map
+
+/***/ }),
+/* 328 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+  Copyright (c) 2016 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+	'use strict';
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames () {
+		var classes = [];
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
+
+			var argType = typeof arg;
+
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg)) {
+				classes.push(classNames.apply(null, arg));
+			} else if (argType === 'object') {
+				for (var key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
+
+		return classes.join(' ');
+	}
+
+	if (typeof module !== 'undefined' && module.exports) {
+		module.exports = classNames;
+	} else if (true) {
+		// register as 'classnames', consistent with npm package name
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
+			return classNames;
+		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {
+		window.classNames = classNames;
+	}
+}());
+
+
+/***/ }),
+/* 329 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {/**
+ * Copyright 2015-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+
+
+
+var React = __webpack_require__(4);
+
+var REACT_ELEMENT_TYPE =
+  (typeof Symbol === 'function' && Symbol.for && Symbol.for('react.element')) ||
+  0xeac7;
+
+var emptyFunction = __webpack_require__(11);
+var invariant = __webpack_require__(1);
+var warning = __webpack_require__(2);
+
+var SEPARATOR = '.';
+var SUBSEPARATOR = ':';
+
+var didWarnAboutMaps = false;
+
+var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
+var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
+
+function getIteratorFn(maybeIterable) {
+  var iteratorFn =
+    maybeIterable &&
+    ((ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL]) ||
+      maybeIterable[FAUX_ITERATOR_SYMBOL]);
+  if (typeof iteratorFn === 'function') {
+    return iteratorFn;
+  }
+}
+
+function escape(key) {
+  var escapeRegex = /[=:]/g;
+  var escaperLookup = {
+    '=': '=0',
+    ':': '=2'
+  };
+  var escapedString = ('' + key).replace(escapeRegex, function(match) {
+    return escaperLookup[match];
+  });
+
+  return '$' + escapedString;
+}
+
+function getComponentKey(component, index) {
+  // Do some typechecking here since we call this blindly. We want to ensure
+  // that we don't block potential future ES APIs.
+  if (component && typeof component === 'object' && component.key != null) {
+    // Explicit key
+    return escape(component.key);
+  }
+  // Implicit key determined by the index in the set
+  return index.toString(36);
+}
+
+function traverseAllChildrenImpl(
+  children,
+  nameSoFar,
+  callback,
+  traverseContext
+) {
+  var type = typeof children;
+
+  if (type === 'undefined' || type === 'boolean') {
+    // All of the above are perceived as null.
+    children = null;
+  }
+
+  if (
+    children === null ||
+    type === 'string' ||
+    type === 'number' ||
+    // The following is inlined from ReactElement. This means we can optimize
+    // some checks. React Fiber also inlines this logic for similar purposes.
+    (type === 'object' && children.$$typeof === REACT_ELEMENT_TYPE)
+  ) {
+    callback(
+      traverseContext,
+      children,
+      // If it's the only child, treat the name as if it was wrapped in an array
+      // so that it's consistent if the number of children grows.
+      nameSoFar === '' ? SEPARATOR + getComponentKey(children, 0) : nameSoFar
+    );
+    return 1;
+  }
+
+  var child;
+  var nextName;
+  var subtreeCount = 0; // Count of children found in the current subtree.
+  var nextNamePrefix = nameSoFar === '' ? SEPARATOR : nameSoFar + SUBSEPARATOR;
+
+  if (Array.isArray(children)) {
+    for (var i = 0; i < children.length; i++) {
+      child = children[i];
+      nextName = nextNamePrefix + getComponentKey(child, i);
+      subtreeCount += traverseAllChildrenImpl(
+        child,
+        nextName,
+        callback,
+        traverseContext
+      );
+    }
+  } else {
+    var iteratorFn = getIteratorFn(children);
+    if (iteratorFn) {
+      if (process.env.NODE_ENV !== 'production') {
+        // Warn about using Maps as children
+        if (iteratorFn === children.entries) {
+          warning(
+            didWarnAboutMaps,
+            'Using Maps as children is unsupported and will likely yield ' +
+              'unexpected results. Convert it to a sequence/iterable of keyed ' +
+              'ReactElements instead.'
+          );
+          didWarnAboutMaps = true;
+        }
+      }
+
+      var iterator = iteratorFn.call(children);
+      var step;
+      var ii = 0;
+      while (!(step = iterator.next()).done) {
+        child = step.value;
+        nextName = nextNamePrefix + getComponentKey(child, ii++);
+        subtreeCount += traverseAllChildrenImpl(
+          child,
+          nextName,
+          callback,
+          traverseContext
+        );
+      }
+    } else if (type === 'object') {
+      var addendum = '';
+      if (process.env.NODE_ENV !== 'production') {
+        addendum =
+          ' If you meant to render a collection of children, use an array ' +
+          'instead or wrap the object using createFragment(object) from the ' +
+          'React add-ons.';
+      }
+      var childrenString = '' + children;
+      invariant(
+        false,
+        'Objects are not valid as a React child (found: %s).%s',
+        childrenString === '[object Object]'
+          ? 'object with keys {' + Object.keys(children).join(', ') + '}'
+          : childrenString,
+        addendum
+      );
+    }
+  }
+
+  return subtreeCount;
+}
+
+function traverseAllChildren(children, callback, traverseContext) {
+  if (children == null) {
+    return 0;
+  }
+
+  return traverseAllChildrenImpl(children, '', callback, traverseContext);
+}
+
+var userProvidedKeyEscapeRegex = /\/+/g;
+function escapeUserProvidedKey(text) {
+  return ('' + text).replace(userProvidedKeyEscapeRegex, '$&/');
+}
+
+function cloneAndReplaceKey(oldElement, newKey) {
+  return React.cloneElement(
+    oldElement,
+    {key: newKey},
+    oldElement.props !== undefined ? oldElement.props.children : undefined
+  );
+}
+
+var DEFAULT_POOL_SIZE = 10;
+var DEFAULT_POOLER = oneArgumentPooler;
+
+var oneArgumentPooler = function(copyFieldsFrom) {
+  var Klass = this;
+  if (Klass.instancePool.length) {
+    var instance = Klass.instancePool.pop();
+    Klass.call(instance, copyFieldsFrom);
+    return instance;
+  } else {
+    return new Klass(copyFieldsFrom);
+  }
+};
+
+var addPoolingTo = function addPoolingTo(CopyConstructor, pooler) {
+  // Casting as any so that flow ignores the actual implementation and trusts
+  // it to match the type we declared
+  var NewKlass = CopyConstructor;
+  NewKlass.instancePool = [];
+  NewKlass.getPooled = pooler || DEFAULT_POOLER;
+  if (!NewKlass.poolSize) {
+    NewKlass.poolSize = DEFAULT_POOL_SIZE;
+  }
+  NewKlass.release = standardReleaser;
+  return NewKlass;
+};
+
+var standardReleaser = function standardReleaser(instance) {
+  var Klass = this;
+  invariant(
+    instance instanceof Klass,
+    'Trying to release an instance into a pool of a different type.'
+  );
+  instance.destructor();
+  if (Klass.instancePool.length < Klass.poolSize) {
+    Klass.instancePool.push(instance);
+  }
+};
+
+var fourArgumentPooler = function fourArgumentPooler(a1, a2, a3, a4) {
+  var Klass = this;
+  if (Klass.instancePool.length) {
+    var instance = Klass.instancePool.pop();
+    Klass.call(instance, a1, a2, a3, a4);
+    return instance;
+  } else {
+    return new Klass(a1, a2, a3, a4);
+  }
+};
+
+function MapBookKeeping(mapResult, keyPrefix, mapFunction, mapContext) {
+  this.result = mapResult;
+  this.keyPrefix = keyPrefix;
+  this.func = mapFunction;
+  this.context = mapContext;
+  this.count = 0;
+}
+MapBookKeeping.prototype.destructor = function() {
+  this.result = null;
+  this.keyPrefix = null;
+  this.func = null;
+  this.context = null;
+  this.count = 0;
+};
+addPoolingTo(MapBookKeeping, fourArgumentPooler);
+
+function mapSingleChildIntoContext(bookKeeping, child, childKey) {
+  var result = bookKeeping.result;
+  var keyPrefix = bookKeeping.keyPrefix;
+  var func = bookKeeping.func;
+  var context = bookKeeping.context;
+
+  var mappedChild = func.call(context, child, bookKeeping.count++);
+  if (Array.isArray(mappedChild)) {
+    mapIntoWithKeyPrefixInternal(
+      mappedChild,
+      result,
+      childKey,
+      emptyFunction.thatReturnsArgument
+    );
+  } else if (mappedChild != null) {
+    if (React.isValidElement(mappedChild)) {
+      mappedChild = cloneAndReplaceKey(
+        mappedChild,
+        // Keep both the (mapped) and old keys if they differ, just as
+        // traverseAllChildren used to do for objects as children
+        keyPrefix +
+          (mappedChild.key && (!child || child.key !== mappedChild.key)
+            ? escapeUserProvidedKey(mappedChild.key) + '/'
+            : '') +
+          childKey
+      );
+    }
+    result.push(mappedChild);
+  }
+}
+
+function mapIntoWithKeyPrefixInternal(children, array, prefix, func, context) {
+  var escapedPrefix = '';
+  if (prefix != null) {
+    escapedPrefix = escapeUserProvidedKey(prefix) + '/';
+  }
+  var traverseContext = MapBookKeeping.getPooled(
+    array,
+    escapedPrefix,
+    func,
+    context
+  );
+  traverseAllChildren(children, mapSingleChildIntoContext, traverseContext);
+  MapBookKeeping.release(traverseContext);
+}
+
+var numericPropertyRegex = /^\d+$/;
+
+var warnedAboutNumeric = false;
+
+function createReactFragment(object) {
+  if (typeof object !== 'object' || !object || Array.isArray(object)) {
+    warning(
+      false,
+      'React.addons.createFragment only accepts a single object. Got: %s',
+      object
+    );
+    return object;
+  }
+  if (React.isValidElement(object)) {
+    warning(
+      false,
+      'React.addons.createFragment does not accept a ReactElement ' +
+        'without a wrapper object.'
+    );
+    return object;
+  }
+
+  invariant(
+    object.nodeType !== 1,
+    'React.addons.createFragment(...): Encountered an invalid child; DOM ' +
+      'elements are not valid children of React components.'
+  );
+
+  var result = [];
+
+  for (var key in object) {
+    if (process.env.NODE_ENV !== 'production') {
+      if (!warnedAboutNumeric && numericPropertyRegex.test(key)) {
+        warning(
+          false,
+          'React.addons.createFragment(...): Child objects should have ' +
+            'non-numeric keys so ordering is preserved.'
+        );
+        warnedAboutNumeric = true;
+      }
+    }
+    mapIntoWithKeyPrefixInternal(
+      object[key],
+      result,
+      key,
+      emptyFunction.thatReturnsArgument
+    );
+  }
+
+  return result;
+}
+
+module.exports = createReactFragment;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 330 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(4);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var PageView = function PageView(props) {
+  var cssClassName = props.pageClassName;
+  var linkClassName = props.pageLinkClassName;
+  var onClick = props.onClick;
+  var href = props.href;
+  var ariaLabel = 'Page ' + props.page + (props.extraAriaContext ? ' ' + props.extraAriaContext : '');
+  var ariaCurrent = null;
+
+  if (props.selected) {
+    ariaCurrent = 'page';
+    ariaLabel = 'Page ' + props.page + ' is your current page';
+    if (typeof cssClassName !== 'undefined') {
+      cssClassName = cssClassName + ' ' + props.activeClassName;
+    } else {
+      cssClassName = props.activeClassName;
+    }
+  }
+
+  return _react2.default.createElement(
+    'li',
+    { className: cssClassName },
+    _react2.default.createElement(
+      'a',
+      { onClick: onClick,
+        className: linkClassName,
+        href: href,
+        tabIndex: '0',
+        'aria-label': ariaLabel,
+        'aria-current': ariaCurrent,
+        onKeyPress: onClick },
+      props.page
+    )
+  );
+};
+
+exports.default = PageView;
+//# sourceMappingURL=PageView.js.map
+
+/***/ }),
+/* 331 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(4);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var BreakView = function BreakView(props) {
+  var label = props.breakLabel;
+  var className = props.breakClassName || 'break';
+
+  return _react2.default.createElement(
+    'li',
+    { className: className },
+    label
+  );
+};
+
+exports.default = BreakView;
+//# sourceMappingURL=BreakView.js.map
 
 /***/ })
 /******/ ]);

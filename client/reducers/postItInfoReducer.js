@@ -1,17 +1,17 @@
 const structurePostItMembersFromDb = (state, allMembers) => {
-  const appState = Object.assign({}, state);
+  const postItMembers = Object.assign({}, state);
   for (let i = 0; i < allMembers.length; i += 1) {
-    appState.members[allMembers[i].id] = allMembers[i];
+    postItMembers.members[allMembers[i].id] = allMembers[i];
   }
-  return appState;
+  return postItMembers;
 };
 
 const structurePostitGroupsFromDb = (state, allGroups) => {
-  const appState = Object.assign({}, state);
+  const postItGroups = Object.assign({}, state);
   for (let i = 0; i < allGroups.length; i += 1) {
-    appState.groups[allGroups[i].id] = allGroups[i];
+    postItGroups.groups[allGroups[i].id] = allGroups[i];
   }
-  return appState;
+  return postItGroups;
 };
 
 const postItInfoReducer = (state = {}, action) => {

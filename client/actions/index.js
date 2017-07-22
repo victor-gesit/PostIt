@@ -1,5 +1,4 @@
 export const signIn = (email, password) => {
-  console.log(email);
   return {
     type: 'SIGN_IN',
     email,
@@ -87,5 +86,11 @@ export const deleteMember = (ownerId, email, groupId) => {
     ownerId,
     email,
     groupId
+  };
+};
+
+export const resetErrorLog = () => {
+  return {
+    type: 'RESET_ERROR_LOG',
   };
 };
