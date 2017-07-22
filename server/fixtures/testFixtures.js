@@ -38,12 +38,13 @@ export default {
   newMessage: {
     sentBy: 'John Smith',
     body: 'All team members are to submit their work this morning',
-    isComment: false
+    isComment: false,
+    priority: 'normal'
   },
   newMessageForRoute: {
-    sender: 'John Smith',
-    message: 'All team members are to submit their work this afternoon',
-    isComment: 'true'
+    body: 'All team members are to submit their work this afternoon',
+    isComment: 'true',
+    priority: 'normal',
   },
   registeredUser: {
     email: 'taiwok@yahoo.com',
