@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactPaginate from 'react-paginate';
 
 class MessageBoard extends React.Component {
   render() {
@@ -66,87 +67,32 @@ class Nav extends React.Component {
 
 class Body extends React.Component {
   render() {
+    const story = ['obi', 'is', 'a', 'very', 'good', 'boy', 'but', 'and', 'he', 'has']
     return(
       <div id="body">
         <div id="main">
           <h3 className="board-title center black-text">Message Board</h3>
           {/* Groups */}
           <div className="row">
-            {/* A sample Group */}
-            <div className="col s12 m6 l4">
-              <div className="card">
-                <div className="card-image waves-effect waves-block waves-light">
-                  <img className="activator tooltipped" data-position="top" data-delay={1000} data-tooltip="Click for group info" src="images/fire2.png" />
-                </div>
-                <div className="card-content">
-                  <div>
-                    <a href="#" className="card-title grey-text text-darken-4">NextBigThing<span className="badge new pink">4</span></a>
-                    <p className="blue-text">Created by Johnson Thomas</p>
-                  </div>
-                </div>
-                <div className="card-reveal">
-                  <div>
-                    <span className="card-title purple-text text-darken-4">Project NextBigThing<i className="material-icons right">close</i></span>
-                    <hr />
-                  </div>
-                  <div className="group-info">	
-                    <p className="black-text">This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!</p>
-                    <hr />
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* Another Sample Group */}
-            <div className="col s12 m6 l4">
-              <div className="card">
-                <div className="card-image waves-effect waves-block waves-light">
-                  <img className="activator tooltipped" data-position="top" data-delay={1000} data-tooltip="Click for group info" src="images/fire2.png" />
-                </div>
-                <div className="card-content">
-                  <div>
-                    <a href="#" className="card-title grey-text text-darken-4">DisruptiveTech<span className="badge new pink">3</span></a>
-                    <p className="blue-text">Created by Jane Doe</p>
-                  </div>
-                </div>
-                <div className="card-reveal">
-                  <div>
-                    <span className="card-title purple-text text-darken-4">Project DisruptiveIt<i className="material-icons right">close</i></span>
-                    <hr />
-                  </div>
-                  <div className="group-info">	
-                    <p className="black-text">This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!</p>
-                    <hr />
-                  </div>
-                </div>	
-              </div>
-            </div>
-            {/* A Third Sample Group */}
-            <div className="col s12 m6 l4">
-              <div className="card">
-                <div className="card-image waves-effect waves-block waves-light">
-                  <img className="activator tooltipped" data-position="top" data-delay={1000} data-tooltip="Click for group info" src="images/fire2.png" />
-                </div>
-                <div className="card-content">
-                  <div>
-                    <a href="#" className="card-title grey-text text-darken-4">MakeItHappen</a>
-                    <p className="blue-text">Created by John Roe</p>
-                  </div>
-                </div>
-                <div className="card-reveal">
-                  <div>
-                    <span className="card-title purple-text text-darken-4">Project MakeItHappen<i className="material-icons right">close</i></span>
-                    <hr />
-                  </div>
-                  <div className="group-info">	
-                    <p className="black-text">This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!</p>
-                    <hr />
-                  </div>
-                </div>
-              </div>
-            </div>
+            {
+              story.map((word, index) =>
+                <Group key={index}/>
+              )
+            }
           </div>
           {/*End of Groups*/}
         </div>
+        <ReactPaginate previousLabel={"previous"}
+                       nextLabel={"next"}
+                       breakLabel={<a href="">...</a>}
+                       breakClassName={"break-me"}
+                       pageCount={20}
+                       marginPagesDisplayed={2}
+                       pageRangeDisplayed={5}
+                       onPageChange={this.handlePageClick}
+                       containerClassName={"pagination"}
+                       subContainerClassName={"pages pagination"}
+                       activeClassName={"active"} />
         <Pagination/>
       </div>
     );
@@ -180,5 +126,34 @@ class Pagination extends React.Component {
   }
 }
 
+class Group extends React.Component {
+  render() {
+    return (
+      <div className="col s12 m6 l4">
+        <div className="card">
+          <div className="card-image waves-effect waves-block waves-light">
+            <img className="activator tooltipped" data-position="top" data-delay={1000} data-tooltip="Click for group info" src="images/fire2.png" />
+          </div>
+          <div className="card-content">
+            <div>
+              <a href="#" className="card-title grey-text text-darken-4">NextBigThing<span className="badge new pink">4</span></a>
+              <p className="blue-text">Created by Johnson Thomas</p>
+            </div>
+          </div>
+          <div className="card-reveal">
+            <div>
+              <span className="card-title purple-text text-darken-4">Project NextBigThing<i className="material-icons right">close</i></span>
+              <hr />
+            </div>
+            <div className="group-info">	
+              <p className="black-text">This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!</p>
+              <hr />
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
 
 export default MessageBoard;
