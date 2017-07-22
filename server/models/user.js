@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         len: {
           args: [1, 100],
-          msg: 'First name of user must have more than one characters'
+          msg: 'First name of user must have more than one characters, no leading or trailing spaces'
         }
       }
     },
@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         len: {
           args: [1, 100],
-          msg: 'Last name of user must have more than one characters'
+          msg: 'Last name of user must have more than one characters, no leading or trailing spaces'
         }
       }
     },
@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         len: {
           args: [7, 1000],
-          msg: 'Password must have 8 or more characters'
+          msg: 'Password must have 8 or more characters, , no leading or trailing spaces'
         }
       }
     },
