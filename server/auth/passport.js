@@ -9,15 +9,7 @@ const User = models.User;
 dotenv.config();
 
 const LocalStrategy = passportLocal.Strategy;
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
 
-passport.deserializeUser((id, done) => {
-  User.find({ where: { id } }, (err, user) => {
-    done(err, user);
-  });
-});
 // Strategy for signup
 passport.use('local.signup', new LocalStrategy(
   {
@@ -34,24 +26,33 @@ passport.use('local.signup', new LocalStrategy(
     } }).then((user) => {
       if (user) {
         if (user.email === email) {
-          return done({ details: 'Email already is linked to another account' }, false);
+          return done(null, false, { message: 'Email is already linked to another account' });
         }
         if (user.phone === req.body.phone) {
-          return done({ details: 'Phone number is linked to another account' });
+          return done(null, false, { message: 'Phone number is linked to another account' });
         }
       }
+      let firstName = req.body.firstName || '';
+      let lastName = req.body.lastName || '';
+      const phone = req.body.phone;
+      firstName = firstName.trim();
+      lastName = lastName.trim();
+      password = password.trim();
+
       const newUser = User.build({
-        email: req.body.email,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        phone: req.body.phone
+        email,
+        firstName,
+        lastName,
+        phone
       });
-      newUser.password = req.body.password;
+      newUser.password = password;
       newUser.save().then((savedUser) => {
         done(null, savedUser);
       }).catch((err) => {
         done(err, false);
       });
+    }).catch((err) => { // Server error
+      done(err, false);
     });
   }
 ));
@@ -66,13 +67,15 @@ passport.use('local.signin', new LocalStrategy(
   (req, email, password, done) => {
     User.find({ where: { email } }).then((user) => {
       if (!user) {
-        return done(null, false, { message: 'Email not found' });
+        return done(null, false, { message: 'Email not associated with any account' });
       }
       const validPassword = bcrypt.compareSync(password, user.password);
       if (!validPassword) {
         return done(null, false, { message: 'Invalid password' });
       }
       return done(null, user);
+    }).catch((err) => {
+      done(err);
     });
   })
 );

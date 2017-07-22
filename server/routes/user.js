@@ -2,12 +2,11 @@ import express from 'express';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import models from '../models';
 import '../auth/passport';
 import tokenValidator from '../auth/tokenValidator';
+import userController from '../controllers/user';
 
 dotenv.config();
-const User = models.User;
 const jwtSecret = process.env.JWT_SECRET;
 // Load passport configuration
 
@@ -16,68 +15,70 @@ router.use(passport.initialize());
 router.use(passport.session());
 
 // Authentication Routes
-router.post('/signin',
-  passport.authenticate('local.signin', { failWithError: true }),
-  (req, res) => {
+router.post('/signin', (req, res, next) => {
+  passport.authenticate('local.signin', (err, user, info) => {
+    if (!user) {
+      return res.status(401).send({ success: false, message: info.message });
+    }
     // Successful signin
     // if user is found and password is right
     // create a token
-    const user = {
-      firstName: req.user.firstName,
-      lastName: req.user.lastName,
-      email: req.user.email,
-      phone: req.user.phone,
-    };
-    const token = jwt.sign(user, jwtSecret, {
-      expiresIn: '2 days' // expires in 48 hours
-    });
-    res.status(202).send({ user, token, message: 'Successful Signin' });
-  }, (err, req, res, next) =>
-    // Failure during signin
-    res.status(401).send({ error: err, message: 'Error During Signin' })
+    if (user) {
+      const newUser = {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+      };
+      const token = jwt.sign(newUser, jwtSecret, {
+        expiresIn: '2 days' // expires in 48 hours
+      });
+      return res.status(202).send({ success: true, user: newUser, token, message: 'Successful Signin' });
+    }
+  })(req, res, next);
+}, (err, req, res, next) =>
+    // Handle server errors
+    res.status(500).send({ success: false, message: 'Internal Server Error' })
 );
 
-router.post('/signup',
-  passport.authenticate('local.signup', { failWithError: true }),
-  (req, res, next) => {
-    // Successful signup
-    // if user is found and password is right
-    // create a token
-    const user = {
-      id: req.user.id,
-      firstName: req.user.firstName,
-      lastName: req.user.lastName,
-      email: req.user.email,
-      phone: req.user.phone,
-    };
-    const token = jwt.sign(user, jwtSecret, {
-      expiresIn: '2 days' // expires in 48 hours
-    });
-    return res.status(201).send({ user, token, message: 'Successfull Signup' });
-  }, (err, req, res, next) => {
-    // Failure during signup
-    res.status(400).send({ error: err, message: 'Error During Signup' });
-  }
+router.post('/signup', (req, res, next) => {
+  passport.authenticate('local.signup', (err, user, info) => {
+    if (err) {
+      const errorMessages = err.errors.map(error => error.message);
+      return res.status(500).send({ success: false,
+        message: 'Incomplete Fields',
+        messages: errorMessages
+      });
+    }
+    if (!user) {
+      return res.status(401).send({ success: false, message: info.message });
+    }
+    if (user) {
+      const newUser = {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+      };
+      const token = jwt.sign(newUser, jwtSecret, {
+        expiresIn: '2 days' // expires in 48 hours
+      });
+      return res.status(202).send({ success: true, user: newUser, token, message: 'Successful Sign up' });
+    }
+  })(req, res, next);
+}, (err, req, res, next) =>
+    // Handle server errors
+    res.status(500).send({ success: false, message: 'Internal Server Error' })
 );
 
 // Validate token before accessing this route
 router.use(tokenValidator.validateToken);
 
-// Loading all groups a user belongs to
-router.get('/:userId/groups', (req, res) => {
-  const userId = req.params.userId;
-  User.find({ where: { id: userId } }).then((foundUser) => {
-    foundUser.getGroups()
-      .then((groupsBelongedTo) => {
-        res.send(groupsBelongedTo);
-      });
-  }).catch((err) => {
-    // Check if it's a sequelize error or group doesn't exist
-    if (err.constructor === TypeError) {
-      return res.status(404).send({ message: 'User not found', error: err });
-    }
-    return res.status(400).send({ message: 'Invalid User Id', error: err });
-  });
-});
+// Loading all groups a user belongs to (paginated)
+router.get('/:userId/groups/:offset/:limit', userController.messageboard);
+
+// Loading all groups a user belongs to (at once)
+router.get('/:userId/groups', userController.messageboard);
+
 
 export default router;

@@ -10,8 +10,13 @@ dotenv.config();
 export default {
   // Create a group, and automatically add the creator to it
   create: (req, res) => {
-    const userId = req.body.userId;
-    const initialMembers = req.body.initialMembers;
+    const userId = req.body.creatorId;
+    const initialMembers = req.body.initialMembers || [];
+    // Validate input
+    let title = req.body.title || '';
+    let description = req.body.description || '';
+    title = title.trim();
+    description = description.trim();
 
     User.find({ where: { id: userId } }).then((creator) => {
       let nameOfCreator = 'Unregistered';
@@ -19,13 +24,13 @@ export default {
       if (creator !== null) {
         nameOfCreator = `${creator.firstName} ${creator.lastName}`;
       } else {
-        return res.status(404).send({ message: 'User not found' });
+        return res.status(404).send({ success: false, message: 'User not found' });
       }
       let newMembers = [];
       Group.build({
         createdBy: nameOfCreator,
-        title: req.body.title,
-        description: req.body.description,
+        title,
+        description,
         creatorEmail: creator.email
       }).save().then((createdGroup) => {
         newMembers.push(creator.email);
@@ -39,10 +44,19 @@ export default {
           }
         }
         User.findAll({ where: { email: newMembers } }).then((retrievedMembers) => {
-          createdGroup.addUsers(retrievedMembers).then(() => res.send(createdGroup));
+          createdGroup.addUsers(retrievedMembers)
+            .then(() => res.status(202).send({ success: true, createdGroup }));
         });
-      }).catch(err => res.status(400).send({ error: err, message: 'Group not created' }));
-    }).catch(() => res.status(401).send({ message: 'Supply a valid user id' }));
+      }).catch((err) => {
+        const errorMessages = err.errors.map(error => error.message);
+        return res.status(400).send({
+          success: false,
+          messages: errorMessages,
+          message: 'Incomplete fields'
+        });
+      });
+      
+    }).catch(() => res.status(401).send({ success: false, message: 'Supply a valid user id' }));
   },
   // Add a user to a group
   adduser: (req, res) => {
@@ -64,25 +78,24 @@ export default {
       foundGroup.getUsers({ where: { id: adderId } }).then((foundUsers) => {
         // Check to see if the adder belongs to the group
         if (foundUsers.length === 0) {
-          return res.status(403).send({ message: 'Adder is not member of the group' });
+          return res.status(403).send({ success: false, message: 'Adder is not member of the group' });
         }
         // Find the new users and add them to the group
-        User.findAll({ where: { email: newMembers } }).then((foundMembers) => {
+        User.findAll({ where: { email: newMembers }, attributes: ['firstName', 'lastName', 'id', 'email'] }).then((foundMembers) => {
           if (foundMembers !== null && foundMembers.length !== 0) {
             foundGroup.addUser(foundMembers).then(() => res.send(foundMembers));
           } else {
-            return res.status(404).send({ message: 'User not found' });
+            return res.status(404).send({ success: false, message: 'User not found' });
           }
         });
       });
-    }).catch(() => {
-      return res.status(404).send({ message: 'Group not found' });
-    });
+    }).catch(() => res.status(404).send({ success: false, message: 'Group not found' }));
   },
   // Post a message to a group
   postmessage: (req, res) => {
     const groupId = req.params.id;
-    let priority = req.body.priority;
+    let priority = req.body.priority || 'normal';
+    let messageBody = req.body.body || '';
     let isCommentString = req.body.isComment;
     if (isCommentString !== null && isCommentString !== undefined) {
       isCommentString = isCommentString.toLowerCase();
@@ -91,7 +104,10 @@ export default {
       priority = priority.toLowerCase();
     }
     const isComment = isCommentString === 'true';
-    const messageBody = req.body.message;
+    if (isComment) {
+      priority = 'normal';
+    }
+    messageBody = messageBody.trim();
     const senderId = req.body.senderId;
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
       foundGroup.getUsers({ where: { id: senderId } }).then((users) => {
@@ -119,38 +135,50 @@ export default {
   // Load messages from a particular group
   getmessages: (req, res) => {
     const groupId = req.params.id;
+    const offset = req.params.offset;
+    const limit = req.params.limit;
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
-      foundGroup.getMessages({ attributes: ['sentBy', 'body', 'createdAt', 'isComment'] }).then((groupMessages) => {
-        return res.send(groupMessages);
-      });
-    }).catch((err) => {
-      // Check if it's a sequelize error or group doesn't exist
-      if (err.constructor === TypeError) {
-        return res.status(404).send({ message: 'Group not found' });
+      if (foundGroup === null) {
+        return res.status(404).send({ success: false, message: 'Group not found' });
       }
-      return res.status(400).send({ message: 'Invalid Group Id' });
-    });
+      Message.findAndCountAll({
+        where: { groupId },
+        attributes: ['sentBy', 'body', 'createdAt', 'isComment'],
+        offset,
+        limit
+      }).then(result =>
+      res.send(result)).catch(() =>
+        res.status(401).send({ success: false, message: 'Invalid query in url' }));
+    }).catch(() => res.status(400).send({ success: false, message: 'Invalid Group Id' }));
   },
   // Get the list of members in a particular group
   getmembers: (req, res) => {
     const groupId = req.params.id;
+    const offset = req.params.offset;
+    const limit = req.params.limit;
+    let count;
     Group.find({ where: { id: groupId } })
       .then((foundGroup) => {
-        foundGroup.getUsers({ attributes: ['firstName', 'lastName', 'email', 'id'] }).then((groupMembers) => {
-          return res.status(200).send(groupMembers);
+        foundGroup.getUsers().then((allMembers) => {
+          count = allMembers.length;
+          foundGroup.getUsers({ attributes: ['firstName', 'lastName', 'email', 'id'], limit, offset })
+            .then(groupMembers =>
+              res.status(200).send({ success: true, count, rows: groupMembers }))
+            .catch(() =>
+              res.status(401).send({ success: false, message: 'Invalid query in url' }));
         });
       }).catch((err) => {
         // Check if it's a sequelize error or group doesn't exist
         if (err.constructor === TypeError) {
-          return res.status(404).send({ message: 'Group not found' });
+          return res.status(404).send({ success: false, message: 'Group not found' });
         }
-        return res.status(400).send({ message: 'Invalid Group Id' });
+        return res.status(400).send({ success: false, message: 'Invalid Group Id' });
       });
   },
   // Delete a person from the group
   deleteMembers: (req, res) => {
     const groupId = req.params.id;
-    const toBeDeleted = req.body.email;
+    const toBeDeleted = req.body.idToDelete;
     const ownerId = req.body.ownerId;
 
     let membersToDelete = [];
@@ -165,27 +193,38 @@ export default {
     }
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
       foundGroup.getUsers({ where: { id: ownerId } }).then((foundUsers) => {
-        // Check to see if the adder belongs to the group
+        // Check to see if the the person deleting belongs to the group
         if (foundUsers.length === 0) {
-          return res.status(403).send({ message: 'You are not a member of this group' });
+          return res.status(403).send({ success: false, message: 'You are not a member of this group' });
         }
+        // Is the person the creator?
         if (foundGroup.creatorEmail !== foundUsers[0].email) {
-          return res.status(403).send({ success: false, message: 'You are not the creator of this group' });
+          return res.status(403).send({ success: false, message: 'You are not the creator of this group. You cannot delete members' });
         }
-        foundGroup.getUsers({ where: { email: toBeDeleted } }).then((inGroupAndToBeDeleted) => {
+        foundGroup.getUsers({ where: { id: toBeDeleted } }).then((inGroupAndToBeDeleted) => {
           if (inGroupAndToBeDeleted.length === 0) {
-            return res.status(404).send({ success: false, message: 'The person to be deleted is not a member of the group' });
+            return res.status(404).send({ success: false, message: 'The person(s) to be deleted do not belong to the group' });
           }
-          if (foundGroup.creatorEmail === foundUsers[0].email) {
-            return res.status(403).send({ success: false, message: 'You cannot delete the group creator. Delete the group instead' });
+          // You cannot delete the group creator
+          if (foundGroup.creatorEmail === inGroupAndToBeDeleted[0].email) {
+            return res.status(403).send({ success: false, message: 'You cannot delete the group creator. Delete the group instead, if you created it.' });
           }
-          foundGroup.removeUsers(inGroupAndToBeDeleted).then(() => {
-            return res.status(200).send({ success: true, message: 'Members deleted successfully' });
-          });
+          foundGroup.removeUsers(inGroupAndToBeDeleted).then(() =>
+            res.status(200).send({ success: true, message: 'Deleted successfully' }));
+        }).catch((err) => {
+          // Check if it's a sequelize error or user id doesn't exist
+          if (err.constructor === TypeError) {
+            return res.status(404).send({ success: false, message: 'User not found' });
+          }
+          return res.status(400).send({ success: false, message: 'Invalid User Id' });
         });
       });
-    }).catch(() => {
-      return res.status(404).send({ success: false, message: 'Group not found' });
+    }).catch((err) => {
+      // Check if it's a sequelize error or group doesn't exist
+      if (err.constructor === TypeError) {
+        return res.status(404).send({ success: false, message: 'Group not found' });
+      }
+      return res.status(400).send({ success: false, message: 'Invalid Group Id' });
     });
   },
   // Deleting a group
@@ -202,12 +241,9 @@ export default {
         if (foundGroup.creatorEmail !== foundUsers[0].email) {
           return res.status(403).send({ success: false, message: 'You are not the creator of this group' });
         }
-        foundGroup.destroy().then(() => {
-          return res.status(200).send({ success: true, message: 'Group deleted successfully' });
-        });
+        foundGroup.destroy().then(() =>
+          res.status(200).send({ success: true, message: 'Group deleted successfully' }));
       });
-    }).catch(() => {
-      return res.status(404).send({ message: 'Group not found' });
-    });
+    }).catch(() => res.status(404).send({ success: false, message: 'Group not found' }));
   }
 };

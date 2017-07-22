@@ -1,4 +1,5 @@
 'use strict';
+
 module.exports = (sequelize, DataTypes) => {
   const Group = sequelize.define('Group', {
     id: {
@@ -20,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     title: {
       type: DataTypes.STRING,
       allowNull: false,
+      defaultValue: '',
       unique: {
         args: true,
         msg: 'A group already exists with this title',
@@ -27,8 +29,9 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         len: {
           args: [1, 1000],
-          msg: 'Title of group must have one or more characters'
-        }
+          msg: 'Title of group must have one or more characters',
+          notEmpty: true
+        },
       }
     },
     creatorEmail: {
@@ -38,6 +41,7 @@ module.exports = (sequelize, DataTypes) => {
     description: {
       type: DataTypes.TEXT,
       allowNull: false,
+      defaultValue: '',
       validate: {
         len: {
           args: [4, 1000],
