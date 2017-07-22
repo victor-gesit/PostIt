@@ -24,6 +24,10 @@ module.exports = {
           key: 'id'
         }
       },
+      priority: {
+        type: Sequelize.TEXT,
+        allowNull: false
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
