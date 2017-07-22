@@ -1,11 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
-import { signIn } from '../../actions';
+import { signIn, resetErrorLog } from '../../actions';
+import NotificationSystem from 'react-notification-system';
 
 class Index extends React.Component {
-  componentDidMount() {
-  }
   render() {
     return(
       <div>
@@ -18,8 +16,6 @@ class Index extends React.Component {
 
 
 class Nav extends React.Component {
-  componentDidMount() {
-  }
   render() {
     return(
       <div className="navbar-fixed">
@@ -100,21 +96,59 @@ class SignInForm extends React.Component {
   constructor(props) {
     super(props);
     this.signIn = this.signIn.bind(this);
+    this.showNotification = this.showNotification.bind(this);
+    this._notificationSystem = null;
+    this.state = {
+
+    }
+  }
+  componentDidMount() {
+    this._notificationSystem = this.notificationRef;
   }
   signIn(e) {
     const email = this.email.value;
     const password = this.password.value;
     this.props._that.props.signIn(email, password);
   }
+  showNotification(level, message) {
+      this._notificationSystem.addNotification({
+      message: message,
+      level: level
+    });
+  }
   componentWillUpdate() {
-    this.props._that.props.appInfo;
-    this.props._that.props.history.push('/postmessage');
+    const isSignedIn = this.props._that.props.appInfo.authState.signedIn;
+    const redirect = this.props._that.props.appInfo.authState.redirect;
+    const errorMessage = this.props._that.props.apiError.message;
+    if(isSignedIn) {
+      this.props._that.props.history.push('/messageboard');
+    } else {
+      if(errorMessage) {
+        this.showNotification('success', errorMessage);
+        this.props._that.props.resetErrorLog();
+      }
+    }
+    
   }
   render() {
+    const style = {
+      NotificationItem: { 
+        DefaultStyle: { 
+          margin: '100px 5px 2px 1px',
+          position: 'fixed',
+          width: '320px'
+        },
+    
+        success: { 
+          color: 'red'
+        }
+      }
+    }
     return(
       <div id="signinform" className="col s12 m6 l5">
         <div className="signin-form">
           <div className="row">
+            <NotificationSystem className='notification' style={style} ref={(notificationRef) => { this.notificationRef = notificationRef }} />
             <div>
               <h3 className="center">Sign In</h3>
             </div>
@@ -160,13 +194,17 @@ function mapStateToProps(state) {
   return {
     apiError: state.apiError,
     dataLoading: state.dataLoading,
-    appInfo: state.appInfo
+    appInfo: {
+      userDetails: state.appInfo.userDetails,
+      authState: state.appInfo.authState
+    }
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    signIn: (email, password) => dispatch(signIn(email, password))
+    signIn: (email, password) => dispatch(signIn(email, password)),
+    resetErrorLog: () => dispatch(resetErrorLog())
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Index);
