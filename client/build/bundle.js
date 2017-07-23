@@ -27833,6 +27833,10 @@ var _reactPaginate = __webpack_require__(319);
 
 var _reactPaginate2 = _interopRequireDefault(_reactPaginate);
 
+var _actions = __webpack_require__(313);
+
+var _reactRedux = __webpack_require__(65);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -27857,7 +27861,7 @@ var MessageBoard = function (_React$Component) {
         'div',
         null,
         _react2.default.createElement(Nav, null),
-        _react2.default.createElement(Body, null),
+        _react2.default.createElement(Body, { _that: this }),
         _react2.default.createElement(Footer, null)
       );
     }
@@ -27992,31 +27996,7 @@ var Nav = function (_React$Component2) {
                     _react2.default.createElement('img', { src: 'images/fire2.png' })
                   )
                 ),
-                _react2.default.createElement(
-                  'ul',
-                  { className: 'collection' },
-                  _react2.default.createElement(
-                    'li',
-                    { className: 'collection-item avatar black-text' },
-                    _react2.default.createElement(
-                      'i',
-                      { className: 'material-icons purple circle' },
-                      'person'
-                    ),
-                    _react2.default.createElement(
-                      'span',
-                      { className: 'title black-text' },
-                      'Philip Newmann'
-                    ),
-                    _react2.default.createElement(
-                      'p',
-                      null,
-                      'philip@newmann.com',
-                      _react2.default.createElement('br', null),
-                      '08033322425'
-                    )
-                  )
-                )
+                _react2.default.createElement(SideNav, null)
               ),
               _react2.default.createElement(
                 'li',
@@ -28042,19 +28022,91 @@ var Nav = function (_React$Component2) {
   return Nav;
 }(_react2.default.Component);
 
-var Body = function (_React$Component3) {
-  _inherits(Body, _React$Component3);
+var SideNav = function (_React$Component3) {
+  _inherits(SideNav, _React$Component3);
 
-  function Body() {
+  function SideNav(props) {
+    _classCallCheck(this, SideNav);
+
+    return _possibleConstructorReturn(this, (SideNav.__proto__ || Object.getPrototypeOf(SideNav)).call(this, props));
+  }
+
+  _createClass(SideNav, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'ul',
+        { className: 'collection' },
+        _react2.default.createElement(
+          'li',
+          { className: 'collection-item avatar black-text' },
+          _react2.default.createElement(
+            'i',
+            { className: 'material-icons purple circle' },
+            'person'
+          ),
+          _react2.default.createElement(
+            'span',
+            { className: 'title black-text' },
+            'Philip Newmann'
+          ),
+          _react2.default.createElement(
+            'p',
+            null,
+            'philip@newmann.com',
+            _react2.default.createElement('br', null),
+            '08033322425'
+          )
+        )
+      );
+    }
+  }]);
+
+  return SideNav;
+}(_react2.default.Component);
+
+var Body = function (_React$Component4) {
+  _inherits(Body, _React$Component4);
+
+  function Body(props) {
     _classCallCheck(this, Body);
 
-    return _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).apply(this, arguments));
+    var _this4 = _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).call(this, props));
+
+    _this4.handlePageNumberClick = _this4.handlePageNumberClick.bind(_this4);
+    _this4.state = {};
+    return _this4;
   }
 
   _createClass(Body, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var userId = this.props._that.props.appInfo.userDetails.id;
+      var token = this.props._that.props.appInfo.userDetails.token;
+      var offset = 0;
+      var limit = 5;
+      this.props._that.props.getGroupsForUser(userId, offset, limit, token);
+    }
+  }, {
+    key: 'handlePageNumberClick',
+    value: function handlePageNumberClick() {
+      var _this5 = this;
+
+      this.setState({ offset: offset }, function () {
+        _this5.props._that.props.getGroupsForUser(userId, offset, limit, token);
+      });
+    }
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      // console.log(this.props._that.props.groups);
+    }
+  }, {
     key: 'render',
     value: function render() {
       var story = ['obi', 'is', 'a', 'very', 'good', 'boy', 'but', 'and', 'he', 'has'];
+      var userGroups = this.props._that.props.groups.userGroups;
+      var dataLoading = this.props._that.props.dataLoading;
       return _react2.default.createElement(
         'div',
         { id: 'body' },
@@ -28069,8 +28121,8 @@ var Body = function (_React$Component3) {
           _react2.default.createElement(
             'div',
             { className: 'row' },
-            story.map(function (word, index) {
-              return _react2.default.createElement(Group, { key: index });
+            Object.keys(userGroups).map(function (groupId, index) {
+              return _react2.default.createElement(Group, { key: index, id: groupId, loading: dataLoading, groupDetails: userGroups[groupId].info });
             })
           )
         ),
@@ -28082,10 +28134,10 @@ var Body = function (_React$Component3) {
             '...'
           ),
           breakClassName: "break-me",
-          pageCount: 20,
+          pageCount: 10,
           marginPagesDisplayed: 2,
           pageRangeDisplayed: 5,
-          onPageChange: this.handlePageClick,
+          onPageChange: this.handlePageNumberClick,
           containerClassName: "pagination",
           subContainerClassName: "pages pagination",
           activeClassName: "active" }),
@@ -28097,8 +28149,8 @@ var Body = function (_React$Component3) {
   return Body;
 }(_react2.default.Component);
 
-var Footer = function (_React$Component4) {
-  _inherits(Footer, _React$Component4);
+var Footer = function (_React$Component5) {
+  _inherits(Footer, _React$Component5);
 
   function Footer() {
     _classCallCheck(this, Footer);
@@ -28129,8 +28181,8 @@ var Footer = function (_React$Component4) {
   return Footer;
 }(_react2.default.Component);
 
-var Pagination = function (_React$Component5) {
-  _inherits(Pagination, _React$Component5);
+var Pagination = function (_React$Component6) {
+  _inherits(Pagination, _React$Component6);
 
   function Pagination() {
     _classCallCheck(this, Pagination);
@@ -28222,8 +28274,8 @@ var Pagination = function (_React$Component5) {
   return Pagination;
 }(_react2.default.Component);
 
-var Group = function (_React$Component6) {
-  _inherits(Group, _React$Component6);
+var Group = function (_React$Component7) {
+  _inherits(Group, _React$Component7);
 
   function Group() {
     _classCallCheck(this, Group);
@@ -28234,6 +28286,15 @@ var Group = function (_React$Component6) {
   _createClass(Group, [{
     key: 'render',
     value: function render() {
+      console.log(this.props.groupDetails);
+      if (this.props.loading) {
+        return _react2.default.createElement(
+          'h2',
+          null,
+          'Loading...'
+        );
+      }
+      var groupDetails = this.props.groupDetails;
       return _react2.default.createElement(
         'div',
         { className: 'col s12 m6 l4' },
@@ -28254,7 +28315,7 @@ var Group = function (_React$Component6) {
               _react2.default.createElement(
                 'a',
                 { href: '#', className: 'card-title grey-text text-darken-4' },
-                'NextBigThing',
+                groupDetails.title,
                 _react2.default.createElement(
                   'span',
                   { className: 'badge new pink' },
@@ -28264,7 +28325,7 @@ var Group = function (_React$Component6) {
               _react2.default.createElement(
                 'p',
                 { className: 'blue-text' },
-                'Created by Johnson Thomas'
+                groupDetails.createdBy
               )
             )
           ),
@@ -28277,7 +28338,7 @@ var Group = function (_React$Component6) {
               _react2.default.createElement(
                 'span',
                 { className: 'card-title purple-text text-darken-4' },
-                'Project NextBigThing',
+                groupDetails.title,
                 _react2.default.createElement(
                   'i',
                   { className: 'material-icons right' },
@@ -28292,7 +28353,7 @@ var Group = function (_React$Component6) {
               _react2.default.createElement(
                 'p',
                 { className: 'black-text' },
-                'This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!'
+                groupDetails.description
               ),
               _react2.default.createElement('hr', null)
             )
@@ -28305,7 +28366,29 @@ var Group = function (_React$Component6) {
   return Group;
 }(_react2.default.Component);
 
-exports.default = MessageBoard;
+function mapStateToProps(state) {
+  return {
+    apiError: state.apiError,
+    dataLoading: state.dataLoading,
+    groups: state.groups,
+    appInfo: {
+      userDetails: state.appInfo.userDetails,
+      authState: state.appInfo.authState
+    }
+  };
+}
+
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+  return {
+    getGroupsForUser: function getGroupsForUser(userId, offset, limit, token) {
+      return dispatch((0, _actions.getGroupsForUser)(userId, offset, limit, token));
+    },
+    createGroup: function createGroup() {
+      return dispatch(resetErrorLog());
+    }
+  };
+};
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(MessageBoard);
 
 /***/ }),
 /* 125 */
@@ -30154,12 +30237,13 @@ $(document).ready(function () {
 
 
 var appStore = {
-  groups: { 1: { members: { 1: {}, 2: {} }, groupId: '1', messages: [], about: {} }, 2: {} }, // This will contain all the groups and everything about each
+  groups: { meta: { count: 0 }, userGroups: { 1: { members: { 1: {}, 2: {} }, groupId: '1', messages: [], info: { title: 'A Test Group', description: 'Details about it' } } } }, // This will contain all the groups and everything about each
   apiError: { errored: false, message: null }, // This indicates any error during queries to the API
   appInfo: {
-    userDetails: { firstName: 'a', lastName: 'a', id: 'a', token: 'a', email: '', phone: '' },
+    userDetails: { firstName: 'a', lastName: 'a', id: 'ee1c8fed-6dff-491d-a4fc-31bedb63bde3', token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJWaWN0b3IiLCJsYXN0TmFtZSI6Iklkb25nZXNpdCIsImVtYWlsIjoidmljdG9yLmlkb25nZXNpdEBhbmRlbGEuY29tIiwicGhvbmUiOiIwNzA2OTc0OTk0NSIsImlhdCI6MTUwMDc5ODU0MiwiZXhwIjoxNTAwOTcxMzQyfQ.fzP9_AnaqriRaRcjo9-N_Zxwf3Q9PsL-gUK_-40bIzc', email: '', phone: '' },
     authState: { signedIn: false, redirect: false }
   },
+  dataLoading: true,
   postItInfo: { members: { 1: {}, 2: {} }, groups: { 1: {}, 2: {} } }
 };
 
@@ -42200,41 +42284,16 @@ var deleteGroup = function deleteGroup(state, action) {
   return state;
 };
 
-// const groupReducer = (state = [], action) => {
-//   switch (action.type) {
-//     case 'ADD_MEMBER_SUCCESS':
-//       return [
-//         ...state, ...action.data
-//       ];
-//     case 'DELETE_MEMBER_SUCCESS':
-//       return [
-//         // Perform actions to modify the state and remove the member
-//         ...state,
-//         {
-//           ownerId: action.ownerId,
-//           groupId: action.groupId,
-//           email: action.email,
-//         }
-//       ];
-//     case 'GET_GROUP_MEMBERS_SUCCESS':
-//       return [
-//         ...action.data
-//       ];
-//     case 'GET_ALL_GROUPS':
-//       return [
-//         ...action.data
-//       ];
-//     default:
-//       return state;
-//   }
-// };
-
 // Restructure Array data from DB into state object
 var structureGroupsForAUser = function structureGroupsForAUser(state, dbSnapshot) {
   var appState = Object.assign({}, state);
-  for (var i = 0; i < dbSnapshot.length; i += 1) {
-    appState[dbSnapshot[i].id].info = dbSnapshot[i];
+  var groups = dbSnapshot.rows;
+  for (var i = 0; i < groups.length; i += 1) {
+    var groupId = groups[i].id;
+    appState.userGroups[groupId] = {};
+    appState.userGroups[groupId].info = groups[i];
   }
+  appState.meta.count = dbSnapshot.count;
   return appState;
 };
 // Restructure group members from db into state object
@@ -42325,7 +42384,7 @@ var userReducer = function userReducer() {
     case 'SIGN_IN_SUCCESS':
       return Object.assign({}, userDetails);
     case 'SIGN_UP_SUCCESS':
-      return action.userDetails;
+      return Object.assign({}, userDetails);
     default:
       return state;
   }
@@ -42438,6 +42497,13 @@ var loading = function loading() {
     case 'GET_POST_IT_MEMBERS_ERROR':
       return false;
     case 'GET_POST_IT_MEMBERS_SUCCESS':
+      return false;
+
+    case 'GET_ALL_GROUPS_FOR_A_USER':
+      return true;
+    case 'GET_ALL_GROUPS_FOR_A_USER_ERROR':
+      return false;
+    case 'GET_ALL_GROUPS_FOR_A_USER_SUCCESS':
       return false;
 
     case 'GET_ALL_GROUPS':
@@ -45364,6 +45430,7 @@ var dataService = function dataService(store) {
       next(action);
       var url = 'http://localhost:8002/api';
       switch (action.type) {
+        // Signin a user
         case 'SIGN_IN':
           _superagent2.default.post(url + '/user/signin').send({
             email: action.email,
@@ -45372,17 +45439,18 @@ var dataService = function dataService(store) {
             if (err) {
               return next({
                 type: 'SIGN_IN_ERROR',
-                message: err.message
+                message: res.body.message
               });
             }
-            var userDetails = res.body;
+            var userDetails = res.body.user;
+            userDetails.token = res.body.token;
             next({
               type: 'SIGN_IN_SUCCESS',
               userDetails: userDetails
             });
           });
           break;
-
+        // Signup a new user
         case 'SIGN_UP':
           _superagent2.default.post(url + '/user/signup').send({
             firstName: action.firstName,
@@ -45398,12 +45466,14 @@ var dataService = function dataService(store) {
               });
             }
             var userDetails = res.body;
+            userDetails.token = res.body.token;
             next({
               type: 'SIGN_UP_SUCCESS',
               userDetails: userDetails
             });
           });
           break;
+        // Post a message to a group
         case 'POST_MESSAGE':
           _superagent2.default.post(url + '/group/' + action.groupId + '/message').set('x-access-token', action.token).send({
             message: action.message,
@@ -45424,6 +45494,7 @@ var dataService = function dataService(store) {
             });
           });
           break;
+        // Add group members
         case 'ADD_MEMBER':
           _superagent2.default.post(url + '/group/' + action.groupId + '/user').set('x-access-token', action.token).send({
             email: action.email,
@@ -45442,9 +45513,9 @@ var dataService = function dataService(store) {
             });
           });
           break;
-
+        // Delete a group
         case 'DELETE_A_GROUP':
-          _superagent2.default.delete(url + '/group/' + action.groupId + '/delete').end(function (err, res) {
+          _superagent2.default.delete(url + '/group/' + action.groupId + '/delete').set('x-access-token', action.token).end(function (err, res) {
             if (err) {
               return next({
                 type: 'DELETE_A_GROUP_ERROR',
@@ -45458,10 +45529,10 @@ var dataService = function dataService(store) {
             });
           });
           break;
-
+        // Create a new group
         case 'CREATE_GROUP':
           _superagent2.default.post(url + '/group').set('x-access-token', action.token).send({
-            userId: action.email,
+            creatorId: action.creatorId,
             title: action.adderId,
             description: action.description,
             initialMembers: action.initialMembers
@@ -45479,9 +45550,9 @@ var dataService = function dataService(store) {
             });
           });
           break;
-
+        // Load messages from group
         case 'GET_MESSAGES':
-          _superagent2.default.get(url + '/group/' + action.groupId + '/messages').set('x-access-token', action.token).end(function (err, res) {
+          _superagent2.default.get(url + '/group/' + action.groupId + '/messages/' + action.offset + '/' + action.limit).set('x-access-token', action.token).end(function (err, res) {
             if (err) {
               return next({
                 type: 'GET_MESSAGES_ERROR',
@@ -45495,9 +45566,9 @@ var dataService = function dataService(store) {
             });
           });
           break;
+        // Get members of a group
         case 'GET_GROUP_MEMBERS':
-
-          _superagent2.default.get(url + '/group/' + action.groupId + '/members').set('x-access-token', action.token).end(function (err, res) {
+          _superagent2.default.get(url + '/group/' + action.groupId + '/members/' + action.offset + '/' + action.limit).set('x-access-token', action.token).end(function (err, res) {
             if (err) {
               return next({
                 type: 'GET_GROUP_MEMBERS_ERROR',
@@ -45511,9 +45582,9 @@ var dataService = function dataService(store) {
             });
           });
           break;
-
+        // Get all users registered on PostIt
         case 'GET_POST_IT_MEMBERS':
-          _superagent2.default.get(url + '/members').set('x-access-token', action.token).end(function (err, res) {
+          _superagent2.default.get(url + '/members/' + action.offset + '/' + action.limit).set('x-access-token', action.token).end(function (err, res) {
             if (err) {
               return next({
                 type: 'GET_POST_IT_MEMBERS_ERROR',
@@ -45527,9 +45598,9 @@ var dataService = function dataService(store) {
             });
           });
           break;
-
+        // Get all groups created on PostIt
         case 'GET_ALL_GROUPS':
-          _superagent2.default.get(url + '/groups').set('x-access-token', action.token).end(function (err, res) {
+          _superagent2.default.get(url + '/groups/' + action.offset + '/' + action.limit).set('x-access-token', action.token).end(function (err, res) {
             if (err) {
               return next({
                 type: 'GET_ALL_GROUPS_ERROR',
@@ -45543,9 +45614,9 @@ var dataService = function dataService(store) {
             });
           });
           break;
-
+        // Get all groups a user belongs to
         case 'GET_ALL_GROUPS_FOR_A_USER':
-          _superagent2.default.get(url + '/user/' + action.userId + '/groups').set('x-access-token', action.token).end(function (err, res) {
+          _superagent2.default.get(url + '/user/' + action.userId + '/groups/' + action.offset + '/' + action.limit).set('x-access-token', action.token).end(function (err, res) {
             if (err) {
               return next({
                 type: 'GET_ALL_GROUPS_FOR_A_USER_ERROR',
@@ -45554,12 +45625,12 @@ var dataService = function dataService(store) {
             }
             var data = res.body;
             next({
-              type: 'GET_ALL_GROUPS__FOR_A_USER_SUCCESS',
+              type: 'GET_ALL_GROUPS_FOR_A_USER_SUCCESS',
               data: data
             });
           });
           break;
-
+        // Delete a user from a group
         case 'DELETE_GROUP_MEMBER':
           _superagent2.default.delete(url + '/group/' + action.groupId + '/members').set('x-access-token', action.token).end(function (err, res) {
             if (err) {
@@ -56860,75 +56931,102 @@ var signUp = exports.signUp = function signUp(firstName, lastName, email, passwo
   };
 };
 
-var postMessage = exports.postMessage = function postMessage(senderId, message, priority, isComment) {
+var postMessage = exports.postMessage = function postMessage(senderId, body, priority, isComment, token) {
   return {
     type: 'POST_MESSAGE',
-    message: message,
+    body: body,
     priority: priority,
     isComment: isComment,
-    senderId: senderId
+    senderId: senderId,
+    token: token
   };
 };
 
-var addUser = exports.addUser = function addUser(email, groupId, adderId) {
+var addUser = exports.addUser = function addUser(email, groupId, adderId, token) {
   return {
     type: 'ADD_MEMBER',
     email: email,
     groupId: groupId,
-    adderId: adderId
+    adderId: adderId,
+    token: token
   };
 };
 
-var deleteGroup = exports.deleteGroup = function deleteGroup(ownerId, groupId) {
+var deleteGroup = exports.deleteGroup = function deleteGroup(ownerId, groupId, token) {
   return {
     type: 'DELETE_GROUP',
     ownerId: ownerId,
-    groupId: groupId
+    groupId: groupId,
+    token: token
   };
 };
 
-var createGroup = exports.createGroup = function createGroup(userId, title, description, initialMembers) {
+var createGroup = exports.createGroup = function createGroup(creatorId, title, description, initialMembers, token) {
   return {
     type: 'CREATE_GROUP',
-    userId: userId,
+    creatorId: creatorId,
     title: title,
     description: description,
-    initialMembers: initialMembers
+    initialMembers: initialMembers,
+    token: token
   };
 };
 
-var getMessages = exports.getMessages = function getMessages(groupId) {
+var getMessages = exports.getMessages = function getMessages(groupId, offset, limit, token) {
   return {
     type: 'GET_MESSAGES',
-    groupId: groupId
+    groupId: groupId,
+    offset: offset,
+    limit: limit,
+    token: token
   };
 };
 
-var getGroupMembers = exports.getGroupMembers = function getGroupMembers(groupId) {
+var getGroupMembers = exports.getGroupMembers = function getGroupMembers(groupId, offset, limit, token) {
   return {
     type: 'GET_GROUP_MEMBERS',
-    groupId: groupId
+    groupId: groupId,
+    offset: offset,
+    limit: limit,
+    token: token
   };
 };
 
-var getPostItMembers = exports.getPostItMembers = function getPostItMembers() {
+var getPostItMembers = exports.getPostItMembers = function getPostItMembers(offset, limit, token) {
   return {
-    type: 'GET_POST_IT_MEMBERS'
+    type: 'GET_POST_IT_MEMBERS',
+    offset: offset,
+    limit: limit,
+    token: token
   };
 };
 
-var getAllGroups = exports.getAllGroups = function getAllGroups() {
+var getAllGroups = exports.getAllGroups = function getAllGroups(offset, limit, token) {
   return {
-    type: 'GET_ALL_GROUPS'
+    type: 'GET_ALL_GROUPS',
+    offset: offset,
+    limit: limit,
+    token: token
   };
 };
 
-var deleteMember = exports.deleteMember = function deleteMember(ownerId, email, groupId) {
+var getGroupsForUser = exports.getGroupsForUser = function getGroupsForUser(userId, offset, limit, token) {
+  return {
+    type: 'GET_ALL_GROUPS_FOR_A_USER',
+    userId: userId,
+    offset: offset,
+    limit: limit,
+    token: token
+  };
+};
+
+var deleteMember = exports.deleteMember = function deleteMember(ownerId, idToDelete, groupId, token) {
   return {
     type: 'DELETE_MEMBER',
     ownerId: ownerId,
-    email: email,
-    groupId: groupId
+    idToDelete: idToDelete,
+    groupId: groupId,
+    token: token
   };
 };
 
