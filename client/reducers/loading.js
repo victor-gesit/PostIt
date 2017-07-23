@@ -28,6 +28,10 @@ const loading = (state = false, action) => {
     case 'GET_POST_IT_MEMBERS_ERROR': return false;
     case 'GET_POST_IT_MEMBERS_SUCCESS': return false;
 
+    case 'GET_ALL_GROUPS_FOR_A_USER': return true;
+    case 'GET_ALL_GROUPS_FOR_A_USER_ERROR': return false;
+    case 'GET_ALL_GROUPS_FOR_A_USER_SUCCESS': return false;
+
     case 'GET_ALL_GROUPS': return true;
     case 'GET_ALL_GROUPS_ERROR': return false;
     case 'GET_ALL_GROUPS_SUCCESS': return false;
