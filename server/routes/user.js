@@ -29,6 +29,7 @@ router.post('/signin', (req, res, next) => {
         lastName: user.lastName,
         email: user.email,
         phone: user.phone,
+        id: user.id
       };
       const token = jwt.sign(newUser, jwtSecret, {
         expiresIn: '2 days' // expires in 48 hours
