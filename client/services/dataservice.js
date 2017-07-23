@@ -5,6 +5,7 @@ const dataService = store => next => (action) => {
   next(action);
   const url = 'http://localhost:8002/api';
   switch (action.type) {
+    // Signin a user
     case 'SIGN_IN':
       request.post(`${url}/user/signin`)
         .send({
@@ -15,17 +16,18 @@ const dataService = store => next => (action) => {
           if (err) {
             return next({
               type: 'SIGN_IN_ERROR',
-              message: err.message
+              message: res.body.message
             });
           }
-          const userDetails = res.body;
+          const userDetails = res.body.user;
+          userDetails.token = res.body.token;
           next({
             type: 'SIGN_IN_SUCCESS',
             userDetails
           });
         });
       break;
-
+    // Signup a new user
     case 'SIGN_UP':
       request.post(`${url}/user/signup`)
         .send({
@@ -43,12 +45,14 @@ const dataService = store => next => (action) => {
             });
           }
           const userDetails = res.body;
+          userDetails.token = res.body.token;
           next({
             type: 'SIGN_UP_SUCCESS',
             userDetails
           });
         });
       break;
+    // Post a message to a group
     case 'POST_MESSAGE':
       request.post(`${url}/group/${action.groupId}/message`)
         .set('x-access-token', action.token)
@@ -56,7 +60,7 @@ const dataService = store => next => (action) => {
           message: action.message,
           priority: action.priority,
           isComment: action.isComment,
-          senderId: action.senderId
+          senderId: action.senderId,
         })
         .end((err, res) => {
           if (err) {
@@ -72,6 +76,7 @@ const dataService = store => next => (action) => {
           });
         });
       break;
+    // Add group members
     case 'ADD_MEMBER':
       request.post(`${url}/group/${action.groupId}/user`)
         .set('x-access-token', action.token)
@@ -93,10 +98,11 @@ const dataService = store => next => (action) => {
           });
         });
       break;
-
+    // Delete a group
     case 'DELETE_A_GROUP':
       request
         .delete(`${url}/group/${action.groupId}/delete`)
+        .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
             return next({
@@ -111,12 +117,12 @@ const dataService = store => next => (action) => {
           });
         });
       break;
-
+    // Create a new group
     case 'CREATE_GROUP':
       request.post(`${url}/group`)
         .set('x-access-token', action.token)
         .send({
-          userId: action.email,
+          creatorId: action.creatorId,
           title: action.adderId,
           description: action.description,
           initialMembers: action.initialMembers
@@ -135,10 +141,10 @@ const dataService = store => next => (action) => {
           });
         });
       break;
-
+    // Load messages from group
     case 'GET_MESSAGES':
       request
-        .get(`${url}/group/${action.groupId}/messages`)
+        .get(`${url}/group/${action.groupId}/messages/${action.offset}/${action.limit}`)
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
@@ -154,10 +160,10 @@ const dataService = store => next => (action) => {
           });
         });
       break;
+    // Get members of a group
     case 'GET_GROUP_MEMBERS':
-
       request
-        .get(`${url}/group/${action.groupId}/members`)
+        .get(`${url}/group/${action.groupId}/members/${action.offset}/${action.limit}`)
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
@@ -173,10 +179,10 @@ const dataService = store => next => (action) => {
           });
         });
       break;
-
+    // Get all users registered on PostIt
     case 'GET_POST_IT_MEMBERS':
       request
-        .get(`${url}/members`)
+        .get(`${url}/members/${action.offset}/${action.limit}`)
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
@@ -192,10 +198,10 @@ const dataService = store => next => (action) => {
           });
         });
       break;
-
+    // Get all groups created on PostIt
     case 'GET_ALL_GROUPS':
       request
-        .get(`${url}/groups`)
+        .get(`${url}/groups/${action.offset}/${action.limit}`)
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
@@ -211,10 +217,10 @@ const dataService = store => next => (action) => {
           });
         });
       break;
-
+    // Get all groups a user belongs to
     case 'GET_ALL_GROUPS_FOR_A_USER':
       request
-        .get(`${url}/user/${action.userId}/groups`)
+        .get(`${url}/user/${action.userId}/groups/${action.offset}/${action.limit}`)
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
@@ -225,12 +231,12 @@ const dataService = store => next => (action) => {
           }
           const data = res.body;
           next({
-            type: 'GET_ALL_GROUPS__FOR_A_USER_SUCCESS',
+            type: 'GET_ALL_GROUPS_FOR_A_USER_SUCCESS',
             data
           });
         });
       break;
-
+    // Delete a user from a group
     case 'DELETE_GROUP_MEMBER':
       request
         .delete(`${url}/group/${action.groupId}/members`)
