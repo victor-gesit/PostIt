@@ -6,9 +6,7 @@ class MessageBoard extends React.Component {
   render() {
     return(
       <div>
-        <Nav/>
         <Body _that={this}/>
-        <Footer/>
       </div>
     );
   }
@@ -49,7 +47,7 @@ class Nav extends React.Component {
                     <img src="images/fire2.png" />
                   </div>
                 </div>
-                <SideNav/>
+                <SideNav userDetails={this.props.userDetails}/>
               </li>
               <li><a href="#"><i className="large material-icons black-text">info</i>About PostIt</a></li>
             </ul>
@@ -65,12 +63,16 @@ class SideNav extends React.Component {
     super(props);
   }
   render() {
+    let firstName = this.props.userDetails.firstName;
+    let lastName = this.props.userDetails.lastName;
+    let phone = this.props.userDetails.phone;
+    let email = this.props.userDetails.email;
     return(
       <ul className="collection">
         <li className="collection-item avatar black-text">
           <i className="material-icons purple circle">person</i>
-          <span className="title black-text">Philip Newmann</span>
-          <p>philip@newmann.com<br />08033322425</p>
+          <span className="title black-text">{firstName} {lastName}</span>
+          <p>{email}<br />{phone}</p>
         </li>
       </ul>
     )
@@ -81,32 +83,45 @@ class Body extends React.Component {
     super(props);
     this.handlePageNumberClick = this.handlePageNumberClick.bind(this);
     this.state = {
+      offset: 0,
+      perPage: 1
     }
   }
   componentDidMount() {
     const userId = this.props._that.props.appInfo.userDetails.id;
     const token = this.props._that.props.appInfo.userDetails.token;
     let offset = 0;
-    let limit = 5;
+    let limit = this.state.perPage;
     this.props._that.props.getGroupsForUser(userId, offset, limit, token);
   }
-  handlePageNumberClick() {
+  handlePageNumberClick(data) {
+    const userId = this.props._that.props.appInfo.userDetails.id;
+    const token = this.props._that.props.appInfo.userDetails.token;
+
+    let selected = data.selected;
+    let offset =  Math.ceil(selected * this.state.perPage);
+    let limit = this.state.perPage;
     this.setState({offset: offset}, () => {
       this.props._that.props.getGroupsForUser(userId, offset, limit, token);
     });
   }
-  componentDidUpdate() {
-    // console.log(this.props._that.props.groups);
+  componentWillUpdate() {
   }
   render() {
     const story = ['obi', 'is', 'a', 'very', 'good', 'boy', 'but', 'and', 'he', 'has']
     let userGroups = this.props._that.props.groups.userGroups;
     let dataLoading = this.props._that.props.dataLoading;
+    let totalNoOfGroups = this.props._that.props.groups.meta.count;
+    let limit = this.state.perPage;
+    let pageCount = Math.ceil(totalNoOfGroups/limit);
+    let userDetails = this.props._that.props.appInfo.userDetails;
     return(
       <div id="body">
+        <Nav userDetails={userDetails}/>
         <div id="main">
           <h3 className="board-title center black-text">Message Board</h3>
 
+          {/* Groups */}
           <div className="row">
             {
               Object.keys(userGroups).map((groupId, index) => {
@@ -114,25 +129,25 @@ class Body extends React.Component {
                }
               )
             }
-          </div>
-
-          {/* Groups */}
-  
-
+          </div>  
           {/*End of Groups*/}
+          
         </div>
-        <ReactPaginate previousLabel={"previous"}
-                       nextLabel={"next"}
+        <ReactPaginate previousLabel={"<"}
+                       nextLabel={">"}
                        breakLabel={<a href="">...</a>}
-                       breakClassName={"break-me"}
-                       pageCount={10}
+                       breakClassName={"break-me pink-text"}
+                       pageCount={pageCount}
                        marginPagesDisplayed={2}
                        pageRangeDisplayed={5}
                        onPageChange={this.handlePageNumberClick}
-                       containerClassName={"pagination"}
+                       containerClassName={"pagination center"}
+                       pageLinkClassName={"waves-effect"}
+                       previousLinkClassName={"waves-effect"}
+                       nextLinkClassName={"waves-effect"}
                        subContainerClassName={"pages pagination"}
-                       activeClassName={"active"} />
-        <Pagination/>
+                       activeClassName={"active pink"} />
+        <Footer/>
       </div>
     );
   }
@@ -143,34 +158,31 @@ class Footer extends React.Component {
       return (
       <footer className="page-footer pink darken-4">
         <div className="shift-left white-text">Built by Victor Idongesit</div>
-        <div className="footer-copyright shift-left">    © Andela, 2017</div>
+        <div className="footer-copyright shift-left">© Andela, 2017</div>
       </footer>
     );
   }
 }
 
-class Pagination extends React.Component {
-  render() {
-    return (
-      <ul className="pagination center">
-        <li className="disabled"><a href="#!"><i className="material-icons">chevron_left</i></a></li>
-        <li className="active pink"><a href="#!">1</a></li>
-        <li className="waves-effect"><a href="#!">2</a></li>
-        <li className="waves-effect"><a href="#!">3</a></li>
-        <li className="waves-effect"><a href="#!">4</a></li>
-        <li className="waves-effect"><a href="#!">5</a></li>
-        <li className="waves-effect"><a href="#!"><i className="material-icons">chevron_right</i></a></li>
-      </ul>
-    )
-  }
-}
-
 class Group extends React.Component {
   render() {
-    console.log(this.props.groupDetails);
     if(this.props.loading) {
       return (
-        <h2>Loading...</h2>
+        <div className="preloader-background">
+          <div className="preloader-wrapper big active valign-wrapper">
+            <div className="spinner-layer spinner-white-only">
+              <div className="circle-clipper left">
+                <div className="circle"></div>
+              </div>
+              <div className="gap-patch">
+                <div className="circle"></div>
+              </div>
+              <div className="circle-clipper right">
+                <div className="circle"></div>
+              </div>
+            </div>
+          </div>
+        </div>
       )
     }
     let groupDetails = this.props.groupDetails;
@@ -183,7 +195,7 @@ class Group extends React.Component {
           <div className="card-content">
             <div>
               <a href="#" className="card-title grey-text text-darken-4">{groupDetails.title}<span className="badge new pink">4</span></a>
-              <p className="blue-text">{groupDetails.createdBy}</p>
+              <p className="blue-text">Created by {groupDetails.createdBy}</p>
             </div>
           </div>
           <div className="card-reveal">
@@ -217,7 +229,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = (dispatch) => {
   return {
     getGroupsForUser: (userId, offset, limit, token) => dispatch(getGroupsForUser(userId, offset, limit, token)),
-    createGroup: () => dispatch(resetErrorLog())
+    resetErrorLog: () => dispatch(resetErrorLog())
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(MessageBoard);
