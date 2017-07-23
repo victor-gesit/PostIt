@@ -86,11 +86,6 @@ div.tab button.active {
   min-height: 100vh;
   flex-direction: column;
 }
-
-main {
-  flex: 1 0 auto;
-}
-
 .transparent-body {
   background: rgba(255, 255, 255, .0);
 }
@@ -201,4 +196,17 @@ main {
 .input-field input[type=email].invalid {
     border-bottom: 1px solid #880e4f;
     box-shadow: 0 1px 0 0 #880e4f;
+}
+
+.preloader-background {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
