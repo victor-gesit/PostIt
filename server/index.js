@@ -28,9 +28,9 @@ app.use('/api/group', group);
 
 // General API Requests
 app.use('/api', general);
-// Random route
+// Give sensible response for random routes
 app.use('/*', (req, res) => {
-  res.status(200).send({ message: 'Api up and running' });
+  res.status(200).send({ message: 'Api up and running. Check documentation for appropriate routes' });
 });
 const port = process.env.PORT || 8002;
 

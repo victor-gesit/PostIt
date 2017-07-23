@@ -6,13 +6,24 @@ const Group = models.Group;
 export default {
   // Load everyone registered on PostIt
   getallusers: (req, res) => {
-    User.findAndCountAll({ attributes: ['id', 'firstName', 'lastName', 'email'] }).then((allUsers) => {
-      res.status(200).send(allUsers);
-    });
+    const offset = req.params.offset;
+    const limit = req.params.limit;
+
+    User.findAndCountAll({ attributes: ['id', 'firstName', 'lastName', 'email', 'phone'], offset, limit })
+      .then((allUsers) => {
+        res.status(200).send(allUsers);
+      }).catch(() =>
+        res.status(401).send({ success: false, message: 'Invalid query in url' }));
   },
+  // Load all groups created
   getAllGroups: (req, res) => {
-    Group.findAndCountAll({ attributes: ['id', 'title', 'description', 'creatorEmail', 'createdBy', 'createdAt'] }).then((allGroups) => {
-      res.status(200).send(allGroups);
-    });
+    const offset = req.params.offset;
+    const limit = req.params.limit;
+
+    Group.findAndCountAll({ attributes: ['id', 'title', 'description', 'creatorEmail', 'createdBy', 'createdAt'], offset, limit })
+      .then((allGroups) => {
+        res.status(200).send(allGroups);
+      }).catch(() =>
+        res.status(401).send({ success: false, message: 'Invalid query in url' }));
   }
 };

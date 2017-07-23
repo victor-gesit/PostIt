@@ -6,12 +6,24 @@ import tokenValidator from '../auth/tokenValidator';
 
 const router = express.Router();
 
-// Validate token before accessing this route;
+// Validate token before accessing these routes;
+
+// Load all registered members with offset and limit;
+router.use('/members/:offset/:limit', tokenValidator.validateToken, generalController.getallusers);
+// Load all registered members with only offset
+router.use('/members/:offset', tokenValidator.validateToken, generalController.getallusers);
+// Load all registered members at once
 router.use('/members', tokenValidator.validateToken, generalController.getallusers);
+
+// Load all created groups with offset and limit
+router.use('/groups/:offset/:limit', tokenValidator.validateToken, generalController.getAllGroups);
+// Load all created groups with only offset
+router.use('/groups/:offset', tokenValidator.validateToken, generalController.getAllGroups);
+// Load all created groups at once
 router.use('/groups', tokenValidator.validateToken, generalController.getAllGroups);
 // Give sensible response for random routes
-router.get('/*', (req, res) => {
-  res.status(200).send({ message: 'Api up and running' });
+router.use('/*', (req, res) => {
+  res.status(200).send({ message: 'Api up and running. Check documentation for appropriate routes' });
 });
 
 export default router;

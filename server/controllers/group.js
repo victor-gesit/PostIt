@@ -55,7 +55,6 @@ export default {
           message: 'Incomplete fields'
         });
       });
-      
     }).catch(() => res.status(401).send({ success: false, message: 'Supply a valid user id' }));
   },
   // Add a user to a group
@@ -81,7 +80,7 @@ export default {
           return res.status(403).send({ success: false, message: 'Adder is not member of the group' });
         }
         // Find the new users and add them to the group
-        User.findAll({ where: { email: newMembers }, attributes: ['firstName', 'lastName', 'id', 'email'] }).then((foundMembers) => {
+        User.findAll({ where: { email: newMembers }, attributes: ['firstName', 'lastName', 'id', 'email', 'phone'] }).then((foundMembers) => {
           if (foundMembers !== null && foundMembers.length !== 0) {
             foundGroup.addUser(foundMembers).then(() => res.send(foundMembers));
           } else {
@@ -161,7 +160,7 @@ export default {
       .then((foundGroup) => {
         foundGroup.getUsers().then((allMembers) => {
           count = allMembers.length;
-          foundGroup.getUsers({ attributes: ['firstName', 'lastName', 'email', 'id'], limit, offset })
+          foundGroup.getUsers({ attributes: ['firstName', 'lastName', 'email', 'id', 'phone'], limit, offset })
             .then(groupMembers =>
               res.status(200).send({ success: true, count, rows: groupMembers }))
             .catch(() =>
