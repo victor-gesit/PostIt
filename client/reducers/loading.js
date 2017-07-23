@@ -1,5 +1,13 @@
 const loading = (state = false, action) => {
   switch (action.type) {
+    case 'SIGN_IN': return true;
+    case 'SIGN_IN_SUCCESS': return false;
+    case 'SIGN_IN_ERROR': return false;
+
+    case 'SIGN_UP': return true;
+    case 'SIGN_UP_SUCCESS': return false;
+    case 'SIGN_UP_ERROR': return false;
+
     case 'POST_MESSAGE': return true;
     case 'POST_MESSAGE_ERROR': return false;
     case 'POST_MESSAGE_SUCCESS': return false;
