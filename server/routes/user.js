@@ -80,5 +80,8 @@ router.get('/:userId/groups/:offset/:limit', userController.messageboard);
 // Loading all groups a user belongs to (at once)
 router.get('/:userId/groups', userController.messageboard);
 
-
+// Give sensible response for random routes
+router.use('/*', (req, res) => {
+  res.status(200).send({ message: 'Api up and running. Check documentation for appropriate routes' });
+});
 export default router;
