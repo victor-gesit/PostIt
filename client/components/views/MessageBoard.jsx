@@ -1,12 +1,13 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
-
+import { getGroupsForUser, createGroup } from '../../actions';
+import { connect } from 'react-redux';
 class MessageBoard extends React.Component {
   render() {
     return(
       <div>
         <Nav/>
-        <Body/>
+        <Body _that={this}/>
         <Footer/>
       </div>
     );
@@ -48,13 +49,7 @@ class Nav extends React.Component {
                     <img src="images/fire2.png" />
                   </div>
                 </div>
-                <ul className="collection">
-                  <li className="collection-item avatar black-text">
-                    <i className="material-icons purple circle">person</i>
-                    <span className="title black-text">Philip Newmann</span>
-                    <p>philip@newmann.com<br />08033322425</p>
-                  </li>
-                </ul>
+                <SideNav/>
               </li>
               <li><a href="#"><i className="large material-icons black-text">info</i>About PostIt</a></li>
             </ul>
@@ -65,31 +60,75 @@ class Nav extends React.Component {
   }
 }
 
+class SideNav extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return(
+      <ul className="collection">
+        <li className="collection-item avatar black-text">
+          <i className="material-icons purple circle">person</i>
+          <span className="title black-text">Philip Newmann</span>
+          <p>philip@newmann.com<br />08033322425</p>
+        </li>
+      </ul>
+    )
+  }
+}
 class Body extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handlePageNumberClick = this.handlePageNumberClick.bind(this);
+    this.state = {
+    }
+  }
+  componentDidMount() {
+    const userId = this.props._that.props.appInfo.userDetails.id;
+    const token = this.props._that.props.appInfo.userDetails.token;
+    let offset = 0;
+    let limit = 5;
+    this.props._that.props.getGroupsForUser(userId, offset, limit, token);
+  }
+  handlePageNumberClick() {
+    this.setState({offset: offset}, () => {
+      this.props._that.props.getGroupsForUser(userId, offset, limit, token);
+    });
+  }
+  componentDidUpdate() {
+    // console.log(this.props._that.props.groups);
+  }
   render() {
     const story = ['obi', 'is', 'a', 'very', 'good', 'boy', 'but', 'and', 'he', 'has']
+    let userGroups = this.props._that.props.groups.userGroups;
+    let dataLoading = this.props._that.props.dataLoading;
     return(
       <div id="body">
         <div id="main">
           <h3 className="board-title center black-text">Message Board</h3>
-          {/* Groups */}
+
           <div className="row">
             {
-              story.map((word, index) =>
-                <Group key={index}/>
+              Object.keys(userGroups).map((groupId, index) => {
+                return <Group key={index} id={groupId} loading={dataLoading} groupDetails={userGroups[groupId].info}/>
+               }
               )
             }
           </div>
+
+          {/* Groups */}
+  
+
           {/*End of Groups*/}
         </div>
         <ReactPaginate previousLabel={"previous"}
                        nextLabel={"next"}
                        breakLabel={<a href="">...</a>}
                        breakClassName={"break-me"}
-                       pageCount={20}
+                       pageCount={10}
                        marginPagesDisplayed={2}
                        pageRangeDisplayed={5}
-                       onPageChange={this.handlePageClick}
+                       onPageChange={this.handlePageNumberClick}
                        containerClassName={"pagination"}
                        subContainerClassName={"pages pagination"}
                        activeClassName={"active"} />
@@ -128,6 +167,13 @@ class Pagination extends React.Component {
 
 class Group extends React.Component {
   render() {
+    console.log(this.props.groupDetails);
+    if(this.props.loading) {
+      return (
+        <h2>Loading...</h2>
+      )
+    }
+    let groupDetails = this.props.groupDetails;
     return (
       <div className="col s12 m6 l4">
         <div className="card">
@@ -136,17 +182,17 @@ class Group extends React.Component {
           </div>
           <div className="card-content">
             <div>
-              <a href="#" className="card-title grey-text text-darken-4">NextBigThing<span className="badge new pink">4</span></a>
-              <p className="blue-text">Created by Johnson Thomas</p>
+              <a href="#" className="card-title grey-text text-darken-4">{groupDetails.title}<span className="badge new pink">4</span></a>
+              <p className="blue-text">{groupDetails.createdBy}</p>
             </div>
           </div>
           <div className="card-reveal">
             <div>
-              <span className="card-title purple-text text-darken-4">Project NextBigThing<i className="material-icons right">close</i></span>
+              <span className="card-title purple-text text-darken-4">{groupDetails.title}<i className="material-icons right">close</i></span>
               <hr />
             </div>
             <div className="group-info">	
-              <p className="black-text">This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!</p>
+              <p className="black-text">{groupDetails.description}</p>
               <hr />
             </div>
           </div>
@@ -156,4 +202,22 @@ class Group extends React.Component {
   }
 }
 
-export default MessageBoard;
+function mapStateToProps(state) {
+  return {
+    apiError: state.apiError,
+    dataLoading: state.dataLoading,
+    groups: state.groups,
+    appInfo: {
+      userDetails: state.appInfo.userDetails,
+      authState: state.appInfo.authState
+    }
+  };
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getGroupsForUser: (userId, offset, limit, token) => dispatch(getGroupsForUser(userId, offset, limit, token)),
+    createGroup: () => dispatch(resetErrorLog())
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(MessageBoard);
