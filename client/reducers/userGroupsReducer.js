@@ -9,6 +9,11 @@ const deleteGroup = (state, action) => {
 
 // Restructure Array data from DB into state object
 const structureGroupsForAUser = (state, dbSnapshot) => {
+  // Clear the state, to hold new groups for new page
+  state = {
+    meta: {},
+    userGroups: {}
+  };
   const appState = Object.assign({}, state);
   const groups = dbSnapshot.rows;
   for (let i = 0; i < groups.length; i += 1) {
