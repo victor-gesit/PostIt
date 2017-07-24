@@ -27955,7 +27955,7 @@ var Footer = function (_React$Component5) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function($) {
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -27975,6 +27975,10 @@ var _actions = __webpack_require__(122);
 
 var _reactRedux = __webpack_require__(39);
 
+__webpack_require__(15);
+
+__webpack_require__(309);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -27982,6 +27986,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+$(document).ready(function () {
+  $('.button-collapse').sideNav();
+});
 
 var MessageBoard = function (_React$Component) {
   _inherits(MessageBoard, _React$Component);
@@ -28016,6 +28024,13 @@ var Nav = function (_React$Component2) {
   }
 
   _createClass(Nav, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      $(document).ready(function () {
+        $('.button-collapse').sideNav();
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -28218,7 +28233,7 @@ var Body = function (_React$Component4) {
     _this4.handlePageNumberClick = _this4.handlePageNumberClick.bind(_this4);
     _this4.state = {
       offset: 0,
-      perPage: 1
+      perPage: 6
     };
     return _this4;
   }
@@ -28485,6 +28500,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   };
 };
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(MessageBoard);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)))
 
 /***/ }),
 /* 126 */
@@ -30336,7 +30352,7 @@ var appStore = {
   groups: { meta: { count: 0 }, userGroups: { 1: { members: { 1: {}, 2: {} }, groupId: '1', messages: [], info: { title: 'A Test Group', description: 'Details about it' } } } }, // This will contain all the groups and everything about each
   apiError: { errored: false, message: null }, // This indicates any error during queries to the API
   appInfo: {
-    userDetails: { firstName: 'a', lastName: 'a', id: 'ee1c8fed-6dff-491d-a4fc-31bedb63bde3', token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJWaWN0b3IiLCJsYXN0TmFtZSI6Iklkb25nZXNpdCIsImVtYWlsIjoidmljdG9yLmlkb25nZXNpdEBhbmRlbGEuY29tIiwicGhvbmUiOiIwNzA2OTc0OTk0NSIsImlkIjoiZWUxYzhmZWQtNmRmZi00OTFkLWE0ZmMtMzFiZWRiNjNiZGUzIiwiaWF0IjoxNTAwODI3MDYxLCJleHAiOjE1MDA5OTk4NjF9.Wb6hOVZC-CRWOOJGnNr7oR8_kTJvWwSqWCDEWqOB3m0', email: '', phone: '' },
+    userDetails: { firstName: 'a', lastName: 'a', id: '1', token: '1', email: '', phone: '' },
     authState: { signedIn: false, redirect: false }
   },
   dataLoading: true,
@@ -42382,6 +42398,11 @@ var deleteGroup = function deleteGroup(state, action) {
 
 // Restructure Array data from DB into state object
 var structureGroupsForAUser = function structureGroupsForAUser(state, dbSnapshot) {
+  // Clear the state, to hold new groups for new page
+  state = {
+    meta: {},
+    userGroups: {}
+  };
   var appState = Object.assign({}, state);
   var groups = dbSnapshot.rows;
   for (var i = 0; i < groups.length; i += 1) {
@@ -42439,6 +42460,7 @@ var userGroupsReducer = function userGroupsReducer() {
   var action = arguments[1];
 
   var appState = Object.assign({}, state);
+  // const appState = action.data; // Overwrite store with new data for new page
   switch (action.type) {
     case 'GET_GROUP_MEMBERS_SUCCESS':
       return structureUserGroupMembersFromDb(appState, action.data, action.groupId);
