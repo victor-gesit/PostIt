@@ -1,5 +1,13 @@
 const loading = (state = false, action) => {
   switch (action.type) {
+    case 'SIGN_IN': return true;
+    case 'SIGN_IN_SUCCESS': return false;
+    case 'SIGN_IN_ERROR': return false;
+
+    case 'SIGN_UP': return true;
+    case 'SIGN_UP_SUCCESS': return false;
+    case 'SIGN_UP_ERROR': return false;
+
     case 'POST_MESSAGE': return true;
     case 'POST_MESSAGE_ERROR': return false;
     case 'POST_MESSAGE_SUCCESS': return false;
@@ -27,6 +35,10 @@ const loading = (state = false, action) => {
     case 'GET_POST_IT_MEMBERS': return true;
     case 'GET_POST_IT_MEMBERS_ERROR': return false;
     case 'GET_POST_IT_MEMBERS_SUCCESS': return false;
+
+    case 'GET_ALL_GROUPS_FOR_A_USER': return true;
+    case 'GET_ALL_GROUPS_FOR_A_USER_ERROR': return false;
+    case 'GET_ALL_GROUPS_FOR_A_USER_SUCCESS': return false;
 
     case 'GET_ALL_GROUPS': return true;
     case 'GET_ALL_GROUPS_ERROR': return false;

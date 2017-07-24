@@ -7,7 +7,6 @@ class Index extends React.Component {
   render() {
     return(
       <div>
-        <Nav/>
         <Body _that={this}/>
       </div>
     );
@@ -50,8 +49,8 @@ class Body extends React.Component {
   render() {
     return(
       <div id="body">
+        <Nav/>
         <div id="main">
-          
           <div className="fixed-action-btn hide-on-med-and-up">
             <a className="btn-floating btn-large red" href="#signinform">
               <i className="large material-icons">lock_outline</i>
@@ -104,6 +103,7 @@ class SignInForm extends React.Component {
   }
   componentDidMount() {
     this._notificationSystem = this.notificationRef;
+    this.button.focus();
   }
   signIn(e) {
     const email = this.email.value;
@@ -117,6 +117,7 @@ class SignInForm extends React.Component {
     });
   }
   componentWillUpdate() {
+    this.button.focus();
     const isSignedIn = this.props._that.props.appInfo.authState.signedIn;
     const redirect = this.props._that.props.appInfo.authState.redirect;
     const errorMessage = this.props._that.props.apiError.message;
@@ -161,7 +162,7 @@ class SignInForm extends React.Component {
               <label htmlFor="password">Password</label>
             </div>
             <div className="col s12 center">
-              <button onClick={this.signIn} className="btn green darken-4" autoFocus>Sign in</button>
+              <button onClick={this.signIn} className="btn green darken-4" ref={(button) => { this.button = button; }} >Sign in</button>
             </div>
             <br /><br />
             <div className="col s12">

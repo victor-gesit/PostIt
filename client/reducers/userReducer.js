@@ -4,7 +4,7 @@ const userReducer = (state = {}, action) => {
     case 'SIGN_IN_SUCCESS':
       return Object.assign({}, userDetails);
     case 'SIGN_UP_SUCCESS':
-      return action.userDetails;
+      return Object.assign({}, userDetails);
     default:
       return state;
   }

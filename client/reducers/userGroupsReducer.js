@@ -7,41 +7,21 @@ const deleteGroup = (state, action) => {
   return state;
 };
 
-// const groupReducer = (state = [], action) => {
-//   switch (action.type) {
-//     case 'ADD_MEMBER_SUCCESS':
-//       return [
-//         ...state, ...action.data
-//       ];
-//     case 'DELETE_MEMBER_SUCCESS':
-//       return [
-//         // Perform actions to modify the state and remove the member
-//         ...state,
-//         {
-//           ownerId: action.ownerId,
-//           groupId: action.groupId,
-//           email: action.email,
-//         }
-//       ];
-//     case 'GET_GROUP_MEMBERS_SUCCESS':
-//       return [
-//         ...action.data
-//       ];
-//     case 'GET_ALL_GROUPS':
-//       return [
-//         ...action.data
-//       ];
-//     default:
-//       return state;
-//   }
-// };
-
 // Restructure Array data from DB into state object
 const structureGroupsForAUser = (state, dbSnapshot) => {
+  // Clear the state, to hold new groups for new page
+  state = {
+    meta: {},
+    userGroups: {}
+  };
   const appState = Object.assign({}, state);
-  for (let i = 0; i < dbSnapshot.length; i += 1) {
-    appState[dbSnapshot[i].id].info = dbSnapshot[i];
+  const groups = dbSnapshot.rows;
+  for (let i = 0; i < groups.length; i += 1) {
+    const groupId = groups[i].id;
+    appState.userGroups[groupId] = {};
+    appState.userGroups[groupId].info = groups[i];
   }
+  appState.meta.count = dbSnapshot.count;
   return appState;
 };
 // Restructure group members from db into state object

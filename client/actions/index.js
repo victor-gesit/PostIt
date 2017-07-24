@@ -17,75 +17,102 @@ export const signUp = (firstName, lastName, email, password, phone) => {
   };
 };
 
-export const postMessage = (senderId, message, priority, isComment) => {
+export const postMessage = (senderId, body, priority, isComment, token) => {
   return {
     type: 'POST_MESSAGE',
-    message,
+    body,
     priority,
     isComment,
     senderId,
+    token
   };
 };
 
-export const addUser = (email, groupId, adderId) => {
+export const addUser = (email, groupId, adderId, token) => {
   return {
     type: 'ADD_MEMBER',
     email,
     groupId,
     adderId,
+    token
   };
 };
 
-export const deleteGroup = (ownerId, groupId) => {
+export const deleteGroup = (ownerId, groupId, token) => {
   return {
     type: 'DELETE_GROUP',
     ownerId,
-    groupId
+    groupId,
+    token
   };
 };
 
-export const createGroup = (userId, title, description, initialMembers) => {
+export const createGroup = (creatorId, title, description, initialMembers, token) => {
   return {
     type: 'CREATE_GROUP',
-    userId,
+    creatorId,
     title,
     description,
-    initialMembers
+    initialMembers,
+    token
   };
 };
 
-export const getMessages = (groupId) => {
+export const getMessages = (groupId, offset, limit, token) => {
   return {
     type: 'GET_MESSAGES',
-    groupId
+    groupId,
+    offset,
+    limit,
+    token
   };
 };
 
-export const getGroupMembers = (groupId) => {
+export const getGroupMembers = (groupId, offset, limit, token) => {
   return {
     type: 'GET_GROUP_MEMBERS',
-    groupId
+    groupId,
+    offset,
+    limit,
+    token
   };
 };
 
-export const getPostItMembers = () => {
+export const getPostItMembers = (offset, limit, token) => {
   return {
     type: 'GET_POST_IT_MEMBERS',
+    offset,
+    limit,
+    token
   };
 };
 
-export const getAllGroups = () => {
+export const getAllGroups = (offset, limit, token) => {
   return {
-    type: 'GET_ALL_GROUPS'
+    type: 'GET_ALL_GROUPS',
+    offset,
+    limit,
+    token
   };
 };
 
-export const deleteMember = (ownerId, email, groupId) => {
+export const getGroupsForUser = (userId, offset, limit, token) => {
+  return {
+    type: 'GET_ALL_GROUPS_FOR_A_USER',
+    userId,
+    offset,
+    limit,
+    token
+  };
+};
+
+export const deleteMember = (ownerId, idToDelete, groupId, token) => {
   return {
     type: 'DELETE_MEMBER',
     ownerId,
-    email,
-    groupId
+    idToDelete,
+    groupId,
+    token
   };
 };
 

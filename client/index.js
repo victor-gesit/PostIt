@@ -26,12 +26,13 @@ $(document).ready(() => {
 
 
 const appStore = {
-  groups: { 1: { members: { 1: {}, 2: {}}, groupId: '1', messages: [], about: { }}, 2: {} }, // This will contain all the groups and everything about each
+  groups: { meta: { count: 0 }, userGroups: { 1: { members: { 1: {}, 2: {}}, groupId: '1', messages: [], info: { title: 'A Test Group', description: 'Details about it'}} } }, // This will contain all the groups and everything about each
   apiError: { errored: false, message: null }, // This indicates any error during queries to the API
   appInfo: {
-    userDetails: { firstName: 'a', lastName: 'a', id: 'a', token: 'a', email: '', phone: ''},
+    userDetails: { firstName: 'a', lastName: 'a', id: '1', token: '1', email: '', phone: ''},
     authState: { signedIn: false, redirect: false },
   },
+  dataLoading: true,
   postItInfo: { members: {1: {}, 2: {}}, groups: {1: {}, 2: {}}}
 }
 
