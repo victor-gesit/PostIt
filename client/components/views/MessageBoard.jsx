@@ -2,6 +2,13 @@ import React from 'react';
 import ReactPaginate from 'react-paginate';
 import { getGroupsForUser, createGroup } from '../../actions';
 import { connect } from 'react-redux';
+import 'jquery/dist/jquery';
+import '../../js/materialize';
+
+$(document).ready(() => {
+  $('.button-collapse').sideNav();
+}); 
+
 class MessageBoard extends React.Component {
   render() {
     return(
@@ -13,6 +20,11 @@ class MessageBoard extends React.Component {
 }
 
 class Nav extends React.Component {
+  componentDidMount(){
+    $(document).ready(() => {
+      $('.button-collapse').sideNav();
+    }); 
+  }
   render() {
     return(
       <div className="navbar-fixed">
@@ -84,7 +96,7 @@ class Body extends React.Component {
     this.handlePageNumberClick = this.handlePageNumberClick.bind(this);
     this.state = {
       offset: 0,
-      perPage: 1
+      perPage: 6
     }
   }
   componentDidMount() {
