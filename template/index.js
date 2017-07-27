@@ -1,8 +1,8 @@
 
 import 'jquery/dist/jquery';
-import 'materialize-css/bin/materialize.css';
+import 'materialize-css/dist/css/materialize.css';
 import './scss/style.scss';
-import './js/creategroup';
+import './js/customJS';
 
 require('./js/materialize');
 
@@ -19,4 +19,3 @@ if (process.env.NODE_ENV === 'development') {
 $(document).ready(() => {
   $('.button-collapse').sideNav();
 }); 
-
