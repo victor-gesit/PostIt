@@ -44,7 +44,7 @@ body {
 }
 
 #brand {
-    padding-left: 20px;
+    padding-left: 50px;
 }
 
 .signin-form {
@@ -111,9 +111,11 @@ body {
 }
 
 .send-button {
+    margin-left: 12px;
     position: relative;
     right: 10px;
-    top: 10px;
+    top: 30px;
+    
 }
 
 .group-info {
@@ -141,9 +143,11 @@ body {
     height: 400px;
     position: fixed;
     right: 30px;
-    bottom: 80px;
+    top: 120px;
     border: solid;
     padding: 20px;
+    background: rgba(255, 255, 255, .9);
+    display: none;
 
 }
 
@@ -162,12 +166,12 @@ body {
     background: rgba(0, 0, 0, .5);
     height: 50px;
 }
-.members-list-side-nav {
-    height: 200px;
+.list-side-nav {
+    height: 190px;
     overflow: auto;
 }
 .navbar-fixed {
-    z-index: 9999;
+    z-index: 1003;
 }
 
 ::-webkit-input-placeholder {
@@ -206,4 +210,80 @@ body {
 .input-field input[type=email].invalid {
     border-bottom: 1px solid #880e4f;
     box-shadow: 0 1px 0 0 #880e4f;
+}
+
+nav{
+    padding-right: 30px;
+}
+
+.message-box {
+    display: flex;
+    flex-direction: row;
+}
+.text-input-field {
+    flex: 1 0 auto;
+    margin-left: 10px;
+}
+
+.memberListToggle {
+    position: fixed;
+    right: 0px;
+    z-index: 2;
+}
+#memberList {
+    z-index: 2;
+}
+header, #messageInputBox, #main-postmessage, #footer {
+    padding-left: 300px;
+}
+
+@media only screen and (max-width : 992px) {
+    #header, #main-postmessage, #messageInputBox, #footer {
+    padding-left: 0;
+    }
+}
+#emptySpace {
+    height: 65px;
+    padding-left: 20px;
+}
+#member-list-toggle {
+    background: transparent;
+}
+#member-list-toggle:hover {
+    background: #880e4f;
+}
+#messageInputBox {
+    background: rgba(255, 255, 255, .5);
+}
+/* Styling for radio buttons */
+// Normal
+#normal[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:after {
+    background-color: green;
+}
+#normal[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:before, [type="radio"].with-gap:checked + label:after {
+    border: 2px solid green;
+}
+// Urgent
+#urgent[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:after {
+    background-color: orange;
+}
+#urgent[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:before, [type="radio"].with-gap:checked + label:after {
+    border: 2px solid orange;
+}
+// Critical
+#critical[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:after {
+    background-color: red;
+}
+#critical[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:before, [type="radio"].with-gap:checked + label:after {
+    border: 2px solid red;
+}
+// Comment
+#comment[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:after {
+    background-color: grey;
+}
+#comment[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:before, [type="radio"].with-gap:checked + label:after {
+    border: 2px solid grey;
+}
+#deleteMemberModal {
+    z-index: 0;
 }
