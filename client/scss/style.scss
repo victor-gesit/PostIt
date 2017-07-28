@@ -44,7 +44,7 @@ div.tab button.active {
 }
 
 #brand {
-    padding-left: 20px;
+    padding-left: 50px;
 }
 
 .signin-form {
@@ -152,7 +152,7 @@ div.tab button.active {
     background: rgba(0, 0, 0, .5);
     height: 50px;
 }
-.members-list-side-nav {
+.list-side-nav {
     height: 200px;
     overflow: auto;
 }
@@ -204,9 +204,20 @@ div.tab button.active {
     justify-content: center;
 
     position: fixed;
-    z-index: 100;
+    z-index: 0;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
+}
+
+.userlist-preloader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.registeredMembersList {
+    height: 250px;
+    overflow: auto;
 }
