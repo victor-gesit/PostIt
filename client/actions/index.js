@@ -78,11 +78,9 @@ export const getGroupMembers = (groupId, offset, limit, token) => {
   };
 };
 
-export const getPostItMembers = (offset, limit, token) => {
+export const getPostItMembers = (token) => {
   return {
     type: 'GET_POST_IT_MEMBERS',
-    offset,
-    limit,
     token
   };
 };
