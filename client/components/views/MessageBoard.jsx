@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
-import { getGroupsForUser, createGroup } from '../../actions';
+import { getGroupsForUser, createGroup, deleteGroup } from '../../actions';
 import { connect } from 'react-redux';
 import 'jquery/dist/jquery';
 import '../../js/materialize';
@@ -30,28 +30,69 @@ class Nav extends React.Component {
       <div className="navbar-fixed">
         <nav className="pink darken-4">
           <div className="nav-wrapper">
-            <a href="#" id="brand" className="brand-logo">PostIt</a>
-            <a href="#" data-activates="mobile-demo" className="button-collapse"><i className="material-icons">menu</i></a>
-            <ul className="right hide-on-med-and-down">
+            <a href="#" id="brand" className="brand-logo left">PostIt</a>
+            <a href="#" data-activates="mobile-demo" data-hover="true" className="button-collapse show-on-large"><i className="material-icons">menu</i></a>
+            <ul className="right">
               <li>
                 {/* Dropdown Trigger */}
                 <ul>
                   <li>
-                    <a className="dropdown-button tooltipped" data-position="bottom" data-delay={1000} data-tooltip="View notifications" href="#" data-activates="dropdown1">
-                      <i className="material-icons red-text tootipped">notifications_active</i>
+                    <a className="dropdown-button" data-alignment="right" data-constrainwidth="false" data-beloworigin="true" data-hover="true" href="#" data-activates="dropdown0">
+                      <i className="material-icons">notifications_active</i>
+                    </a>
+                  </li>
+                </ul>
+                {/* Dropdown Structure */}
+                <ul id="dropdown0" className="dropdown-content">
+                  <li><a href="#!" className="black-text">Family and Friends<span className="badge">1</span></a></li>
+                  <li><a href="#!" className="black-text">DisruptI.T. Project<span className="new pink badge">1</span></a></li>
+                </ul>
+              </li>
+              <li>
+                {/* Dropdown Trigger */}
+                <ul>
+                  <li>
+                    <a className="dropdown-button" data-alignment="right" data-constrainwidth="false" data-beloworigin="true" data-hover="true" href="#" data-activates="dropdown1">
+                      <i className="material-icons">library_add</i>
                     </a>
                   </li>
                 </ul>
                 {/* Dropdown Structure */}
                 <ul id="dropdown1" className="dropdowns dropdown-content">
-                  <li className><a href="#" className="brown-text text-darken-4">NextBigThing<span className="badge new pink">4</span></a></li>
-                  <li className><a href="#" className="brown-text text-darken-4">DisruptiveTech<span className="badge new pink">4</span></a></li>
-                  <li className="divider" />
+                  <li><a href="#!" className="black-text"><i className="material-icons green-text">library_add</i>Create Group</a></li>
                 </ul>
               </li>
-              <li><a className="waves-effect white-text waves-light">About PostIt</a></li>
-              <li><a className="waves-effect waves-light black btn">Sign out</a></li>
+              <li>
+                {/* Dropdown Trigger */}
+                <ul>
+                  <li>
+                    <a className="dropdown-button" data-beloworigin="true" data-hover="true" href="#" data-activates="dropdown3">
+                      <i className="material-icons">person</i>
+                    </a>
+                  </li>
+                </ul>
+                {/* Dropdown Structure */}
+                <ul id="dropdown3" className="dropdowns dropdown-content">
+                  <li className="user-profile-container">
+                    <ul className="collection">
+                      <li className="collection-item avatar black-text">
+                        <i className="material-icons purple circle">person</i>
+                        <div className="title black-text">Philip Newmann</div>
+                        <p>philip@newmann.com<br />08033322425</p>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <div className="row valign-wrapper">
+                      <div className="col s12 center">
+                        <button className="btn  black">Sign out</button>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </li>
             </ul>
+            {/* Side Nav */}
             <ul id="mobile-demo" className="side-nav">
               <li>
                 <div className="user-details">
@@ -59,9 +100,42 @@ class Nav extends React.Component {
                     <img src="images/fire2.png" />
                   </div>
                 </div>
-                <SideNav userDetails={this.props.userDetails}/>
+                <ul className="collection">
+                  <li className="collection-item avatar black-text">
+                    <i className="material-icons purple circle">person</i>
+                    <span className="title black-text">Philip Newmann</span>
+                    <p>philip@newmann.com<br />08033322425</p>
+                  </li>
+                </ul>
               </li>
+              <li><a href="#"><i className="large material-icons green-text">library_add</i>Create New Group</a></li>
+              <hr />
+              <li><a href="#"><i className="large material-icons black-text">texture</i>All Groups</a></li>
+              <div className="row searchbox valign-wrapper">
+                <div className="col s9">
+                  <input type="search" placeholder="Find a group" className="white-text" />
+                </div>
+                <div className="col s3">
+                  <span><i className="material-icons black-text">search</i></span>
+                </div>
+              </div>
+              <ul className="list-side-nav">
+                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Invent NextBigThing</a></li>
+                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Just GetStuffDone</a></li>
+                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Let's MakesThingsWork</a></li>
+                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Make and DisruptIt</a></li>
+                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Invent NextBigThing</a></li>
+                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Just GetStuffDone</a></li>
+                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Let's MakesThingsWork</a></li>
+                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Make and DisruptIt</a></li>
+                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Invent NextBigThing</a></li>
+                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Just GetStuffDone</a></li>
+                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Let's MakesThingsWork</a></li>
+                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Make and DisruptIt</a></li>
+              </ul>
+              <hr />
               <li><a href="#"><i className="large material-icons black-text">info</i>About PostIt</a></li>
+              <li><a href="#"><i className="large material-icons red-text">info</i>Sign Out</a></li>
             </ul>
           </div>
         </nav>
