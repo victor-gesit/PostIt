@@ -171,7 +171,7 @@ body {
     overflow: auto;
 }
 .navbar-fixed {
-    z-index: 9999;
+    z-index: 1003;
 }
 
 ::-webkit-input-placeholder {
@@ -283,4 +283,7 @@ header, #messageInputBox, #main-postmessage, #footer {
 }
 #comment[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:before, [type="radio"].with-gap:checked + label:after {
     border: 2px solid grey;
+}
+#deleteMemberModal {
+    z-index: 0;
 }
