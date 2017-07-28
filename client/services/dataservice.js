@@ -182,7 +182,7 @@ const dataService = store => next => (action) => {
     // Get all users registered on PostIt
     case 'GET_POST_IT_MEMBERS':
       request
-        .get(`${url}/members/${action.offset}/${action.limit}`)
+        .get(`${url}/members`)
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
@@ -191,10 +191,10 @@ const dataService = store => next => (action) => {
               message: err.message
             });
           }
-          const postItUsers = res.body;
+          const dbSnapShot = res.body;
           next({
             type: 'GET_POST_IT_MEMBERS_SUCCESS',
-            postItUsers
+            dbSnapShot
           });
         });
       break;
