@@ -9,7 +9,7 @@ import dataService from './services/dataservice';
 import 'materialize-css/bin/materialize.css';
 import 'jquery/dist/jquery';
 import './scss/style.scss'; // Custom styling
-import './js/creategroup';
+import './js/customJS';
 import './js/materialize';
 
 // Routes
@@ -33,7 +33,19 @@ const appStore = {
     authState: { signedIn: false, redirect: false },
   },
   dataLoading: true,
-  postItInfo: { members: {1: {}, 2: {}}, groups: {1: {}, 2: {}}}
+  postItInfo: {
+    members: {
+      postItMembers: {
+        1: {firstName: 'John', lastName: 'Doe', email: 'john@doe.com', id: 1}
+      },
+      meta: {count: 5}
+    },
+    groups: {
+      postItGroups: {
+        1: {},
+        2: {} },
+        meta: {count: 5} }
+    }
 }
 
 
