@@ -1,13 +1,11 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
-import { getGroupsForUser, createGroup, deleteGroup } from '../../actions';
+import { Link } from 'react-router-dom';
+import { getGroupsForUser, createGroup, deleteGroup, getAllGroupsForUser } from '../../actions';
 import { connect } from 'react-redux';
 import 'jquery/dist/jquery';
 import '../../js/materialize';
 
-$(document).ready(() => {
-  $('.button-collapse').sideNav();
-}); 
 
 class MessageBoard extends React.Component {
   render() {
@@ -21,11 +19,15 @@ class MessageBoard extends React.Component {
 
 class Nav extends React.Component {
   componentDidMount(){
+    // Activate the sidenav
     $(document).ready(() => {
       $('.button-collapse').sideNav();
-    }); 
+    });
   }
+
   render() {
+    const userDetails = this.props.userDetails;
+    const allUserGroups = this.props.allUserGroups;
     return(
       <div className="navbar-fixed">
         <nav className="pink darken-4">
@@ -59,7 +61,7 @@ class Nav extends React.Component {
                 </ul>
                 {/* Dropdown Structure */}
                 <ul id="dropdown1" className="dropdowns dropdown-content">
-                  <li><a href="#!" className="black-text"><i className="material-icons green-text">library_add</i>Create Group</a></li>
+                  <li><Link to='/creategroup' className="black-text"><i className="material-icons green-text">library_add</i>Create Group</Link></li>
                 </ul>
               </li>
               <li>
@@ -77,15 +79,15 @@ class Nav extends React.Component {
                     <ul className="collection">
                       <li className="collection-item avatar black-text">
                         <i className="material-icons purple circle">person</i>
-                        <div className="title black-text">Philip Newmann</div>
-                        <p>philip@newmann.com<br />08033322425</p>
+                        <div className="title black-text">{userDetails.firstName} {userDetails.lastName}</div>
+                        <p>{userDetails.email}<br />{userDetails.phone}</p>
                       </li>
                     </ul>
                   </li>
                   <li>
                     <div className="row valign-wrapper">
                       <div className="col s12 center">
-                        <button className="btn  black">Sign out</button>
+                        <button className="btn sign-out-button black">Sign out</button>
                       </div>
                     </div>
                   </li>
@@ -103,12 +105,12 @@ class Nav extends React.Component {
                 <ul className="collection">
                   <li className="collection-item avatar black-text">
                     <i className="material-icons purple circle">person</i>
-                    <span className="title black-text">Philip Newmann</span>
-                    <p>philip@newmann.com<br />08033322425</p>
+                    <span className="title black-text">{userDetails.firstName} {userDetails.lastName}</span>
+                    <p>{userDetails.email}<br />{userDetails.phone}</p>
                   </li>
                 </ul>
               </li>
-              <li><a href="#"><i className="large material-icons green-text">library_add</i>Create New Group</a></li>
+              <li><Link to='/creategroup'><i className="large material-icons green-text">library_add</i>Create New Group</Link></li>
               <hr />
               <li><a href="#"><i className="large material-icons black-text">texture</i>All Groups</a></li>
               <div className="row searchbox valign-wrapper">
@@ -120,18 +122,11 @@ class Nav extends React.Component {
                 </div>
               </div>
               <ul className="list-side-nav">
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Invent NextBigThing</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Just GetStuffDone</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Let's MakesThingsWork</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Make and DisruptIt</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Invent NextBigThing</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Just GetStuffDone</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Let's MakesThingsWork</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Make and DisruptIt</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Invent NextBigThing</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Just GetStuffDone</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Let's MakesThingsWork</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Make and DisruptIt</a></li>
+                {
+                  Object.keys(allUserGroups).map((groupId, index) => {
+                    return <li key={index}><a href="#"><i className="material-icons teal-text">people_outline</i>{allUserGroups[groupId].info.title}</a></li>
+                  })
+                }
               </ul>
               <hr />
               <li><a href="#"><i className="large material-icons black-text">info</i>About PostIt</a></li>
@@ -179,6 +174,7 @@ class Body extends React.Component {
     let offset = 0;
     let limit = this.state.perPage;
     this.props._that.props.getGroupsForUser(userId, offset, limit, token);
+    this.props._that.props.getAllGroupsForUser(userId, token);
   }
   handlePageNumberClick(data) {
     const userId = this.props._that.props.appInfo.userDetails.id;
@@ -194,16 +190,16 @@ class Body extends React.Component {
   componentWillUpdate() {
   }
   render() {
-    const story = ['obi', 'is', 'a', 'very', 'good', 'boy', 'but', 'and', 'he', 'has']
     let userGroups = this.props._that.props.groups.userGroups;
     let dataLoading = this.props._that.props.dataLoading;
     let totalNoOfGroups = this.props._that.props.groups.meta.count;
     let limit = this.state.perPage;
     let pageCount = Math.ceil(totalNoOfGroups/limit);
     let userDetails = this.props._that.props.appInfo.userDetails;
+    let allUserGroups = this.props._that.props.allUserGroups.userGroups;
     return(
       <div id="body">
-        <Nav userDetails={userDetails}/>
+        <Nav allUserGroups={allUserGroups} userDetails={userDetails}/>
         <div id="main">
           <h3 className="board-title center black-text">Message Board</h3>
 
@@ -300,11 +296,12 @@ class Group extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+const mapStateToProps = (state)  => {
   return {
     apiError: state.apiError,
     dataLoading: state.dataLoading,
     groups: state.groups,
+    allUserGroups: state.allUserGroups,
     appInfo: {
       userDetails: state.appInfo.userDetails,
       authState: state.appInfo.authState
@@ -315,6 +312,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = (dispatch) => {
   return {
     getGroupsForUser: (userId, offset, limit, token) => dispatch(getGroupsForUser(userId, offset, limit, token)),
+    getAllGroupsForUser: (userId, token) => dispatch(getAllGroupsForUser(userId, token)), 
     resetErrorLog: () => dispatch(resetErrorLog())
   };
 };
