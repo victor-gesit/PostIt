@@ -120,7 +120,7 @@ export default {
           groupId,
           priority
         }).save().then((createdMessage) => {
-          foundGroup.addMessage(createdMessage).then(() => res.status(200).send(createdMessage));
+          foundGroup.addMessage(createdMessage).then(() => res.status(200).send({ success: true, message: createdMessage }));
         }).catch(() => res.status(400).send({ success: false, message: 'Incomplete fields. Specify senderId, message and priority (normal, urgent or critical)' }));
       }).catch(() => res.status(400).send({ success: false, message: 'Invalid User Id' }));
     }).catch((err) => {
@@ -142,7 +142,7 @@ export default {
       }
       Message.findAndCountAll({
         where: { groupId },
-        attributes: ['sentBy', 'body', 'createdAt', 'isComment'],
+        attributes: ['sentBy', 'body', 'createdAt', 'priority', 'isComment'],
         offset,
         limit
       }).then(result =>
@@ -160,7 +160,7 @@ export default {
       .then((foundGroup) => {
         foundGroup.getUsers().then((allMembers) => {
           count = allMembers.length;
-          foundGroup.getUsers({ attributes: ['firstName', 'lastName', 'email', 'id', 'phone'], limit, offset })
+          foundGroup.getUsers({ attributes: ['firstName', 'lastName', 'email', 'id', 'phone'], order: [['firstName', 'ASC']], limit, offset })
             .then(groupMembers =>
               res.status(200).send({ success: true, count, rows: groupMembers }))
             .catch(() =>
