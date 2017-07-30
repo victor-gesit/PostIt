@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getGroupsForUser, getPostItMembers, createGroup } from '../../actions';
+import { getGroupsForUser, getAllGroupsForUser, resetErrorLog,resetRedirect, getPostItMembers, createGroup } from '../../actions';
+import NotificationSystem from 'react-notification-system';
 
 import 'jquery';
 
@@ -21,6 +22,7 @@ class Body extends React.Component {
     this.switchTab = this.switchTab.bind(this);
     this.addMember = this.addMember.bind(this);
     this.createGroup = this.createGroup.bind(this);
+    this.showNotification = this.showNotification.bind(this);
     this.selectedMembers = [];
     this.registeredMembers = {
       abracadabra: {
@@ -40,21 +42,51 @@ class Body extends React.Component {
       }
     };
   }
+  showNotification(level, message) {
+      this._notificationSystem.addNotification({
+      message: message,
+      level: level
+    });
+  }
   componentDidMount() {
+    // Bind the notifications component
+    this._notificationSystem = this.notificationRef;
     // Load all registered members
     const token = this.props._that.props.appInfo.userDetails.token;
+    const userId = this.props._that.props.appInfo.userDetails.id;
     this.props._that.props.getPostItMembers(token);
+    this.props._that.props.getAllGroupsForUser(userId, token);
   }
   componentWillUpdate() {
     const allUsers = this.props._that.props.postItInfo.members.postItMembers;
+    const apiError = this.props._that.props.apiError.errored;
+    const redirect = this.props._that.props.apiError.redirect;
+    const errorMessage = this.props._that.props.apiError.message;
     this.registeredMembers = allUsers;
-    console.log(allUsers);
+    if(redirect) {
+      // Reset state of redirect property
+      this.props._that.props.resetRedirect();
+      console.log('redirecting');
+      this.props._that.props.history.push('/messageboard');
+    } else {
+      if(errorMessage) {
+        // Empty the array of selected members
+        this.selectedMembers = [];
+        this.showNotification('error', errorMessage);
+        // Reset error log
+        this.props._that.props.resetErrorLog();
+      }
+    }
+    // console.log(allUsers);
   };
-  createGroup(title, description) {
+  createGroup() {
+    const title = this.title.value;
+    const description = this.description.value;
     const creatorId = this.props._that.props.appInfo.userDetails.id;
     const token = this.props._that.props.appInfo.userDetails.token;
     const selectedMembers = this.selectedMembers;
-    // this.props._that.props.createGroup(creatorId, title, description, selectedMembers, token);
+    console.log(title, description, creatorId, selectedMembers, token);
+    this.props._that.props.createGroup(creatorId, title, description, selectedMembers, token);
   }
   switchTab(button, tabName) {
     var i, tabcontent, tablinks;
@@ -71,7 +103,6 @@ class Body extends React.Component {
   }
     // Method to add a member to the list of selected members
   addMember(selected, memberEmail) {
-    console.log(memberEmail);
     if(selected) {
       // Add member
       this.selectedMembers.push(memberEmail);
@@ -84,10 +115,24 @@ class Body extends React.Component {
   }
 
   render() {
-    let usersLoaded = true;
+    const style = {
+      NotificationItem: { 
+        DefaultStyle: { 
+          margin: '100px 5px 2px 1px',
+          position: 'fixed',
+          width: '320px'
+        },
+    
+        success: { 
+          color: 'red'
+        }
+      }
+    }
+    let dataLoading  = this.props._that.props.dataLoading;
     return (
       <div id="body">
         <NavBar _that={this.props._that}/>
+        <NotificationSystem className='notification' style={style} ref={(notificationRef) => { this.notificationRef = notificationRef }} />
         <div id="main">
           <div className="tab">
             <button className="tablinks" id="defaultTab" ref="defaultTab" onClick={() => this.switchTab("defaultTab", 'info')}>Group info</button>
@@ -106,7 +151,7 @@ class Body extends React.Component {
                       <textarea id="groupDescription" ref={(description) => { this.description = description; }} type="text" className="materialize-textarea" placeholder="Description" name="group-desc" defaultValue={""} />
                     </div>
                   </form>
-                  <button className="btn light-green darken-4" onClick={() => this.switchTab("defaultTab", 'members')}>Next &gt;&gt;</button>
+                  <button className="btn light-green darken-4" onClick={() => this.switchTab("add-members", 'members')}>Next &gt;&gt;</button>
                 </div>
               </div>
             </div>
@@ -116,7 +161,7 @@ class Body extends React.Component {
             <div className="row">
               <div className="col s12 m8 offset-m2 l6 offset-l3">
           { /* Load spinner while contacting server */ }
-          {!usersLoaded ? (
+          {dataLoading ? (
           <div>
               <form>
                 <ul className="collection with-header">
@@ -164,13 +209,15 @@ class Body extends React.Component {
             <div>
               <form>
                 <h3 className="center">Add members</h3>
-                <ul className="collection registeredMembersList">
-                  {
-                   Object.keys(this.registeredMembers).map((userId, index ) => {
-                     return <RegisteredMember addMember={this.addMember} key={index} id={userId} userInfo={this.registeredMembers[userId]}/>
-                   })
-                  }
-                </ul>
+                <div className="registeredMembersList">
+                  <ul className="collection">
+                    {
+                    Object.keys(this.registeredMembers).map((userId, index ) => {
+                      return <RegisteredMember addMember={this.addMember} key={index} id={userId} userInfo={this.registeredMembers[userId]}/>
+                    })
+                    }
+                  </ul>
+                </div>
               </form>
               <div className="row">
                 <button className="btn col s8 offset-s2 m5 l5 light-green darken-4" onClick={() => this.switchTab("defaultTab", 'info')}>&lt;&lt; Group info</button>
@@ -204,17 +251,17 @@ class Footer extends React.Component {
 }
 
 class NavBar extends React.Component {
-  componentDidMount(){
-    // Load all the groups a user belongs to
-    const token = this.props._that.props.appInfo.userDetails.token;
-    //this.props._that.props.getGroupsForUser(null, null, token);
+  constructor(props){
+    super(props);
   }
   render() {
+    const userDetails = this.props._that.props.appInfo.userDetails;
+    const allUserGroups = this.props._that.props.allUserGroups.userGroups;
     return (
       <div className="navbar-fixed">
         <nav className="pink darken-4">
           <div className="nav-wrapper">
-            <a href="#" id="brand" className="brand-logo">PostIt</a>
+            <a href="#" id="brand" className="brand-logo left">PostIt</a>
             <a href="#" data-activates="mobile-demo" data-hover="true" className="button-collapse show-on-large"><i className="material-icons">menu</i></a>
             <ul className="right">
               <li>
@@ -247,15 +294,15 @@ class NavBar extends React.Component {
                     <ul className="collection">
                       <li className="collection-item avatar black-text">
                         <i className="material-icons purple circle">person</i>
-                        <div className="title black-text">Philip Newmann</div>
-                        <p>philip@newmann.com<br />08033322425</p>
+                        <div className="title black-text">{userDetails.firstName} {userDetails.lastName}</div>
+                        <p>{userDetails.email}<br />{userDetails.phone}</p>
                       </li>
                     </ul>
                   </li>
                   <li>
                     <div className="row valign-wrapper">
                       <div className="col s12 center">
-                        <button className="btn  black">Sign out</button>
+                        <button className="btn  black sign-out-button">Sign out</button>
                       </div>
                     </div>
                   </li>
@@ -273,8 +320,8 @@ class NavBar extends React.Component {
                 <ul className="collection">
                   <li className="collection-item avatar black-text">
                     <i className="material-icons purple circle">person</i>
-                    <span className="title black-text">Philip Newmann</span>
-                    <p>philip@newmann.com<br />08033322425</p>
+                    <span className="title black-text">{userDetails.firstName} {userDetails.lastName}</span>
+                    <p>{userDetails.email}<br />{userDetails.phone}</p>
                   </li>
                 </ul>
               </li>
@@ -289,18 +336,11 @@ class NavBar extends React.Component {
                 </div>
               </div>
               <ul className="list-side-nav">
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Invent NextBigThing</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Just GetStuffDone</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Let's MakesThingsWork</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Make and DisruptIt</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Invent NextBigThing</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Just GetStuffDone</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Let's MakesThingsWork</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Make and DisruptIt</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Invent NextBigThing</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Just GetStuffDone</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Let's MakesThingsWork</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Make and DisruptIt</a></li>
+                {
+                  Object.keys(allUserGroups).map((groupId, index) => {
+                    return <li key={index}><a href="#"><i className="material-icons teal-text">people_outline</i>{allUserGroups[groupId].info.title}</a></li>
+                  })
+                }
               </ul>
               <hr />
               <li><a href="#"><i className="large material-icons black-text">info</i>About PostIt</a></li>
@@ -340,11 +380,12 @@ class RegisteredMember extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+const mapStateToProps = (state)  => {
   return {
     apiError: state.apiError,
     dataLoading: state.dataLoading,
     groups: state.groups,
+    allUserGroups: state.allUserGroups,
     appInfo: {
       userDetails: state.appInfo.userDetails,
       authState: state.appInfo.authState
@@ -356,7 +397,9 @@ function mapStateToProps(state) {
 const mapDispatchToProps = (dispatch) => {
   return {
     resetErrorLog: () => dispatch(resetErrorLog()),
+    resetRedirect: () => dispatch(resetRedirect()),
     getPostItMembers: (token) => dispatch(getPostItMembers(token)),
+    getAllGroupsForUser: (userId, token) => dispatch(getAllGroupsForUser(userId, token)),
     createGroup: (creatorId, title, description, selectedMembers, token) =>
       dispatch(createGroup(creatorId, title, description, selectedMembers, token)),
     getGroupsForUser: (userId, offset, limit, token) => dispatch(getGroupsForUser(userID, offset, limit, token))
