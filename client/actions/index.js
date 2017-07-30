@@ -104,6 +104,14 @@ export const getGroupsForUser = (userId, offset, limit, token) => {
   };
 };
 
+export const getAllGroupsForUser = (userId, token) => {
+  return {
+    type: 'GET_ALL_GROUPS_FOR_A_USER_AT_ONCE',
+    userId,
+    token
+  };
+};
+
 export const deleteMember = (ownerId, idToDelete, groupId, token) => {
   return {
     type: 'DELETE_MEMBER',
@@ -114,8 +122,22 @@ export const deleteMember = (ownerId, idToDelete, groupId, token) => {
   };
 };
 
+export const loadChat = (groupId) => {
+  return {
+    type: 'LOAD_CHAT',
+    groupId
+  };
+};
+
 export const resetErrorLog = () => {
   return {
     type: 'RESET_ERROR_LOG',
   };
 };
+
+export const resetRedirect = () => {
+  return {
+    type: 'RESET_REDIRECT_STATE'
+  };
+};
+
