@@ -97,13 +97,9 @@ class SignInForm extends React.Component {
     this.signIn = this.signIn.bind(this);
     this.showNotification = this.showNotification.bind(this);
     this._notificationSystem = null;
-    this.state = {
-
-    }
   }
   componentDidMount() {
     this._notificationSystem = this.notificationRef;
-    this.button.focus();
   }
   signIn(e) {
     const email = this.email.value;
@@ -119,7 +115,6 @@ class SignInForm extends React.Component {
   componentWillUpdate() {
     this.button.focus();
     const isSignedIn = this.props._that.props.appInfo.authState.signedIn;
-    const redirect = this.props._that.props.appInfo.authState.redirect;
     const errorMessage = this.props._that.props.apiError.message;
     if(isSignedIn) {
       this.props._that.props.history.push('/messageboard');
@@ -132,6 +127,7 @@ class SignInForm extends React.Component {
     
   }
   render() {
+    // Style for notification
     const style = {
       NotificationItem: { 
         DefaultStyle: { 
@@ -191,7 +187,7 @@ class Footer extends React.Component {
 }
 
 
-function mapStateToProps(state) {
+const mapStateToProps = (state)  => {
   return {
     apiError: state.apiError,
     dataLoading: state.dataLoading,
