@@ -20,21 +20,6 @@ window.addEventListener('load', () => {
   try {
     $('#defaultTab')[0].click();
   } catch (e) {};
-  $('#member-list-toggle').off().on('click', () => {
-    $('#memberList').animate({ width: 'toggle' });
-  });
-  $('.modal').modal();
-  // Toggle memberList
-  $(document).on('click', (e) => {
-    const target = $(e.target);
-    // Hide member list when a click is made outside of memberlist window or deleteMemberModal
-    if (!(target.is('#member-list-toggle'))) {
-      if(!target.parents('#memberList').length) {
-        if(!target.parents('#deleteMemberModal').length) {
-          $('#memberList').fadeOut();
-        }
-      }
-    }
-  });
+
 }, false);
 
