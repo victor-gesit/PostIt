@@ -40,7 +40,7 @@ export const addUser = (email, groupId, adderId, token) => {
 
 export const deleteGroup = (ownerId, groupId, token) => {
   return {
-    type: 'DELETE_GROUP',
+    type: 'DELETE_A_GROUP',
     ownerId,
     groupId,
     token
@@ -58,22 +58,18 @@ export const createGroup = (creatorId, title, description, initialMembers, token
   };
 };
 
-export const getMessages = (groupId, offset, limit, token) => {
+export const getMessages = (groupId, token) => {
   return {
     type: 'GET_MESSAGES',
     groupId,
-    offset,
-    limit,
     token
   };
 };
 
-export const getGroupMembers = (groupId, offset, limit, token) => {
+export const getGroupMembers = (groupId, token) => {
   return {
     type: 'GET_GROUP_MEMBERS',
     groupId,
-    offset,
-    limit,
     token
   };
 };
@@ -114,7 +110,7 @@ export const getAllGroupsForUser = (userId, token) => {
 
 export const deleteMember = (ownerId, idToDelete, groupId, token) => {
   return {
-    type: 'DELETE_MEMBER',
+    type: 'DELETE_GROUP_MEMBER',
     ownerId,
     idToDelete,
     groupId,
