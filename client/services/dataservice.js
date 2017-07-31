@@ -111,6 +111,9 @@ const dataService = store => next => (action) => {
       request
         .delete(`${url}/group/${action.groupId}/delete`)
         .set('x-access-token', action.token)
+        .send({
+          ownerId: action.ownerId
+        })
         .end((err, res) => {
           if (err) {
             return next({
@@ -153,7 +156,7 @@ const dataService = store => next => (action) => {
     // Load messages from group
     case 'GET_MESSAGES':
       request
-        .get(`${url}/group/${action.groupId}/messages/${action.offset}/${action.limit}`)
+        .get(`${url}/group/${action.groupId}/messages`)
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
@@ -162,17 +165,18 @@ const dataService = store => next => (action) => {
               message: err.message
             });
           }
-          const messages = res.body;
+          const messagesDbSnapshot = res.body;
           next({
             type: 'GET_MESSAGES_SUCCESS',
-            messages
+            groupId: action.groupId,
+            messagesDbSnapshot,
           });
         });
       break;
     // Get members of a group
     case 'GET_GROUP_MEMBERS':
       request
-        .get(`${url}/group/${action.groupId}/members/${action.offset}/${action.limit}`)
+        .get(`${url}/group/${action.groupId}/members/`)
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
@@ -181,10 +185,11 @@ const dataService = store => next => (action) => {
               message: err.message
             });
           }
-          const members = res.body;
+          const membersDBSnapshot = res.body;
           next({
             type: 'GET_GROUP_MEMBERS_SUCCESS',
-            data: { members, groupId: action.groupId }
+            membersDBSnapshot,
+            groupId: action.groupId
           });
         });
       break;
@@ -269,6 +274,10 @@ const dataService = store => next => (action) => {
       request
         .delete(`${url}/group/${action.groupId}/members`)
         .set('x-access-token', action.token)
+        .send({
+          ownerId: action.ownerId,
+          idToDelete: action.idToDelete,
+        })
         .end((err, res) => {
           if (err) {
             return next({
@@ -276,10 +285,12 @@ const dataService = store => next => (action) => {
               message: err.message
             });
           }
-          const data = res.body;
+          const deletedId = action.idToDelete;
+          const groupId = action.groupId;
           next({
             type: 'DELETE_GROUP_MEMBER_SUCCESS',
-            data
+            deletedId,
+            groupId
           });
         });
       break;
