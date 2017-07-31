@@ -29,7 +29,7 @@ const appStore = {
   // Hold some groups (batch loading from db for pagination)
   groups: { meta: { count: 0 }, userGroups: { 1: { members: { 1: {}, 2: {}}, groupId: '1', messages: [], info: { title: 'A Test Group', description: 'Details about it'}} } },
   // This will contain all the groups and everything about each
-  allUserGroups : { meta: {count: 0}, userGroups: {1: {members: {1: {}, 2: {}}, groupId: '1', messages: {}, info: {title: 'Just A Test Group', description: 'Some Deets'}}}},
+  allUserGroups : { meta: {count: 0}, userGroups: {1: {members: {1: {}, 2: {}}, groupId: '1', messages: [], info: {title: 'Just A Test Group', description: 'Some Deets'}}}},
   apiError: { errored: false, message: null }, // This indicates any error during queries to the API
   appInfo: {
     userDetails: { firstName: 'a', lastName: 'a', id: '1', token: '1', email: '', phone: ''},
