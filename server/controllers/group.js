@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
 import models from '../models';
 
 const Group = models.Group;
@@ -120,7 +121,7 @@ export default {
           groupId,
           priority
         }).save().then((createdMessage) => {
-          foundGroup.addMessage(createdMessage).then(() => res.status(200).send(createdMessage));
+          foundGroup.addMessage(createdMessage).then(() => res.status(200).send({ success: true, message: createdMessage }));
         }).catch(() => res.status(400).send({ success: false, message: 'Incomplete fields. Specify senderId, message and priority (normal, urgent or critical)' }));
       }).catch(() => res.status(400).send({ success: false, message: 'Invalid User Id' }));
     }).catch((err) => {
@@ -136,18 +137,28 @@ export default {
     const groupId = req.params.id;
     const offset = req.params.offset;
     const limit = req.params.limit;
+    const token = req.body.token || req.query.token || req.headers['x-access-token'];
+    const decode = jwt.decode(token);
+    const userId = decode.id;
+    
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
       if (foundGroup === null) {
         return res.status(404).send({ success: false, message: 'Group not found' });
       }
-      Message.findAndCountAll({
-        where: { groupId },
-        attributes: ['sentBy', 'body', 'createdAt', 'isComment'],
-        offset,
-        limit
-      }).then(result =>
-      res.send(result)).catch(() =>
-        res.status(401).send({ success: false, message: 'Invalid query in url' }));
+      // Verify that user belongs to this group
+      foundGroup.getUsers({ where: { id: userId } }).then((foundUsers) => {
+        if (foundUsers.length === 0) {
+          return res.status(403).send({ success: false, message: 'User does not belong to this group' });
+        }
+        Message.findAndCountAll({
+          where: { groupId },
+          attributes: ['sentBy', 'body', 'createdAt', 'priority', 'isComment'],
+          offset,
+          limit
+        }).then(result =>
+        res.send(result)).catch(() =>
+          res.status(401).send({ success: false, message: 'Invalid query in url' }));
+      });
     }).catch(() => res.status(400).send({ success: false, message: 'Invalid Group Id' }));
   },
   // Get the list of members in a particular group
@@ -155,16 +166,26 @@ export default {
     const groupId = req.params.id;
     const offset = req.params.offset;
     const limit = req.params.limit;
+    // Extract userId from token
+    const token = req.body.token || req.query.token || req.headers['x-access-token'];
+    const decode = jwt.decode(token);
+    const userId = decode.id;
     let count;
     Group.find({ where: { id: groupId } })
       .then((foundGroup) => {
-        foundGroup.getUsers().then((allMembers) => {
-          count = allMembers.length;
-          foundGroup.getUsers({ attributes: ['firstName', 'lastName', 'email', 'id', 'phone'], limit, offset })
-            .then(groupMembers =>
-              res.status(200).send({ success: true, count, rows: groupMembers }))
-            .catch(() =>
-              res.status(401).send({ success: false, message: 'Invalid query in url' }));
+        // Verify that user belongs to this group
+        foundGroup.getUsers({ where: { id: userId } }).then((foundUsers) => {
+          if (foundUsers.length === 0) {
+            return res.status(403).send({ success: false, message: 'User does not belong to this group' });
+          }
+          foundGroup.getUsers().then((allMembers) => {
+            count = allMembers.length;
+            foundGroup.getUsers({ attributes: ['firstName', 'lastName', 'email', 'id', 'phone'], order: [['firstName', 'ASC']], limit, offset })
+              .then(groupMembers =>
+                res.status(200).send({ success: true, count, rows: groupMembers }))
+              .catch(() =>
+                res.status(401).send({ success: false, message: 'Invalid query in url' }));
+          });
         });
       }).catch((err) => {
         // Check if it's a sequelize error or group doesn't exist

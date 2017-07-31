@@ -1,12 +1,13 @@
 import React from 'react';
-import { browserHistory } from 'react-router';
+import { connect } from 'react-redux';
+import NotificationSystem from 'react-notification-system';
+import { signUp, resetErrorLog } from '../../actions';
 
-export default class Index extends React.Component {
+class SignUp extends React.Component {
   render() {
     return(
       <div>
-        <Nav/>
-        <Body/>
+        <Body _that={this}/>
       </div>
     );
   }
@@ -18,18 +19,27 @@ class Nav extends React.Component {
   }
   render() {
     return(
-      <nav className="lime darken-4">
-        <div className="nav-wrapper">
-          <a href="#" id="brand" className="brand-logo">PostIt</a>
-          <a href="#" data-activates="mobile-demo" className="button-collapse"><i className="material-icons">menu</i></a>
-          <ul className="right hide-on-med-and-down">
-            <li><a href="#">About PostIt</a></li>
-          </ul>
-          <ul id="mobile-demo" className="side-nav">
-            <li><a href="#">About PostIt</a></li>
-          </ul>
-        </div>
-      </nav>
+      <div className="navbar-fixed">
+        <nav className="pink darken-4" role="navigation">
+          <div className="nav-wrapper">
+            <a href="#" id="brand" className="brand-logo">PostIt</a>
+            <a href="#" data-activates="mobile-demo" className="button-collapse"><i className="material-icons">menu</i></a>
+            <ul className="right hide-on-med-and-down">
+              <li><a href="#">About PostIt</a></li>
+            </ul>
+            <ul id="mobile-demo" className="side-nav">
+              <li>
+                <div className="user-details">
+                  <div className="background">
+                    <img src="images/fire2.png" />
+                  </div>
+                </div>
+              </li>
+              <li><a href="#"><i className="large material-icons black-text">info</i>About PostIt</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
     );
   }
 }
@@ -38,64 +48,91 @@ class Body extends React.Component {
   constructor(props) {
     super(props);
     this.signUp = this.signUp.bind(this);
+    this.showNotification = this.showNotification.bind(this);
+    this._notificationSystem = null;
   }
-  signUp(e) {
-    // Stop default button click action
-
-    var details = {
-      firstName: this.refs['firstName'].value,
-      lastName: this.refs['lastName'].value,
-      phone: this.refs['phone'].value,
-      email: this.refs['email'].value,
-      password: this.refs['password'].value
-    };
-    console.log(details);
-    var formBody = [];
-    for (var property in details) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(details[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
+  componentDidMount() {
+    this._notificationSystem = this.notificationRef;
+  }
+  signUp() {
+    const firstName = this.firstName.value;
+    const lastName = this.lastName.value;
+    const email = this.email.value;
+    const phone = this.phone.value;
+    const password = this.password.value;
+    this.props._that.props.signUp(firstName, lastName, email, password, phone);
+  }
+  showNotification(level, message) {
+      this._notificationSystem.addNotification({
+      message: message,
+      level: level
+    });
+  }
+  componentWillUpdate() {
+    const isSignedIn = this.props._that.props.appInfo.authState.signedIn;
+    const errorMessage = this.props._that.props.apiError.message;
+    console.log(isSignedIn, errorMessage);
+    if(isSignedIn) {
+      this.props._that.props.history.push('/messageboard');
+    } else {
+      if(errorMessage) {
+        this.showNotification('success', errorMessage);
+        this.props._that.props.resetErrorLog();
+      }
     }
-    formBody = formBody.join("&");
-    fetch('https://postit-api-victor.herokuapp.com/api/user/signup', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: formBody
-    }).then((res) => res.json())
-    .then((data) => { console.log(data)})
+    
   }
   render() {
+    const style = {
+      NotificationItem: { 
+        DefaultStyle: { 
+          margin: '100px 5px 2px 1px',
+          position: 'fixed',
+          width: '320px'
+        },
+    
+        success: { 
+          color: 'red'
+        }
+      }
+    }
     return(
       <div id="body">
+      <Nav/>
       <div id="main">
         <div className="row">
-          <div className="col s2 m3 l4">
-          </div>
-          <div className="col s8 m6 l4 signup-form">
-            <div>
-              <h3 className="center">Sign Up</h3>
-            </div>
-            <div>
-              <input type="text" ref="firstName" className="white-text" name="fname" placeholder="First Name" />
-            </div>
-            <div>
-              <input type="text" ref="lastName" className="white-text" name="lname" placeholder="Last Name" />
-            </div>
-            <div>
-              <input type="text" ref="phone" className="white-text" name="number" placeholder="Phone Number" />
-            </div>
-            <div>
-              <input type="text" ref="email" className="white-text" name="email" placeholder="Email" />
-            </div>
-            <div>
-              <input type="password" ref="password" name="password" placeholder="Password" />
-            </div>
-            <button className="btn" onClick={this.signUp}>Sign up</button>
-            <div>
-              <p>Already have an account? <a href="#">Sign in</a></p>
+          <div className="col s8 m6 l4 offset-s2 offset-m3 offset-l4 signup-form">
+            <NotificationSystem className='notification' style={style} ref={(notificationRef) => { this.notificationRef = notificationRef }} />
+            <div className="row">
+              <div>
+                <h3 className="center">Sign Up</h3>
+              </div>
+              <div className="input-field col s12">
+                <input id="firstName" ref={(firstName) => {this.firstName = firstName;}} type="text" name="fname" className="validate" />
+                <label htmlFor="firstName">First Name</label>
+              </div>
+              <div className="input-field col s12">
+                <input id="lastName" ref={(lastName) => {this.lastName = lastName;}} type="text" name="lastName" className="validate" />
+                <label htmlFor="lastName">Last Name</label>
+              </div>
+              <div className="input-field col s12">
+                <input type="text" ref={(phone) => {this.phone = phone;}}   id="phone" name="number" className="validate" />
+                <label htmlFor="phone">Phone</label>
+              </div>
+              <div className="input-field col s12">
+                <input id="email" ref={(email) => {this.email = email;}}  type="email" name="email" className="validate" />
+                <label htmlFor="email" data-error="Enter valid email">Email</label>
+              </div>
+              <div className="input-field col s12">
+                <input ref={(password) => {this.password = password;}} id="password" type="password" className="validate" />
+                <label htmlFor="password">Password</label>
+              </div>
+              <div className="center">
+                <button onClick={this.signUp} className="btn center green darken-4" autoFocus>Sign up</button>
+              </div>
+              <div>
+                <p>Already have an account? <a href="#">Sign in</a></p>
+              </div>
             </div>
           </div>
         </div>
@@ -109,10 +146,30 @@ class Body extends React.Component {
 class Footer extends React.Component {
   render() {
       return (
-      <footer className="page-footer lime darken-4">
-        <div className="container">Built by Victor Idongesit</div>
-        <div className="footer-copyright">    © Andela, 2017</div>
+      <footer className="page-footer pink darken-4">
+        <div className="shift-left white-text">Built by Victor Idongesit</div>
+        <div className="footer-copyright shift-left">    © Andela, 2017</div>
       </footer>
     );
   }
 }
+
+
+function mapStateToProps(state) {
+  return {
+    apiError: state.apiError,
+    dataLoading: state.dataLoading,
+    appInfo: {
+      userDetails: state.appInfo.userDetails,
+      authState: state.appInfo.authState
+    }
+  };
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    signUp: (firstName, lastName, email, password, phone) => dispatch(signUp(firstName, lastName, email, password, phone)),
+    resetErrorLog: () => dispatch(resetErrorLog())
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

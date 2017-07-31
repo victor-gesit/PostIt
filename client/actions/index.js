@@ -40,7 +40,7 @@ export const addUser = (email, groupId, adderId, token) => {
 
 export const deleteGroup = (ownerId, groupId, token) => {
   return {
-    type: 'DELETE_GROUP',
+    type: 'DELETE_A_GROUP',
     ownerId,
     groupId,
     token
@@ -58,31 +58,25 @@ export const createGroup = (creatorId, title, description, initialMembers, token
   };
 };
 
-export const getMessages = (groupId, offset, limit, token) => {
+export const getMessages = (groupId, token) => {
   return {
     type: 'GET_MESSAGES',
     groupId,
-    offset,
-    limit,
     token
   };
 };
 
-export const getGroupMembers = (groupId, offset, limit, token) => {
+export const getGroupMembers = (groupId, token) => {
   return {
     type: 'GET_GROUP_MEMBERS',
     groupId,
-    offset,
-    limit,
     token
   };
 };
 
-export const getPostItMembers = (offset, limit, token) => {
+export const getPostItMembers = (token) => {
   return {
     type: 'GET_POST_IT_MEMBERS',
-    offset,
-    limit,
     token
   };
 };
@@ -106,13 +100,28 @@ export const getGroupsForUser = (userId, offset, limit, token) => {
   };
 };
 
+export const getAllGroupsForUser = (userId, token) => {
+  return {
+    type: 'GET_ALL_GROUPS_FOR_A_USER_AT_ONCE',
+    userId,
+    token
+  };
+};
+
 export const deleteMember = (ownerId, idToDelete, groupId, token) => {
   return {
-    type: 'DELETE_MEMBER',
+    type: 'DELETE_GROUP_MEMBER',
     ownerId,
     idToDelete,
     groupId,
     token
+  };
+};
+
+export const loadChat = (groupId) => {
+  return {
+    type: 'LOAD_CHAT',
+    groupId
   };
 };
 
@@ -121,3 +130,10 @@ export const resetErrorLog = () => {
     type: 'RESET_ERROR_LOG',
   };
 };
+
+export const resetRedirect = () => {
+  return {
+    type: 'RESET_REDIRECT_STATE'
+  };
+};
+

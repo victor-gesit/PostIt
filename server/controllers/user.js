@@ -14,7 +14,7 @@ export default {
     User.find({ where: { id: userId } }).then((foundUser) => {
       foundUser.getGroups().then().then((allGroups) => {
         count = allGroups.length;
-        foundUser.getGroups({ attributes: ['id', 'createdBy', 'title', 'description', 'createdAt'], limit, offset })
+        foundUser.getGroups({ attributes: ['id', 'createdBy', 'title', 'description', 'createdAt'], order: [['title', 'ASC']], limit, offset })
           .then((groupsBelongedTo) => {
             res.status(200).send({
               success: true,

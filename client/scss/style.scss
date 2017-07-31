@@ -44,7 +44,7 @@ div.tab button.active {
 }
 
 #brand {
-    padding-left: 20px;
+    padding-left: 50px;
 }
 
 .signin-form {
@@ -76,7 +76,7 @@ div.tab button.active {
     background: rgba(0, 0, 0, .5);
 }
 
-.adminmessage {
+.ownmessage {
 	padding: 10px;
     margin: 2px;
     background: rgba(136, 14, 79, .5);
@@ -100,11 +100,7 @@ div.tab button.active {
     margin: 30px;
 }
 
-.send-button {
-    position: relative;
-    right: 10px;
-    top: 10px;
-}
+
 
 .group-info {
     overflow: auto;
@@ -122,19 +118,15 @@ div.tab button.active {
     float: left;
     width: 85%;
 }
-.send-button {
-    float:right;
-    width: 12%;
-}
-
 .members-list-container {
     height: 400px;
     position: fixed;
     right: 30px;
-    bottom: 80px;
+    top: 120px;
     border: solid;
     padding: 20px;
-
+    background: rgba(255, 255, 255, .9);
+    display: none;
 }
 
 .members-list {
@@ -152,12 +144,12 @@ div.tab button.active {
     background: rgba(0, 0, 0, .5);
     height: 50px;
 }
-.members-list-side-nav {
+.list-side-nav {
     height: 200px;
     overflow: auto;
 }
 .navbar-fixed {
-    z-index: 9999;
+    z-index: 1003;
 }
 
 ::-webkit-input-placeholder {
@@ -204,9 +196,114 @@ div.tab button.active {
     justify-content: center;
 
     position: fixed;
-    z-index: 100;
+    z-index: 0;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
+}
+
+.userlist-preloader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.registeredMembersList {
+    height: 250px;
+    overflow: auto;
+    padding-left: 50px;
+    padding-right: 50px;
+    background-color: white;
+}
+.sign-out-button {
+    width: 180px;
+    color: red;
+}
+// Shift page content to accomodate fixed side navbar
+header, #messageInputBox, #main-postmessage, #footer {
+    padding-left: 300px;
+}
+
+@media only screen and (max-width : 992px) {
+    #header, #main-postmessage, #messageInputBox, #footer {
+    padding-left: 0;
+    }
+}
+
+.memberListToggle {
+    position: fixed;
+    right: 0px;
+    z-index: 2;
+}
+
+#member-list-toggle {
+    background: transparent;
+}
+#member-list-toggle:hover {
+    background: #880e4f;
+}
+#messageInputBox {
+    background: rgba(255, 255, 255, .5);
+}
+.message-box {
+    display: flex;
+    flex-direction: row;
+}
+.text-input-field {
+    flex: 1 0 auto;
+    margin-left: 10px;
+}
+.send-button {
+    position: relative;
+    float:right;
+    width: 20%;
+    margin-left: 18px;
+    right: 10px;
+    top: 30px;
+}
+.send-comment-button {
+    position: relative;
+    float:right;
+    width: 20%;
+    margin-left: 18px;
+    right: 10px;
+    top: 0px;
+}
+/* Styling for radio buttons */
+// Normal
+#normal[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:after {
+    background-color: green;
+}
+#normal[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:before, [type="radio"].with-gap:checked + label:after {
+    border: 2px solid green;
+}
+// Urgent
+#urgent[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:after {
+    background-color: orange;
+}
+#urgent[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:before, [type="radio"].with-gap:checked + label:after {
+    border: 2px solid orange;
+}
+// Critical
+#critical[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:after {
+    background-color: red;
+}
+#critical[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:before, [type="radio"].with-gap:checked + label:after {
+    border: 2px solid red;
+}
+// Comment
+#comment[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:after {
+    background-color: grey;
+}
+#comment[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:before, [type="radio"].with-gap:checked + label:after {
+    border: 2px solid grey;
+}
+#deleteMemberModal {
+    z-index: 0;
+}
+// Empty space to padd app Title
+#emptySpace {
+    height: 65px;
+    padding-left: 20px;
 }

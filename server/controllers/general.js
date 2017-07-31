@@ -9,7 +9,7 @@ export default {
     const offset = req.params.offset;
     const limit = req.params.limit;
 
-    User.findAndCountAll({ attributes: ['id', 'firstName', 'lastName', 'email', 'phone'], offset, limit })
+    User.findAndCountAll({ attributes: ['id', 'firstName', 'lastName', 'email', 'phone'], order: [['firstName', 'ASC']], offset, limit })
       .then((allUsers) => {
         res.status(200).send(allUsers);
       }).catch(() =>
