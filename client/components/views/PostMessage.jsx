@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
 import { Link } from 'react-router-dom';
-import { getGroupsForUser, createGroup, deleteGroup, getAllGroupsForUser, postMessage  } from '../../actions';
+import { getGroupMembers, getMessages, createGroup, deleteMember, deleteGroup, getAllGroupsForUser, postMessage  } from '../../actions';
 import { connect } from 'react-redux';
 import 'jquery/dist/jquery';
 import '../../js/materialize';
@@ -33,12 +33,33 @@ class Body extends React.Component {
     this.creatorEmail = "";
   }
   deleteMember() {
-    console.log(this.memberIdToDelete, 'deleted');
+    const token = this.props._that.props.appInfo.userDetails.token;
+    const idToDelete = this.memberIdToDelete;
+    const ownerId = this.props._that.props.appInfo.userDetails.id;
+    const groupId = this.props._that.props.appInfo.loadedChat.groupId;
+    // Call the redux action to delete the member
+    this.props._that.props.deleteMember(ownerId, idToDelete, groupId, token);
   }
   deleteGroup() {
-    console.log(this.groupIdToDelete, 'deleted');
+    const token = this.props._that.props.appInfo.userDetails.token;
+    const groupId = this.memberIdToDelete;
+    const ownerId = this.props._that.props.appInfo.userDetails.id;
+    // Call redux action to delete the group
+    this.props._that.props.deleteGroup(ownerId, groupId, token);
+  }
+  componentWillMount() {
+    const userId = this.props._that.props.appInfo.userDetails.id;
+    const token = this.props._that.props.appInfo.userDetails.token;
+    const groupId = this.props._that.props.appInfo.loadedChat.groupId;
+    // Load user groups
+    this.props._that.props.getAllGroupsForUser(userId, token);
+    // Load all messages for the group
+    this.props._that.props.getMessages(groupId, token);
+    // Load all registered members of the stated group
+    this.props._that.props.getGroupMembers(groupId, token);
   }
   componentDidMount() {
+    // Custom JS to handle sidenav and modal
     $(document).ready(() => {
       $('.button-collapse').sideNav();
       $('#member-list-toggle').off().on('click', () => {
@@ -102,7 +123,7 @@ class Body extends React.Component {
               <Messages/>
             </div>
             {/*Side bar, visible by toggle*/}
-            <TeamListToggle/>
+            <GroupListToggle _that={this.props._that}/>
           </div>
         </div>
         {/* Modal to handle deleting a member from a group */}
@@ -124,14 +145,21 @@ class MemberDeleteModal extends React.Component {
         </div>
         <div className="modal-footer">
           <a href="#!" onClick={this.props.deleteMember} className="modal-action modal-close waves-effect waves-green btn-flat green-text">Agree</a>
-          <a href="#!" className="modal-action modal-close waves-effect waves-green btn-flat green-text">Disagree</a>
+          <a className="modal-action modal-close waves-effect waves-green btn-flat green-text">Disagree</a>
         </div>
       </div>
     )
   }
 }
-class TeamListToggle extends React.Component {
+class GroupListToggle extends React.Component {
   render() {
+    const groupId = this.props._that.props.appInfo.loadedChat.groupId;
+    const groupLoaded = this.props._that.props.groups.userGroups[groupId];
+    let groupMembers;
+    // Load the group members if group has loaded
+    if(groupLoaded) {
+      groupMembers = this.props._that.props.groups.userGroups[groupId].members
+    }
     return(
       <div id="memberList" className="members-list-container m4 l3">
         <div className="row searchbox valign-wrapper">
@@ -142,10 +170,23 @@ class TeamListToggle extends React.Component {
             <span><i className="material-icons black-text">search</i></span>
           </div>
         </div>
-        <div>Project NextBigThing <span className="badge">24</span></div>
+        {
+          groupLoaded?(
+            <div>Project NextBigThing <span className="badge">24</span></div>
+          ):(
+            <div>Project NextBigThing <span className="badge"></span></div>
+          )
+        }
         <hr />
         <span>Members List</span>
-        <GroupMembers/>
+        {
+          groupLoaded?
+          (
+            <GroupMembers groupMembers={groupMembers}/>
+          ):(
+            <div className="pink-text">Loading...</div>
+          )
+        }
       </div>
     )
   }
@@ -289,40 +330,43 @@ class Messages extends React.Component {
 class GroupMembers extends React.Component {
   constructor(props) {
     super(props);
-    this.deleteMember = this.deleteMember.bind(this);
-  }
-  deleteMember() {
-
   }
   render() {
-    const groupMembers = {
+    const groupMembers = this.props.groupMembers;
+    const groupaMembers = {
       1: {
-        name: 'Ade Balogun',
+        firstName: 'Ade Balogun',
+        lastName: 'Balogun',
         email: 'adebalogun@yahoo.com',
         id: 1
       },
       2: {
-        name: 'John Smith',
+        firstName: 'John Smith',
+        lastName: 'Smith',
         email: 'johnsmith@yahoo.com',
         id: 2
       },
       3: {
-        name: 'Joy Okafor',
+        firstName: 'Joy Okafor',
+        lastName: 'Okafor',
         email: 'joyokafor@yahoo.com',
         id: 3
       },
       4: {
-        name: 'John Kennedy',
+        firstName: 'John Kennedy',
+        lastName: 'John',
         email: 'johnkennedy@yahoo.com',
         id: 4
       },
       5: {
-        name: 'Ade Balogun',
+        firstName: 'Ade Balogun',
+        lastName: 'Ade',
         email: 'adebalogun@yahoo.com',
         id: 5
       },
       6: {
-        name: 'John Smith',
+        firstName: 'John Smith',
+        lastName: 'Smith',
         email: 'johnsmith@yahoo.com',
         id: 6
       },
@@ -334,13 +378,18 @@ class GroupMembers extends React.Component {
     }
     return(
       <ul className="collection members-list">
-      {
-        Object.keys(groupMembers).map((memberId) => {
-          return (
-            <GroupMember key={memberId} memberDetails={groupMembers[memberId]}/>
+        {
+          groupMembers?(
+            Object.keys(groupMembers).map((memberId, index) => {
+              return (
+                <GroupMember key={index} memberDetails={groupMembers[memberId]}/>
+              )
+            })
+          ): (
+            <div>Loading...</div>
           )
-        })
-      }
+        }
+
       </ul>
     )
   }
@@ -350,7 +399,7 @@ class GroupMember extends React.Component {
   render() {
     const memberDetails = this.props.memberDetails;
     return(
-       <li className="collection-item">{memberDetails.name}<br /><small className="grey-text">{memberDetails.email}</small><a href="#deleteMemberModal" id={memberDetails.id} value={memberDetails.name} className="secondary-content modal-trigger red-text"><i  className="material-icons">clear</i></a></li>
+       <li className="collection-item">{memberDetails.firstName} {memberDetails.lastName}<br /><small className="grey-text">{memberDetails.email}</small><a href="#deleteMemberModal" id={memberDetails.id} value={memberDetails.name} className="secondary-content modal-trigger red-text"><i  className="material-icons">clear</i></a></li>
     )
   }
 }
@@ -394,11 +443,14 @@ class Message extends React.Component {
 class Nav extends React.Component {
   render() {
     const groupId = this.props._that.props.appInfo.loadedChat.groupId;
+    const userGroups = this.props._that.props.allUserGroups;
+    const userDetails = this.props._that.props.appInfo.userDetails;
+    const allUserGroups = this.props._that.props.allUserGroups.userGroups;
     return(
       <div className="navbar-fixed">
         <nav className="pink darken-4">
           <div className="nav-wrapper">
-            <a href="#" id="brand" className="brand-logo left">PostIt</a>
+            <a id="brand" className="brand-logo left">PostIt</a>
             <a href="#" data-activates="mobile-demo" data-hover="true" className="button-collapse show-on-large"><i className="material-icons">menu</i></a>
             <ul className="right">
               <li>
@@ -427,7 +479,7 @@ class Nav extends React.Component {
                 </ul>
                 {/* Dropdown Structure */}
                 <ul id="createGroup" className="dropdowns dropdown-content">
-                  <li><a href="#!" className="black-text"><i className="material-icons green-text">library_add</i>Create Group</a></li>
+                  <li><Link to='/creategroup' className="black-text"><i className="material-icons green-text">library_add</i>Create Group</Link></li>
                 </ul>
               </li>
               <li>
@@ -445,15 +497,15 @@ class Nav extends React.Component {
                     <ul className="collection">
                       <li className="collection-item avatar black-text">
                         <i className="material-icons purple circle">person</i>
-                        <div className="title black-text">Philip Newmann</div>
-                        <p>philip@newmann.com<br />08033322425</p>
+                        <div className="title black-text">{userDetails.firstName} {userDetails.lastName}</div>
+                        <p>{userDetails.email}<br />{userDetails.phone}</p>
                       </li>
                     </ul>
                   </li>
                   <li>
                     <div className="row valign-wrapper">
                       <div className="col s12 center">
-                        <button className="btn  black">Sign out</button>
+                        <button className="btn sign-out-button  black">Sign out</button>
                       </div>
                     </div>
                   </li>
@@ -475,8 +527,8 @@ class Nav extends React.Component {
                 <ul className="collection">
                   <li className="collection-item avatar black-text">
                     <i className="material-icons purple circle">person</i>
-                    <span className="title black-text">Philip Newmann</span>
-                    <p>philip@newmann.com<br />08033322425</p>
+                    <span className="title black-text">{userDetails.firstName} {userDetails.lastName}</span>
+                    <p>{userDetails.email}<br />{userDetails.phone}</p>
                   </li>
                 </ul>
               </li>
@@ -491,20 +543,8 @@ class Nav extends React.Component {
                   <span><i className="material-icons black-text">search</i></span>
                 </div>
               </div>
-              <ul className="list-side-nav">
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Invent NextBigThing</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Just GetStuffDone</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Let's MakesThingsWork</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Make and DisruptIt</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Invent NextBigThing</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Just GetStuffDone</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Let's MakesThingsWork</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Make and DisruptIt</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Invent NextBigThing</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Just GetStuffDone</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Let's MakesThingsWork</a></li>
-                <li><a href="#"><i className="material-icons teal-text">people_outline</i>Make and DisruptIt</a></li>
-              </ul>
+              {/* Groups a user belongs to */}
+              <Groups allUserGroups={allUserGroups}/>
               <hr />
               <li><a href="#"><i className="large material-icons black-text">info</i>About PostIt</a></li>
               <li><a href="#"><i className="large material-icons red-text">info</i>Sign Out</a></li>
@@ -514,6 +554,21 @@ class Nav extends React.Component {
           <GroupDeleteModal deleteGroup={this.props.deleteGroup}/>
         </nav>
       </div>
+    )
+  }
+}
+
+class Groups extends React.Component{
+  render() {
+    const allUserGroups = this.props.allUserGroups;
+    return(
+      <ul className="list-side-nav">
+        {
+          Object.keys(allUserGroups).map((groupId, index) => {
+             return <li key={index}><a href="#"><i className="material-icons teal-text">people_outline</i>{allUserGroups[groupId].info.title}</a></li>
+          })
+        }
+      </ul>
     )
   }
 }
@@ -528,7 +583,7 @@ class GroupDeleteModal extends React.Component {
         </div>
         <div className="modal-footer">
           <a href="#!" onClick={this.props.deleteGroup} className="modal-action modal-close waves-effect waves-green btn-flat green-text">Agree</a>
-          <a href="#!" className="modal-action modal-close waves-effect waves-green btn-flat green-text">Disagree</a>
+          <a className="modal-action modal-close waves-effect waves-green btn-flat green-text">Disagree</a>
         </div>
       </div>
     )
@@ -552,9 +607,12 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getGroupsForUser: (userId, offset, limit, token) => dispatch(getGroupsForUser(userId, offset, limit, token)),
     getAllGroupsForUser: (userId, token) => dispatch(getAllGroupsForUser(userId, token)),
+    getGroupMembers: (groupId, token) => dispatch(getGroupMembers(groupId, token)),
     resetErrorLog: () => dispatch(resetErrorLog()),
+    deleteMember: (ownerId, idToDelete, groupId, token) => dispatch(deleteMember(ownerId, idToDelete, groupId, token)),
+    deleteGroup: (ownerId, groupId, token) => dispatch(deleteGroup(ownerId, groupId, token)),
+    getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
     postMessage: (senderId, body, priority, isComment, token) => dispatch(postMessage(senderId, body, priority, isComment, token))
   };
 };
