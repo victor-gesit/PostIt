@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getGroupsForUser, getAllGroupsForUser, resetErrorLog,resetRedirect, getPostItMembers, createGroup } from '../../actions';
+import { getGroupsForUser, getAllGroupsForUser, resetErrorLog, resetRedirect, getPostItMembers, createGroup } from '../../actions';
 import NotificationSystem from 'react-notification-system';
 
 import 'jquery';
@@ -66,8 +66,7 @@ class Body extends React.Component {
     if(redirect) {
       // Reset state of redirect property
       this.props._that.props.resetRedirect();
-      console.log('redirecting');
-      this.props._that.props.history.push('/messageboard');
+      this.props._that.props.history.push('/postmessage');
     } else {
       if(errorMessage) {
         // Empty the array of selected members
@@ -77,7 +76,6 @@ class Body extends React.Component {
         this.props._that.props.resetErrorLog();
       }
     }
-    // console.log(allUsers);
   };
   createGroup() {
     const title = this.title.value;
@@ -85,7 +83,6 @@ class Body extends React.Component {
     const creatorId = this.props._that.props.appInfo.userDetails.id;
     const token = this.props._that.props.appInfo.userDetails.token;
     const selectedMembers = this.selectedMembers;
-    console.log(title, description, creatorId, selectedMembers, token);
     this.props._that.props.createGroup(creatorId, title, description, selectedMembers, token);
   }
   switchTab(button, tabName) {
@@ -111,7 +108,6 @@ class Body extends React.Component {
       const index = this.selectedMembers.indexOf(memberEmail);
       this.selectedMembers.splice(index, 1);
     }
-    console.log(this.selectedMembers);
   }
 
   render() {
