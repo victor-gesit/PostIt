@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
 import { Link } from 'react-router-dom';
-import { getGroupMembers, getMessages, createGroup, deleteMember, deleteGroup, getAllGroupsForUser, postMessage  } from '../../actions';
+import { getGroupMembers, getMessages, resetRedirect, createGroup, deleteMember, deleteGroup, getAllGroupsForUser, postMessage  } from '../../actions';
 import { connect } from 'react-redux';
 import 'jquery/dist/jquery';
 import '../../js/materialize';
@@ -14,7 +14,7 @@ class PostMessage extends React.Component {
   render() {
     return(
       <div>
-      <Body _that={this}/>
+        <Body _that={this}/>
      </div>
     )
   }
@@ -23,14 +23,10 @@ class PostMessage extends React.Component {
 class Body extends React.Component {
   constructor(props) {
     super(props);
-    this.getFormattedTimeStamp = this.getFormattedTimeStamp.bind(this);
     this.deleteMember = this.deleteMember.bind(this);
     this.deleteGroup = this.deleteGroup.bind(this);
     this.memberIdToDelete = '';
     this.groupIdToDelete = '';
-    this.allMessages = null;
-    this.allMembers = null;
-    this.creatorEmail = "";
   }
   deleteMember() {
     const token = this.props._that.props.appInfo.userDetails.token;
@@ -42,7 +38,7 @@ class Body extends React.Component {
   }
   deleteGroup() {
     const token = this.props._that.props.appInfo.userDetails.token;
-    const groupId = this.memberIdToDelete;
+    const groupId = this.groupIdToDelete;
     const ownerId = this.props._that.props.appInfo.userDetails.id;
     // Call redux action to delete the group
     this.props._that.props.deleteGroup(ownerId, groupId, token);
@@ -57,6 +53,7 @@ class Body extends React.Component {
     this.props._that.props.getMessages(groupId, token);
     // Load all registered members of the stated group
     this.props._that.props.getGroupMembers(groupId, token);
+
   }
   componentDidMount() {
     // Custom JS to handle sidenav and modal
@@ -90,26 +87,28 @@ class Body extends React.Component {
       });
     });
   }
-  getFormattedTimeStamp(timeStamp, callback) {
-    const months = ['January', 'February', 'March', 'April',
-      'May', 'June', 'July', 'August', 'September', 'October',
-      'November', 'December'
-    ]
-    const year = timeStamp.slice(0,4);
-    const monthString = timeStamp.slice(5,7);
-    const month = months[parseInt(monthString) -1];
-    const dayString = timeStamp.slice(8, 10);
-    const day = parseInt(dayString);
-    const hour = timeStamp.slice(11, 13);
-    const minute = timeStamp.slice(14,16);
-    const formattedTime = `${month} ${day}, ${year}, at ${hour}:${minute}`;
-    callback(formattedTime);
+  componentDidUpdate() {
+    // Go back to message board if group is deleted
+    const redirect = this.props._that.props.apiError.redirect;
+    if(redirect) {
+      // Reset state of redirect property
+      this.props._that.props.resetRedirect();
+      this.props._that.props.history.push('/messageboard');
+    }
   }
   render() {
+    const groupId = this.props._that.props.appInfo.loadedChat.groupId;
+    const groupLoaded = this.props._that.props.allUserGroups.userGroups[groupId];
+    let groupTitle;
+    if(groupLoaded){
+      groupTitle = groupLoaded.info.title;
+    } else {
+      groupTitle = 'Loading...'
+    }
     return(
-    <div id="body">
+    <div id="body" >
       <Nav deleteGroup={this.deleteGroup} _that={this.props._that}/>
-      <div id="main">
+      <div id="main" >
         <div id="main-postmessage">
           <div className="memberListToggle">
             <button id="member-list-toggle" className="btn s4">Member List</button>
@@ -117,10 +116,10 @@ class Body extends React.Component {
           <div className="row">
             <div className="col s12 m8 offset-m2 l8 offset-l2 messageboard">
               <div className="group-info row">
-                <h5 className="col s8 m8 l8 center">Project NexBigThing</h5>
+                <h5 className="col s8 m8 l8 center">{groupTitle}</h5>
               </div>
               {/* Messages */}
-              <Messages/>
+              <Messages _that={this.props._that}/>
             </div>
             {/*Side bar, visible by toggle*/}
             <GroupListToggle _that={this.props._that}/>
@@ -129,8 +128,8 @@ class Body extends React.Component {
         {/* Modal to handle deleting a member from a group */}
          <MemberDeleteModal deleteMember={this.deleteMember}/>
         {/* Message Input Box */}
-        <MessageInputBox _that={this.props._that}/>
       </div>
+      <MessageInputBox _that={this.props._that}/>
     </div>
     )
   }
@@ -155,10 +154,20 @@ class GroupListToggle extends React.Component {
   render() {
     const groupId = this.props._that.props.appInfo.loadedChat.groupId;
     const groupLoaded = this.props._that.props.groups.userGroups[groupId];
+    const titleLoaded = this.props._that.props.allUserGroups.userGroups[groupId];
+    let groupCount = '...';
+    let groupTitle = '...';
     let groupMembers;
+    // Get group title if loading is complete
+    if(titleLoaded) {
+      groupTitle = titleLoaded.info.title;
+    }
     // Load the group members if group has loaded
     if(groupLoaded) {
       groupMembers = this.props._that.props.groups.userGroups[groupId].members
+      if(groupMembers){
+        groupCount = Object.keys(groupMembers).length;
+      }
     }
     return(
       <div id="memberList" className="members-list-container m4 l3">
@@ -172,9 +181,9 @@ class GroupListToggle extends React.Component {
         </div>
         {
           groupLoaded?(
-            <div>Project NextBigThing <span className="badge">24</span></div>
+            <div>{groupTitle} <span className="badge">{groupCount}</span></div>
           ):(
-            <div>Project NextBigThing <span className="badge"></span></div>
+            <div>{groupTitle} <span className="badge"></span></div>
           )
         }
         <hr />
@@ -204,12 +213,42 @@ class MessageInputBox extends React.Component {
   }
   setPriority(e) {
     const priority = e.target.id;
-    this.setState({ priority: priority }, () => {
-      console.log(this.state.priority);
-    });
+    this.setState({ priority: priority });
+  }
+  componentDidMount() {
+    // Set focus to 'send' button
+    $('.message-box').keypress((event) => {
+      if ((event.which && event.which == 13) || (event.keyCode && event.keyCode == 13)) {
+          $('#member-list-button').click();
+          return false;
+      } else {
+          return true;
+      }
+    })
   }
   sendMessage() {
     const token = this.props._that.props.appInfo.userDetails.token;
+    const senderId = this.props._that.props.appInfo.userDetails.id;
+    const groupId = this.props._that.props.appInfo.loadedChat.groupId;
+    const isComment = this.isComment;
+    let priority = this.state.priority;
+    let body;
+    if(this.state.priority === 'comment'){
+      priority = 'normal'; // A comment has normal priority
+      body = this.commentBody.value;
+      this.isComment = 'true'
+      // Clear input bo
+      this.commentBody.value = '';
+    } else {
+      body = this.postBody.value;
+      this.isComment = 'false';
+      // Clear input box
+      this.postBody.value = '';
+    }
+    // Check for empty message body before sending
+    if(body && body.trim()){
+      this.props._that.props.postMessage(senderId, groupId, body, priority, this.isComment, token);
+    }
   }
   render() {
     return(
@@ -233,19 +272,19 @@ class MessageInputBox extends React.Component {
                 (
                   <div className="message-box">
                     <div className="text-input-field">
-                      <input className="black-text materialize-textarea" type="text" name="mymessage" defaultValue={""} />
+                      <input className="black-text materialize-textarea" ref={(commentBody) => {this.commentBody = commentBody}} type="text" name="mymessage" defaultValue={""} />
                     </div>
                     <div className="send-comment-button">
-                      <button id="member-list-button" className="btn"><i className="material-icons">send</i></button>
+                      <button autoFocus id="member-list-button" onClick={this.sendMessage} className="btn"><i className="material-icons">send</i></button>
                     </div>
                   </div>
                 ):(
                   <div className="message-box">
                     <div className="text-input-field">
-                      <textarea className="black-text materialize-textarea" type="text" name="mymessage" defaultValue={""} />
+                      <textarea className="black-text materialize-textarea" ref={(postBody) => {this.postBody = postBody}} type="text" name="mymessage" defaultValue={""} />
                     </div>
                     <div className="send-button">
-                      <button id="member-list-button" className="btn"><i className="material-icons">send</i></button>
+                      <button autoFocus id="member-list-button" onClick={this.sendMessage} className="btn"><i className="material-icons">send</i></button>
                     </div>
                   </div>
                 )
@@ -258,71 +297,36 @@ class MessageInputBox extends React.Component {
   }
 }
 class Messages extends React.Component {
+  componentDidUpdate() {
+    // Scroll page body to last message
+    this.bodyRef.scrollIntoView({
+      behavior: 'smooth'
+    });
+  }
   render() {
-    const messages = [
-      {
-        sentBy: 'Ade Balogun',
-        body: 'I will not be able to make it to the meeting',
-        createdAt: 'Post created 12:06:2017, 11:34am',
-        priority: 'critical'
-      },
-      {
-        sentBy: 'John Smith',
-        body: 'We will try to make up for your absence. Take care.',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'urgent'
-      },
-      {
-        sentBy: 'Joy Okafor',
-        body: 'Can we get someone to fill his place?',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'normal'
-      },
-      {
-        sentBy: 'John Keneddy',
-        body: 'Can we get someone to fill his place?',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'comment'
-      },
-      {
-        sentBy: 'John Smith',
-        body: 'We will try to make up for your absence. Take care.',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'critical'
-      },
-      {
-        sentBy: 'John Smith',
-        body: 'We will try to make up for your absence. Take care.',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'urgent'
-      },
-      {
-        sentBy: 'Joy Okafor',
-        body: 'Can we get someone to fill his place?',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'normal'
-      },
-      {
-        sentBy: 'John Keneddy',
-        body: 'Can we get someone to fill his place?',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'none'
-      },
-      {
-        sentBy: 'John Smith',
-        body: 'We will try to make up for your absence. Take care.',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'none'
-      }
-    ]
+    const groupId = this.props._that.props.appInfo.loadedChat.groupId;
+    const groupLoaded = this.props._that.props.groups.userGroups[groupId];
+    const userId = this.props._that.props.appInfo.userDetails.id;
+    let messages;
+    // Check that group data is loaded
+    if(groupLoaded && userId) {
+      messages = this.props._that.props.groups.userGroups[groupId].messages;
+    }
     return(
+      <div>
       <ul id="messages" className="messages row">
-        {
+      {
+        messages?(
           messages.map((messageDetails, index) => {
-            return  <Message key={index} messageDetails={messageDetails}/>
+            return  <Message userId={userId} key={index} messageDetails={messageDetails}/>
           })
-        }
+        ):(
+          <div className="pink-text">Loading</div>
+        )
+      }
       </ul>
+      <div id="" ref={(bodyRef) => {this.bodyRef = bodyRef}}></div>
+      </div>
     )
   }
 }
@@ -333,49 +337,6 @@ class GroupMembers extends React.Component {
   }
   render() {
     const groupMembers = this.props.groupMembers;
-    const groupaMembers = {
-      1: {
-        firstName: 'Ade Balogun',
-        lastName: 'Balogun',
-        email: 'adebalogun@yahoo.com',
-        id: 1
-      },
-      2: {
-        firstName: 'John Smith',
-        lastName: 'Smith',
-        email: 'johnsmith@yahoo.com',
-        id: 2
-      },
-      3: {
-        firstName: 'Joy Okafor',
-        lastName: 'Okafor',
-        email: 'joyokafor@yahoo.com',
-        id: 3
-      },
-      4: {
-        firstName: 'John Kennedy',
-        lastName: 'John',
-        email: 'johnkennedy@yahoo.com',
-        id: 4
-      },
-      5: {
-        firstName: 'Ade Balogun',
-        lastName: 'Ade',
-        email: 'adebalogun@yahoo.com',
-        id: 5
-      },
-      6: {
-        firstName: 'John Smith',
-        lastName: 'Smith',
-        email: 'johnsmith@yahoo.com',
-        id: 6
-      },
-      7: {
-        name: 'Joy Okafor',
-        email: 'joyokafor@yahoo.com',
-        id: 7
-      }
-    }
     return(
       <ul className="collection members-list">
         {
@@ -407,31 +368,50 @@ class GroupMember extends React.Component {
 class Message extends React.Component {
   render() {
     const messageDetails = this.props.messageDetails;
+    const userId = this.props.userId;
     const priority = messageDetails.priority;
+    const isComment = messageDetails.isComment;
+    let className;
+    if(userId === messageDetails.senderId){
+      className = 'ownmessage message card col s11 offset-s1';
+    } else {
+      className = 'message card col s11';
+    }
     switch(priority){
-      case 'normal': return(
-      <li className="message card col s11">
-        <small className="sender-name">{messageDetails.sentBy}<a className="secondary-content green-text"><i className="material-icons">lens</i></a></small>
-        <div className="message-body white-text">{messageDetails.body}</div>
-        <div className="message-info"><small>{messageDetails.createdAt}</small></div>
-      </li>
-      )
+      case 'normal':
+      // Comments also have normal priority, but don't send notificatins
+      return (
+        isComment?(
+          <li className={className}>
+            <small className="sender-name">{messageDetails.sentBy}<a className="secondary-content grey-text"><i className="material-icons">lens</i></a></small>
+            <div className="message-body white-text">{messageDetails.body}</div>
+            <div className="message-info"><small>{messageDetails.createdAt}</small></div>
+          </li>          
+        ):(
+          <li className={className}>
+            <small className="sender-name">{messageDetails.sentBy}<a className="secondary-content green-text"><i className="material-icons">lens</i></a></small>
+            <div className="message-body white-text">{messageDetails.body}</div>
+            <div className="message-info"><small>{messageDetails.createdAt}</small></div>
+          </li>
+        )
+      
+      );
       case 'urgent': return(
-      <li className="message card col s11">
+      <li className={className}>
         <small className="sender-name">{messageDetails.sentBy}<a className="secondary-content orange-text"><i className="material-icons">lens</i></a></small>
         <div className="message-body white-text">{messageDetails.body}</div>
         <div className="message-info"><small>{messageDetails.createdAt}</small></div>
       </li>
       )
       case 'critical': return(
-      <li className="ownmessage message card col s11 offset-s1">
+      <li className={className}>
         <small className="sender-name">{messageDetails.sentBy}<a className="secondary-content red-text"><i className="material-icons">lens</i></a></small>
         <div className="message-body white-text">{messageDetails.body}</div>
         <div className="message-info"><small>{messageDetails.createdAt}</small></div>
       </li>
       )
       default: return (
-      <li className="ownmessage message card col s11 offset-s1">
+      <li className={className}>
         <small className="sender-name">{messageDetails.sentBy}<a className="secondary-content grey-text"><i className="material-icons">lens</i></a></small>
         <div className="message-body white-text">{messageDetails.body}</div>
         <div className="message-info"><small>{messageDetails.createdAt}</small></div>
@@ -610,10 +590,11 @@ const mapDispatchToProps = (dispatch) => {
     getAllGroupsForUser: (userId, token) => dispatch(getAllGroupsForUser(userId, token)),
     getGroupMembers: (groupId, token) => dispatch(getGroupMembers(groupId, token)),
     resetErrorLog: () => dispatch(resetErrorLog()),
+    resetRedirect: () => dispatch(resetRedirect()),
     deleteMember: (ownerId, idToDelete, groupId, token) => dispatch(deleteMember(ownerId, idToDelete, groupId, token)),
     deleteGroup: (ownerId, groupId, token) => dispatch(deleteGroup(ownerId, groupId, token)),
     getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
-    postMessage: (senderId, body, priority, isComment, token) => dispatch(postMessage(senderId, body, priority, isComment, token))
+    postMessage: (senderId, groupId, body, priority, isComment, token) => dispatch(postMessage(senderId, groupId, body, priority, isComment, token))
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(PostMessage);
