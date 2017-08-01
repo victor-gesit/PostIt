@@ -36,6 +36,12 @@ const errorReducer = (state = {}, action) => {
         redirect: false,
         errored: false
       });
+    case 'DELETE_A_GROUP_SUCCESS':
+      return Object.assign({}, state, {
+        message: action.message,
+        redirect: true,
+        errored: false
+      });
     case 'GET_GROUP_MEMBERS_ERROR':
       return Object.assign({}, state, {
         message: action.message,
@@ -58,7 +64,7 @@ const errorReducer = (state = {}, action) => {
       return Object.assign({}, state, {
         message: action.message,
         redirect: false,
-        errored: true
+        errored: false
       });
     case 'POST_MESSAGE_ERROR':
       return Object.assign({}, state, {
@@ -88,7 +94,7 @@ const errorReducer = (state = {}, action) => {
       return Object.assign({}, state, {
         message: action.message,
         redirect: true,
-        errored: true
+        errored: false
       });
     case 'GET_MESSAGES_SUCCESS':
       return Object.assign({}, state, {
@@ -102,7 +108,7 @@ const errorReducer = (state = {}, action) => {
         redirect: false,
         errored: false
       });
-    case 'RESET_REDIRECT':
+    case 'RESET_REDIRECT_STATE':
       return Object.assign({}, state, {
         message: null,
         redirect: false,
