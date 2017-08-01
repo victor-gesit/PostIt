@@ -14135,13 +14135,14 @@ var signUp = exports.signUp = function signUp(firstName, lastName, email, passwo
   };
 };
 
-var postMessage = exports.postMessage = function postMessage(senderId, body, priority, isComment, token) {
+var postMessage = exports.postMessage = function postMessage(senderId, groupId, body, priority, isComment, token) {
   return {
     type: 'POST_MESSAGE',
     body: body,
     priority: priority,
     isComment: isComment,
     senderId: senderId,
+    groupId: groupId,
     token: token
   };
 };
@@ -36718,8 +36719,7 @@ var Body = function (_React$Component2) {
       if (redirect) {
         // Reset state of redirect property
         this.props._that.props.resetRedirect();
-        console.log('redirecting');
-        this.props._that.props.history.push('/messageboard');
+        this.props._that.props.history.push('/postmessage');
       } else {
         if (errorMessage) {
           // Empty the array of selected members
@@ -36729,7 +36729,6 @@ var Body = function (_React$Component2) {
           this.props._that.props.resetErrorLog();
         }
       }
-      // console.log(allUsers);
     }
   }, {
     key: 'createGroup',
@@ -36739,7 +36738,6 @@ var Body = function (_React$Component2) {
       var creatorId = this.props._that.props.appInfo.userDetails.id;
       var token = this.props._that.props.appInfo.userDetails.token;
       var selectedMembers = this.selectedMembers;
-      console.log(title, description, creatorId, selectedMembers, token);
       this.props._that.props.createGroup(creatorId, title, description, selectedMembers, token);
     }
   }, {
@@ -36770,7 +36768,6 @@ var Body = function (_React$Component2) {
         var index = this.selectedMembers.indexOf(memberEmail);
         this.selectedMembers.splice(index, 1);
       }
-      console.log(this.selectedMembers);
     }
   }, {
     key: 'render',
@@ -38323,14 +38320,10 @@ var Body = function (_React$Component2) {
 
     var _this2 = _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).call(this, props));
 
-    _this2.getFormattedTimeStamp = _this2.getFormattedTimeStamp.bind(_this2);
     _this2.deleteMember = _this2.deleteMember.bind(_this2);
     _this2.deleteGroup = _this2.deleteGroup.bind(_this2);
     _this2.memberIdToDelete = '';
     _this2.groupIdToDelete = '';
-    _this2.allMessages = null;
-    _this2.allMembers = null;
-    _this2.creatorEmail = "";
     return _this2;
   }
 
@@ -38348,7 +38341,7 @@ var Body = function (_React$Component2) {
     key: 'deleteGroup',
     value: function deleteGroup() {
       var token = this.props._that.props.appInfo.userDetails.token;
-      var groupId = this.memberIdToDelete;
+      var groupId = this.groupIdToDelete;
       var ownerId = this.props._that.props.appInfo.userDetails.id;
       // Call redux action to delete the group
       this.props._that.props.deleteGroup(ownerId, groupId, token);
@@ -38403,22 +38396,27 @@ var Body = function (_React$Component2) {
       });
     }
   }, {
-    key: 'getFormattedTimeStamp',
-    value: function getFormattedTimeStamp(timeStamp, callback) {
-      var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-      var year = timeStamp.slice(0, 4);
-      var monthString = timeStamp.slice(5, 7);
-      var month = months[parseInt(monthString) - 1];
-      var dayString = timeStamp.slice(8, 10);
-      var day = parseInt(dayString);
-      var hour = timeStamp.slice(11, 13);
-      var minute = timeStamp.slice(14, 16);
-      var formattedTime = month + ' ' + day + ', ' + year + ', at ' + hour + ':' + minute;
-      callback(formattedTime);
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      // Go back to message board if group is deleted
+      var redirect = this.props._that.props.apiError.redirect;
+      if (redirect) {
+        // Reset state of redirect property
+        this.props._that.props.resetRedirect();
+        this.props._that.props.history.push('/messageboard');
+      }
     }
   }, {
     key: 'render',
     value: function render() {
+      var groupId = this.props._that.props.appInfo.loadedChat.groupId;
+      var groupLoaded = this.props._that.props.allUserGroups.userGroups[groupId];
+      var groupTitle = void 0;
+      if (groupLoaded) {
+        groupTitle = groupLoaded.info.title;
+      } else {
+        groupTitle = 'Loading...';
+      }
       return _react2.default.createElement(
         'div',
         { id: 'body' },
@@ -38450,17 +38448,17 @@ var Body = function (_React$Component2) {
                   _react2.default.createElement(
                     'h5',
                     { className: 'col s8 m8 l8 center' },
-                    'Project NexBigThing'
+                    groupTitle
                   )
                 ),
-                _react2.default.createElement(Messages, null)
+                _react2.default.createElement(Messages, { _that: this.props._that })
               ),
               _react2.default.createElement(GroupListToggle, { _that: this.props._that })
             )
           ),
-          _react2.default.createElement(MemberDeleteModal, { deleteMember: this.deleteMember }),
-          _react2.default.createElement(MessageInputBox, { _that: this.props._that })
-        )
+          _react2.default.createElement(MemberDeleteModal, { deleteMember: this.deleteMember })
+        ),
+        _react2.default.createElement(MessageInputBox, { _that: this.props._that })
       );
     }
   }]);
@@ -38532,10 +38530,20 @@ var GroupListToggle = function (_React$Component4) {
     value: function render() {
       var groupId = this.props._that.props.appInfo.loadedChat.groupId;
       var groupLoaded = this.props._that.props.groups.userGroups[groupId];
+      var titleLoaded = this.props._that.props.allUserGroups.userGroups[groupId];
+      var groupCount = '...';
+      var groupTitle = '...';
       var groupMembers = void 0;
+      // Get group title if loading is complete
+      if (titleLoaded) {
+        groupTitle = titleLoaded.info.title;
+      }
       // Load the group members if group has loaded
       if (groupLoaded) {
         groupMembers = this.props._that.props.groups.userGroups[groupId].members;
+        if (groupMembers) {
+          groupCount = Object.keys(groupMembers).length;
+        }
       }
       return _react2.default.createElement(
         'div',
@@ -38565,16 +38573,18 @@ var GroupListToggle = function (_React$Component4) {
         groupLoaded ? _react2.default.createElement(
           'div',
           null,
-          'Project NextBigThing ',
+          groupTitle,
+          ' ',
           _react2.default.createElement(
             'span',
             { className: 'badge' },
-            '24'
+            groupCount
           )
         ) : _react2.default.createElement(
           'div',
           null,
-          'Project NextBigThing ',
+          groupTitle,
+          ' ',
           _react2.default.createElement('span', { className: 'badge' })
         ),
         _react2.default.createElement('hr', null),
@@ -38616,22 +38626,52 @@ var MessageInputBox = function (_React$Component5) {
   _createClass(MessageInputBox, [{
     key: 'setPriority',
     value: function setPriority(e) {
-      var _this7 = this;
-
       var priority = e.target.id;
-      this.setState({ priority: priority }, function () {
-        console.log(_this7.state.priority);
+      this.setState({ priority: priority });
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      // Set focus to 'send' button
+      $('.message-box').keypress(function (event) {
+        if (event.which && event.which == 13 || event.keyCode && event.keyCode == 13) {
+          $('#member-list-button').click();
+          return false;
+        } else {
+          return true;
+        }
       });
     }
   }, {
     key: 'sendMessage',
     value: function sendMessage() {
       var token = this.props._that.props.appInfo.userDetails.token;
+      var senderId = this.props._that.props.appInfo.userDetails.id;
+      var groupId = this.props._that.props.appInfo.loadedChat.groupId;
+      var isComment = this.isComment;
+      var priority = this.state.priority;
+      var body = void 0;
+      if (this.state.priority === 'comment') {
+        priority = 'normal'; // A comment has normal priority
+        body = this.commentBody.value;
+        this.isComment = 'true';
+        // Clear input bo
+        this.commentBody.value = '';
+      } else {
+        body = this.postBody.value;
+        this.isComment = 'false';
+        // Clear input box
+        this.postBody.value = '';
+      }
+      // Check for empty message body before sending
+      if (body && body.trim()) {
+        this.props._that.props.postMessage(senderId, groupId, body, priority, this.isComment, token);
+      }
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this8 = this;
+      var _this7 = this;
 
       return _react2.default.createElement(
         'div',
@@ -38646,7 +38686,7 @@ var MessageInputBox = function (_React$Component5) {
               'div',
               { className: 'col center s12 m8 offset-m2 l8 offset-l2' },
               _react2.default.createElement('input', { name: 'priority', onClick: this.setPriority, ref: function ref(normal) {
-                  _this8.normal = normal;
+                  _this7.normal = normal;
                 }, type: 'radio', id: 'normal', defaultChecked: true }),
               _react2.default.createElement(
                 'label',
@@ -38654,7 +38694,7 @@ var MessageInputBox = function (_React$Component5) {
                 'Normal'
               ),
               _react2.default.createElement('input', { name: 'priority', onClick: this.setPriority, ref: function ref(urgent) {
-                  _this8.urgent = urgent;
+                  _this7.urgent = urgent;
                 }, type: 'radio', id: 'urgent' }),
               _react2.default.createElement(
                 'label',
@@ -38662,7 +38702,7 @@ var MessageInputBox = function (_React$Component5) {
                 'Urgent'
               ),
               _react2.default.createElement('input', { name: 'priority', onClick: this.setPriority, ref: function ref(critical) {
-                  _this8.critical = critical;
+                  _this7.critical = critical;
                 }, type: 'radio', id: 'critical' }),
               _react2.default.createElement(
                 'label',
@@ -38670,7 +38710,7 @@ var MessageInputBox = function (_React$Component5) {
                 'Critical'
               ),
               _react2.default.createElement('input', { name: 'priority', onClick: this.setPriority, ref: function ref(comment) {
-                  _this8.comment = comment;
+                  _this7.comment = comment;
                 }, type: 'radio', id: 'comment' }),
               _react2.default.createElement(
                 'label',
@@ -38687,14 +38727,16 @@ var MessageInputBox = function (_React$Component5) {
                 _react2.default.createElement(
                   'div',
                   { className: 'text-input-field' },
-                  _react2.default.createElement('input', { className: 'black-text materialize-textarea', type: 'text', name: 'mymessage', defaultValue: "" })
+                  _react2.default.createElement('input', { className: 'black-text materialize-textarea', ref: function ref(commentBody) {
+                      _this7.commentBody = commentBody;
+                    }, type: 'text', name: 'mymessage', defaultValue: "" })
                 ),
                 _react2.default.createElement(
                   'div',
                   { className: 'send-comment-button' },
                   _react2.default.createElement(
                     'button',
-                    { id: 'member-list-button', className: 'btn' },
+                    { autoFocus: true, id: 'member-list-button', onClick: this.sendMessage, className: 'btn' },
                     _react2.default.createElement(
                       'i',
                       { className: 'material-icons' },
@@ -38708,14 +38750,16 @@ var MessageInputBox = function (_React$Component5) {
                 _react2.default.createElement(
                   'div',
                   { className: 'text-input-field' },
-                  _react2.default.createElement('textarea', { className: 'black-text materialize-textarea', type: 'text', name: 'mymessage', defaultValue: "" })
+                  _react2.default.createElement('textarea', { className: 'black-text materialize-textarea', ref: function ref(postBody) {
+                      _this7.postBody = postBody;
+                    }, type: 'text', name: 'mymessage', defaultValue: "" })
                 ),
                 _react2.default.createElement(
                   'div',
                   { className: 'send-button' },
                   _react2.default.createElement(
                     'button',
-                    { id: 'member-list-button', className: 'btn' },
+                    { autoFocus: true, id: 'member-list-button', onClick: this.sendMessage, className: 'btn' },
                     _react2.default.createElement(
                       'i',
                       { className: 'material-icons' },
@@ -38744,60 +38788,43 @@ var Messages = function (_React$Component6) {
   }
 
   _createClass(Messages, [{
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      // Scroll page body to last message
+      this.bodyRef.scrollIntoView({
+        behavior: 'smooth'
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var messages = [{
-        sentBy: 'Ade Balogun',
-        body: 'I will not be able to make it to the meeting',
-        createdAt: 'Post created 12:06:2017, 11:34am',
-        priority: 'critical'
-      }, {
-        sentBy: 'John Smith',
-        body: 'We will try to make up for your absence. Take care.',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'urgent'
-      }, {
-        sentBy: 'Joy Okafor',
-        body: 'Can we get someone to fill his place?',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'normal'
-      }, {
-        sentBy: 'John Keneddy',
-        body: 'Can we get someone to fill his place?',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'comment'
-      }, {
-        sentBy: 'John Smith',
-        body: 'We will try to make up for your absence. Take care.',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'critical'
-      }, {
-        sentBy: 'John Smith',
-        body: 'We will try to make up for your absence. Take care.',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'urgent'
-      }, {
-        sentBy: 'Joy Okafor',
-        body: 'Can we get someone to fill his place?',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'normal'
-      }, {
-        sentBy: 'John Keneddy',
-        body: 'Can we get someone to fill his place?',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'none'
-      }, {
-        sentBy: 'John Smith',
-        body: 'We will try to make up for your absence. Take care.',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'none'
-      }];
+      var _this9 = this;
+
+      var groupId = this.props._that.props.appInfo.loadedChat.groupId;
+      var groupLoaded = this.props._that.props.groups.userGroups[groupId];
+      var userId = this.props._that.props.appInfo.userDetails.id;
+      var messages = void 0;
+      // Check that group data is loaded
+      if (groupLoaded && userId) {
+        messages = this.props._that.props.groups.userGroups[groupId].messages;
+      }
       return _react2.default.createElement(
-        'ul',
-        { id: 'messages', className: 'messages row' },
-        messages.map(function (messageDetails, index) {
-          return _react2.default.createElement(Message, { key: index, messageDetails: messageDetails });
-        })
+        'div',
+        null,
+        _react2.default.createElement(
+          'ul',
+          { id: 'messages', className: 'messages row' },
+          messages ? messages.map(function (messageDetails, index) {
+            return _react2.default.createElement(Message, { userId: userId, key: index, messageDetails: messageDetails });
+          }) : _react2.default.createElement(
+            'div',
+            { className: 'pink-text' },
+            'Loading'
+          )
+        ),
+        _react2.default.createElement('div', { id: '', ref: function ref(bodyRef) {
+            _this9.bodyRef = bodyRef;
+          } })
       );
     }
   }]);
@@ -38818,49 +38845,6 @@ var GroupMembers = function (_React$Component7) {
     key: 'render',
     value: function render() {
       var groupMembers = this.props.groupMembers;
-      var groupaMembers = {
-        1: {
-          firstName: 'Ade Balogun',
-          lastName: 'Balogun',
-          email: 'adebalogun@yahoo.com',
-          id: 1
-        },
-        2: {
-          firstName: 'John Smith',
-          lastName: 'Smith',
-          email: 'johnsmith@yahoo.com',
-          id: 2
-        },
-        3: {
-          firstName: 'Joy Okafor',
-          lastName: 'Okafor',
-          email: 'joyokafor@yahoo.com',
-          id: 3
-        },
-        4: {
-          firstName: 'John Kennedy',
-          lastName: 'John',
-          email: 'johnkennedy@yahoo.com',
-          id: 4
-        },
-        5: {
-          firstName: 'Ade Balogun',
-          lastName: 'Ade',
-          email: 'adebalogun@yahoo.com',
-          id: 5
-        },
-        6: {
-          firstName: 'John Smith',
-          lastName: 'Smith',
-          email: 'johnsmith@yahoo.com',
-          id: 6
-        },
-        7: {
-          name: 'Joy Okafor',
-          email: 'joyokafor@yahoo.com',
-          id: 7
-        }
-      };
       return _react2.default.createElement(
         'ul',
         { className: 'collection members-list' },
@@ -38932,12 +38916,52 @@ var Message = function (_React$Component9) {
     key: 'render',
     value: function render() {
       var messageDetails = this.props.messageDetails;
+      var userId = this.props.userId;
       var priority = messageDetails.priority;
+      var isComment = messageDetails.isComment;
+      var className = void 0;
+      if (userId === messageDetails.senderId) {
+        className = 'ownmessage message card col s11 offset-s1';
+      } else {
+        className = 'message card col s11';
+      }
       switch (priority) {
         case 'normal':
-          return _react2.default.createElement(
+          // Comments also have normal priority, but don't send notificatins
+          return isComment ? _react2.default.createElement(
             'li',
-            { className: 'message card col s11' },
+            { className: className },
+            _react2.default.createElement(
+              'small',
+              { className: 'sender-name' },
+              messageDetails.sentBy,
+              _react2.default.createElement(
+                'a',
+                { className: 'secondary-content grey-text' },
+                _react2.default.createElement(
+                  'i',
+                  { className: 'material-icons' },
+                  'lens'
+                )
+              )
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'message-body white-text' },
+              messageDetails.body
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'message-info' },
+              _react2.default.createElement(
+                'small',
+                null,
+                messageDetails.createdAt
+              )
+            )
+          ) : _react2.default.createElement(
+            'li',
+            { className: className },
             _react2.default.createElement(
               'small',
               { className: 'sender-name' },
@@ -38970,7 +38994,7 @@ var Message = function (_React$Component9) {
         case 'urgent':
           return _react2.default.createElement(
             'li',
-            { className: 'message card col s11' },
+            { className: className },
             _react2.default.createElement(
               'small',
               { className: 'sender-name' },
@@ -39003,7 +39027,7 @@ var Message = function (_React$Component9) {
         case 'critical':
           return _react2.default.createElement(
             'li',
-            { className: 'ownmessage message card col s11 offset-s1' },
+            { className: className },
             _react2.default.createElement(
               'small',
               { className: 'sender-name' },
@@ -39036,7 +39060,7 @@ var Message = function (_React$Component9) {
         default:
           return _react2.default.createElement(
             'li',
-            { className: 'ownmessage message card col s11 offset-s1' },
+            { className: className },
             _react2.default.createElement(
               'small',
               { className: 'sender-name' },
@@ -39549,6 +39573,9 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     }(function () {
       return dispatch(resetErrorLog());
     }),
+    resetRedirect: function resetRedirect() {
+      return dispatch((0, _actions.resetRedirect)());
+    },
     deleteMember: function deleteMember(ownerId, idToDelete, groupId, token) {
       return dispatch((0, _actions.deleteMember)(ownerId, idToDelete, groupId, token));
     },
@@ -39558,8 +39585,8 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     getMessages: function getMessages(groupId, token) {
       return dispatch((0, _actions.getMessages)(groupId, token));
     },
-    postMessage: function postMessage(senderId, body, priority, isComment, token) {
-      return dispatch((0, _actions.postMessage)(senderId, body, priority, isComment, token));
+    postMessage: function postMessage(senderId, groupId, body, priority, isComment, token) {
+      return dispatch((0, _actions.postMessage)(senderId, groupId, body, priority, isComment, token));
     }
   };
 };
@@ -40041,10 +40068,10 @@ var appStore = {
   allUserGroups: { meta: { count: 0 }, userGroups: { 1: { members: { 1: {}, 2: {} }, groupId: '1', messages: [], info: { title: 'Just A Test Group', description: 'Some Deets' } } } },
   apiError: { errored: false, message: null }, // This indicates any error during queries to the API
   appInfo: {
-    userDetails: { firstName: 'a', lastName: 'a', id: 'ee1c8fed-6dff-491d-a4fc-31bedb63bde3', token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJWaWN0b3IiLCJsYXN0TmFtZSI6Iklkb25nZXNpdCIsImVtYWlsIjoidmljdG9yLmlkb25nZXNpdEBhbmRlbGEuY29tIiwicGhvbmUiOiIwNzA2OTc0OTk0NSIsImlkIjoiZWUxYzhmZWQtNmRmZi00OTFkLWE0ZmMtMzFiZWRiNjNiZGUzIiwiaWF0IjoxNTAxNDQ5Mzg0LCJleHAiOjE1MDE2MjIxODR9.84HRVf7wOGJ2uZIUue8HymRAndScO7Le0g2fRZvPw5k', email: '', phone: '' },
+    userDetails: { firstName: 'a', lastName: 'a', id: 'ee1c8fed-6dff-491d-a4fc-31bedb63bde3', token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJWaWN0b3IiLCJsYXN0TmFtZSI6Iklkb25nZXNpdCIsImVtYWlsIjoidmljdG9yLmlkb25nZXNpdEBhbmRlbGEuY29tIiwicGhvbmUiOiIwNzA2OTc0OTk0NSIsImlkIjoiZWUxYzhmZWQtNmRmZi00OTFkLWE0ZmMtMzFiZWRiNjNiZGUzIiwiaWF0IjoxNTAxNTg2Njg0LCJleHAiOjE1MDE3NTk0ODR9.udJnOHqHuCltddOyGwCAXoW_i9JAl4N2Z9ksa056QM4', email: '', phone: '' },
     authState: { signedIn: false, redirect: false },
     loadedChat: {
-      groupId: '5f91c780-4d6d-40b6-815a-7fc1962c9563'
+      groupId: '1bd66f6c-30eb-46eb-87ab-021ee264a025'
     }
   },
   dataLoading: true,
@@ -52048,6 +52075,12 @@ var errorReducer = function errorReducer() {
         redirect: false,
         errored: false
       });
+    case 'DELETE_A_GROUP_SUCCESS':
+      return Object.assign({}, state, {
+        message: action.message,
+        redirect: true,
+        errored: false
+      });
     case 'GET_GROUP_MEMBERS_ERROR':
       return Object.assign({}, state, {
         message: action.message,
@@ -52070,7 +52103,7 @@ var errorReducer = function errorReducer() {
       return Object.assign({}, state, {
         message: action.message,
         redirect: false,
-        errored: true
+        errored: false
       });
     case 'POST_MESSAGE_ERROR':
       return Object.assign({}, state, {
@@ -52100,7 +52133,7 @@ var errorReducer = function errorReducer() {
       return Object.assign({}, state, {
         message: action.message,
         redirect: true,
-        errored: true
+        errored: false
       });
     case 'GET_MESSAGES_SUCCESS':
       return Object.assign({}, state, {
@@ -52114,7 +52147,7 @@ var errorReducer = function errorReducer() {
         redirect: false,
         errored: false
       });
-    case 'RESET_REDIRECT':
+    case 'RESET_REDIRECT_STATE':
       return Object.assign({}, state, {
         message: null,
         redirect: false,
@@ -52179,12 +52212,33 @@ var structureUserGroupMembersFromDb = function structureUserGroupMembersFromDb(s
   }
   return appState;
 };
+// Helper method to structure the time stamp on a message
+var getFormattedTimeStamp = function getFormattedTimeStamp(timeStamp, callback) {
+  var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  var year = timeStamp.slice(0, 4);
+  var monthString = timeStamp.slice(5, 7);
+  var month = months[parseInt(monthString, 10) - 1];
+  var dayString = timeStamp.slice(8, 10);
+  var day = parseInt(dayString, 10);
+  var hour = timeStamp.slice(11, 13);
+  var minute = timeStamp.slice(14, 16);
+  var formattedTime = month + ' ' + day + ', ' + year + ', at ' + hour + ':' + minute;
+  callback(formattedTime);
+};
 // Restructure group messages from db
 var structureGroupMessagesFromDb = function structureGroupMessagesFromDb(state, newMessage, groupId) {
   var appState = Object.assign({}, state);
-  var groupMessages = appState[groupId].messages;
-  groupMessages = [].concat(_toConsumableArray(groupMessages), [newMessage]);
-  appState[groupId].messages = groupMessages;
+  // Initialize the fields with empty objects and array if they had no previous content
+  appState.userGroups[groupId] = appState.userGroups[groupId] || {};
+  appState.userGroups[groupId].messages = appState.userGroups[groupId].messages || [];
+  var groupMessages = appState.userGroups[groupId].messages;
+  // Format the time stamp of new message
+  getFormattedTimeStamp(newMessage.createdAt, function (formattedTime) {
+    newMessage.createdAt = 'Sent ' + formattedTime;
+    groupMessages = [].concat(_toConsumableArray(groupMessages), [newMessage]);
+    appState.userGroups[groupId].messages = groupMessages;
+  });
+  return appState;
 };
 
 // Restructure data received after adding member to group
@@ -52205,10 +52259,16 @@ var structureStateAfterDeletingMember = function structureStateAfterDeletingMemb
 };
 // Restructure data after loading group messages
 var structureStateAfterLoadingMessages = function structureStateAfterLoadingMessages(state, messagesDbSnapshot, groupId) {
+  var messages = messagesDbSnapshot.rows;
+  messages.map(function (message, index) {
+    getFormattedTimeStamp(message.createdAt, function (formattedTime) {
+      messages[index].createdAt = 'Sent ' + formattedTime;
+    });
+  });
   var appState = Object.assign({}, state);
   // Load the group with empty data if it has no data in store
   appState.userGroups[groupId] = appState.userGroups[groupId] || {};
-  appState.userGroups[groupId].messages = messagesDbSnapshot.rows;
+  appState.userGroups[groupId].messages = messages;
   return appState;
 };
 
@@ -52225,7 +52285,7 @@ var userGroupsReducer = function userGroupsReducer() {
     case 'DELETE_A_GROUP':
       return deleteGroup(appState, action.groupId);
     case 'POST_MESSAGE_SUCCESS':
-      return structureGroupMessagesFromDb(appState, action.data, action.groupId);
+      return structureGroupMessagesFromDb(appState, action.message, action.groupId);
     case 'ADD_MEMBER_SUCCESS':
       return structureMembersAfterAddingNew(appState, action.data, action.groupId);
     case 'DELETE_GROUP_MEMBER_SUCCESS':
@@ -52518,6 +52578,16 @@ var loadedChatReducer = function loadedChatReducer() {
       {
         var groupId = action.groupId;
         return Object.assign({}, state, { groupId: groupId });
+      }
+    case 'CREATE_GROUP_SUCCESS':
+      {
+        var _groupId = action.data.createdGroup.id;
+        return Object.assign({}, state, { groupId: _groupId });
+      }
+    case 'DELETE_GROUP_SUCCESS':
+      {
+        var _groupId2 = '';
+        return Object.assign({}, state, _groupId2);
       }
     default:
       return state;
@@ -55452,7 +55522,7 @@ var dataService = function dataService(store) {
         // Post a message to a group
         case 'POST_MESSAGE':
           _superagent2.default.post(url + '/group/' + action.groupId + '/message').set('x-access-token', action.token).send({
-            message: action.message,
+            body: action.body,
             priority: action.priority,
             isComment: action.isComment,
             senderId: action.senderId
@@ -55463,10 +55533,11 @@ var dataService = function dataService(store) {
                 message: err.message
               });
             }
-            var message = res.body;
+            var message = res.body.message;
             next({
               type: 'POST_MESSAGE_SUCCESS',
-              message: message
+              message: message,
+              groupId: action.groupId
             });
           });
           break;
@@ -55494,6 +55565,8 @@ var dataService = function dataService(store) {
           _superagent2.default.delete(url + '/group/' + action.groupId + '/delete').set('x-access-token', action.token).send({
             ownerId: action.ownerId
           }).end(function (err, res) {
+            console.log(res.body);
+            console.log(action);
             if (err) {
               return next({
                 type: 'DELETE_A_GROUP_ERROR',
@@ -57865,7 +57938,7 @@ exports = module.exports = __webpack_require__(121)(undefined);
 exports.push([module.i, "@import url(https://fonts.googleapis.com/icon?family=Material+Icons);", ""]);
 
 // module
-exports.push([module.i, "/* Style the tab */\ndiv.tab {\n  overflow: hidden;\n  border: 1px solid #ccc;\n  background-color: #f1f1f1; }\n\n/* Style the buttons inside the tab */\ndiv.tab button {\n  background-color: inherit;\n  float: left;\n  border: none;\n  outline: none;\n  cursor: pointer;\n  padding: 14px 16px;\n  transition: 0.3s; }\n\n/* Change background color of buttons on hover */\ndiv.tab button:hover {\n  background-color: #ddd; }\n\n/* Create an active/current tablink class */\ndiv.tab button.active {\n  background-color: #ccc; }\n\n/* Style the tab content */\n.tabcontent {\n  display: none;\n  padding: 6px 12px;\n  border: 1px solid #ccc;\n  border-top: none; }\n\n#body {\n  background-image: url(" + __webpack_require__(312) + ");\n  background-repeat: repeat-y;\n  background-position: center;\n  background-size: cover;\n  background-attachment: fixed; }\n\n#brand {\n  padding-left: 50px; }\n\n.signin-form {\n  margin-top: 20px;\n  padding: 20px;\n  border-style: solid;\n  border-radius: 20px;\n  border-color: black; }\n\n.signup-form {\n  margin-top: 20px;\n  padding: 20px;\n  border-style: solid;\n  border-radius: 20px;\n  border-color: black;\n  padding-bottom: 30px; }\n\n.group-details {\n  background-color: white;\n  padding: 20px; }\n\n.message {\n  padding: 10px;\n  margin: 2px;\n  background: rgba(0, 0, 0, 0.5); }\n\n.ownmessage {\n  padding: 10px;\n  margin: 2px;\n  background: rgba(136, 14, 79, 0.5); }\n\n#body {\n  display: flex;\n  min-height: 100vh;\n  flex-direction: column; }\n\n.transparent-body {\n  background: rgba(255, 255, 255, 0); }\n\n.shift-left {\n  margin-left: 10px; }\n\n#main {\n  flex: 1 0 auto; }\n\n.revealed {\n  margin: 30px; }\n\n.group-info {\n  overflow: auto;\n  height: 70px;\n  font-family: 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; }\n\n.dropdowns {\n  width: auto !important; }\n\n.input-field {\n  float: left;\n  width: 85%; }\n\n.members-list-container {\n  height: 400px;\n  position: fixed;\n  right: 30px;\n  top: 120px;\n  border: solid;\n  padding: 20px;\n  background: rgba(255, 255, 255, 0.9);\n  display: none; }\n\n.members-list {\n  height: 200px;\n  overflow: auto;\n  width: auto !important; }\n\n.project-title {\n  padding: 10px;\n  background: rgba(255, 255, 255, 0.5);\n  width: 200px; }\n\n.searchbox {\n  background: rgba(0, 0, 0, 0.5);\n  height: 50px; }\n\n.list-side-nav {\n  height: 200px;\n  overflow: auto; }\n\n.navbar-fixed {\n  z-index: 1003; }\n\n::-webkit-input-placeholder {\n  color: rgba(0, 0, 0, 0.5); }\n\n/* label underline focus color */\n.input-field input[type=text]:focus {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n.input-field input[type=password]:focus {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n.input-field input[type=email]:focus {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n.input-field input[type=text]:focus + label {\n  color: #000; }\n\n.input-field input[type=password]:focus + label {\n  color: #000; }\n\n.input-field input[type=email]:focus + label {\n  color: #000; }\n\n.input-field input[type=text].valid {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n/* invalid color */\n.input-field input[type=email].invalid {\n  border-bottom: 1px solid #880e4f;\n  box-shadow: 0 1px 0 0 #880e4f; }\n\n.preloader-background {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: fixed;\n  z-index: 0;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0; }\n\n.userlist-preloader {\n  display: flex;\n  align-items: center;\n  justify-content: center; }\n\n.registeredMembersList {\n  height: 250px;\n  overflow: auto;\n  padding-left: 50px;\n  padding-right: 50px;\n  background-color: white; }\n\n.sign-out-button {\n  width: 180px;\n  color: red; }\n\nheader, #messageInputBox, #main-postmessage, #footer {\n  padding-left: 300px; }\n\n@media only screen and (max-width: 992px) {\n  #header, #main-postmessage, #messageInputBox, #footer {\n    padding-left: 0; } }\n\n.memberListToggle {\n  position: fixed;\n  right: 0px;\n  z-index: 2; }\n\n#member-list-toggle {\n  background: transparent; }\n\n#member-list-toggle:hover {\n  background: #880e4f; }\n\n#messageInputBox {\n  background: rgba(255, 255, 255, 0.5); }\n\n.message-box {\n  display: flex;\n  flex-direction: row; }\n\n.text-input-field {\n  flex: 1 0 auto;\n  margin-left: 10px; }\n\n.send-button {\n  position: relative;\n  float: right;\n  width: 20%;\n  margin-left: 18px;\n  right: 10px;\n  top: 30px; }\n\n.send-comment-button {\n  position: relative;\n  float: right;\n  width: 20%;\n  margin-left: 18px;\n  right: 10px;\n  top: 0px; }\n\n/* Styling for radio buttons */\n#normal[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:after {\n  background-color: green; }\n\n#normal[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:before, [type=\"radio\"].with-gap:checked + label:after {\n  border: 2px solid green; }\n\n#urgent[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:after {\n  background-color: orange; }\n\n#urgent[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:before, [type=\"radio\"].with-gap:checked + label:after {\n  border: 2px solid orange; }\n\n#critical[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:after {\n  background-color: red; }\n\n#critical[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:before, [type=\"radio\"].with-gap:checked + label:after {\n  border: 2px solid red; }\n\n#comment[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:after {\n  background-color: grey; }\n\n#comment[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:before, [type=\"radio\"].with-gap:checked + label:after {\n  border: 2px solid grey; }\n\n#deleteMemberModal {\n  z-index: 0; }\n\n#emptySpace {\n  height: 65px;\n  padding-left: 20px; }\n", ""]);
+exports.push([module.i, "/* Style the tab */\ndiv.tab {\n  overflow: hidden;\n  border: 1px solid #ccc;\n  background-color: #f1f1f1; }\n\n/* Style the buttons inside the tab */\ndiv.tab button {\n  background-color: inherit;\n  float: left;\n  border: none;\n  outline: none;\n  cursor: pointer;\n  padding: 14px 16px;\n  transition: 0.3s; }\n\n/* Change background color of buttons on hover */\ndiv.tab button:hover {\n  background-color: #ddd; }\n\n/* Create an active/current tablink class */\ndiv.tab button.active {\n  background-color: #ccc; }\n\n/* Style the tab content */\n.tabcontent {\n  display: none;\n  padding: 6px 12px;\n  border: 1px solid #ccc;\n  border-top: none; }\n\n#body {\n  background-image: url(" + __webpack_require__(312) + ");\n  background-repeat: repeat-y;\n  background-position: center;\n  background-size: cover;\n  background-attachment: fixed; }\n\n#brand {\n  padding-left: 50px; }\n\n.signin-form {\n  margin-top: 20px;\n  padding: 20px;\n  border-style: solid;\n  border-radius: 20px;\n  border-color: black; }\n\n.signup-form {\n  margin-top: 20px;\n  padding: 20px;\n  border-style: solid;\n  border-radius: 20px;\n  border-color: black;\n  padding-bottom: 30px; }\n\n.group-details {\n  background-color: white;\n  padding: 20px; }\n\n.message {\n  padding: 10px;\n  margin: 2px;\n  background: rgba(0, 0, 0, 0.5); }\n\n.ownmessage {\n  padding: 10px;\n  margin: 2px;\n  background: rgba(136, 14, 79, 0.5); }\n\n#body {\n  display: flex;\n  min-height: 100vh;\n  flex-direction: column; }\n\n.transparent-body {\n  background: rgba(255, 255, 255, 0); }\n\n.shift-left {\n  margin-left: 10px; }\n\n#main {\n  flex: 1 0 auto;\n  overflow: auto; }\n\n.revealed {\n  margin: 30px; }\n\n.group-info {\n  overflow: auto;\n  height: 70px;\n  font-family: 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; }\n\n.dropdowns {\n  width: auto !important; }\n\n.input-field {\n  float: left;\n  width: 85%; }\n\n.members-list-container {\n  height: 400px;\n  position: fixed;\n  right: 30px;\n  top: 120px;\n  border: solid;\n  padding: 20px;\n  background: rgba(255, 255, 255, 0.9);\n  display: none; }\n\n.members-list {\n  height: 200px;\n  overflow: auto;\n  width: auto !important; }\n\n.project-title {\n  padding: 10px;\n  background: rgba(255, 255, 255, 0.5);\n  width: 200px; }\n\n.searchbox {\n  background: rgba(0, 0, 0, 0.5);\n  height: 50px; }\n\n.list-side-nav {\n  height: 200px;\n  overflow: auto; }\n\n.navbar-fixed {\n  z-index: 1003; }\n\n::-webkit-input-placeholder {\n  color: rgba(0, 0, 0, 0.5); }\n\n/* label underline focus color */\n.input-field input[type=text]:focus {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n.input-field input[type=password]:focus {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n.input-field input[type=email]:focus {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n.input-field input[type=text]:focus + label {\n  color: #000; }\n\n.input-field input[type=password]:focus + label {\n  color: #000; }\n\n.input-field input[type=email]:focus + label {\n  color: #000; }\n\n.input-field input[type=text].valid {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n/* invalid color */\n.input-field input[type=email].invalid {\n  border-bottom: 1px solid #880e4f;\n  box-shadow: 0 1px 0 0 #880e4f; }\n\n.preloader-background {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: fixed;\n  z-index: 0;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0; }\n\n.userlist-preloader {\n  display: flex;\n  align-items: center;\n  justify-content: center; }\n\n.registeredMembersList {\n  height: 250px;\n  overflow: auto;\n  padding-left: 50px;\n  padding-right: 50px;\n  background-color: white; }\n\n.sign-out-button {\n  width: 180px;\n  color: red; }\n\nheader, #messageInputBox, #main-postmessage, #footer {\n  padding-left: 300px; }\n\n@media only screen and (max-width: 992px) {\n  #header, #main-postmessage, #messageInputBox, #footer {\n    padding-left: 0; } }\n\n.memberListToggle {\n  position: fixed;\n  right: 0px;\n  z-index: 2; }\n\n#member-list-toggle {\n  background: transparent; }\n\n#member-list-toggle:hover {\n  background: #880e4f; }\n\n#messageInputBox {\n  background: rgba(255, 255, 255, 0.5);\n  padding-bottom: 0px;\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  height: 120px; }\n\n.message-box {\n  display: flex;\n  flex-direction: row; }\n\n.message-body {\n  word-wrap: break-word; }\n\n.text-input-field {\n  flex: 1 0 auto;\n  margin-left: 10px; }\n\n.send-button {\n  position: relative;\n  float: right;\n  width: 20%;\n  margin-left: 18px;\n  right: 10px;\n  top: 30px; }\n\n.send-comment-button {\n  position: relative;\n  float: right;\n  width: 20%;\n  margin-left: 18px;\n  right: 10px;\n  top: 0px; }\n\n/* Styling for radio buttons */\n#normal[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:after {\n  background-color: green; }\n\n#normal[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:before, [type=\"radio\"].with-gap:checked + label:after {\n  border: 2px solid green; }\n\n#urgent[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:after {\n  background-color: orange; }\n\n#urgent[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:before, [type=\"radio\"].with-gap:checked + label:after {\n  border: 2px solid orange; }\n\n#critical[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:after {\n  background-color: red; }\n\n#critical[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:before, [type=\"radio\"].with-gap:checked + label:after {\n  border: 2px solid red; }\n\n#comment[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:after {\n  background-color: grey; }\n\n#comment[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:before, [type=\"radio\"].with-gap:checked + label:after {\n  border: 2px solid grey; }\n\n#deleteMemberModal {\n  z-index: 0; }\n\n#emptySpace {\n  height: 65px;\n  padding-left: 20px; }\n\n#messages {\n  padding-bottom: 120px; }\n", ""]);
 
 // exports
 
