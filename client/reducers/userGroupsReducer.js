@@ -37,12 +37,36 @@ const structureUserGroupMembersFromDb = (state, dbSnapshot, groupId) => {
   }
   return appState;
 };
+// Helper method to structure the time stamp on a message
+const getFormattedTimeStamp = (timeStamp, callback) => {
+  const months = ['January', 'February', 'March', 'April',
+    'May', 'June', 'July', 'August', 'September', 'October',
+    'November', 'December'
+  ];
+  const year = timeStamp.slice(0, 4);
+  const monthString = timeStamp.slice(5, 7);
+  const month = months[parseInt(monthString, 10) - 1];
+  const dayString = timeStamp.slice(8, 10);
+  const day = parseInt(dayString, 10);
+  const hour = timeStamp.slice(11, 13);
+  const minute = timeStamp.slice(14, 16);
+  const formattedTime = `${month} ${day}, ${year}, at ${hour}:${minute}`;
+  callback(formattedTime);
+};
 // Restructure group messages from db
 const structureGroupMessagesFromDb = (state, newMessage, groupId) => {
   const appState = Object.assign({}, state);
-  let groupMessages = appState[groupId].messages;
-  groupMessages = [...groupMessages, newMessage];
-  appState[groupId].messages = groupMessages;
+  // Initialize the fields with empty objects and array if they had no previous content
+  appState.userGroups[groupId] = appState.userGroups[groupId] || {};
+  appState.userGroups[groupId].messages = appState.userGroups[groupId].messages || [];
+  let groupMessages = appState.userGroups[groupId].messages;
+  // Format the time stamp of new message
+  getFormattedTimeStamp(newMessage.createdAt, (formattedTime) => {
+    newMessage.createdAt = `Sent ${formattedTime}`;
+    groupMessages = [...groupMessages, newMessage];
+    appState.userGroups[groupId].messages = groupMessages;
+  });
+  return appState;
 };
 
 // Restructure data received after adding member to group
@@ -63,10 +87,16 @@ const structureStateAfterDeletingMember = (state, deletedId, groupId) => {
 };
 // Restructure data after loading group messages
 const structureStateAfterLoadingMessages = (state, messagesDbSnapshot, groupId) => {
+  const messages = messagesDbSnapshot.rows;
+  messages.map((message, index) => {
+    getFormattedTimeStamp(message.createdAt, (formattedTime) => {
+      messages[index].createdAt = `Sent ${formattedTime}`;
+    });
+  });
   const appState = Object.assign({}, state);
   // Load the group with empty data if it has no data in store
   appState.userGroups[groupId] = appState.userGroups[groupId] || {};
-  appState.userGroups[groupId].messages = messagesDbSnapshot.rows;
+  appState.userGroups[groupId].messages = messages;
   return appState;
 };
 
@@ -80,7 +110,7 @@ const userGroupsReducer = (state = {}, action) => {
     case 'DELETE_A_GROUP':
       return deleteGroup(appState, action.groupId);
     case 'POST_MESSAGE_SUCCESS':
-      return structureGroupMessagesFromDb(appState, action.data, action.groupId);
+      return structureGroupMessagesFromDb(appState, action.message, action.groupId);
     case 'ADD_MEMBER_SUCCESS':
       return structureMembersAfterAddingNew(appState, action.data, action.groupId);
     case 'DELETE_GROUP_MEMBER_SUCCESS':
