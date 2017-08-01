@@ -65,7 +65,7 @@ const dataService = store => next => (action) => {
       request.post(`${url}/group/${action.groupId}/message`)
         .set('x-access-token', action.token)
         .send({
-          message: action.message,
+          body: action.body,
           priority: action.priority,
           isComment: action.isComment,
           senderId: action.senderId,
@@ -77,10 +77,11 @@ const dataService = store => next => (action) => {
               message: err.message
             });
           }
-          const message = res.body;
+          const message = res.body.message;
           next({
             type: 'POST_MESSAGE_SUCCESS',
-            message
+            message,
+            groupId: action.groupId
           });
         });
       break;
