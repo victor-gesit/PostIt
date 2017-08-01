@@ -17,13 +17,14 @@ export const signUp = (firstName, lastName, email, password, phone) => {
   };
 };
 
-export const postMessage = (senderId, body, priority, isComment, token) => {
+export const postMessage = (senderId, groupId, body, priority, isComment, token) => {
   return {
     type: 'POST_MESSAGE',
     body,
     priority,
     isComment,
     senderId,
+    groupId,
     token
   };
 };
