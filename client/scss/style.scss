@@ -95,6 +95,7 @@ div.tab button.active {
 
  #main {
      flex: 1 0 auto;
+     overflow: auto;
  }
 .revealed {
     margin: 30px;
@@ -245,10 +246,19 @@ header, #messageInputBox, #main-postmessage, #footer {
 }
 #messageInputBox {
     background: rgba(255, 255, 255, .5);
+    padding-bottom: 0px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
 }
 .message-box {
     display: flex;
     flex-direction: row;
+}
+.message-body {
+    word-wrap: break-word;
 }
 .text-input-field {
     flex: 1 0 auto;
@@ -306,4 +316,8 @@ header, #messageInputBox, #main-postmessage, #footer {
 #emptySpace {
     height: 65px;
     padding-left: 20px;
+}
+
+#messages {
+    padding-bottom: 120px;
 }
