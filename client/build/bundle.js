@@ -14237,9 +14237,9 @@ var deleteMember = exports.deleteMember = function deleteMember(ownerId, idToDel
   };
 };
 
-var loadChat = exports.loadChat = function loadChat(groupId) {
+var loadMessages = exports.loadMessages = function loadMessages(groupId) {
   return {
-    type: 'LOAD_CHAT',
+    type: 'LOAD_MESSAGES',
     groupId: groupId
   };
 };
@@ -36328,6 +36328,12 @@ var SignInForm = function (_React$Component4) {
       var isSignedIn = this.props._that.props.appInfo.authState.signedIn;
       var errorMessage = this.props._that.props.apiError.message;
       if (isSignedIn) {
+        var token = this.props._that.props.appInfo.userDetails.token;
+        var userId = this.props._that.props.appInfo.userDetails.id;
+        var userDetails = this.props._that.props.appInfo.userDetails;
+        localStorage.setItem('userId', userId);
+        localStorage.setItem('token', token);
+        localStorage.setItem('userDetails', JSON.stringify(userDetails));
         this.props._that.props.history.push('/messageboard');
       } else {
         if (errorMessage) {
@@ -36703,8 +36709,8 @@ var Body = function (_React$Component2) {
       // Bind the notifications component
       this._notificationSystem = this.notificationRef;
       // Load all registered members
-      var token = this.props._that.props.appInfo.userDetails.token;
-      var userId = this.props._that.props.appInfo.userDetails.id;
+      var token = localStorage.getItem('token');
+      var userId = localStorage.getItem('userId');
       this.props._that.props.getPostItMembers(token);
       this.props._that.props.getAllGroupsForUser(userId, token);
     }
@@ -36714,12 +36720,13 @@ var Body = function (_React$Component2) {
       var allUsers = this.props._that.props.postItInfo.members.postItMembers;
       var apiError = this.props._that.props.apiError.errored;
       var redirect = this.props._that.props.apiError.redirect;
+      console.log(this.props._that.props.apiError);
       var errorMessage = this.props._that.props.apiError.message;
       this.registeredMembers = allUsers;
-      if (redirect) {
+      if (redirect.yes) {
         // Reset state of redirect property
         this.props._that.props.resetRedirect();
-        this.props._that.props.history.push('/postmessage');
+        this.props._that.props.history.push(redirect.to);
       } else {
         if (errorMessage) {
           // Empty the array of selected members
@@ -36735,8 +36742,8 @@ var Body = function (_React$Component2) {
     value: function createGroup() {
       var title = this.title.value;
       var description = this.description.value;
-      var creatorId = this.props._that.props.appInfo.userDetails.id;
-      var token = this.props._that.props.appInfo.userDetails.token;
+      var creatorId = localStorage.getItem('userId');
+      var token = localStorage.getItem('token');
       var selectedMembers = this.selectedMembers;
       this.props._that.props.createGroup(creatorId, title, description, selectedMembers, token);
     }
@@ -37080,7 +37087,8 @@ var NavBar = function (_React$Component4) {
   _createClass(NavBar, [{
     key: 'render',
     value: function render() {
-      var userDetails = this.props._that.props.appInfo.userDetails;
+      var userDetailsString = localStorage.getItem('userDetails');
+      var userDetails = JSON.parse(userDetailsString);
       var allUserGroups = this.props._that.props.allUserGroups.userGroups;
       return _react2.default.createElement(
         'div',
@@ -37315,26 +37323,7 @@ var NavBar = function (_React$Component4) {
                   )
                 )
               ),
-              _react2.default.createElement(
-                'ul',
-                { className: 'list-side-nav' },
-                Object.keys(allUserGroups).map(function (groupId, index) {
-                  return _react2.default.createElement(
-                    'li',
-                    { key: index },
-                    _react2.default.createElement(
-                      'a',
-                      { href: '#' },
-                      _react2.default.createElement(
-                        'i',
-                        { className: 'material-icons teal-text' },
-                        'people_outline'
-                      ),
-                      allUserGroups[groupId].info.title
-                    )
-                  );
-                })
-              ),
+              _react2.default.createElement(Groups, { allUserGroups: allUserGroups }),
               _react2.default.createElement('hr', null),
               _react2.default.createElement(
                 'li',
@@ -37374,20 +37363,79 @@ var NavBar = function (_React$Component4) {
   return NavBar;
 }(_react2.default.Component);
 
+var Groups = function (_React$Component5) {
+  _inherits(Groups, _React$Component5);
+
+  function Groups() {
+    _classCallCheck(this, Groups);
+
+    return _possibleConstructorReturn(this, (Groups.__proto__ || Object.getPrototypeOf(Groups)).apply(this, arguments));
+  }
+
+  _createClass(Groups, [{
+    key: 'render',
+    value: function render() {
+      var allUserGroups = this.props.allUserGroups;
+      return _react2.default.createElement(
+        'ul',
+        { className: 'list-side-nav' },
+        Object.keys(allUserGroups).map(function (groupId, index) {
+          return _react2.default.createElement(UserGroup, { key: index, groupDetails: allUserGroups[groupId].info });
+        })
+      );
+    }
+  }]);
+
+  return Groups;
+}(_react2.default.Component);
+
+var UserGroup = function (_React$Component6) {
+  _inherits(UserGroup, _React$Component6);
+
+  function UserGroup() {
+    _classCallCheck(this, UserGroup);
+
+    return _possibleConstructorReturn(this, (UserGroup.__proto__ || Object.getPrototypeOf(UserGroup)).apply(this, arguments));
+  }
+
+  _createClass(UserGroup, [{
+    key: 'render',
+    value: function render() {
+      var groupDetails = this.props.groupDetails;
+      return _react2.default.createElement(
+        'li',
+        null,
+        _react2.default.createElement(
+          'a',
+          { href: '#' },
+          _react2.default.createElement(
+            'i',
+            { className: 'material-icons teal-text' },
+            'people_outline'
+          ),
+          groupDetails.title
+        )
+      );
+    }
+  }]);
+
+  return UserGroup;
+}(_react2.default.Component);
+
 // Component to contain a member loaded from the database
 
 
-var RegisteredMember = function (_React$Component5) {
-  _inherits(RegisteredMember, _React$Component5);
+var RegisteredMember = function (_React$Component7) {
+  _inherits(RegisteredMember, _React$Component7);
 
   function RegisteredMember(props) {
     _classCallCheck(this, RegisteredMember);
 
-    var _this6 = _possibleConstructorReturn(this, (RegisteredMember.__proto__ || Object.getPrototypeOf(RegisteredMember)).call(this, props));
+    var _this8 = _possibleConstructorReturn(this, (RegisteredMember.__proto__ || Object.getPrototypeOf(RegisteredMember)).call(this, props));
 
-    _this6.selected = false;
-    _this6.addOrRemove = _this6.addOrRemove.bind(_this6);
-    return _this6;
+    _this8.selected = false;
+    _this8.addOrRemove = _this8.addOrRemove.bind(_this8);
+    return _this8;
   }
   // Method add or remove a member
 
@@ -37401,7 +37449,7 @@ var RegisteredMember = function (_React$Component5) {
   }, {
     key: 'render',
     value: function render() {
-      var _this7 = this;
+      var _this9 = this;
 
       var userInfo = this.props.userInfo;
       return _react2.default.createElement(
@@ -37410,7 +37458,7 @@ var RegisteredMember = function (_React$Component5) {
         _react2.default.createElement('input', { id: this.props.userInfo.email,
           type: 'checkbox',
           onClick: function onClick() {
-            return _this7.addOrRemove(event, _this7.props.userInfo.email);
+            return _this9.addOrRemove(event, _this9.props.userInfo.email);
           },
           ref: this.props.userInfo.email }),
         _react2.default.createElement(
@@ -37553,7 +37601,8 @@ var Nav = function (_React$Component2) {
   }, {
     key: 'render',
     value: function render() {
-      var userDetails = this.props.userDetails;
+      var userDetailsString = localStorage.getItem('userDetails');
+      var userDetails = JSON.parse(userDetailsString);
       var allUserGroups = this.props.allUserGroups;
       return _react2.default.createElement(
         'div',
@@ -37661,8 +37710,8 @@ var Nav = function (_React$Component2) {
                     'li',
                     null,
                     _react2.default.createElement(
-                      _reactRouterDom.Link,
-                      { to: '/creategroup', className: 'black-text' },
+                      'a',
+                      { href: '/creategroup', className: 'black-text' },
                       _react2.default.createElement(
                         'i',
                         { className: 'material-icons green-text' },
@@ -37794,8 +37843,8 @@ var Nav = function (_React$Component2) {
                 'li',
                 null,
                 _react2.default.createElement(
-                  _reactRouterDom.Link,
-                  { to: '/creategroup' },
+                  'a',
+                  { href: '/creategroup' },
                   _react2.default.createElement(
                     'i',
                     { className: 'large material-icons green-text' },
@@ -37841,26 +37890,7 @@ var Nav = function (_React$Component2) {
                   )
                 )
               ),
-              _react2.default.createElement(
-                'ul',
-                { className: 'list-side-nav' },
-                Object.keys(allUserGroups).map(function (groupId, index) {
-                  return _react2.default.createElement(
-                    'li',
-                    { key: index },
-                    _react2.default.createElement(
-                      'a',
-                      { href: '#' },
-                      _react2.default.createElement(
-                        'i',
-                        { className: 'material-icons teal-text' },
-                        'people_outline'
-                      ),
-                      allUserGroups[groupId].info.title
-                    )
-                  );
-                })
-              ),
+              _react2.default.createElement(Groups, { _that: this.props._that, allUserGroups: allUserGroups }),
               _react2.default.createElement('hr', null),
               _react2.default.createElement(
                 'li',
@@ -37899,77 +37929,105 @@ var Nav = function (_React$Component2) {
 
   return Nav;
 }(_react2.default.Component);
+// Component to hold the groups a user belongs to
 
-var SideNav = function (_React$Component3) {
-  _inherits(SideNav, _React$Component3);
 
-  function SideNav(props) {
-    _classCallCheck(this, SideNav);
+var Groups = function (_React$Component3) {
+  _inherits(Groups, _React$Component3);
 
-    return _possibleConstructorReturn(this, (SideNav.__proto__ || Object.getPrototypeOf(SideNav)).call(this, props));
+  function Groups() {
+    _classCallCheck(this, Groups);
+
+    return _possibleConstructorReturn(this, (Groups.__proto__ || Object.getPrototypeOf(Groups)).apply(this, arguments));
   }
 
-  _createClass(SideNav, [{
+  _createClass(Groups, [{
     key: 'render',
     value: function render() {
-      var firstName = this.props.userDetails.firstName;
-      var lastName = this.props.userDetails.lastName;
-      var phone = this.props.userDetails.phone;
-      var email = this.props.userDetails.email;
+      var _this4 = this;
+
+      var allUserGroups = this.props.allUserGroups;
       return _react2.default.createElement(
         'ul',
-        { className: 'collection' },
+        { className: 'list-side-nav' },
+        Object.keys(allUserGroups).map(function (groupId, index) {
+          return _react2.default.createElement(UserGroup, { _that: _this4.props._that, key: index, groupDetails: allUserGroups[groupId].info });
+        })
+      );
+    }
+  }]);
+
+  return Groups;
+}(_react2.default.Component);
+// Component to hold the details of each group a user belongs to
+
+
+var UserGroup = function (_React$Component4) {
+  _inherits(UserGroup, _React$Component4);
+
+  function UserGroup(props) {
+    _classCallCheck(this, UserGroup);
+
+    var _this5 = _possibleConstructorReturn(this, (UserGroup.__proto__ || Object.getPrototypeOf(UserGroup)).call(this, props));
+
+    _this5.loadMessages = _this5.loadMessages.bind(_this5);
+    return _this5;
+  }
+
+  _createClass(UserGroup, [{
+    key: 'loadMessages',
+    value: function loadMessages(e) {
+      var groupId = e.target.id;
+      var token = localStorage.getItem('token');
+      this.props._that.props.getMessages(groupId, token);
+      // Load all registered members of the stated group
+      this.props._that.props.loadMessages(groupId);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var groupDetails = this.props.groupDetails;
+      return _react2.default.createElement(
+        'li',
+        null,
         _react2.default.createElement(
-          'li',
-          { className: 'collection-item avatar black-text' },
+          'a',
+          { onClick: this.loadMessages, id: groupDetails.id },
           _react2.default.createElement(
             'i',
-            { className: 'material-icons purple circle' },
-            'person'
+            { className: 'material-icons teal-text' },
+            'people_outline'
           ),
-          _react2.default.createElement(
-            'span',
-            { className: 'title black-text' },
-            firstName,
-            ' ',
-            lastName
-          ),
-          _react2.default.createElement(
-            'p',
-            null,
-            email,
-            _react2.default.createElement('br', null),
-            phone
-          )
+          groupDetails.title
         )
       );
     }
   }]);
 
-  return SideNav;
+  return UserGroup;
 }(_react2.default.Component);
 
-var Body = function (_React$Component4) {
-  _inherits(Body, _React$Component4);
+var Body = function (_React$Component5) {
+  _inherits(Body, _React$Component5);
 
   function Body(props) {
     _classCallCheck(this, Body);
 
-    var _this4 = _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).call(this, props));
+    var _this6 = _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).call(this, props));
 
-    _this4.handlePageNumberClick = _this4.handlePageNumberClick.bind(_this4);
-    _this4.state = {
+    _this6.handlePageNumberClick = _this6.handlePageNumberClick.bind(_this6);
+    _this6.state = {
       offset: 0,
       perPage: 6
     };
-    return _this4;
+    return _this6;
   }
 
   _createClass(Body, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var userId = this.props._that.props.appInfo.userDetails.id;
-      var token = this.props._that.props.appInfo.userDetails.token;
+      var token = localStorage.getItem('token');
+      var userId = localStorage.getItem('userId');
       var offset = 0;
       var limit = this.state.perPage;
       this.props._that.props.getGroupsForUser(userId, offset, limit, token);
@@ -37978,16 +38036,16 @@ var Body = function (_React$Component4) {
   }, {
     key: 'handlePageNumberClick',
     value: function handlePageNumberClick(data) {
-      var _this5 = this;
+      var _this7 = this;
 
-      var userId = this.props._that.props.appInfo.userDetails.id;
-      var token = this.props._that.props.appInfo.userDetails.token;
+      var token = localStorage.getItem('token');
+      var userId = localStorage.getItem('userId');
 
       var selected = data.selected;
       var offset = Math.ceil(selected * this.state.perPage);
       var limit = this.state.perPage;
       this.setState({ offset: offset }, function () {
-        _this5.props._that.props.getGroupsForUser(userId, offset, limit, token);
+        _this7.props._that.props.getGroupsForUser(userId, offset, limit, token);
       });
     }
   }, {
@@ -38006,7 +38064,7 @@ var Body = function (_React$Component4) {
       return _react2.default.createElement(
         'div',
         { id: 'body' },
-        _react2.default.createElement(Nav, { allUserGroups: allUserGroups, userDetails: userDetails }),
+        _react2.default.createElement(Nav, { _that: this.props._that, allUserGroups: allUserGroups, userDetails: userDetails }),
         _react2.default.createElement(
           'div',
           { id: 'main' },
@@ -38049,8 +38107,8 @@ var Body = function (_React$Component4) {
   return Body;
 }(_react2.default.Component);
 
-var Footer = function (_React$Component5) {
-  _inherits(Footer, _React$Component5);
+var Footer = function (_React$Component6) {
+  _inherits(Footer, _React$Component6);
 
   function Footer() {
     _classCallCheck(this, Footer);
@@ -38080,9 +38138,11 @@ var Footer = function (_React$Component5) {
 
   return Footer;
 }(_react2.default.Component);
+// This component renders the card that displays the details of a group with a notification
 
-var Group = function (_React$Component6) {
-  _inherits(Group, _React$Component6);
+
+var Group = function (_React$Component7) {
+  _inherits(Group, _React$Component7);
 
   function Group() {
     _classCallCheck(this, Group);
@@ -38213,6 +38273,12 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     getGroupsForUser: function getGroupsForUser(userId, offset, limit, token) {
       return dispatch((0, _actions.getGroupsForUser)(userId, offset, limit, token));
     },
+    loadMessages: function loadMessages(groupId) {
+      return dispatch((0, _actions.loadMessages)(groupId));
+    },
+    getMessages: function getMessages(groupId, token) {
+      return dispatch((0, _actions.getMessages)(groupId, token));
+    },
     getAllGroupsForUser: function getAllGroupsForUser(userId, token) {
       return dispatch((0, _actions.getAllGroupsForUser)(userId, token));
     },
@@ -38330,28 +38396,28 @@ var Body = function (_React$Component2) {
   _createClass(Body, [{
     key: 'deleteMember',
     value: function deleteMember() {
-      var token = this.props._that.props.appInfo.userDetails.token;
+      var token = localStorage.getItem('token');
+      var ownerId = localStorage.getItem('userId');
       var idToDelete = this.memberIdToDelete;
-      var ownerId = this.props._that.props.appInfo.userDetails.id;
-      var groupId = this.props._that.props.appInfo.loadedChat.groupId;
+      var groupId = this.props._that.props.appInfo.loadedMessages.groupId;
       // Call the redux action to delete the member
       this.props._that.props.deleteMember(ownerId, idToDelete, groupId, token);
     }
   }, {
     key: 'deleteGroup',
     value: function deleteGroup() {
-      var token = this.props._that.props.appInfo.userDetails.token;
+      var token = localStorage.getItem('token');
+      var ownerId = localStorage.getItem('userId');
       var groupId = this.groupIdToDelete;
-      var ownerId = this.props._that.props.appInfo.userDetails.id;
       // Call redux action to delete the group
       this.props._that.props.deleteGroup(ownerId, groupId, token);
     }
   }, {
     key: 'componentWillMount',
     value: function componentWillMount() {
-      var userId = this.props._that.props.appInfo.userDetails.id;
-      var token = this.props._that.props.appInfo.userDetails.token;
-      var groupId = this.props._that.props.appInfo.loadedChat.groupId;
+      var token = localStorage.getItem('token');
+      var userId = localStorage.getItem('userId');
+      var groupId = this.props._that.props.appInfo.loadedMessages.groupId;
       // Load user groups
       this.props._that.props.getAllGroupsForUser(userId, token);
       // Load all messages for the group
@@ -38399,7 +38465,7 @@ var Body = function (_React$Component2) {
     key: 'componentDidUpdate',
     value: function componentDidUpdate() {
       // Go back to message board if group is deleted
-      var redirect = this.props._that.props.apiError.redirect;
+      var redirect = this.props._that.props.apiError.redirect.yes;
       if (redirect) {
         // Reset state of redirect property
         this.props._that.props.resetRedirect();
@@ -38409,7 +38475,7 @@ var Body = function (_React$Component2) {
   }, {
     key: 'render',
     value: function render() {
-      var groupId = this.props._that.props.appInfo.loadedChat.groupId;
+      var groupId = this.props._that.props.appInfo.loadedMessages.groupId;
       var groupLoaded = this.props._that.props.allUserGroups.userGroups[groupId];
       var groupTitle = void 0;
       if (groupLoaded) {
@@ -38528,7 +38594,7 @@ var GroupListToggle = function (_React$Component4) {
   _createClass(GroupListToggle, [{
     key: 'render',
     value: function render() {
-      var groupId = this.props._that.props.appInfo.loadedChat.groupId;
+      var groupId = this.props._that.props.appInfo.loadedMessages.groupId;
       var groupLoaded = this.props._that.props.groups.userGroups[groupId];
       var titleLoaded = this.props._that.props.allUserGroups.userGroups[groupId];
       var groupCount = '...';
@@ -38645,9 +38711,9 @@ var MessageInputBox = function (_React$Component5) {
   }, {
     key: 'sendMessage',
     value: function sendMessage() {
-      var token = this.props._that.props.appInfo.userDetails.token;
-      var senderId = this.props._that.props.appInfo.userDetails.id;
-      var groupId = this.props._that.props.appInfo.loadedChat.groupId;
+      var token = localStorage.getItem('token');
+      var senderId = localStorage.getItem('userId');
+      var groupId = this.props._that.props.appInfo.loadedMessages.groupId;
       var isComment = this.isComment;
       var priority = this.state.priority;
       var body = void 0;
@@ -38800,9 +38866,9 @@ var Messages = function (_React$Component6) {
     value: function render() {
       var _this9 = this;
 
-      var groupId = this.props._that.props.appInfo.loadedChat.groupId;
+      var groupId = this.props._that.props.appInfo.loadedMessages.groupId;
       var groupLoaded = this.props._that.props.groups.userGroups[groupId];
-      var userId = this.props._that.props.appInfo.userDetails.id;
+      var userId = localStorage.getItem('userId');
       var messages = void 0;
       // Check that group data is loaded
       if (groupLoaded && userId) {
@@ -39109,9 +39175,10 @@ var Nav = function (_React$Component10) {
   _createClass(Nav, [{
     key: 'render',
     value: function render() {
-      var groupId = this.props._that.props.appInfo.loadedChat.groupId;
+      var groupId = this.props._that.props.appInfo.loadedMessages.groupId;
       var userGroups = this.props._that.props.allUserGroups;
-      var userDetails = this.props._that.props.appInfo.userDetails;
+      var userDetailsString = localStorage.getItem('userDetails');
+      var userDetails = JSON.parse(userDetailsString);
       var allUserGroups = this.props._that.props.allUserGroups.userGroups;
       return _react2.default.createElement(
         'div',
@@ -39466,20 +39533,7 @@ var Groups = function (_React$Component11) {
         'ul',
         { className: 'list-side-nav' },
         Object.keys(allUserGroups).map(function (groupId, index) {
-          return _react2.default.createElement(
-            'li',
-            { key: index },
-            _react2.default.createElement(
-              'a',
-              { href: '#' },
-              _react2.default.createElement(
-                'i',
-                { className: 'material-icons teal-text' },
-                'people_outline'
-              ),
-              allUserGroups[groupId].info.title
-            )
-          );
+          return _react2.default.createElement(UserGroup, { key: index, groupDetails: allUserGroups[groupId].info });
         })
       );
     }
@@ -39488,8 +39542,41 @@ var Groups = function (_React$Component11) {
   return Groups;
 }(_react2.default.Component);
 
-var GroupDeleteModal = function (_React$Component12) {
-  _inherits(GroupDeleteModal, _React$Component12);
+var UserGroup = function (_React$Component12) {
+  _inherits(UserGroup, _React$Component12);
+
+  function UserGroup() {
+    _classCallCheck(this, UserGroup);
+
+    return _possibleConstructorReturn(this, (UserGroup.__proto__ || Object.getPrototypeOf(UserGroup)).apply(this, arguments));
+  }
+
+  _createClass(UserGroup, [{
+    key: 'render',
+    value: function render() {
+      var groupDetails = this.props.groupDetails;
+      return _react2.default.createElement(
+        'li',
+        null,
+        _react2.default.createElement(
+          'a',
+          { href: '#' },
+          _react2.default.createElement(
+            'i',
+            { className: 'material-icons teal-text' },
+            'people_outline'
+          ),
+          groupDetails.title
+        )
+      );
+    }
+  }]);
+
+  return UserGroup;
+}(_react2.default.Component);
+
+var GroupDeleteModal = function (_React$Component13) {
+  _inherits(GroupDeleteModal, _React$Component13);
 
   function GroupDeleteModal() {
     _classCallCheck(this, GroupDeleteModal);
@@ -39547,7 +39634,7 @@ var mapStateToProps = function mapStateToProps(state) {
     appInfo: {
       userDetails: state.appInfo.userDetails,
       authState: state.appInfo.authState,
-      loadedChat: state.appInfo.loadedChat
+      loadedMessages: state.appInfo.loadedMessages
     }
   };
 };
@@ -39611,6 +39698,8 @@ var _react = __webpack_require__(3);
 var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(25);
+
+var _reactRouterDom = __webpack_require__(30);
 
 var _reactNotificationSystem = __webpack_require__(70);
 
@@ -39784,6 +39873,12 @@ var Body = function (_React$Component3) {
       var errorMessage = this.props._that.props.apiError.message;
       console.log(isSignedIn, errorMessage);
       if (isSignedIn) {
+        var token = this.props._that.props.appInfo.userDetails.token;
+        var userId = this.props._that.props.appInfo.userDetails.id;
+        var userDetails = this.props._that.props.appInfo.userDetails;
+        localStorage.setItem('userId', userId);
+        localStorage.setItem('token', token);
+        localStorage.setItem('userDetails', JSON.stringify(userDetails));
         this.props._that.props.history.push('/messageboard');
       } else {
         if (errorMessage) {
@@ -39916,7 +40011,7 @@ var Body = function (_React$Component3) {
                     'Already have an account? ',
                     _react2.default.createElement(
                       'a',
-                      { href: '#' },
+                      { href: '/' },
                       'Sign in'
                     )
                   )
@@ -40066,12 +40161,12 @@ var appStore = {
   groups: { meta: { count: 0 }, userGroups: { 1: { members: { 1: {}, 2: {} }, groupId: '1', messages: [], info: { title: 'A Test Group', description: 'Details about it' } } } },
   // This will contain all the groups and everything about each
   allUserGroups: { meta: { count: 0 }, userGroups: { 1: { members: { 1: {}, 2: {} }, groupId: '1', messages: [], info: { title: 'Just A Test Group', description: 'Some Deets' } } } },
-  apiError: { errored: false, message: null }, // This indicates any error during queries to the API
+  apiError: { errored: false, message: null, redirect: { yes: false, to: null } }, // This indicates any error during queries to the API
   appInfo: {
-    userDetails: { firstName: 'a', lastName: 'a', id: 'ee1c8fed-6dff-491d-a4fc-31bedb63bde3', token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJWaWN0b3IiLCJsYXN0TmFtZSI6Iklkb25nZXNpdCIsImVtYWlsIjoidmljdG9yLmlkb25nZXNpdEBhbmRlbGEuY29tIiwicGhvbmUiOiIwNzA2OTc0OTk0NSIsImlkIjoiZWUxYzhmZWQtNmRmZi00OTFkLWE0ZmMtMzFiZWRiNjNiZGUzIiwiaWF0IjoxNTAxNTg2Njg0LCJleHAiOjE1MDE3NTk0ODR9.udJnOHqHuCltddOyGwCAXoW_i9JAl4N2Z9ksa056QM4', email: '', phone: '' },
+    userDetails: { firstName: 'a', lastName: 'a', id: '1', token: '1', email: '', phone: '' },
     authState: { signedIn: false, redirect: false },
-    loadedChat: {
-      groupId: '1bd66f6c-30eb-46eb-87ab-021ee264a025'
+    loadedMessages: {
+      groupId: '5f91c780-4d6d-40b6-815a-7fc1962c9563'
     }
   },
   dataLoading: true,
@@ -52003,9 +52098,9 @@ var _allUserGroupsReducer = __webpack_require__(252);
 
 var _allUserGroupsReducer2 = _interopRequireDefault(_allUserGroupsReducer);
 
-var _loadedChatReducer = __webpack_require__(253);
+var _loadedMessagesReducer = __webpack_require__(328);
 
-var _loadedChatReducer2 = _interopRequireDefault(_loadedChatReducer);
+var _loadedMessagesReducer2 = _interopRequireDefault(_loadedMessagesReducer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -52017,7 +52112,7 @@ var postItApp = (0, _redux.combineReducers)({
   appInfo: (0, _redux.combineReducers)({
     userDetails: _userReducer2.default,
     authState: _authStateReducer2.default,
-    loadedChat: _loadedChatReducer2.default
+    loadedMessages: _loadedMessagesReducer2.default
   }),
   postItInfo: _postItInfoReducer2.default
 });
@@ -52041,116 +52136,190 @@ var errorReducer = function errorReducer() {
   switch (action.type) {
     case 'SIGN_IN_ERROR':
       return {
+        message: action.message,
         errored: true,
-        redirect: false,
-        message: action.message
+        redirect: {
+          yes: false,
+          to: null
+        }
+      };
+    case 'SIGN_IN_SUCCESS':
+      return {
+        message: action.message,
+        errored: false,
+        redirect: {
+          yes: false,
+          to: null
+        }
       };
     case 'SIGN_UP_ERROR':
       return {
+        message: action.message,
         errored: true,
-        redirect: false,
-        message: action.message
+        redirect: {
+          yes: false,
+          to: null
+        }
       };
     case 'ADD_MEMBER_ERROR':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: true
       });
     case 'ADD_MEMBER_SUCCESS':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: true,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: false
       });
     case 'DELETE_MEMBER_ERROR':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: true
       });
     case 'DELETE_MEMBER_SUCCESS':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: false
       });
     case 'DELETE_A_GROUP_SUCCESS':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: true,
+        redirect: {
+          yes: true,
+          to: '/messageboard'
+        },
         errored: false
       });
     case 'GET_GROUP_MEMBERS_ERROR':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: true
       });
     case 'GET_GROUP_MEMBERS_SUCCESS':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: false
       });
     case 'GET_ALL_GROUPS_ERROR':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: true
       });
     case 'GET_ALL_GROUPS_SUCCESS':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: false
       });
     case 'POST_MESSAGE_ERROR':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: true
       });
     case 'POST_MESSAGE_SUCCESS':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: false
       });
     case 'GET_MESSAGES_ERROR':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: true
       });
     case 'CREATE_GROUP_ERROR':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: true
       });
     case 'CREATE_GROUP_SUCCESS':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: true,
+        redirect: {
+          yes: true,
+          to: '/postmessage'
+        },
         errored: false
       });
     case 'GET_MESSAGES_SUCCESS':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: false
       });
     case 'RESET_ERROR_LOG':
       return Object.assign({}, state, {
         message: null,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: false
+      });
+    case 'LOAD_MESSAGES':
+      return Object.assign({}, state, {
+        message: null,
+        redirect: {
+          yes: true,
+          to: '/postmessage'
+        }
       });
     case 'RESET_REDIRECT_STATE':
       return Object.assign({}, state, {
         message: null,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: false
       });
     default:
@@ -52505,13 +52674,13 @@ var authStateReducer = function authStateReducer() {
   var authState = Object.assign({}, state);
   switch (action.type) {
     case 'SIGN_IN_SUCCESS':
-      return Object.assign({}, state, { signedIn: true, message: action.message, redirect: true });
+      return Object.assign({}, state, { signedIn: true, message: action.message });
     case 'SIGN_UP_SUCCESS':
-      return Object.assign({}, state, { signedIn: true, message: action.messsage, redirect: true });
+      return Object.assign({}, state, { signedIn: true, message: action.messsage });
     case 'SIGN_IN_ERROR':
-      return Object.assign({}, state, { signedIn: false, message: action.messsage, redirect: false });
+      return Object.assign({}, state, { signedIn: false, message: action.messsage });
     case 'SIGN_UP_ERROR':
-      return Object.assign({}, state, { signedIn: false, message: action.messsage, redirect: false });
+      return Object.assign({}, state, { signedIn: false, message: action.messsage });
     default:
       return authState;
   }
@@ -52560,43 +52729,7 @@ var allUserGroupsReducer = function allUserGroupsReducer() {
 exports.default = allUserGroupsReducer;
 
 /***/ }),
-/* 253 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var loadedChatReducer = function loadedChatReducer() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var action = arguments[1];
-
-  switch (action.type) {
-    case 'LOAD_CHAT':
-      {
-        var groupId = action.groupId;
-        return Object.assign({}, state, { groupId: groupId });
-      }
-    case 'CREATE_GROUP_SUCCESS':
-      {
-        var _groupId = action.data.createdGroup.id;
-        return Object.assign({}, state, { groupId: _groupId });
-      }
-    case 'DELETE_GROUP_SUCCESS':
-      {
-        var _groupId2 = '';
-        return Object.assign({}, state, _groupId2);
-      }
-    default:
-      return state;
-  }
-};
-
-exports.default = loadedChatReducer;
-
-/***/ }),
+/* 253 */,
 /* 254 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -55565,8 +55698,6 @@ var dataService = function dataService(store) {
           _superagent2.default.delete(url + '/group/' + action.groupId + '/delete').set('x-access-token', action.token).send({
             ownerId: action.ownerId
           }).end(function (err, res) {
-            console.log(res.body);
-            console.log(action);
             if (err) {
               return next({
                 type: 'DELETE_A_GROUP_ERROR',
@@ -59719,6 +59850,43 @@ var Header = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = Header;
+
+/***/ }),
+/* 328 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var loadedMessagesReducer = function loadedMessagesReducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var action = arguments[1];
+
+  switch (action.type) {
+    case 'LOAD_MESSAGES':
+      {
+        var groupId = action.groupId;
+        return Object.assign({}, state, { groupId: groupId });
+      }
+    case 'CREATE_GROUP_SUCCESS':
+      {
+        var _groupId = action.data.createdGroup.id;
+        return Object.assign({}, state, { groupId: _groupId });
+      }
+    case 'DELETE_GROUP_SUCCESS':
+      {
+        var _groupId2 = null;
+        return Object.assign({}, state, _groupId2);
+      }
+    default:
+      return state;
+  }
+};
+
+exports.default = loadedMessagesReducer;
 
 /***/ })
 /******/ ]);
