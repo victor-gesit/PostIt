@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Link, NavLink } from 'react-router-dom';
 import NotificationSystem from 'react-notification-system';
 import { signUp, resetErrorLog } from '../../actions';
 
@@ -73,6 +74,12 @@ class Body extends React.Component {
     const errorMessage = this.props._that.props.apiError.message;
     console.log(isSignedIn, errorMessage);
     if(isSignedIn) {
+      const token = this.props._that.props.appInfo.userDetails.token;
+      const userId = this.props._that.props.appInfo.userDetails.id;
+      const userDetails = this.props._that.props.appInfo.userDetails;
+      localStorage.setItem('userId', userId);
+      localStorage.setItem('token', token);
+      localStorage.setItem('userDetails', JSON.stringify(userDetails));
       this.props._that.props.history.push('/messageboard');
     } else {
       if(errorMessage) {
@@ -131,7 +138,7 @@ class Body extends React.Component {
                 <button onClick={this.signUp} className="btn center green darken-4" autoFocus>Sign up</button>
               </div>
               <div>
-                <p>Already have an account? <a href="#">Sign in</a></p>
+                <p>Already have an account? <a href="/" >Sign in</a></p>
               </div>
             </div>
           </div>
