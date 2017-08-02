@@ -6,7 +6,7 @@ import postItInfoReducer from './postItInfoReducer';
 import loadingReducer from './loading';
 import authStateReducer from './authStateReducer';
 import allUserGroupsReducer from './allUserGroupsReducer';
-import loadedChatReducer from './loadedChatReducer';
+import loadedMessagesReducer from './loadedMessagesReducer';
 
 const postItApp = combineReducers({
   groups: userGroupsReducer,
@@ -16,7 +16,7 @@ const postItApp = combineReducers({
   appInfo: combineReducers({
     userDetails: userReducer,
     authState: authStateReducer,
-    loadedChat: loadedChatReducer
+    loadedMessages: loadedMessagesReducer
   }),
   postItInfo: postItInfoReducer
 });
