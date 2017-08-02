@@ -52,8 +52,8 @@ class Body extends React.Component {
     // Bind the notifications component
     this._notificationSystem = this.notificationRef;
     // Load all registered members
-    const token = this.props._that.props.appInfo.userDetails.token;
-    const userId = this.props._that.props.appInfo.userDetails.id;
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
     this.props._that.props.getPostItMembers(token);
     this.props._that.props.getAllGroupsForUser(userId, token);
   }
@@ -61,12 +61,13 @@ class Body extends React.Component {
     const allUsers = this.props._that.props.postItInfo.members.postItMembers;
     const apiError = this.props._that.props.apiError.errored;
     const redirect = this.props._that.props.apiError.redirect;
+    console.log(this.props._that.props.apiError);
     const errorMessage = this.props._that.props.apiError.message;
     this.registeredMembers = allUsers;
-    if(redirect) {
+    if(redirect.yes) {
       // Reset state of redirect property
       this.props._that.props.resetRedirect();
-      this.props._that.props.history.push('/postmessage');
+      this.props._that.props.history.push(redirect.to);
     } else {
       if(errorMessage) {
         // Empty the array of selected members
@@ -80,8 +81,8 @@ class Body extends React.Component {
   createGroup() {
     const title = this.title.value;
     const description = this.description.value;
-    const creatorId = this.props._that.props.appInfo.userDetails.id;
-    const token = this.props._that.props.appInfo.userDetails.token;
+    const creatorId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
     const selectedMembers = this.selectedMembers;
     this.props._that.props.createGroup(creatorId, title, description, selectedMembers, token);
   }
@@ -251,7 +252,8 @@ class NavBar extends React.Component {
     super(props);
   }
   render() {
-    const userDetails = this.props._that.props.appInfo.userDetails;
+    const userDetailsString = localStorage.getItem('userDetails');
+    const userDetails = JSON.parse(userDetailsString);
     const allUserGroups = this.props._that.props.allUserGroups.userGroups;
     return (
       <div className="navbar-fixed">
@@ -331,13 +333,7 @@ class NavBar extends React.Component {
                   <span><i className="material-icons black-text">search</i></span>
                 </div>
               </div>
-              <ul className="list-side-nav">
-                {
-                  Object.keys(allUserGroups).map((groupId, index) => {
-                    return <li key={index}><a href="#"><i className="material-icons teal-text">people_outline</i>{allUserGroups[groupId].info.title}</a></li>
-                  })
-                }
-              </ul>
+              <Groups allUserGroups={allUserGroups} />
               <hr />
               <li><a href="#"><i className="large material-icons black-text">info</i>About PostIt</a></li>
               <li><a href="#"><i className="large material-icons red-text">info</i>Sign Out</a></li>
@@ -349,6 +345,29 @@ class NavBar extends React.Component {
   }
 }
 
+
+class Groups extends React.Component{
+  render() {
+    const allUserGroups = this.props.allUserGroups;
+    return(
+      <ul className="list-side-nav">
+        {
+          Object.keys(allUserGroups).map((groupId, index) => {
+            return <UserGroup key={index} groupDetails={allUserGroups[groupId].info} />
+          })
+        }
+      </ul>
+    )
+  }
+}
+class UserGroup extends React.Component {
+  render() {
+    const groupDetails = this.props.groupDetails;
+    return (
+     <li><a href="#"><i className="material-icons teal-text">people_outline</i>{groupDetails.title}</a></li>
+    )
+  }
+}
 
 // Component to contain a member loaded from the database
 class RegisteredMember extends React.Component {
