@@ -29,24 +29,24 @@ class Body extends React.Component {
     this.groupIdToDelete = '';
   }
   deleteMember() {
-    const token = this.props._that.props.appInfo.userDetails.token;
+    const token = localStorage.getItem('token');
+    const ownerId = localStorage.getItem('userId');
     const idToDelete = this.memberIdToDelete;
-    const ownerId = this.props._that.props.appInfo.userDetails.id;
-    const groupId = this.props._that.props.appInfo.loadedChat.groupId;
+    const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
     // Call the redux action to delete the member
     this.props._that.props.deleteMember(ownerId, idToDelete, groupId, token);
   }
   deleteGroup() {
-    const token = this.props._that.props.appInfo.userDetails.token;
+    const token = localStorage.getItem('token');
+    const ownerId = localStorage.getItem('userId');
     const groupId = this.groupIdToDelete;
-    const ownerId = this.props._that.props.appInfo.userDetails.id;
     // Call redux action to delete the group
     this.props._that.props.deleteGroup(ownerId, groupId, token);
   }
   componentWillMount() {
-    const userId = this.props._that.props.appInfo.userDetails.id;
-    const token = this.props._that.props.appInfo.userDetails.token;
-    const groupId = this.props._that.props.appInfo.loadedChat.groupId;
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
     // Load user groups
     this.props._that.props.getAllGroupsForUser(userId, token);
     // Load all messages for the group
@@ -89,7 +89,7 @@ class Body extends React.Component {
   }
   componentDidUpdate() {
     // Go back to message board if group is deleted
-    const redirect = this.props._that.props.apiError.redirect;
+    const redirect = this.props._that.props.apiError.redirect.yes;
     if(redirect) {
       // Reset state of redirect property
       this.props._that.props.resetRedirect();
@@ -97,7 +97,7 @@ class Body extends React.Component {
     }
   }
   render() {
-    const groupId = this.props._that.props.appInfo.loadedChat.groupId;
+    const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
     const groupLoaded = this.props._that.props.allUserGroups.userGroups[groupId];
     let groupTitle;
     if(groupLoaded){
@@ -152,7 +152,7 @@ class MemberDeleteModal extends React.Component {
 }
 class GroupListToggle extends React.Component {
   render() {
-    const groupId = this.props._that.props.appInfo.loadedChat.groupId;
+    const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
     const groupLoaded = this.props._that.props.groups.userGroups[groupId];
     const titleLoaded = this.props._that.props.allUserGroups.userGroups[groupId];
     let groupCount = '...';
@@ -227,9 +227,9 @@ class MessageInputBox extends React.Component {
     })
   }
   sendMessage() {
-    const token = this.props._that.props.appInfo.userDetails.token;
-    const senderId = this.props._that.props.appInfo.userDetails.id;
-    const groupId = this.props._that.props.appInfo.loadedChat.groupId;
+    const token = localStorage.getItem('token');
+    const senderId = localStorage.getItem('userId');
+    const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
     const isComment = this.isComment;
     let priority = this.state.priority;
     let body;
@@ -304,9 +304,9 @@ class Messages extends React.Component {
     });
   }
   render() {
-    const groupId = this.props._that.props.appInfo.loadedChat.groupId;
+    const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
     const groupLoaded = this.props._that.props.groups.userGroups[groupId];
-    const userId = this.props._that.props.appInfo.userDetails.id;
+    const userId = localStorage.getItem('userId');
     let messages;
     // Check that group data is loaded
     if(groupLoaded && userId) {
@@ -422,9 +422,10 @@ class Message extends React.Component {
 }
 class Nav extends React.Component {
   render() {
-    const groupId = this.props._that.props.appInfo.loadedChat.groupId;
+    const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
     const userGroups = this.props._that.props.allUserGroups;
-    const userDetails = this.props._that.props.appInfo.userDetails;
+    const userDetailsString = localStorage.getItem('userDetails');
+    const userDetails = JSON.parse(userDetailsString);
     const allUserGroups = this.props._that.props.allUserGroups.userGroups;
     return(
       <div className="navbar-fixed">
@@ -545,14 +546,21 @@ class Groups extends React.Component{
       <ul className="list-side-nav">
         {
           Object.keys(allUserGroups).map((groupId, index) => {
-             return <li key={index}><a href="#"><i className="material-icons teal-text">people_outline</i>{allUserGroups[groupId].info.title}</a></li>
+            return <UserGroup key={index} groupDetails={allUserGroups[groupId].info} />
           })
         }
       </ul>
     )
   }
 }
-
+class UserGroup extends React.Component {
+  render() {
+    const groupDetails = this.props.groupDetails;
+    return (
+     <li><a href="#"><i className="material-icons teal-text">people_outline</i>{groupDetails.title}</a></li>
+    )
+  }
+}
 class GroupDeleteModal extends React.Component {
   render() {
     return(
@@ -580,7 +588,7 @@ const mapStateToProps = (state) => {
     appInfo: {
       userDetails: state.appInfo.userDetails,
       authState: state.appInfo.authState,
-      loadedChat: state.appInfo.loadedChat
+      loadedMessages: state.appInfo.loadedMessages
     }
   };
 };
