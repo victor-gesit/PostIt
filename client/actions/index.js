@@ -119,9 +119,9 @@ export const deleteMember = (ownerId, idToDelete, groupId, token) => {
   };
 };
 
-export const loadChat = (groupId) => {
+export const loadMessages = (groupId) => {
   return {
-    type: 'LOAD_CHAT',
+    type: 'LOAD_MESSAGES',
     groupId
   };
 };
