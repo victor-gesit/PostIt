@@ -117,6 +117,12 @@ class SignInForm extends React.Component {
     const isSignedIn = this.props._that.props.appInfo.authState.signedIn;
     const errorMessage = this.props._that.props.apiError.message;
     if(isSignedIn) {
+      const token = this.props._that.props.appInfo.userDetails.token;
+      const userId = this.props._that.props.appInfo.userDetails.id;
+      const userDetails = this.props._that.props.appInfo.userDetails;
+      localStorage.setItem('userId', userId);
+      localStorage.setItem('token', token);
+      localStorage.setItem('userDetails', JSON.stringify(userDetails));
       this.props._that.props.history.push('/messageboard');
     } else {
       if(errorMessage) {
