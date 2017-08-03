@@ -96,14 +96,15 @@ const dataService = store => next => (action) => {
         .end((err, res) => {
           if (err) {
             return next({
-              type: 'ADD_MEMBER_SUCCESS',
+              type: 'ADD_MEMBER_ERROR',
               message: err.message
             });
           }
-          const members = res.body;
+          const addedMembers = res.body;
           next({
-            type: 'ADD_MEMBER_ERROR',
-            members
+            type: 'ADD_MEMBER_SUCCESS',
+            addedMembers,
+            groupId: action.groupId
           });
         });
       break;
