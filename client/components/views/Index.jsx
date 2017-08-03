@@ -99,7 +99,17 @@ class SignInForm extends React.Component {
     this._notificationSystem = null;
   }
   componentDidMount() {
+    // Initialize notification component
     this._notificationSystem = this.notificationRef;
+    // Set focus to Sign in button
+    $('.signin-form').keypress((event) => {
+      if ((event.which && event.which == 13) || (event.keyCode && event.keyCode == 13)) {
+          $('#signInButton').click();
+          return false;
+      } else {
+          return true;
+      }
+    })
   }
   signIn(e) {
     const email = this.email.value;
@@ -123,7 +133,7 @@ class SignInForm extends React.Component {
       localStorage.setItem('userId', userId);
       localStorage.setItem('token', token);
       localStorage.setItem('userDetails', JSON.stringify(userDetails));
-      this.props._that.props.history.push('/messageboard');
+      window.location = '/messageboard';
     } else {
       if(errorMessage) {
         this.showNotification('success', errorMessage);
@@ -164,7 +174,7 @@ class SignInForm extends React.Component {
               <label htmlFor="password">Password</label>
             </div>
             <div className="col s12 center">
-              <button onClick={this.signIn} className="btn green darken-4" ref={(button) => { this.button = button; }} >Sign in</button>
+              <button id="signInButton" onClick={this.signIn} className="btn green darken-4" ref={(button) => { this.button = button; }} >Sign in</button>
             </div>
             <br /><br />
             <div className="col s12">
@@ -172,7 +182,7 @@ class SignInForm extends React.Component {
               <label htmlFor="signedin">Keep me signed in</label>
             </div>
             <div>
-              <p>Don't have an account? <a href="#">Sign up</a></p>
+              <p>Don't have an account? <a href="/signup">Sign up</a></p>
             </div>
           </div>
         </div>

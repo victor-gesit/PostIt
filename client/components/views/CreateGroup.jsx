@@ -1,6 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getGroupsForUser, getAllGroupsForUser, resetErrorLog, resetRedirect, getPostItMembers, createGroup } from '../../actions';
+import {
+  getGroupsForUser, getAllGroupsForUser, resetErrorLog,
+  getMessages, loadMessages, resetRedirect,
+  getPostItMembers, createGroup
+} from '../../actions';
 import NotificationSystem from 'react-notification-system';
 
 import 'jquery';
@@ -24,23 +28,6 @@ class Body extends React.Component {
     this.createGroup = this.createGroup.bind(this);
     this.showNotification = this.showNotification.bind(this);
     this.selectedMembers = [];
-    this.registeredMembers = {
-      abracadabra: {
-        name: 'Victor Idongesit',
-        id: 'abracadabra',
-        email: 'victor@yahoo.com'
-      },
-      janana: {
-        name: 'Jane Does',
-        id: 'janana',
-        email: 'jane@doe.com'
-      },
-      obiisaboy: {
-        name: 'Obi Nna',
-        id: 'obiisaboy',
-        email: 'obi@ezekweseli.com'
-      }
-    };
   }
   showNotification(level, message) {
       this._notificationSystem.addNotification({
@@ -61,7 +48,6 @@ class Body extends React.Component {
     const allUsers = this.props._that.props.postItInfo.members.postItMembers;
     const apiError = this.props._that.props.apiError.errored;
     const redirect = this.props._that.props.apiError.redirect;
-    console.log(this.props._that.props.apiError);
     const errorMessage = this.props._that.props.apiError.message;
     this.registeredMembers = allUsers;
     if(redirect.yes) {
@@ -263,6 +249,11 @@ class NavBar extends React.Component {
             <a href="#" data-activates="mobile-demo" data-hover="true" className="button-collapse show-on-large"><i className="material-icons">menu</i></a>
             <ul className="right">
               <li>
+                    <a href="/messageboard">
+                      <i className="material-icons">view_module</i>
+                    </a>                
+              </li>
+              <li>
                 {/* Dropdown Trigger */}
                 <ul>
                   <li>
@@ -333,7 +324,7 @@ class NavBar extends React.Component {
                   <span><i className="material-icons black-text">search</i></span>
                 </div>
               </div>
-              <Groups allUserGroups={allUserGroups} />
+              <Groups _that={this.props._that} allUserGroups={allUserGroups} />
               <hr />
               <li><a href="#"><i className="large material-icons black-text">info</i>About PostIt</a></li>
               <li><a href="#"><i className="large material-icons red-text">info</i>Sign Out</a></li>
@@ -346,6 +337,7 @@ class NavBar extends React.Component {
 }
 
 
+// Component to hold the groups a user belongs to
 class Groups extends React.Component{
   render() {
     const allUserGroups = this.props.allUserGroups;
@@ -353,21 +345,43 @@ class Groups extends React.Component{
       <ul className="list-side-nav">
         {
           Object.keys(allUserGroups).map((groupId, index) => {
-            return <UserGroup key={index} groupDetails={allUserGroups[groupId].info} />
+            return <UserGroup _that={this.props._that} key={index} groupDetails={allUserGroups[groupId].info} />
           })
         }
       </ul>
     )
   }
 }
+// Component to hold the details of each group a user belongs to
 class UserGroup extends React.Component {
+  constructor(props) {
+    super(props);
+    this.loadMessages = this.loadMessages.bind(this);
+  }
+  loadMessages(e) {
+    const groupId = e.target.id;
+    const token = localStorage.getItem('token');
+    // Load messages into the conversation page
+    this.props._that.props.loadMessages(groupId);
+    this.props._that.props.getMessages(groupId, token);
+  }
   render() {
     const groupDetails = this.props.groupDetails;
     return (
-     <li><a href="#"><i className="material-icons teal-text">people_outline</i>{groupDetails.title}</a></li>
+     <li><a onClick={this.loadMessages} id={groupDetails.id} ><i className="material-icons teal-text">people_outline</i>{groupDetails.title}</a></li>
     )
   }
+  componentDidUpdate() {
+    const redirect = this.props._that.props.apiError.redirect;
+    if(redirect.yes){
+      const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
+      localStorage.setItem('groupId', groupId); // Save id of group to
+      this.props._that.props.resetRedirect();
+      window.location = redirect.to;
+    }
+  }
 }
+
 
 // Component to contain a member loaded from the database
 class RegisteredMember extends React.Component {
@@ -389,7 +403,10 @@ class RegisteredMember extends React.Component {
           type="checkbox"
           onClick={() => this.addOrRemove(event, this.props.userInfo.email)}
           ref={this.props.userInfo.email} />
-        <label className="brown-text" htmlFor={this.props.userInfo.email}>{userInfo.firstName} {userInfo.lastName}<small className="red-text">   {this.props.userInfo.email}</small></label>
+        <label className="brown-text" htmlFor={this.props.userInfo.email}>
+          {userInfo.firstName} {userInfo.lastName}
+          <small className="red-text">   {this.props.userInfo.email}</small>
+        </label>
       </li>
     )
   }
@@ -403,7 +420,8 @@ const mapStateToProps = (state)  => {
     allUserGroups: state.allUserGroups,
     appInfo: {
       userDetails: state.appInfo.userDetails,
-      authState: state.appInfo.authState
+      authState: state.appInfo.authState,
+      loadedMessages: state.appInfo.loadedMessages
     },
     postItInfo: state.postItInfo
   };
@@ -415,6 +433,8 @@ const mapDispatchToProps = (dispatch) => {
     resetRedirect: () => dispatch(resetRedirect()),
     getPostItMembers: (token) => dispatch(getPostItMembers(token)),
     getAllGroupsForUser: (userId, token) => dispatch(getAllGroupsForUser(userId, token)),
+    getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
+    loadMessages: (groupId) => dispatch(loadMessages(groupId)),
     createGroup: (creatorId, title, description, selectedMembers, token) =>
       dispatch(createGroup(creatorId, title, description, selectedMembers, token)),
     getGroupsForUser: (userId, offset, limit, token) => dispatch(getGroupsForUser(userID, offset, limit, token))
