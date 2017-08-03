@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
 import { Link } from 'react-router-dom';
-import { getGroupsForUser, getMessages, loadMessages, createGroup, deleteGroup, getAllGroupsForUser } from '../../actions';
+import { getGroupsForUser, getMessages, loadMessages, resetRedirect, createGroup, deleteGroup, getAllGroupsForUser } from '../../actions';
 import { connect } from 'react-redux';
 import 'jquery/dist/jquery';
 import '../../js/materialize';
@@ -32,7 +32,7 @@ class Nav extends React.Component {
       <div className="navbar-fixed">
         <nav className="pink darken-4">
           <div className="nav-wrapper">
-            <a href="#" id="brand" className="brand-logo left">PostIt</a>
+            <a id="brand" className="brand-logo left">PostIt</a>
             <a href="#" data-activates="mobile-demo" data-hover="true" className="button-collapse show-on-large"><i className="material-icons">menu</i></a>
             <ul className="right">
               <li>
@@ -156,15 +156,24 @@ class UserGroup extends React.Component {
   loadMessages(e) {
     const groupId = e.target.id;
     const token = localStorage.getItem('token');
-    this.props._that.props.getMessages(groupId, token);
-    // Load all registered members of the stated group
+    // Load messages into the conversation page
     this.props._that.props.loadMessages(groupId);
+    this.props._that.props.getMessages(groupId, token);
   }
   render() {
     const groupDetails = this.props.groupDetails;
     return (
      <li><a onClick={this.loadMessages} id={groupDetails.id} ><i className="material-icons teal-text">people_outline</i>{groupDetails.title}</a></li>
     )
+  }
+  componentDidUpdate() {
+    const redirect = this.props._that.props.apiError.redirect;
+    if(redirect.yes){
+      const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
+      localStorage.setItem('groupId', groupId); // Save id of group to
+      this.props._that.props.resetRedirect();
+      window.location = redirect.to;
+    }
   }
 }
 
@@ -195,8 +204,6 @@ class Body extends React.Component {
     this.setState({offset: offset}, () => {
       this.props._that.props.getGroupsForUser(userId, offset, limit, token);
     });
-  }
-  componentWillUpdate() {
   }
   render() {
     let userGroups = this.props._that.props.groups.userGroups;
@@ -313,7 +320,8 @@ const mapStateToProps = (state)  => {
     allUserGroups: state.allUserGroups,
     appInfo: {
       userDetails: state.appInfo.userDetails,
-      authState: state.appInfo.authState
+      authState: state.appInfo.authState,
+      loadedMessages: state.appInfo.loadedMessages
     }
   };
 }
@@ -322,6 +330,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getGroupsForUser: (userId, offset, limit, token) => dispatch(getGroupsForUser(userId, offset, limit, token)),
     loadMessages: (groupId) => dispatch(loadMessages(groupId)),
+    resetRedirect: () => dispatch(resetRedirect()),
     getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
     getAllGroupsForUser: (userId, token) => dispatch(getAllGroupsForUser(userId, token)), 
     resetErrorLog: () => dispatch(resetErrorLog())
