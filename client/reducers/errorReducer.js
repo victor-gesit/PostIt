@@ -9,15 +9,6 @@ const errorReducer = (state = {}, action) => {
           to: null
         }
       };
-    case 'SIGN_IN_SUCCESS':
-      return {
-        message: action.message,
-        errored: false,
-        redirect: {
-          yes: false,
-          to: null
-        }
-      };
     case 'SIGN_UP_ERROR':
       return {
         message: action.message,
