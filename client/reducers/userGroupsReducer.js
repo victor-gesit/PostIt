@@ -72,9 +72,13 @@ const structureGroupMessagesFromDb = (state, newMessage, groupId) => {
 // Restructure data received after adding member to group
 const structureMembersAfterAddingNew = (state, newMembers, groupId) => {
   const appState = Object.assign({}, state);
-  let groupMembers = appState[groupId].members;
-  groupMembers = [...groupMembers, newMembers];
-  appState[groupId].members = groupMembers;
+  const groupMembers = appState.userGroups[groupId].members;
+  newMembers.map((newMember) => {
+    const userId = newMember.id;
+    groupMembers[userId] = newMember;
+  });
+  appState.userGroups[groupId].members = groupMembers;
+  return appState;
 };
 
 // Restructure data after deleting a member
@@ -112,7 +116,7 @@ const userGroupsReducer = (state = {}, action) => {
     case 'POST_MESSAGE_SUCCESS':
       return structureGroupMessagesFromDb(appState, action.message, action.groupId);
     case 'ADD_MEMBER_SUCCESS':
-      return structureMembersAfterAddingNew(appState, action.data, action.groupId);
+      return structureMembersAfterAddingNew(appState, action.addedMembers, action.groupId);
     case 'DELETE_GROUP_MEMBER_SUCCESS':
       return structureStateAfterDeletingMember(appState, action.deletedId, action.groupId);
     case 'GET_MESSAGES_SUCCESS':
