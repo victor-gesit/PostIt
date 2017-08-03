@@ -1,7 +1,11 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
 import { Link } from 'react-router-dom';
-import { getGroupMembers, getMessages, resetRedirect, createGroup, deleteMember, deleteGroup, getAllGroupsForUser, postMessage  } from '../../actions';
+import { 
+  getGroupMembers, addUser, getMessages, loadMessages,
+  resetRedirect, createGroup, deleteMember, getPostItMembers,
+  deleteGroup, getAllGroupsForUser, postMessage,
+} from '../../actions';
 import { connect } from 'react-redux';
 import 'jquery/dist/jquery';
 import '../../js/materialize';
@@ -32,7 +36,7 @@ class Body extends React.Component {
     const token = localStorage.getItem('token');
     const ownerId = localStorage.getItem('userId');
     const idToDelete = this.memberIdToDelete;
-    const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
+    const groupId = localStorage.getItem('groupId');
     // Call the redux action to delete the member
     this.props._that.props.deleteMember(ownerId, idToDelete, groupId, token);
   }
@@ -46,58 +50,55 @@ class Body extends React.Component {
   componentWillMount() {
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
-    const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
+    const groupId = localStorage.getItem('groupId');
     // Load user groups
     this.props._that.props.getAllGroupsForUser(userId, token);
     // Load all messages for the group
     this.props._that.props.getMessages(groupId, token);
-    // Load all registered members of the stated group
     this.props._that.props.getGroupMembers(groupId, token);
-
   }
   componentDidMount() {
-    // Custom JS to handle sidenav and modal
-    $(document).ready(() => {
-      $('.button-collapse').sideNav();
-      $('#member-list-toggle').off().on('click', () => {
-        $('#memberList').animate({ width: 'toggle' });
-      });
-      $('.modal').modal({
-        // Handle modal dialog box
-        ready: (modal, trigger) => {
-          // Check if modal is for deleting group member or group entire
-          if(modal[0].id === 'deleteMemberModal'){
-            this.memberIdToDelete = trigger[0].id;
-          } else {
-            this.groupIdToDelete = trigger[0].id;
-          }
-        },
-      });
-      // Toggle memberList
-      $(document).on('click', (e) => {
-        const target = $(e.target);
-        // Hide member list when a click is made outside of memberlist window or deleteMemberModal
-        if (!(target.is('#member-list-toggle'))) {
-          if(!target.parents('#memberList').length) {
-            if(!target.parents('#deleteMemberModal').length) {
+    $('.button-collapse').sideNav();
+    $('#member-list-toggle').off().on('click', () => {
+      $('#memberList').animate({ width: 'toggle' });
+    });
+    $('.modal').modal({
+      // Handle modal dialog box
+      ready: (modal, trigger) => {
+        // Check if modal is for deleting group member or entire group
+        if(modal[0].id === 'deleteMemberModal'){
+          this.memberIdToDelete = trigger[0].id;
+        } else {
+          this.groupIdToDelete = trigger[0].id;
+        }
+      },
+    });
+    // Toggle memberList
+    $(document).on('click', (e) => {
+      const target = $(e.target);
+      // Hide member list when a click is made outside of memberlist window or deleteMemberModal
+      if (!(target.is('#member-list-toggle'))) {
+        if(!target.parents('#memberList').length) {
+          if(!target.parents('#deleteMemberModal').length) {
+            if(!target.parents('#addMemberModal').length) {
               $('#memberList').fadeOut();
             }
           }
         }
-      });
+      }
     });
   }
   componentDidUpdate() {
     // Go back to message board if group is deleted
-    const redirect = this.props._that.props.apiError.redirect.yes;
-    if(redirect) {
+    const redirect = this.props._that.props.apiError.redirect;
+    if(redirect.yes) {
       // Reset state of redirect property
       this.props._that.props.resetRedirect();
-      this.props._that.props.history.push('/messageboard');
+      window.location = redirect.to;
     }
   }
   render() {
-    const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
+    const groupId = localStorage.getItem('groupId');
     const groupLoaded = this.props._that.props.allUserGroups.userGroups[groupId];
     let groupTitle;
     if(groupLoaded){
@@ -127,6 +128,8 @@ class Body extends React.Component {
         </div>
         {/* Modal to handle deleting a member from a group */}
          <MemberDeleteModal deleteMember={this.deleteMember}/>
+        {/* Modal to handle adding a member to a group */}
+         <AddMemberModal _that={this.props._that}/>
         {/* Message Input Box */}
       </div>
       <MessageInputBox _that={this.props._that}/>
@@ -143,8 +146,8 @@ class MemberDeleteModal extends React.Component {
           <p className="white-text">This group member will be removed from this group.</p>
         </div>
         <div className="modal-footer">
-          <a href="#!" onClick={this.props.deleteMember} className="modal-action modal-close waves-effect waves-green btn-flat green-text">Agree</a>
-          <a className="modal-action modal-close waves-effect waves-green btn-flat green-text">Disagree</a>
+          <a href="#!" onClick={this.props.deleteMember} className="modal-action modal-close waves-effect waves-green btn-flat green-text">Delete</a>
+          <a className="modal-action modal-close waves-effect waves-green btn-flat green-text">Cancel</a>
         </div>
       </div>
     )
@@ -152,15 +155,17 @@ class MemberDeleteModal extends React.Component {
 }
 class GroupListToggle extends React.Component {
   render() {
-    const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
+    const groupId = localStorage.getItem('groupId');
     const groupLoaded = this.props._that.props.groups.userGroups[groupId];
     const titleLoaded = this.props._that.props.allUserGroups.userGroups[groupId];
     let groupCount = '...';
     let groupTitle = '...';
     let groupMembers;
+    let creatorEmail;
     // Get group title if loading is complete
     if(titleLoaded) {
       groupTitle = titleLoaded.info.title;
+      creatorEmail = titleLoaded.info.creatorEmail;
     }
     // Load the group members if group has loaded
     if(groupLoaded) {
@@ -187,16 +192,120 @@ class GroupListToggle extends React.Component {
           )
         }
         <hr />
-        <span>Members List</span>
+        <p><span>Members List<a href="#addMemberModal"  className="secondary-content modal-trigger green-text"><i className="material-icons">person_add</i></a></span></p>
         {
           groupLoaded?
           (
-            <GroupMembers groupMembers={groupMembers}/>
+            <GroupMembers creatorEmail={creatorEmail} groupMembers={groupMembers}/>
           ):(
-            <div className="pink-text">Loading...</div>
+          <div className="preloader-wrapper loader small active">
+            <div className="spinner-layer spinner-green-only">
+              <div className="circle-clipper left">
+                <div className="circle"></div>
+              </div><div className="gap-patch">
+                <div className="circle"></div>
+              </div><div className="circle-clipper right">
+                <div className="circle"></div>
+              </div>
+            </div>
+          </div>
           )
         }
       </div>
+    )
+  }
+}
+class AddMemberModal extends React.Component {
+  constructor(props) {
+    super(props);
+    this.selectedMembers = [];
+    this.registeredMembers = {};
+    this.addMember = this.addMember.bind(this);
+    this.addNewMembers = this.addNewMembers.bind(this);
+  }
+  componentWillMount() {
+    const token = localStorage.getItem('token');
+    this.props._that.props.getPostItMembers(token);
+  }
+  componentWillUpdate() {
+    this.registeredMembers = this.props._that.props.postItInfo.members.postItMembers;
+  }
+    // Method to add members to the group
+  addMember(selected, memberEmail) {
+    if(selected) {
+      // Add member
+      this.selectedMembers.push(memberEmail);
+    } else {
+      // Remove member if added earlier
+      const index = this.selectedMembers.indexOf(memberEmail);
+      this.selectedMembers.splice(index, 1);
+    }
+  }
+  addNewMembers() {
+    const adderId = localStorage.getItem('userId');
+    const groupId = localStorage.getItem('groupId');
+    const token = localStorage.getItem('token');
+    const email = this.selectedMembers;
+    if(email.length > 0) {
+      this.props._that.props.addUser(email, groupId, adderId, token);
+    }
+  }
+  render() {
+    let dataLoading  = this.props._that.props.dataLoading;
+    const registeredMembers = this.registeredMembers;
+    return(
+      <div id="addMemberModal" className="modal grey">
+        <div className="modal-content">
+            <div>
+              <form>
+                <h3 className="center">Add members</h3>
+                <div className="registeredMembersList">
+                  <ul className="collection">
+                    {
+                    Object.keys(this.registeredMembers).map((userId, index ) => {
+                      return <RegisteredMember addMember={this.addMember} key={index} id={userId} userInfo={this.registeredMembers[userId]}/>
+                    })
+                    }
+                  </ul>
+                </div>
+              </form>
+            </div>
+        </div>
+        <div className="modal-footer">
+          <a href="#!" onClick={this.addNewMembers}
+            className="modal-action modal-close waves-effect waves-green btn-flat green-text">Add</a>
+          <a className="modal-action modal-close waves-effect waves-green btn-flat green-text">Cancel</a>
+        </div>
+      </div>
+    )
+  }
+}
+
+// Component to contain a member loaded from the database
+class RegisteredMember extends React.Component {
+  constructor(props) {
+    super(props);
+    this.selected = false;
+    this.addOrRemove = this.addOrRemove.bind(this);
+  }
+  // Method add or remove a member
+  addOrRemove(event, email) {
+    this.selected = !this.selected;
+    this.props.addMember(this.selected, email);
+  }
+  render() {
+    const userInfo = this.props.userInfo;
+    return (
+      <li className="collection-item">
+        <input id={this.props.userInfo.email}
+          type="checkbox"
+          onClick={() => this.addOrRemove(event, this.props.userInfo.email)}
+          ref={this.props.userInfo.email} />
+        <label className="brown-text" htmlFor={this.props.userInfo.email}>
+          {userInfo.firstName} {userInfo.lastName}
+          <small className="red-text">   {this.props.userInfo.email}</small>
+        </label>
+      </li>
     )
   }
 }
@@ -229,7 +338,7 @@ class MessageInputBox extends React.Component {
   sendMessage() {
     const token = localStorage.getItem('token');
     const senderId = localStorage.getItem('userId');
-    const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
+    const groupId = localStorage.getItem('groupId');
     const isComment = this.isComment;
     let priority = this.state.priority;
     let body;
@@ -304,7 +413,7 @@ class Messages extends React.Component {
     });
   }
   render() {
-    const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
+    const groupId = localStorage.getItem('groupId');
     const groupLoaded = this.props._that.props.groups.userGroups[groupId];
     const userId = localStorage.getItem('userId');
     let messages;
@@ -321,7 +430,17 @@ class Messages extends React.Component {
             return  <Message userId={userId} key={index} messageDetails={messageDetails}/>
           })
         ):(
-          <div className="pink-text">Loading</div>
+  <div className="preloader-wrapper loader big active">
+    <div className="spinner-layer spinner-green-only">
+      <div className="circle-clipper left">
+        <div className="circle"></div>
+      </div><div className="gap-patch">
+        <div className="circle"></div>
+      </div><div className="circle-clipper right">
+        <div className="circle"></div>
+      </div>
+    </div>
+  </div>
         )
       }
       </ul>
@@ -337,17 +456,20 @@ class GroupMembers extends React.Component {
   }
   render() {
     const groupMembers = this.props.groupMembers;
+    const creatorEmail = this.props.creatorEmail;
     return(
       <ul className="collection members-list">
         {
           groupMembers?(
             Object.keys(groupMembers).map((memberId, index) => {
               return (
-                <GroupMember key={index} memberDetails={groupMembers[memberId]}/>
+                <GroupMember key={index} creatorEmail={creatorEmail} memberDetails={groupMembers[memberId]}/>
               )
             })
           ): (
-            <div>Loading...</div>
+            <div className="progress center pink-text">
+                <div className="indeterminate"></div>
+            </div>
           )
         }
 
@@ -357,10 +479,27 @@ class GroupMembers extends React.Component {
 }
 
 class GroupMember extends React.Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
     const memberDetails = this.props.memberDetails;
+    const creatorEmail = this.props.creatorEmail;
     return(
-       <li className="collection-item">{memberDetails.firstName} {memberDetails.lastName}<br /><small className="grey-text">{memberDetails.email}</small><a href="#deleteMemberModal" id={memberDetails.id} value={memberDetails.name} className="secondary-content modal-trigger red-text"><i  className="material-icons">clear</i></a></li>
+          memberDetails.email === creatorEmail?
+          (
+            <li className="collection-item">{memberDetails.firstName} {memberDetails.lastName}<br />
+              <small className="grey-text">{memberDetails.email}</small>
+              <a id={memberDetails.id} value={memberDetails.name} className="secondary-content modal-trigger pink-text text-darken-4">
+              <i  className="material-icons">person</i></a>
+            </li>
+          ):(
+            <li className="collection-item">{memberDetails.firstName} {memberDetails.lastName}<br />
+              <small className="grey-text">{memberDetails.email}</small>
+              <a href="#deleteMemberModal" id={memberDetails.id} value={memberDetails.name} className="secondary-content modal-trigger red-text">
+              <i  className="material-icons">clear</i></a>
+            </li>
+          )       
     )
   }
 }
@@ -422,7 +561,7 @@ class Message extends React.Component {
 }
 class Nav extends React.Component {
   render() {
-    const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
+    const groupId = localStorage.getItem('groupId');
     const userGroups = this.props._that.props.allUserGroups;
     const userDetailsString = localStorage.getItem('userDetails');
     const userDetails = JSON.parse(userDetailsString);
@@ -434,6 +573,11 @@ class Nav extends React.Component {
             <a id="brand" className="brand-logo left">PostIt</a>
             <a href="#" data-activates="mobile-demo" data-hover="true" className="button-collapse show-on-large"><i className="material-icons">menu</i></a>
             <ul className="right">
+              <li>
+                    <a href="/messageboard">
+                      <i className="material-icons">view_module</i>
+                    </a>                
+              </li>
               <li>
                 {/* Dropdown Trigger */}
                 <ul>
@@ -460,7 +604,7 @@ class Nav extends React.Component {
                 </ul>
                 {/* Dropdown Structure */}
                 <ul id="createGroup" className="dropdowns dropdown-content">
-                  <li><Link to='/creategroup' className="black-text"><i className="material-icons green-text">library_add</i>Create Group</Link></li>
+                  <li><a href='/creategroup' className="black-text"><i className="material-icons green-text">library_add</i>Create Group</a></li>
                 </ul>
               </li>
               <li>
@@ -525,7 +669,7 @@ class Nav extends React.Component {
                 </div>
               </div>
               {/* Groups a user belongs to */}
-              <Groups allUserGroups={allUserGroups}/>
+              <Groups _that={this.props._that} allUserGroups={allUserGroups}/>
               <hr />
               <li><a href="#"><i className="large material-icons black-text">info</i>About PostIt</a></li>
               <li><a href="#"><i className="large material-icons red-text">info</i>Sign Out</a></li>
@@ -539,6 +683,7 @@ class Nav extends React.Component {
   }
 }
 
+// Component to hold the groups a user belongs to
 class Groups extends React.Component{
   render() {
     const allUserGroups = this.props.allUserGroups;
@@ -546,19 +691,40 @@ class Groups extends React.Component{
       <ul className="list-side-nav">
         {
           Object.keys(allUserGroups).map((groupId, index) => {
-            return <UserGroup key={index} groupDetails={allUserGroups[groupId].info} />
+            return <UserGroup _that={this.props._that} key={index} groupDetails={allUserGroups[groupId].info} />
           })
         }
       </ul>
     )
   }
 }
+// Component to hold the details of each group a user belongs to
 class UserGroup extends React.Component {
+  constructor(props) {
+    super(props);
+    this.loadMessages = this.loadMessages.bind(this);
+  }
+  loadMessages(e) {
+    const groupId = e.target.id;
+    const token = localStorage.getItem('token');
+    // Load messages into the conversation page
+    this.props._that.props.loadMessages(groupId);
+    this.props._that.props.getMessages(groupId, token);
+    localStorage.setItem('groupId', groupId);
+  }
   render() {
     const groupDetails = this.props.groupDetails;
     return (
-     <li><a href="#"><i className="material-icons teal-text">people_outline</i>{groupDetails.title}</a></li>
+     <li><a onClick={this.loadMessages} id={groupDetails.id} >
+         <i className="material-icons teal-text">people_outline</i>{groupDetails.title}</a></li>
     )
+  }
+  componentDidUpdate() {
+    const redirect = this.props._that.props.apiError.redirect;
+    if(redirect.yes){
+      this.props._that.props.resetRedirect();
+      window.location = redirect.to;
+    }
   }
 }
 class GroupDeleteModal extends React.Component {
@@ -570,8 +736,9 @@ class GroupDeleteModal extends React.Component {
           <p className="white-text">This group will be deleted.</p>
         </div>
         <div className="modal-footer">
-          <a href="#!" onClick={this.props.deleteGroup} className="modal-action modal-close waves-effect waves-green btn-flat green-text">Agree</a>
-          <a className="modal-action modal-close waves-effect waves-green btn-flat green-text">Disagree</a>
+          <a href="#!" onClick={this.props.deleteGroup}
+            className="modal-action modal-close waves-effect waves-green btn-flat green-text">Delete</a>
+          <a className="modal-action modal-close waves-effect waves-green btn-flat green-text">Cancel</a>
         </div>
       </div>
     )
@@ -589,7 +756,8 @@ const mapStateToProps = (state) => {
       userDetails: state.appInfo.userDetails,
       authState: state.appInfo.authState,
       loadedMessages: state.appInfo.loadedMessages
-    }
+    },
+    postItInfo: state.postItInfo
   };
 };
 
@@ -599,10 +767,15 @@ const mapDispatchToProps = (dispatch) => {
     getGroupMembers: (groupId, token) => dispatch(getGroupMembers(groupId, token)),
     resetErrorLog: () => dispatch(resetErrorLog()),
     resetRedirect: () => dispatch(resetRedirect()),
-    deleteMember: (ownerId, idToDelete, groupId, token) => dispatch(deleteMember(ownerId, idToDelete, groupId, token)),
+    deleteMember: (ownerId, idToDelete, groupId, token) =>
+      dispatch(deleteMember(ownerId, idToDelete, groupId, token)),
     deleteGroup: (ownerId, groupId, token) => dispatch(deleteGroup(ownerId, groupId, token)),
     getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
-    postMessage: (senderId, groupId, body, priority, isComment, token) => dispatch(postMessage(senderId, groupId, body, priority, isComment, token))
+    loadMessages: () => dispatch(loadMessages()),
+    getPostItMembers: (token) => dispatch(getPostItMembers(token)),
+    addUser: (email, groupId, adderId, token) => dispatch(addUser(email, groupId, adderId, token)),
+    postMessage: (senderId, groupId, body, priority, isComment, token) =>
+      dispatch(postMessage(senderId, groupId, body, priority, isComment, token))
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(PostMessage);
