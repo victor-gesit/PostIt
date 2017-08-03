@@ -32,7 +32,7 @@ router.delete('/:id/delete', groupController.deleteGroup);
 
 // Give sensible response for random routes
 router.use('/*', (req, res) => {
-  res.status(200).send({ message: 'Api up and running. Check documentation for appropriate routes' });
+  res.status(404).send({ message: 'Api up and running. Check documentation for appropriate routes' });
 });
 
 export default router;
