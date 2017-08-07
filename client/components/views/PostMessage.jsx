@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { 
   getGroupMembers, addUser, getMessages, loadMessages,
   resetRedirect, createGroup, deleteMember, getPostItMembers,
-  deleteGroup, getAllGroupsForUser, postMessage,
+  deleteGroup, getAllGroupsForUser, postMessage, verifyToken
 } from '../../actions';
 import { connect } from 'react-redux';
 import 'jquery/dist/jquery';
@@ -12,9 +12,6 @@ import '../../js/materialize';
 
 
 class PostMessage extends React.Component {
-  constructor(props) {
-    super(props);
-  };
   render() {
     return(
       <div>
@@ -32,32 +29,18 @@ class Body extends React.Component {
     this.memberIdToDelete = '';
     this.groupIdToDelete = '';
   }
-  deleteMember() {
-    const token = localStorage.getItem('token');
-    const ownerId = localStorage.getItem('userId');
-    const idToDelete = this.memberIdToDelete;
-    const groupId = localStorage.getItem('groupId');
-    // Call the redux action to delete the member
-    this.props._that.props.deleteMember(ownerId, idToDelete, groupId, token);
-  }
-  deleteGroup() {
-    const token = localStorage.getItem('token');
-    const ownerId = localStorage.getItem('userId');
-    const groupId = this.groupIdToDelete;
-    // Call redux action to delete the group
-    this.props._that.props.deleteGroup(ownerId, groupId, token);
-  }
-  componentWillMount() {
+  componentDidMount() {
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
     const groupId = localStorage.getItem('groupId');
-    // Load user groups
-    this.props._that.props.getAllGroupsForUser(userId, token);
     // Load all messages for the group
     this.props._that.props.getMessages(groupId, token);
+    // Load user groups
+    this.props._that.props.getAllGroupsForUser(userId, token);
+    // Load all members of the group
     this.props._that.props.getGroupMembers(groupId, token);
-  }
-  componentDidMount() {
+
+    /**  */
     $('.button-collapse').sideNav();
     $('#member-list-toggle').off().on('click', () => {
       $('#memberList').animate({ width: 'toggle' });
@@ -88,16 +71,33 @@ class Body extends React.Component {
       }
     });
   }
-  componentDidUpdate() {
-    // Go back to message board if group is deleted
-    const redirect = this.props._that.props.apiError.redirect;
-    if(redirect.yes) {
-      // Reset state of redirect property
-      this.props._that.props.resetRedirect();
-      window.location = redirect.to;
-    }
+  deleteMember() {
+    const token = localStorage.getItem('token');
+    const ownerId = localStorage.getItem('userId');
+    const idToDelete = this.memberIdToDelete;
+    const groupId = localStorage.getItem('groupId');
+    // Call the redux action to delete the member
+    this.props._that.props.deleteMember(ownerId, idToDelete, groupId, token);
+  }
+  deleteGroup() {
+    const token = localStorage.getItem('token');
+    const ownerId = localStorage.getItem('userId');
+    const groupId = this.groupIdToDelete;
+    // Call redux action to delete the group
+    this.props._that.props.deleteGroup(ownerId, groupId, token);
   }
   render() {
+    // Accessing a deleted group, or loading messages from a group you've been removed from
+    const redirect = this.props._that.props.apiError.redirect;
+    console.log(redirect);
+    if(redirect.yes) {
+      if(redirect.to === '/postmessage'){
+        // No page reloading when opening a different group
+        this.props._that.props.resetRedirect();
+      } else {
+        window.location = redirect.to;
+      }
+    }
     const groupId = localStorage.getItem('groupId');
     const groupLoaded = this.props._that.props.allUserGroups.userGroups[groupId];
     let groupTitle;
@@ -320,10 +320,6 @@ class MessageInputBox extends React.Component {
       priority: 'normal'
     }
   }
-  setPriority(e) {
-    const priority = e.target.id;
-    this.setState({ priority: priority });
-  }
   componentDidMount() {
     // Set focus to 'send' button
     $('.message-box').keypress((event) => {
@@ -334,6 +330,10 @@ class MessageInputBox extends React.Component {
           return true;
       }
     })
+  }
+  setPriority(e) {
+    const priority = e.target.id;
+    this.setState({ priority: priority });
   }
   sendMessage() {
     const token = localStorage.getItem('token');
@@ -702,29 +702,28 @@ class Groups extends React.Component{
 class UserGroup extends React.Component {
   constructor(props) {
     super(props);
-    this.loadMessages = this.loadMessages.bind(this);
+    this.loadMessagesAndMembers = this.loadMessagesAndMembers.bind(this);
   }
-  loadMessages(e) {
+  loadMessagesAndMembers(e) {
     const groupId = e.target.id;
     const token = localStorage.getItem('token');
     // Load messages into the conversation page
     this.props._that.props.loadMessages(groupId);
     this.props._that.props.getMessages(groupId, token);
+
+    const userId = localStorage.getItem('userId');
+    // Load user groups
+    this.props._that.props.getAllGroupsForUser(userId, token);
+    // Load all members of the group
+    this.props._that.props.getGroupMembers(groupId, token);
     localStorage.setItem('groupId', groupId);
   }
   render() {
     const groupDetails = this.props.groupDetails;
     return (
-     <li><a onClick={this.loadMessages} id={groupDetails.id} >
+     <li><a onClick={this.loadMessagesAndMembers} id={groupDetails.id} >
          <i className="material-icons teal-text">people_outline</i>{groupDetails.title}</a></li>
     )
-  }
-  componentDidUpdate() {
-    const redirect = this.props._that.props.apiError.redirect;
-    if(redirect.yes){
-      this.props._that.props.resetRedirect();
-      window.location = redirect.to;
-    }
   }
 }
 class GroupDeleteModal extends React.Component {
@@ -767,6 +766,7 @@ const mapDispatchToProps = (dispatch) => {
     getGroupMembers: (groupId, token) => dispatch(getGroupMembers(groupId, token)),
     resetErrorLog: () => dispatch(resetErrorLog()),
     resetRedirect: () => dispatch(resetRedirect()),
+    verifyToken: (token) => dispatch(verifyToken(token)),
     deleteMember: (ownerId, idToDelete, groupId, token) =>
       dispatch(deleteMember(ownerId, idToDelete, groupId, token)),
     deleteGroup: (ownerId, groupId, token) => dispatch(deleteGroup(ownerId, groupId, token)),
