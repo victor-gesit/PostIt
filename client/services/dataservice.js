@@ -13,11 +13,15 @@ const dataService = store => next => (action) => {
           password: action.password,
         })
         .end((err, res) => {
-          if (err) {
-            return next({
-              type: 'SIGN_IN_ERROR',
-              message: res.body.message
-            });
+          // Return the first error message when there are many
+          if (res) {
+            // Ignore browser errors which do not have a res object
+            if (err) {
+              return next({
+                type: 'SIGN_IN_ERROR',
+                message: res.body.message
+              });
+            }
           }
           const userDetails = res.body.user;
           userDetails.token = res.body.token;
@@ -39,17 +43,20 @@ const dataService = store => next => (action) => {
         })
         .end((err, res) => {
           if (err) {
-            if (res.body.messages) {
-              // Return the first error message when there are many
-              return next({
-                type: 'SIGN_UP_ERROR',
-                message: res.body.messages[0]
-              });
-            } else {
-              return next({
-                type: 'SIGN_UP_ERROR',
-                message: res.body.message
-              });
+            // Ignore browser errors which do not have a res object
+            if (res) {
+              if (res.body.messages) {
+                // Return the first error message when there are many
+                return next({
+                  type: 'SIGN_UP_ERROR',
+                  message: res.body.messages[0]
+                });
+              } else {
+                return next({
+                  type: 'SIGN_UP_ERROR',
+                  message: res.body.message
+                });
+              }
             }
           }
           const userDetails = res.body.user;
@@ -142,11 +149,14 @@ const dataService = store => next => (action) => {
         })
         .end((err, res) => {
           if (err) {
-            return next({
-              type: 'CREATE_GROUP_ERROR',
-              // Return the first error if there are many
-              message: res.body.messages[0]
-            });
+            // Ignore browser errors which do not have a res object
+            if (res) {
+              return next({
+                type: 'CREATE_GROUP_ERROR',
+                // Return the first error if there are many
+                message: res.body.messages[0]
+              });
+            }
           }
           const data = res.body;
           next({
@@ -162,10 +172,23 @@ const dataService = store => next => (action) => {
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
-            return next({
-              type: 'GET_MESSAGES_ERROR',
-              message: err.message
-            });
+            // Ignore browser errors which do not have a res object
+            if (res) {
+              // If group no found
+              if (res.status === 404) {
+                return next({
+                  type: 'GET_MESSAGES_ERROR',
+                  message: err.message
+                });
+              }
+              // No authentication
+              if (res.status === 401) {
+                return next({
+                  type: 'INVALID_AUTH',
+                });
+              }
+            }
+            return;
           }
           const messagesDbSnapshot = res.body;
           next({
@@ -182,10 +205,13 @@ const dataService = store => next => (action) => {
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
-            return next({
-              type: 'GET_GROUP_MEMBERS_ERROR',
-              message: err.message
-            });
+            // Ignore browser errors which do not have a res object
+            if (res) {
+              return next({
+                type: 'GET_GROUP_MEMBERS_ERROR',
+                message: err.message
+              });
+            }
           }
           const membersDBSnapshot = res.body;
           next({
@@ -202,10 +228,19 @@ const dataService = store => next => (action) => {
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
-            return next({
-              type: 'GET_POST_IT_MEMBERS_ERROR',
-              message: err.message
-            });
+            // Ignore browser errors which do not have a res object
+            if (res) {
+              if (res.status === 401) {
+                return next({
+                  type: 'INVALID_AUTH'
+                });
+              } else {
+                return next({
+                  type: 'GET_POST_IT_MEMBERS_ERROR',
+                  message: err.message
+                });
+              }
+            }
           }
           const dbSnapShot = res.body;
           next({
@@ -240,10 +275,13 @@ const dataService = store => next => (action) => {
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
-            return next({
-              type: 'GET_ALL_GROUPS_FOR_A_USER_ERROR',
-              message: err.message
-            });
+            // Ignore browser errors
+            if (res) {
+              return next({
+                type: 'GET_ALL_GROUPS_FOR_A_USER_ERROR',
+                message: err.message
+              });
+            }
           }
           const data = res.body;
           next({
@@ -293,6 +331,22 @@ const dataService = store => next => (action) => {
             type: 'DELETE_GROUP_MEMBER_SUCCESS',
             deletedId,
             groupId
+          });
+        });
+      break;
+    // Verify token
+    case 'VERIFY_TOKEN':
+      request
+        .get(`${url}/token`)
+        .set('x-access-token', action.token)
+        .end((err, res) => {
+          if (err) {
+            return next({
+              type: 'VERIFY_TOKEN_ERROR',
+            });
+          }
+          next({
+            type: 'VERIFY_TOKEN_SUCCESS',
           });
         });
       break;
