@@ -3,20 +3,29 @@ const errorReducer = (state = {}, action) => {
     case 'SIGN_IN_ERROR':
       return {
         message: action.message,
-        errored: true,
         redirect: {
           yes: false,
           to: null
-        }
+        },
+        errored: true
+      };
+    case 'SIGN_IN_SUCCESS':
+      return {
+        message: null,
+        redirect: {
+          yes: true,
+          to: '/messageboard'
+        },
+        errored: false
       };
     case 'SIGN_UP_ERROR':
       return {
         message: action.message,
-        errored: true,
         redirect: {
           yes: false,
           to: null
-        }
+        },
+        errored: true
       };
     case 'ADD_MEMBER_ERROR':
       return Object.assign({}, state, {
@@ -121,10 +130,18 @@ const errorReducer = (state = {}, action) => {
       return Object.assign({}, state, {
         message: action.message,
         redirect: {
-          yes: false,
-          to: null
+          yes: true,
+          to: '/messageboard'
         },
         errored: true
+      });
+    case 'INVALID_AUTH':
+      return Object.assign({}, state, {
+        message: action.message,
+        redirect: {
+          yes: true,
+          to: '/'
+        }
       });
     case 'CREATE_GROUP_ERROR':
       return Object.assign({}, state, {
@@ -178,6 +195,21 @@ const errorReducer = (state = {}, action) => {
           to: null
         },
         errored: false
+      });
+    case 'VERIFY_TOKEN_ERROR':
+      return Object.assign({}, state, {
+        message: 'Session expired. Please sign in',
+        redirect: {
+          yes: true,
+          to: '/'
+        }
+      });
+    case 'GET_ALL_GROUPS_FOR_A_USER_ERROR':
+      return Object.assign({}, state, {
+        redirect: {
+          yes: true,
+          to: '/'
+        }
       });
     default:
       return state;
