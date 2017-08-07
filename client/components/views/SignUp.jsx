@@ -14,7 +14,6 @@ class SignUp extends React.Component {
   }
 }
 
-
 class Nav extends React.Component {
   componentDidMount() {
   }
@@ -52,20 +51,6 @@ class Body extends React.Component {
     this.showNotification = this.showNotification.bind(this);
     this._notificationSystem = null;
   }
-  signUp() {
-    const firstName = this.firstName.value;
-    const lastName = this.lastName.value;
-    const email = this.email.value;
-    const phone = this.phone.value;
-    const password = this.password.value;
-    this.props._that.props.signUp(firstName, lastName, email, password, phone);
-  }
-  showNotification(level, message) {
-      this._notificationSystem.addNotification({
-      message: message,
-      level: level
-    });
-  }
   componentDidMount() {
     // Initialize notification component
     this._notificationSystem = this.notificationRef;
@@ -92,11 +77,25 @@ class Body extends React.Component {
       window.location = '/messageboard';
     } else {
       if(errorMessage) {
-        this.showNotification('success', errorMessage);
+        this.showNotification('error', errorMessage);
         this.props._that.props.resetErrorLog();
       }
     }
     
+  }
+  signUp() {
+    const firstName = this.firstName.value;
+    const lastName = this.lastName.value;
+    const email = this.email.value;
+    const phone = this.phone.value;
+    const password = this.password.value;
+    this.props._that.props.signUp(firstName, lastName, email, password, phone);
+  }
+  showNotification(level, message) {
+      this._notificationSystem.addNotification({
+      message: message,
+      level: level
+    });
   }
   render() {
     const style = {
