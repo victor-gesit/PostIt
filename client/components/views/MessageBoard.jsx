@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
 import { Link } from 'react-router-dom';
-import { getGroupsForUser, getMessages, loadMessages, resetRedirect, createGroup, deleteGroup, getAllGroupsForUser } from '../../actions';
+import { getGroupsForUser, getMessages, verifyToken, loadMessages, resetRedirect, createGroup, deleteGroup, getAllGroupsForUser } from '../../actions';
 import { connect } from 'react-redux';
 import 'jquery/dist/jquery';
 import '../../js/materialize';
@@ -18,12 +18,6 @@ class MessageBoard extends React.Component {
 }
 
 class Nav extends React.Component {
-  componentDidMount(){
-    // Activate the sidenav
-    $(document).ready(() => {
-      $('.button-collapse').sideNav();
-    });
-  }
   render() {
     const userDetailsString = localStorage.getItem('userDetails');
     const userDetails = JSON.parse(userDetailsString);
@@ -153,6 +147,17 @@ class UserGroup extends React.Component {
     super(props);
     this.loadMessages = this.loadMessages.bind(this);
   }
+  componentDidUpdate() {
+    const redirect = this.props._that.props.apiError.redirect;
+    if(redirect.yes){
+      if(redirect.to === '/postmessage') {
+        const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
+        localStorage.setItem('groupId', groupId); // Save id of group to local storage
+      }
+      this.props._that.props.resetRedirect();
+      window.location = redirect.to;
+    }
+  }
   loadMessages(e) {
     const groupId = e.target.id;
     const token = localStorage.getItem('token');
@@ -165,15 +170,6 @@ class UserGroup extends React.Component {
     return (
      <li><a onClick={this.loadMessages} id={groupDetails.id} ><i className="material-icons teal-text">people_outline</i>{groupDetails.title}</a></li>
     )
-  }
-  componentDidUpdate() {
-    const redirect = this.props._that.props.apiError.redirect;
-    if(redirect.yes){
-      const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
-      localStorage.setItem('groupId', groupId); // Save id of group to
-      this.props._that.props.resetRedirect();
-      window.location = redirect.to;
-    }
   }
 }
 
@@ -333,7 +329,8 @@ const mapDispatchToProps = (dispatch) => {
     resetRedirect: () => dispatch(resetRedirect()),
     getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
     getAllGroupsForUser: (userId, token) => dispatch(getAllGroupsForUser(userId, token)), 
-    resetErrorLog: () => dispatch(resetErrorLog())
+    resetErrorLog: () => dispatch(resetErrorLog()),
+    verifyToken: (token) => dispatch(verifyToken(token)) 
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(MessageBoard);
