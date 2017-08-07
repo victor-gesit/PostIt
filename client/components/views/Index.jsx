@@ -1,10 +1,30 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { signIn, resetErrorLog } from '../../actions';
+import { signIn, resetErrorLog, resetRedirect, verifyToken } from '../../actions';
 import NotificationSystem from 'react-notification-system';
 
 class Index extends React.Component {
+  constructor(props){
+    super(props);
+  };
+  componentWillMount() {
+    console.log(window.location);
+    if(window.location.pathname === '/') {
+      const token = localStorage.getItem('token');
+      console.log(token);
+      if(token !== 'undefined' && token !== 'null') {
+        console.log('i here');
+        this.props.verifyToken(token);
+      }
+    }
+  }
   render() {
+    const redirect = this.props.apiError.redirect;
+    if(redirect.yes) {
+      this.props.resetRedirect();
+      console.log(redirect);
+      // window.location = redirect.to;
+    }
     return(
       <div>
         <Body _that={this}/>
@@ -43,9 +63,6 @@ class Nav extends React.Component {
 }
 
 class Body extends React.Component {
-  constructor(props) {
-    super(props);
-  }
   render() {
     return(
       <div id="body">
@@ -111,17 +128,6 @@ class SignInForm extends React.Component {
       }
     })
   }
-  signIn(e) {
-    const email = this.email.value;
-    const password = this.password.value;
-    this.props._that.props.signIn(email, password);
-  }
-  showNotification(level, message) {
-      this._notificationSystem.addNotification({
-      message: message,
-      level: level
-    });
-  }
   componentWillUpdate() {
     this.button.focus();
     const isSignedIn = this.props._that.props.appInfo.authState.signedIn;
@@ -136,11 +142,21 @@ class SignInForm extends React.Component {
       window.location = '/messageboard';
     } else {
       if(errorMessage) {
-        this.showNotification('success', errorMessage);
+        this.showNotification('error', errorMessage);
         this.props._that.props.resetErrorLog();
       }
     }
-    
+  }
+  signIn(e) {
+    const email = this.email.value;
+    const password = this.password.value;
+    this.props._that.props.signIn(email, password);
+  }
+  showNotification(level, message) {
+      this._notificationSystem.addNotification({
+      message: message,
+      level: level
+    });
   }
   render() {
     // Style for notification
@@ -217,7 +233,9 @@ const mapStateToProps = (state)  => {
 const mapDispatchToProps = (dispatch) => {
   return {
     signIn: (email, password) => dispatch(signIn(email, password)),
-    resetErrorLog: () => dispatch(resetErrorLog())
+    resetErrorLog: () => dispatch(resetErrorLog()),
+    resetRedirect: () => dispatch(resetRedirect()),
+    verifyToken: (token) => dispatch(verifyToken(token))
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Index);
