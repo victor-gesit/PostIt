@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import {
   getGroupsForUser, getAllGroupsForUser, resetErrorLog,
   getMessages, loadMessages, resetRedirect,
-  getPostItMembers, createGroup
+  getPostItMembers, createGroup, verifyToken
 } from '../../actions';
 import NotificationSystem from 'react-notification-system';
 
@@ -29,12 +29,6 @@ class Body extends React.Component {
     this.showNotification = this.showNotification.bind(this);
     this.selectedMembers = [];
   }
-  showNotification(level, message) {
-      this._notificationSystem.addNotification({
-      message: message,
-      level: level
-    });
-  }
   componentDidMount() {
     // Bind the notifications component
     this._notificationSystem = this.notificationRef;
@@ -51,9 +45,15 @@ class Body extends React.Component {
     const errorMessage = this.props._that.props.apiError.message;
     this.registeredMembers = allUsers;
     if(redirect.yes) {
+      if(redirect.to === '/postmessage'){
+        // If group was created successfully, redirect to conversation page and store groupId
+        const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
+        localStorage.setItem('groupId', groupId); // Save id of group to
+      }
       // Reset state of redirect property
       this.props._that.props.resetRedirect();
-      this.props._that.props.history.push(redirect.to);
+      console.log(redirect);
+      window.location = redirect.to;
     } else {
       if(errorMessage) {
         // Empty the array of selected members
@@ -64,6 +64,12 @@ class Body extends React.Component {
       }
     }
   };
+  showNotification(level, message) {
+      this._notificationSystem.addNotification({
+      message: message,
+      level: level
+    });
+  }
   createGroup() {
     const title = this.title.value;
     const description = this.description.value;
@@ -121,25 +127,49 @@ class Body extends React.Component {
             <button className="tablinks" id="defaultTab" ref="defaultTab" onClick={() => this.switchTab("defaultTab", 'info')}>Group info</button>
             <button className="tablinks" id="add-members" ref="add-members" onClick={() => this.switchTab("add-members", 'members')}>Add members</button>
           </div>
-          <div id="info" ref="info" className="tabcontent">
-            <div className="row">
-              <div className="col s12 m8 offset-m2 offset-l3 l6">
-                <div className="group-details">
-                  <h4 className="center">Enter group details</h4>
-                  <form>
-                    <div>
-                      <input type="text" ref={(title) => { this.title = title; }} name="group-title" placeholder="Group Title" />
+          { dataLoading ? (
+              <div id="info" ref="info" className="tabcontent">
+                <div className="row">
+                  <div className="col s12 m8 offset-m2 offset-l3 l6">            
+                    <div className="userlist-preloader loader">
+                      <div className="preloader-wrapper big active valign-wrapper">
+                        <div className="spinner-layer spinner-white-only">
+                          <div className="circle-clipper left">
+                          <div className="circle"></div>
+                          </div>
+                          <div className="gap-patch">
+                          <div className="circle"></div>
+                          </div>
+                          <div className="circle-clipper right">
+                          <div className="circle"></div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <textarea id="groupDescription" ref={(description) => { this.description = description; }} type="text" className="materialize-textarea" placeholder="Description" name="group-desc" defaultValue={""} />
-                    </div>
-                  </form>
-                  <button className="btn light-green darken-4" onClick={() => this.switchTab("add-members", 'members')}>Next &gt;&gt;</button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-
+            ):(
+              <div id="info" ref="info" className="tabcontent">
+                <div className="row">
+                  <div className="col s12 m8 offset-m2 offset-l3 l6">
+                    <div className="group-details">
+                      <h4 className="center">Enter group details</h4>
+                      <form>
+                        <div>
+                          <input type="text" ref={(title) => { this.title = title; }} name="group-title" placeholder="Group Title" />
+                        </div>
+                        <div>
+                          <textarea id="groupDescription" ref={(description) => { this.description = description; }} type="text" className="materialize-textarea" placeholder="Description" name="group-desc" defaultValue={""} />
+                        </div>
+                      </form>
+                      <button className="btn light-green darken-4" onClick={() => this.switchTab("add-members", 'members')}>Next &gt;&gt;</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          }
           <div id="members" ref="members" className="tabcontent">
             <div className="row">
               <div className="col s12 m8 offset-m2 l6 offset-l3">
@@ -147,25 +177,27 @@ class Body extends React.Component {
           {dataLoading ? (
           <div>
               <form>
-                <ul className="collection with-header">
-                  <li className="collection-header"><h4>Add members</h4></li>
-                  <li className="collection-item">
-                    <input id="cb1" type="checkbox" disabled  />
-                    <label htmlFor="cb1" className="black-text"><small className="grey-text"></small></label>
-                  </li>
-                  <li className="collection-item">
-                    <input id="cb2" type="checkbox" disabled  />
-                    <label htmlFor="cb2" className="black-text"><small className="grey-text"></small></label>
-                  </li>
-                  <li className="collection-item">
-                    <input id="cb3" type="checkbox" disabled  />
-                    <label htmlFor="cb3" className="black-text"><small className="grey-text"></small></label>
-                  </li>
-                  <li className="collection-item">
-                    <input id="cb4" type="checkbox" disabled  />
-                    <label htmlFor="cb4" className="black-text"><small className="grey-text"></small></label>
-                  </li>
-                </ul>
+                <h3 className="center">Add members</h3>
+                <div className="registeredMembersList">
+                  <ul className="collection">
+                    <li className="collection-item">
+                      <input id="cb1" type="checkbox" disabled  />
+                      <label htmlFor="cb1" className="black-text"><small className="grey-text"></small></label>
+                    </li>
+                    <li className="collection-item">
+                      <input id="cb2" type="checkbox" disabled  />
+                      <label htmlFor="cb2" className="black-text"><small className="grey-text"></small></label>
+                    </li>
+                    <li className="collection-item">
+                      <input id="cb3" type="checkbox" disabled  />
+                      <label htmlFor="cb3" className="black-text"><small className="grey-text"></small></label>
+                    </li>
+                    <li className="collection-item">
+                      <input id="cb4" type="checkbox" disabled  />
+                      <label htmlFor="cb4" className="black-text"><small className="grey-text"></small></label>
+                    </li>
+                  </ul>
+                </div>
               </form>
               <div className="userlist-preloader">
                 <div className="preloader-wrapper big active valign-wrapper">
@@ -371,15 +403,6 @@ class UserGroup extends React.Component {
      <li><a onClick={this.loadMessages} id={groupDetails.id} ><i className="material-icons teal-text">people_outline</i>{groupDetails.title}</a></li>
     )
   }
-  componentDidUpdate() {
-    const redirect = this.props._that.props.apiError.redirect;
-    if(redirect.yes){
-      const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
-      localStorage.setItem('groupId', groupId); // Save id of group to
-      this.props._that.props.resetRedirect();
-      window.location = redirect.to;
-    }
-  }
 }
 
 
@@ -431,6 +454,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     resetErrorLog: () => dispatch(resetErrorLog()),
     resetRedirect: () => dispatch(resetRedirect()),
+    verifyToken: (token) => dispatch(verifyToken(token)),
     getPostItMembers: (token) => dispatch(getPostItMembers(token)),
     getAllGroupsForUser: (userId, token) => dispatch(getAllGroupsForUser(userId, token)),
     getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
