@@ -32,10 +32,10 @@ const appStore = {
   allUserGroups : { meta: {count: 0}, userGroups: {1: {members: {1: {}, 2: {}}, groupId: '1', messages: [], info: {title: 'Just A Test Group', description: 'Some Deets'}}}},
   apiError: { errored: false, message: null, redirect: { yes: false, to: null} }, // This indicates any error during queries to the API
   appInfo: {
-    userDetails: { firstName: 'a', lastName: 'a', id: '1', token: '1', email: '', phone: ''},
-    authState: { signedIn: false, redirect: false },
+    userDetails: { firstName: null, lastName: null, id: null, token: null, email: null, phone: null},
+    authState: { signedIn: false, message: null },
     loadedMessages: {
-      groupId: '999'
+      groupId: null
     }
   },
   dataLoading: true,
