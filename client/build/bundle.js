@@ -781,47 +781,6 @@ if (process.env.NODE_ENV !== 'production') {
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- */
-
-
-
-var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
-
-/**
- * Simple, lightweight module assisting with the detection and context of
- * Worker. Helps avoid circular dependencies and allows code to reason about
- * whether or not they are in a Worker, even if they never include the main
- * `ReactWorker` dependency.
- */
-var ExecutionEnvironment = {
-
-  canUseDOM: canUseDOM,
-
-  canUseWorkers: typeof Worker !== 'undefined',
-
-  canUseEventListeners: canUseDOM && !!(window.addEventListener || window.attachEvent),
-
-  canUseViewport: canUseDOM && !!window.screen,
-
-  isInWorker: !canUseDOM // For now, this is true - might change in the future.
-
-};
-
-module.exports = ExecutionEnvironment;
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
  * jQuery JavaScript Library v3.2.1
  * https://jquery.com/
@@ -11079,6 +11038,47 @@ return jQuery;
 
 
 /***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ */
+
+
+
+var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
+
+/**
+ * Simple, lightweight module assisting with the detection and context of
+ * Worker. Helps avoid circular dependencies and allows code to reason about
+ * whether or not they are in a Worker, even if they never include the main
+ * `ReactWorker` dependency.
+ */
+var ExecutionEnvironment = {
+
+  canUseDOM: canUseDOM,
+
+  canUseWorkers: typeof Worker !== 'undefined',
+
+  canUseEventListeners: canUseDOM && !!(window.addEventListener || window.attachEvent),
+
+  canUseViewport: canUseDOM && !!window.screen,
+
+  isInWorker: !canUseDOM // For now, this is true - might change in the future.
+
+};
+
+module.exports = ExecutionEnvironment;
+
+/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14256,6 +14256,13 @@ var resetRedirect = exports.resetRedirect = function resetRedirect() {
   };
 };
 
+var verifyToken = exports.verifyToken = function verifyToken(token) {
+  return {
+    type: 'VERIFY_TOKEN',
+    token: token
+  };
+};
+
 /***/ }),
 /* 34 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -14901,7 +14908,7 @@ module.exports = SyntheticMouseEvent;
 
 
 
-var ExecutionEnvironment = __webpack_require__(8);
+var ExecutionEnvironment = __webpack_require__(9);
 var DOMNamespaces = __webpack_require__(51);
 
 var WHITESPACE_TEST = /^[ \r\n\t\f]/;
@@ -16003,7 +16010,7 @@ module.exports = getEventTarget;
 
 
 
-var ExecutionEnvironment = __webpack_require__(8);
+var ExecutionEnvironment = __webpack_require__(9);
 
 var useHasFeature;
 if (ExecutionEnvironment.canUseDOM) {
@@ -17987,7 +17994,7 @@ if (typeof jQuery === 'undefined') {
   var jQuery;
   // Check if require is a defined function.
   if (true) {
-    jQuery = $ = __webpack_require__(9);
+    jQuery = $ = __webpack_require__(8);
     // Else use the dollar sign alias.
   } else {
     jQuery = $;
@@ -19261,7 +19268,7 @@ jQuery.Velocity ? console.log("Velocity is already loaded. You may be needlessly
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : "undefined" != typeof module && module.exports ? module.exports = hc : a[c] = hc;
 }(window, document, "Hammer");;(function (factory) {
   if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(9), __webpack_require__(123)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(8), __webpack_require__(123)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -23829,7 +23836,7 @@ if (jQuery) {
 (function (factory) {
 
   // AMD.
-  if (true) !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+  if (true) !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_LOCAL_MODULE_0__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__));
 
@@ -24862,7 +24869,7 @@ if (jQuery) {
 (function (factory) {
 
   // AMD.
-  if (true) !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__WEBPACK_LOCAL_MODULE_0__, __webpack_require__(9)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+  if (true) !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__WEBPACK_LOCAL_MODULE_0__, __webpack_require__(8)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -26828,7 +26835,7 @@ if (jQuery) {
     $.error('Method ' + methodOrOptions + ' does not exist on jQuery.tap-target');
   };
 })(jQuery);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(9), __webpack_require__(110)(module), __webpack_require__(123)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(8), __webpack_require__(110)(module), __webpack_require__(123)))
 
 /***/ }),
 /* 70 */
@@ -29349,7 +29356,7 @@ module.exports = forEachAccumulated;
 
 
 
-var ExecutionEnvironment = __webpack_require__(8);
+var ExecutionEnvironment = __webpack_require__(9);
 
 var contentKey = null;
 
@@ -29753,7 +29760,7 @@ module.exports = ViewportMetrics;
 
 
 
-var ExecutionEnvironment = __webpack_require__(8);
+var ExecutionEnvironment = __webpack_require__(9);
 var escapeTextContentForBrowser = __webpack_require__(40);
 var setInnerHTML = __webpack_require__(39);
 
@@ -36060,15 +36067,34 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Index = function (_React$Component) {
   _inherits(Index, _React$Component);
 
-  function Index() {
+  function Index(props) {
     _classCallCheck(this, Index);
 
-    return _possibleConstructorReturn(this, (Index.__proto__ || Object.getPrototypeOf(Index)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Index.__proto__ || Object.getPrototypeOf(Index)).call(this, props));
   }
 
   _createClass(Index, [{
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      console.log(window.location);
+      if (window.location.pathname === '/') {
+        var token = localStorage.getItem('token');
+        console.log(token);
+        if (token !== 'undefined' && token !== 'null') {
+          console.log('i here');
+          this.props.verifyToken(token);
+        }
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var redirect = this.props.apiError.redirect;
+      if (redirect.yes) {
+        this.props.resetRedirect();
+        console.log(redirect);
+        // window.location = redirect.to;
+      }
       return _react2.default.createElement(
         'div',
         null,
@@ -36171,10 +36197,10 @@ var Nav = function (_React$Component2) {
 var Body = function (_React$Component3) {
   _inherits(Body, _React$Component3);
 
-  function Body(props) {
+  function Body() {
     _classCallCheck(this, Body);
 
-    return _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).call(this, props));
+    return _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).apply(this, arguments));
   }
 
   _createClass(Body, [{
@@ -36317,21 +36343,6 @@ var SignInForm = function (_React$Component4) {
       });
     }
   }, {
-    key: 'signIn',
-    value: function signIn(e) {
-      var email = this.email.value;
-      var password = this.password.value;
-      this.props._that.props.signIn(email, password);
-    }
-  }, {
-    key: 'showNotification',
-    value: function showNotification(level, message) {
-      this._notificationSystem.addNotification({
-        message: message,
-        level: level
-      });
-    }
-  }, {
     key: 'componentWillUpdate',
     value: function componentWillUpdate() {
       this.button.focus();
@@ -36347,10 +36358,25 @@ var SignInForm = function (_React$Component4) {
         window.location = '/messageboard';
       } else {
         if (errorMessage) {
-          this.showNotification('success', errorMessage);
+          this.showNotification('error', errorMessage);
           this.props._that.props.resetErrorLog();
         }
       }
+    }
+  }, {
+    key: 'signIn',
+    value: function signIn(e) {
+      var email = this.email.value;
+      var password = this.password.value;
+      this.props._that.props.signIn(email, password);
+    }
+  }, {
+    key: 'showNotification',
+    value: function showNotification(level, message) {
+      this._notificationSystem.addNotification({
+        message: message,
+        level: level
+      });
     }
   }, {
     key: 'render',
@@ -36512,11 +36538,17 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     },
     resetErrorLog: function resetErrorLog() {
       return dispatch((0, _actions.resetErrorLog)());
+    },
+    resetRedirect: function resetRedirect() {
+      return dispatch((0, _actions.resetRedirect)());
+    },
+    verifyToken: function verifyToken(token) {
+      return dispatch((0, _actions.verifyToken)(token));
     }
   };
 };
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Index);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
 /* 125 */
@@ -36640,7 +36672,7 @@ var _reactNotificationSystem = __webpack_require__(70);
 
 var _reactNotificationSystem2 = _interopRequireDefault(_reactNotificationSystem);
 
-__webpack_require__(9);
+__webpack_require__(8);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36690,14 +36722,6 @@ var Body = function (_React$Component2) {
   }
 
   _createClass(Body, [{
-    key: 'showNotification',
-    value: function showNotification(level, message) {
-      this._notificationSystem.addNotification({
-        message: message,
-        level: level
-      });
-    }
-  }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
       // Bind the notifications component
@@ -36717,9 +36741,15 @@ var Body = function (_React$Component2) {
       var errorMessage = this.props._that.props.apiError.message;
       this.registeredMembers = allUsers;
       if (redirect.yes) {
+        if (redirect.to === '/postmessage') {
+          // If group was created successfully, redirect to conversation page and store groupId
+          var groupId = this.props._that.props.appInfo.loadedMessages.groupId;
+          localStorage.setItem('groupId', groupId); // Save id of group to
+        }
         // Reset state of redirect property
         this.props._that.props.resetRedirect();
-        this.props._that.props.history.push(redirect.to);
+        console.log(redirect);
+        window.location = redirect.to;
       } else {
         if (errorMessage) {
           // Empty the array of selected members
@@ -36729,6 +36759,14 @@ var Body = function (_React$Component2) {
           this.props._that.props.resetErrorLog();
         }
       }
+    }
+  }, {
+    key: 'showNotification',
+    value: function showNotification(level, message) {
+      this._notificationSystem.addNotification({
+        message: message,
+        level: level
+      });
     }
   }, {
     key: 'createGroup',
@@ -36816,7 +36854,45 @@ var Body = function (_React$Component2) {
               'Add members'
             )
           ),
-          _react2.default.createElement(
+          dataLoading ? _react2.default.createElement(
+            'div',
+            { id: 'info', ref: 'info', className: 'tabcontent' },
+            _react2.default.createElement(
+              'div',
+              { className: 'row' },
+              _react2.default.createElement(
+                'div',
+                { className: 'col s12 m8 offset-m2 offset-l3 l6' },
+                _react2.default.createElement(
+                  'div',
+                  { className: 'userlist-preloader loader' },
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'preloader-wrapper big active valign-wrapper' },
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'spinner-layer spinner-white-only' },
+                      _react2.default.createElement(
+                        'div',
+                        { className: 'circle-clipper left' },
+                        _react2.default.createElement('div', { className: 'circle' })
+                      ),
+                      _react2.default.createElement(
+                        'div',
+                        { className: 'gap-patch' },
+                        _react2.default.createElement('div', { className: 'circle' })
+                      ),
+                      _react2.default.createElement(
+                        'div',
+                        { className: 'circle-clipper right' },
+                        _react2.default.createElement('div', { className: 'circle' })
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          ) : _react2.default.createElement(
             'div',
             { id: 'info', ref: 'info', className: 'tabcontent' },
             _react2.default.createElement(
@@ -36878,55 +36954,55 @@ var Body = function (_React$Component2) {
                     'form',
                     null,
                     _react2.default.createElement(
-                      'ul',
-                      { className: 'collection with-header' },
+                      'h3',
+                      { className: 'center' },
+                      'Add members'
+                    ),
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'registeredMembersList' },
                       _react2.default.createElement(
-                        'li',
-                        { className: 'collection-header' },
+                        'ul',
+                        { className: 'collection' },
                         _react2.default.createElement(
-                          'h4',
-                          null,
-                          'Add members'
-                        )
-                      ),
-                      _react2.default.createElement(
-                        'li',
-                        { className: 'collection-item' },
-                        _react2.default.createElement('input', { id: 'cb1', type: 'checkbox', disabled: true }),
+                          'li',
+                          { className: 'collection-item' },
+                          _react2.default.createElement('input', { id: 'cb1', type: 'checkbox', disabled: true }),
+                          _react2.default.createElement(
+                            'label',
+                            { htmlFor: 'cb1', className: 'black-text' },
+                            _react2.default.createElement('small', { className: 'grey-text' })
+                          )
+                        ),
                         _react2.default.createElement(
-                          'label',
-                          { htmlFor: 'cb1', className: 'black-text' },
-                          _react2.default.createElement('small', { className: 'grey-text' })
-                        )
-                      ),
-                      _react2.default.createElement(
-                        'li',
-                        { className: 'collection-item' },
-                        _react2.default.createElement('input', { id: 'cb2', type: 'checkbox', disabled: true }),
+                          'li',
+                          { className: 'collection-item' },
+                          _react2.default.createElement('input', { id: 'cb2', type: 'checkbox', disabled: true }),
+                          _react2.default.createElement(
+                            'label',
+                            { htmlFor: 'cb2', className: 'black-text' },
+                            _react2.default.createElement('small', { className: 'grey-text' })
+                          )
+                        ),
                         _react2.default.createElement(
-                          'label',
-                          { htmlFor: 'cb2', className: 'black-text' },
-                          _react2.default.createElement('small', { className: 'grey-text' })
-                        )
-                      ),
-                      _react2.default.createElement(
-                        'li',
-                        { className: 'collection-item' },
-                        _react2.default.createElement('input', { id: 'cb3', type: 'checkbox', disabled: true }),
+                          'li',
+                          { className: 'collection-item' },
+                          _react2.default.createElement('input', { id: 'cb3', type: 'checkbox', disabled: true }),
+                          _react2.default.createElement(
+                            'label',
+                            { htmlFor: 'cb3', className: 'black-text' },
+                            _react2.default.createElement('small', { className: 'grey-text' })
+                          )
+                        ),
                         _react2.default.createElement(
-                          'label',
-                          { htmlFor: 'cb3', className: 'black-text' },
-                          _react2.default.createElement('small', { className: 'grey-text' })
-                        )
-                      ),
-                      _react2.default.createElement(
-                        'li',
-                        { className: 'collection-item' },
-                        _react2.default.createElement('input', { id: 'cb4', type: 'checkbox', disabled: true }),
-                        _react2.default.createElement(
-                          'label',
-                          { htmlFor: 'cb4', className: 'black-text' },
-                          _react2.default.createElement('small', { className: 'grey-text' })
+                          'li',
+                          { className: 'collection-item' },
+                          _react2.default.createElement('input', { id: 'cb4', type: 'checkbox', disabled: true }),
+                          _react2.default.createElement(
+                            'label',
+                            { htmlFor: 'cb4', className: 'black-text' },
+                            _react2.default.createElement('small', { className: 'grey-text' })
+                          )
                         )
                       )
                     )
@@ -37442,17 +37518,6 @@ var UserGroup = function (_React$Component6) {
         )
       );
     }
-  }, {
-    key: 'componentDidUpdate',
-    value: function componentDidUpdate() {
-      var redirect = this.props._that.props.apiError.redirect;
-      if (redirect.yes) {
-        var groupId = this.props._that.props.appInfo.loadedMessages.groupId;
-        localStorage.setItem('groupId', groupId); // Save id of group to
-        this.props._that.props.resetRedirect();
-        window.location = redirect.to;
-      }
-    }
   }]);
 
   return UserGroup;
@@ -37540,6 +37605,9 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     resetRedirect: function resetRedirect() {
       return dispatch((0, _actions.resetRedirect)());
     },
+    verifyToken: function verifyToken(token) {
+      return dispatch((0, _actions.verifyToken)(token));
+    },
     getPostItMembers: function getPostItMembers(token) {
       return dispatch((0, _actions.getPostItMembers)(token));
     },
@@ -37567,7 +37635,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function($) {
+
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -37589,7 +37657,7 @@ var _actions = __webpack_require__(33);
 
 var _reactRedux = __webpack_require__(26);
 
-__webpack_require__(9);
+__webpack_require__(8);
 
 __webpack_require__(69);
 
@@ -37634,14 +37702,6 @@ var Nav = function (_React$Component2) {
   }
 
   _createClass(Nav, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      // Activate the sidenav
-      $(document).ready(function () {
-        $('.button-collapse').sideNav();
-      });
-    }
-  }, {
     key: 'render',
     value: function render() {
       var userDetailsString = localStorage.getItem('userDetails');
@@ -38018,6 +38078,19 @@ var UserGroup = function (_React$Component4) {
   }
 
   _createClass(UserGroup, [{
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      var redirect = this.props._that.props.apiError.redirect;
+      if (redirect.yes) {
+        if (redirect.to === '/postmessage') {
+          var groupId = this.props._that.props.appInfo.loadedMessages.groupId;
+          localStorage.setItem('groupId', groupId); // Save id of group to local storage
+        }
+        this.props._that.props.resetRedirect();
+        window.location = redirect.to;
+      }
+    }
+  }, {
     key: 'loadMessages',
     value: function loadMessages(e) {
       var groupId = e.target.id;
@@ -38044,17 +38117,6 @@ var UserGroup = function (_React$Component4) {
           groupDetails.title
         )
       );
-    }
-  }, {
-    key: 'componentDidUpdate',
-    value: function componentDidUpdate() {
-      var redirect = this.props._that.props.apiError.redirect;
-      if (redirect.yes) {
-        var groupId = this.props._that.props.appInfo.loadedMessages.groupId;
-        localStorage.setItem('groupId', groupId); // Save id of group to
-        this.props._that.props.resetRedirect();
-        window.location = redirect.to;
-      }
     }
   }]);
 
@@ -38349,11 +38411,13 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
       return resetErrorLog;
     }(function () {
       return dispatch(resetErrorLog());
-    })
+    }),
+    verifyToken: function verifyToken(token) {
+      return dispatch((0, _actions.verifyToken)(token));
+    }
   };
 };
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(MessageBoard);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
 /* 128 */
@@ -38398,7 +38462,7 @@ var _actions = __webpack_require__(33);
 
 var _reactRedux = __webpack_require__(26);
 
-__webpack_require__(9);
+__webpack_require__(8);
 
 __webpack_require__(69);
 
@@ -38413,10 +38477,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var PostMessage = function (_React$Component) {
   _inherits(PostMessage, _React$Component);
 
-  function PostMessage(props) {
+  function PostMessage() {
     _classCallCheck(this, PostMessage);
 
-    return _possibleConstructorReturn(this, (PostMessage.__proto__ || Object.getPrototypeOf(PostMessage)).call(this, props));
+    return _possibleConstructorReturn(this, (PostMessage.__proto__ || Object.getPrototypeOf(PostMessage)).apply(this, arguments));
   }
 
   _createClass(PostMessage, [{
@@ -38449,41 +38513,21 @@ var Body = function (_React$Component2) {
   }
 
   _createClass(Body, [{
-    key: 'deleteMember',
-    value: function deleteMember() {
-      var token = localStorage.getItem('token');
-      var ownerId = localStorage.getItem('userId');
-      var idToDelete = this.memberIdToDelete;
-      var groupId = localStorage.getItem('groupId');
-      // Call the redux action to delete the member
-      this.props._that.props.deleteMember(ownerId, idToDelete, groupId, token);
-    }
-  }, {
-    key: 'deleteGroup',
-    value: function deleteGroup() {
-      var token = localStorage.getItem('token');
-      var ownerId = localStorage.getItem('userId');
-      var groupId = this.groupIdToDelete;
-      // Call redux action to delete the group
-      this.props._that.props.deleteGroup(ownerId, groupId, token);
-    }
-  }, {
-    key: 'componentWillMount',
-    value: function componentWillMount() {
-      var token = localStorage.getItem('token');
-      var userId = localStorage.getItem('userId');
-      var groupId = localStorage.getItem('groupId');
-      // Load user groups
-      this.props._that.props.getAllGroupsForUser(userId, token);
-      // Load all messages for the group
-      this.props._that.props.getMessages(groupId, token);
-      this.props._that.props.getGroupMembers(groupId, token);
-    }
-  }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
       var _this3 = this;
 
+      var token = localStorage.getItem('token');
+      var userId = localStorage.getItem('userId');
+      var groupId = localStorage.getItem('groupId');
+      // Load all messages for the group
+      this.props._that.props.getMessages(groupId, token);
+      // Load user groups
+      this.props._that.props.getAllGroupsForUser(userId, token);
+      // Load all members of the group
+      this.props._that.props.getGroupMembers(groupId, token);
+
+      /**  */
       $('.button-collapse').sideNav();
       $('#member-list-toggle').off().on('click', function () {
         $('#memberList').animate({ width: 'toggle' });
@@ -38515,19 +38559,38 @@ var Body = function (_React$Component2) {
       });
     }
   }, {
-    key: 'componentDidUpdate',
-    value: function componentDidUpdate() {
-      // Go back to message board if group is deleted
-      var redirect = this.props._that.props.apiError.redirect;
-      if (redirect.yes) {
-        // Reset state of redirect property
-        this.props._that.props.resetRedirect();
-        window.location = redirect.to;
-      }
+    key: 'deleteMember',
+    value: function deleteMember() {
+      var token = localStorage.getItem('token');
+      var ownerId = localStorage.getItem('userId');
+      var idToDelete = this.memberIdToDelete;
+      var groupId = localStorage.getItem('groupId');
+      // Call the redux action to delete the member
+      this.props._that.props.deleteMember(ownerId, idToDelete, groupId, token);
+    }
+  }, {
+    key: 'deleteGroup',
+    value: function deleteGroup() {
+      var token = localStorage.getItem('token');
+      var ownerId = localStorage.getItem('userId');
+      var groupId = this.groupIdToDelete;
+      // Call redux action to delete the group
+      this.props._that.props.deleteGroup(ownerId, groupId, token);
     }
   }, {
     key: 'render',
     value: function render() {
+      // Accessing a deleted group, or loading messages from a group you've been removed from
+      var redirect = this.props._that.props.apiError.redirect;
+      console.log(redirect);
+      if (redirect.yes) {
+        if (redirect.to === '/postmessage') {
+          // No page reloading when opening a different group
+          this.props._that.props.resetRedirect();
+        } else {
+          window.location = redirect.to;
+        }
+      }
       var groupId = localStorage.getItem('groupId');
       var groupLoaded = this.props._that.props.allUserGroups.userGroups[groupId];
       var groupTitle = void 0;
@@ -38947,12 +39010,6 @@ var MessageInputBox = function (_React$Component7) {
   }
 
   _createClass(MessageInputBox, [{
-    key: 'setPriority',
-    value: function setPriority(e) {
-      var priority = e.target.id;
-      this.setState({ priority: priority });
-    }
-  }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
       // Set focus to 'send' button
@@ -38964,6 +39021,12 @@ var MessageInputBox = function (_React$Component7) {
           return true;
         }
       });
+    }
+  }, {
+    key: 'setPriority',
+    value: function setPriority(e) {
+      var priority = e.target.id;
+      this.setState({ priority: priority });
     }
   }, {
     key: 'sendMessage',
@@ -39868,18 +39931,24 @@ var UserGroup = function (_React$Component14) {
 
     var _this20 = _possibleConstructorReturn(this, (UserGroup.__proto__ || Object.getPrototypeOf(UserGroup)).call(this, props));
 
-    _this20.loadMessages = _this20.loadMessages.bind(_this20);
+    _this20.loadMessagesAndMembers = _this20.loadMessagesAndMembers.bind(_this20);
     return _this20;
   }
 
   _createClass(UserGroup, [{
-    key: 'loadMessages',
-    value: function loadMessages(e) {
+    key: 'loadMessagesAndMembers',
+    value: function loadMessagesAndMembers(e) {
       var groupId = e.target.id;
       var token = localStorage.getItem('token');
       // Load messages into the conversation page
       this.props._that.props.loadMessages(groupId);
       this.props._that.props.getMessages(groupId, token);
+
+      var userId = localStorage.getItem('userId');
+      // Load user groups
+      this.props._that.props.getAllGroupsForUser(userId, token);
+      // Load all members of the group
+      this.props._that.props.getGroupMembers(groupId, token);
       localStorage.setItem('groupId', groupId);
     }
   }, {
@@ -39891,7 +39960,7 @@ var UserGroup = function (_React$Component14) {
         null,
         _react2.default.createElement(
           'a',
-          { onClick: this.loadMessages, id: groupDetails.id },
+          { onClick: this.loadMessagesAndMembers, id: groupDetails.id },
           _react2.default.createElement(
             'i',
             { className: 'material-icons teal-text' },
@@ -39900,15 +39969,6 @@ var UserGroup = function (_React$Component14) {
           groupDetails.title
         )
       );
-    }
-  }, {
-    key: 'componentDidUpdate',
-    value: function componentDidUpdate() {
-      var redirect = this.props._that.props.apiError.redirect;
-      if (redirect.yes) {
-        this.props._that.props.resetRedirect();
-        window.location = redirect.to;
-      }
     }
   }]);
 
@@ -40005,6 +40065,9 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     resetRedirect: function resetRedirect() {
       return dispatch((0, _actions.resetRedirect)());
     },
+    verifyToken: function verifyToken(token) {
+      return dispatch((0, _actions.verifyToken)(token));
+    },
     deleteMember: function deleteMember(ownerId, idToDelete, groupId, token) {
       return dispatch((0, _actions.deleteMember)(ownerId, idToDelete, groupId, token));
     },
@@ -40029,7 +40092,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   };
 };
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(PostMessage);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
 /* 130 */
@@ -40195,24 +40258,6 @@ var Body = function (_React$Component3) {
   }
 
   _createClass(Body, [{
-    key: 'signUp',
-    value: function signUp() {
-      var firstName = this.firstName.value;
-      var lastName = this.lastName.value;
-      var email = this.email.value;
-      var phone = this.phone.value;
-      var password = this.password.value;
-      this.props._that.props.signUp(firstName, lastName, email, password, phone);
-    }
-  }, {
-    key: 'showNotification',
-    value: function showNotification(level, message) {
-      this._notificationSystem.addNotification({
-        message: message,
-        level: level
-      });
-    }
-  }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
       // Initialize notification component
@@ -40242,10 +40287,28 @@ var Body = function (_React$Component3) {
         window.location = '/messageboard';
       } else {
         if (errorMessage) {
-          this.showNotification('success', errorMessage);
+          this.showNotification('error', errorMessage);
           this.props._that.props.resetErrorLog();
         }
       }
+    }
+  }, {
+    key: 'signUp',
+    value: function signUp() {
+      var firstName = this.firstName.value;
+      var lastName = this.lastName.value;
+      var email = this.email.value;
+      var phone = this.phone.value;
+      var password = this.password.value;
+      this.props._that.props.signUp(firstName, lastName, email, password, phone);
+    }
+  }, {
+    key: 'showNotification',
+    value: function showNotification(level, message) {
+      this._notificationSystem.addNotification({
+        message: message,
+        level: level
+      });
     }
   }, {
     key: 'render',
@@ -40442,7 +40505,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   };
 };
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(SignUp);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
 /* 131 */
@@ -40475,7 +40538,7 @@ var _dataservice2 = _interopRequireDefault(_dataservice);
 
 __webpack_require__(297);
 
-__webpack_require__(9);
+__webpack_require__(8);
 
 __webpack_require__(310);
 
@@ -40524,10 +40587,10 @@ var appStore = {
   allUserGroups: { meta: { count: 0 }, userGroups: { 1: { members: { 1: {}, 2: {} }, groupId: '1', messages: [], info: { title: 'Just A Test Group', description: 'Some Deets' } } } },
   apiError: { errored: false, message: null, redirect: { yes: false, to: null } }, // This indicates any error during queries to the API
   appInfo: {
-    userDetails: { firstName: 'a', lastName: 'a', id: '1', token: '1', email: '', phone: '' },
-    authState: { signedIn: false, redirect: false },
+    userDetails: { firstName: null, lastName: null, id: null, token: null, email: null, phone: null },
+    authState: { signedIn: false, message: null },
     loadedMessages: {
-      groupId: '999'
+      groupId: null
     }
   },
   dataLoading: true,
@@ -40558,7 +40621,7 @@ _reactDom2.default.render(_react2.default.createElement(
     _react2.default.createElement(_App2.default, null)
   )
 ), document.getElementById('app'));
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
 /* 132 */
@@ -41791,7 +41854,7 @@ if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== 'undefined' && typeof __REACT_DEVT
 }
 
 if (process.env.NODE_ENV !== 'production') {
-  var ExecutionEnvironment = __webpack_require__(8);
+  var ExecutionEnvironment = __webpack_require__(9);
   if (ExecutionEnvironment.canUseDOM && window.top === window.self) {
     // First check if devtools is not installed
     if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === 'undefined') {
@@ -42027,7 +42090,7 @@ module.exports = ARIADOMPropertyConfig;
 
 
 var EventPropagators = __webpack_require__(27);
-var ExecutionEnvironment = __webpack_require__(8);
+var ExecutionEnvironment = __webpack_require__(9);
 var FallbackCompositionState = __webpack_require__(150);
 var SyntheticCompositionEvent = __webpack_require__(151);
 var SyntheticInputEvent = __webpack_require__(152);
@@ -42600,7 +42663,7 @@ module.exports = SyntheticInputEvent;
 
 var EventPluginHub = __webpack_require__(28);
 var EventPropagators = __webpack_require__(27);
-var ExecutionEnvironment = __webpack_require__(8);
+var ExecutionEnvironment = __webpack_require__(9);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactUpdates = __webpack_require__(15);
 var SyntheticEvent = __webpack_require__(16);
@@ -43112,7 +43175,7 @@ module.exports = ReactOwner;
 var ReactInvalidSetStateWarningHook = __webpack_require__(157);
 var ReactHostOperationHistoryHook = __webpack_require__(158);
 var ReactComponentTreeHook = __webpack_require__(11);
-var ExecutionEnvironment = __webpack_require__(8);
+var ExecutionEnvironment = __webpack_require__(9);
 
 var performanceNow = __webpack_require__(159);
 var warning = __webpack_require__(2);
@@ -43597,7 +43660,7 @@ module.exports = performanceNow;
 
 
 
-var ExecutionEnvironment = __webpack_require__(8);
+var ExecutionEnvironment = __webpack_require__(9);
 
 var performance;
 
@@ -44035,7 +44098,7 @@ module.exports = ReactComponentBrowserEnvironment;
 var _prodInvariant = __webpack_require__(4);
 
 var DOMLazyTree = __webpack_require__(24);
-var ExecutionEnvironment = __webpack_require__(8);
+var ExecutionEnvironment = __webpack_require__(9);
 
 var createNodesFromMarkup = __webpack_require__(166);
 var emptyFunction = __webpack_require__(10);
@@ -44087,7 +44150,7 @@ module.exports = Danger;
 
 /*eslint-disable fb-www/unsafe-html*/
 
-var ExecutionEnvironment = __webpack_require__(8);
+var ExecutionEnvironment = __webpack_require__(9);
 
 var createArrayFromMixed = __webpack_require__(167);
 var getMarkupWrap = __webpack_require__(168);
@@ -44309,7 +44372,7 @@ module.exports = createArrayFromMixed;
 
 /*eslint-disable fb-www/unsafe-html */
 
-var ExecutionEnvironment = __webpack_require__(8);
+var ExecutionEnvironment = __webpack_require__(9);
 
 var invariant = __webpack_require__(1);
 
@@ -45492,7 +45555,7 @@ module.exports = AutoFocusUtils;
 
 
 var CSSProperty = __webpack_require__(93);
-var ExecutionEnvironment = __webpack_require__(8);
+var ExecutionEnvironment = __webpack_require__(9);
 var ReactInstrumentation = __webpack_require__(12);
 
 var camelizeStyleName = __webpack_require__(173);
@@ -46064,7 +46127,7 @@ module.exports = ReactEventEmitterMixin;
 
 
 
-var ExecutionEnvironment = __webpack_require__(8);
+var ExecutionEnvironment = __webpack_require__(9);
 
 /**
  * Generate a mapping of standard vendor prefixes using the defined style property and event name.
@@ -49269,7 +49332,7 @@ module.exports = ReactDefaultBatchingStrategy;
 var _assign = __webpack_require__(6);
 
 var EventListener = __webpack_require__(102);
-var ExecutionEnvironment = __webpack_require__(8);
+var ExecutionEnvironment = __webpack_require__(9);
 var PooledClass = __webpack_require__(19);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactUpdates = __webpack_require__(15);
@@ -49693,7 +49756,7 @@ module.exports = ReactReconcileTransaction;
 
 
 
-var ExecutionEnvironment = __webpack_require__(8);
+var ExecutionEnvironment = __webpack_require__(9);
 
 var getNodeForCharacterOffset = __webpack_require__(205);
 var getTextContentAccessor = __webpack_require__(85);
@@ -50402,7 +50465,7 @@ module.exports = SVGDOMPropertyConfig;
 
 
 var EventPropagators = __webpack_require__(27);
-var ExecutionEnvironment = __webpack_require__(8);
+var ExecutionEnvironment = __webpack_require__(9);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactInputSelection = __webpack_require__(103);
 var SyntheticEvent = __webpack_require__(16);
@@ -52498,20 +52561,29 @@ var errorReducer = function errorReducer() {
     case 'SIGN_IN_ERROR':
       return {
         message: action.message,
-        errored: true,
         redirect: {
           yes: false,
           to: null
-        }
+        },
+        errored: true
+      };
+    case 'SIGN_IN_SUCCESS':
+      return {
+        message: null,
+        redirect: {
+          yes: true,
+          to: '/messageboard'
+        },
+        errored: false
       };
     case 'SIGN_UP_ERROR':
       return {
         message: action.message,
-        errored: true,
         redirect: {
           yes: false,
           to: null
-        }
+        },
+        errored: true
       };
     case 'ADD_MEMBER_ERROR':
       return Object.assign({}, state, {
@@ -52616,10 +52688,18 @@ var errorReducer = function errorReducer() {
       return Object.assign({}, state, {
         message: action.message,
         redirect: {
-          yes: false,
-          to: null
+          yes: true,
+          to: '/messageboard'
         },
         errored: true
+      });
+    case 'INVALID_AUTH':
+      return Object.assign({}, state, {
+        message: action.message,
+        redirect: {
+          yes: true,
+          to: '/'
+        }
       });
     case 'CREATE_GROUP_ERROR':
       return Object.assign({}, state, {
@@ -52673,6 +52753,21 @@ var errorReducer = function errorReducer() {
           to: null
         },
         errored: false
+      });
+    case 'VERIFY_TOKEN_ERROR':
+      return Object.assign({}, state, {
+        message: 'Session expired. Please sign in',
+        redirect: {
+          yes: true,
+          to: '/'
+        }
+      });
+    case 'GET_ALL_GROUPS_FOR_A_USER_ERROR':
+      return Object.assign({}, state, {
+        redirect: {
+          yes: true,
+          to: '/'
+        }
       });
     default:
       return state;
@@ -53033,10 +53128,14 @@ var authStateReducer = function authStateReducer() {
       return Object.assign({}, state, { signedIn: true, message: action.message });
     case 'SIGN_UP_SUCCESS':
       return Object.assign({}, state, { signedIn: true, message: action.messsage });
+    case 'VERIFY_TOKEN_SUCCESS':
+      return Object.assign({}, state, { signedIn: true, message: action.message });
     case 'SIGN_IN_ERROR':
-      return Object.assign({}, state, { signedIn: false, message: action.messsage });
+      return Object.assign({}, state, { signedIn: false, message: action.message });
     case 'SIGN_UP_ERROR':
-      return Object.assign({}, state, { signedIn: false, message: action.messsage });
+      return Object.assign({}, state, { signedIn: false, message: action.message });
+    case 'VERIFY_TOKEN_ERROR':
+      return Object.assign({}, state, { signedIn: false, message: action.message });
     default:
       return authState;
   }
@@ -55999,11 +56098,15 @@ var dataService = function dataService(store) {
             email: action.email,
             password: action.password
           }).end(function (err, res) {
-            if (err) {
-              return next({
-                type: 'SIGN_IN_ERROR',
-                message: res.body.message
-              });
+            // Return the first error message when there are many
+            if (res) {
+              // Ignore browser errors which do not have a res object
+              if (err) {
+                return next({
+                  type: 'SIGN_IN_ERROR',
+                  message: res.body.message
+                });
+              }
             }
             var userDetails = res.body.user;
             userDetails.token = res.body.token;
@@ -56023,17 +56126,20 @@ var dataService = function dataService(store) {
             password: action.password
           }).end(function (err, res) {
             if (err) {
-              if (res.body.messages) {
-                // Return the first error message when there are many
-                return next({
-                  type: 'SIGN_UP_ERROR',
-                  message: res.body.messages[0]
-                });
-              } else {
-                return next({
-                  type: 'SIGN_UP_ERROR',
-                  message: res.body.message
-                });
+              // Ignore browser errors which do not have a res object
+              if (res) {
+                if (res.body.messages) {
+                  // Return the first error message when there are many
+                  return next({
+                    type: 'SIGN_UP_ERROR',
+                    message: res.body.messages[0]
+                  });
+                } else {
+                  return next({
+                    type: 'SIGN_UP_ERROR',
+                    message: res.body.message
+                  });
+                }
               }
             }
             var userDetails = res.body.user;
@@ -56113,11 +56219,14 @@ var dataService = function dataService(store) {
             initialMembers: action.initialMembers
           }).end(function (err, res) {
             if (err) {
-              return next({
-                type: 'CREATE_GROUP_ERROR',
-                // Return the first error if there are many
-                message: res.body.messages[0]
-              });
+              // Ignore browser errors which do not have a res object
+              if (res) {
+                return next({
+                  type: 'CREATE_GROUP_ERROR',
+                  // Return the first error if there are many
+                  message: res.body.messages[0]
+                });
+              }
             }
             var data = res.body;
             next({
@@ -56130,10 +56239,23 @@ var dataService = function dataService(store) {
         case 'GET_MESSAGES':
           _superagent2.default.get(url + '/group/' + action.groupId + '/messages').set('x-access-token', action.token).end(function (err, res) {
             if (err) {
-              return next({
-                type: 'GET_MESSAGES_ERROR',
-                message: err.message
-              });
+              // Ignore browser errors which do not have a res object
+              if (res) {
+                // If group no found
+                if (res.status === 404) {
+                  return next({
+                    type: 'GET_MESSAGES_ERROR',
+                    message: err.message
+                  });
+                }
+                // No authentication
+                if (res.status === 401) {
+                  return next({
+                    type: 'INVALID_AUTH'
+                  });
+                }
+              }
+              return;
             }
             var messagesDbSnapshot = res.body;
             next({
@@ -56147,10 +56269,13 @@ var dataService = function dataService(store) {
         case 'GET_GROUP_MEMBERS':
           _superagent2.default.get(url + '/group/' + action.groupId + '/members/').set('x-access-token', action.token).end(function (err, res) {
             if (err) {
-              return next({
-                type: 'GET_GROUP_MEMBERS_ERROR',
-                message: err.message
-              });
+              // Ignore browser errors which do not have a res object
+              if (res) {
+                return next({
+                  type: 'GET_GROUP_MEMBERS_ERROR',
+                  message: err.message
+                });
+              }
             }
             var membersDBSnapshot = res.body;
             next({
@@ -56164,10 +56289,19 @@ var dataService = function dataService(store) {
         case 'GET_POST_IT_MEMBERS':
           _superagent2.default.get(url + '/members').set('x-access-token', action.token).end(function (err, res) {
             if (err) {
-              return next({
-                type: 'GET_POST_IT_MEMBERS_ERROR',
-                message: err.message
-              });
+              // Ignore browser errors which do not have a res object
+              if (res) {
+                if (res.status === 401) {
+                  return next({
+                    type: 'INVALID_AUTH'
+                  });
+                } else {
+                  return next({
+                    type: 'GET_POST_IT_MEMBERS_ERROR',
+                    message: err.message
+                  });
+                }
+              }
             }
             var dbSnapShot = res.body;
             next({
@@ -56196,10 +56330,13 @@ var dataService = function dataService(store) {
         case 'GET_ALL_GROUPS_FOR_A_USER':
           _superagent2.default.get(url + '/user/' + action.userId + '/groups/' + action.offset + '/' + action.limit).set('x-access-token', action.token).end(function (err, res) {
             if (err) {
-              return next({
-                type: 'GET_ALL_GROUPS_FOR_A_USER_ERROR',
-                message: err.message
-              });
+              // Ignore browser errors
+              if (res) {
+                return next({
+                  type: 'GET_ALL_GROUPS_FOR_A_USER_ERROR',
+                  message: err.message
+                });
+              }
             }
             var data = res.body;
             next({
@@ -56242,6 +56379,19 @@ var dataService = function dataService(store) {
               type: 'DELETE_GROUP_MEMBER_SUCCESS',
               deletedId: deletedId,
               groupId: groupId
+            });
+          });
+          break;
+        // Verify token
+        case 'VERIFY_TOKEN':
+          _superagent2.default.get(url + '/token').set('x-access-token', action.token).end(function (err, res) {
+            if (err) {
+              return next({
+                type: 'VERIFY_TOKEN_ERROR'
+              });
+            }
+            next({
+              type: 'VERIFY_TOKEN_SUCCESS'
             });
           });
           break;
@@ -58480,7 +58630,7 @@ module.exports = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxI
 "use strict";
 /* WEBPACK VAR INJECTION */(function($) {
 
-__webpack_require__(9);
+__webpack_require__(8);
 
 var switchTab = function switchTab(evt, cityName) {
   // let i, tabcontent, tablinks;
@@ -58505,7 +58655,7 @@ window.addEventListener('load', function () {
     return false;
   }
 }, false);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
 /* 314 */
