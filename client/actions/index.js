@@ -138,3 +138,9 @@ export const resetRedirect = () => {
   };
 };
 
+export const verifyToken = (token) => {
+  return {
+    type: 'VERIFY_TOKEN',
+    token
+  };
+};
