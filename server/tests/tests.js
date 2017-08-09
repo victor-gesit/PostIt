@@ -1,4 +1,5 @@
 import supertest from 'supertest';
+import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import models from '../models';
 import app from '../index';
@@ -259,6 +260,77 @@ describe('PostIt Tests', () => {
        });
     });
   });
+  describe('Group members and messages fetch tests', () => {
+    let groupId;
+    let newToken; // userId is gotten from token generated during authentication
+    const groupToBeCreated = fixtures.newGroup;
+    const jwtSecret = process.env.JWT_SECRET;
+    beforeEach((done) => {
+      models.Group.destroy({
+        where: {},
+        cascade: true,
+        truncate: true
+      }).then(() => {
+        models.User.destroy({
+          where: {},
+          cascade: true,
+          truncate: true
+        }).then(() => {
+          models.User.create(fixtures.newUser).then((createdUser) => {
+            groupToBeCreated.creatorEmail = createdUser.email;
+            models.Group.create(groupToBeCreated).then((createdGroup) => {
+              createdGroup.addUser(createdUser).then(() => {
+                // Generate a jwt token and make the created user details it's payload
+                const newUser = {
+                  firstName: createdUser.firstName,
+                  lastName: createdUser.lastName,
+                  email: createdUser.email,
+                  phone: createdUser.phone,
+                  id: createdUser.id
+                };
+                console.log(jwtSecret);
+                newToken = jwt.sign(newUser, jwtSecret, {
+                  expiresIn: '2 days' // expires in 48 hours
+                });
+                groupId = createdGroup.id;
+                done();
+              });
+            });
+          });
+        });
+      });
+    });
+    it('ensures group members can load messages for a group they belong to', (done) => {
+      request
+        .get(`/api/group/${groupId}/messages`)
+        .set('x-access-token', newToken)
+        .expect((res) => {
+          const isArray = res.body.rows instanceof Array;
+          expect(isArray).toEqual(true);
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('ensures members of a group can load the group list', (done) => {
+      request
+        .get(`/api/group/${groupId}/members`)
+        .set('x-access-token', newToken)
+        .expect((res) => {
+          const isArray = res.body.rows instanceof Array;
+          expect(isArray).toEqual(true);
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+  });
   describe('Authentication routes test', () => {
     const newUser = fixtures.newUser;
     const registeredUser = fixtures.registeredUser;
@@ -502,7 +574,7 @@ describe('PostIt Tests', () => {
     it('ensures sensible response for incorrect route', (done) => {
       request
         .get('/unregistered')
-        .expect({ message: 'Api up and running' })
+        .expect({ message: 'Api up and running. Check documentation for appropriate routes' })
        .end((err) => {
          if (err) {
            return done(err);
@@ -513,7 +585,7 @@ describe('PostIt Tests', () => {
     it('ensures sensible response for incorrect route', (done) => {
       request
         .get('/api/*')
-        .expect({ message: 'Api up and running' })
+        .expect({ message: 'Api up and running. Check documentation for appropriate routes' })
        .end((err) => {
          if (err) {
            return done(err);
@@ -588,7 +660,7 @@ describe('PostIt Tests', () => {
         .set('x-access-token', token)
         .send(newMessageForRoute)
         .expect((res) => {
-          expect(res.body.body).toEqual(newMessageForRoute.body);
+          expect(res.body.message.body).toEqual(newMessageForRoute.body);
         })
        .end((err) => {
          if (err) {
@@ -604,7 +676,7 @@ describe('PostIt Tests', () => {
         .set('x-access-token', token)
         .send(newMessageForRoute)
         .expect((res) => {
-          expect(res.body.body).toEqual(newMessageForRoute.body);
+          expect(res.body.message.body).toEqual(newMessageForRoute.body);
         })
        .end((err) => {
          if (err) {
@@ -661,13 +733,12 @@ describe('PostIt Tests', () => {
          done();
        });
     });
-    it('ensures all messages for a particular group can be loaded successfully', (done) => {
+    it('ensures non members of a group cannot view messages belonging to the group', (done) => {
       request
         .get(`/api/group/${groupId}/messages`)
         .set('x-access-token', token)
         .expect((res) => {
-          const isArray = res.body.rows instanceof Array;
-          expect(isArray).toEqual(true);
+          expect(res.body).toEqual({ success: false, message: 'User does not belong to this group' });
         })
        .end((err) => {
          if (err) {
@@ -676,13 +747,12 @@ describe('PostIt Tests', () => {
          done();
        });
     });
-    it('ensures all members of a particular group can be loaded successfully', (done) => {
+    it('ensures non members of a group cannot view the group list', (done) => {
       request
         .get(`/api/group/${groupId}/members`)
         .set('x-access-token', token)
         .expect((res) => {
-          const isArray = res.body.rows instanceof Array;
-          expect(isArray).toEqual(true);
+          expect(res.body).toEqual({ success: false, message: 'User does not belong to this group' });
         })
        .end((err) => {
          if (err) {

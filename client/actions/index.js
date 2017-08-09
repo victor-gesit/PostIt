@@ -17,13 +17,14 @@ export const signUp = (firstName, lastName, email, password, phone) => {
   };
 };
 
-export const postMessage = (senderId, body, priority, isComment, token) => {
+export const postMessage = (senderId, groupId, body, priority, isComment, token) => {
   return {
     type: 'POST_MESSAGE',
     body,
     priority,
     isComment,
     senderId,
+    groupId,
     token
   };
 };
@@ -118,9 +119,9 @@ export const deleteMember = (ownerId, idToDelete, groupId, token) => {
   };
 };
 
-export const loadChat = (groupId) => {
+export const loadMessages = (groupId) => {
   return {
-    type: 'LOAD_CHAT',
+    type: 'LOAD_MESSAGES',
     groupId
   };
 };
@@ -137,3 +138,9 @@ export const resetRedirect = () => {
   };
 };
 
+export const verifyToken = (token) => {
+  return {
+    type: 'VERIFY_TOKEN',
+    token
+  };
+};

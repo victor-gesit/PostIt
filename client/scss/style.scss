@@ -95,6 +95,7 @@ div.tab button.active {
 
  #main {
      flex: 1 0 auto;
+     overflow: auto;
  }
 .revealed {
     margin: 30px;
@@ -212,9 +213,11 @@ div.tab button.active {
 .registeredMembersList {
     height: 250px;
     overflow: auto;
-    padding-left: 50px;
-    padding-right: 50px;
     background-color: white;
+}
+.classListHolder{
+    background-color: white;
+    padding: 10px;
 }
 .sign-out-button {
     width: 180px;
@@ -245,10 +248,19 @@ header, #messageInputBox, #main-postmessage, #footer {
 }
 #messageInputBox {
     background: rgba(255, 255, 255, .5);
+    padding-bottom: 0px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
 }
 .message-box {
     display: flex;
     flex-direction: row;
+}
+.message-body {
+    word-wrap: break-word;
 }
 .text-input-field {
     flex: 1 0 auto;
@@ -299,11 +311,28 @@ header, #messageInputBox, #main-postmessage, #footer {
 #comment[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:before, [type="radio"].with-gap:checked + label:after {
     border: 2px solid grey;
 }
-#deleteMemberModal {
+#deleteMemberModal, #addMemberModal {
     z-index: 0;
 }
 // Empty space to padd app Title
 #emptySpace {
     height: 65px;
     padding-left: 20px;
+}
+
+#messages {
+    padding-bottom: 100px;
+}
+
+.loader {
+position: absolute;
+    top :0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+.groupLink{
+    cursor: pointer;
 }

@@ -3,16 +3,22 @@ const authStateReducer = (state = {}, action) => {
   switch (action.type) {
     case 'SIGN_IN_SUCCESS':
       return Object.assign({}, state,
-      { signedIn: true, message: action.message, redirect: true });
+      { signedIn: true, message: action.message });
     case 'SIGN_UP_SUCCESS':
       return Object.assign({}, state,
-      { signedIn: true, message: action.messsage, redirect: true });
+      { signedIn: true, message: action.messsage });
+    case 'VERIFY_TOKEN_SUCCESS':
+      return Object.assign({}, state,
+      { signedIn: true, message: action.message });
     case 'SIGN_IN_ERROR':
       return Object.assign({}, state,
-      { signedIn: false, message: action.messsage, redirect: false });
+      { signedIn: false, message: action.message });
     case 'SIGN_UP_ERROR':
       return Object.assign({}, state,
-      { signedIn: false, message: action.messsage, redirect: false });
+      { signedIn: false, message: action.message });
+    case 'VERIFY_TOKEN_ERROR':
+      return Object.assign({}, state,
+      { signedIn: false, message: action.message });
     default:
       return authState;
   }

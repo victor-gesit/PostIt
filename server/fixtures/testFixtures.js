@@ -39,12 +39,13 @@ export default {
     sentBy: 'John Smith',
     body: 'All team members are to submit their work this morning',
     isComment: false,
-    priority: 'normal'
+    priority: 'normal',
+    senderId: 'ee1c8fed-6dff-491d-a4fc-31bedb63bde3'
   },
   newMessageForRoute: {
     body: 'All team members are to submit their work this afternoon',
     isComment: 'true',
-    priority: 'normal',
+    priority: 'normal'
   },
   registeredUser: {
     email: 'taiwok@yahoo.com',

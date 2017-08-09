@@ -11637,7 +11637,7 @@ var CallbackQueue = __webpack_require__(86);
 var PooledClass = __webpack_require__(19);
 var ReactFeatureFlags = __webpack_require__(87);
 var ReactReconciler = __webpack_require__(23);
-var Transaction = __webpack_require__(37);
+var Transaction = __webpack_require__(36);
 
 var invariant = __webpack_require__(1);
 
@@ -12374,12 +12374,12 @@ module.exports = DOMProperty;
 
 
 
-var _assign = __webpack_require__(42);
+var _assign = __webpack_require__(41);
 
 var ReactCurrentOwner = __webpack_require__(14);
 
 var warning = __webpack_require__(2);
-var canDefineProperty = __webpack_require__(34);
+var canDefineProperty = __webpack_require__(33);
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 
 var REACT_ELEMENT_TYPE = __webpack_require__(75);
@@ -12907,7 +12907,7 @@ module.exports = warning;
 
 
 
-var _assign = __webpack_require__(42);
+var _assign = __webpack_require__(41);
 
 var ReactBaseClasses = __webpack_require__(73);
 var ReactChildren = __webpack_require__(132);
@@ -12924,8 +12924,8 @@ var createFactory = ReactElement.createFactory;
 var cloneElement = ReactElement.cloneElement;
 
 if (process.env.NODE_ENV !== 'production') {
-  var lowPriorityWarning = __webpack_require__(43);
-  var canDefineProperty = __webpack_require__(34);
+  var lowPriorityWarning = __webpack_require__(42);
+  var canDefineProperty = __webpack_require__(33);
   var ReactElementValidator = __webpack_require__(77);
   var didWarnPropTypesDeprecated = false;
   createElement = ReactElementValidator.createElement;
@@ -13261,10 +13261,10 @@ module.exports = ReactReconciler;
 
 
 
-var DOMNamespaces = __webpack_require__(51);
-var setInnerHTML = __webpack_require__(39);
+var DOMNamespaces = __webpack_require__(50);
+var setInnerHTML = __webpack_require__(38);
 
-var createMicrosoftUnsafeLocalFunction = __webpack_require__(52);
+var createMicrosoftUnsafeLocalFunction = __webpack_require__(51);
 var setTextContent = __webpack_require__(91);
 
 var ELEMENT_NODE_TYPE = 1;
@@ -13404,7 +13404,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 var EventPluginHub = __webpack_require__(27);
-var EventPluginUtils = __webpack_require__(45);
+var EventPluginUtils = __webpack_require__(44);
 
 var accumulateInto = __webpack_require__(83);
 var forEachAccumulated = __webpack_require__(84);
@@ -13545,9 +13545,9 @@ module.exports = EventPropagators;
 
 var _prodInvariant = __webpack_require__(4);
 
-var EventPluginRegistry = __webpack_require__(36);
-var EventPluginUtils = __webpack_require__(45);
-var ReactErrorUtils = __webpack_require__(46);
+var EventPluginRegistry = __webpack_require__(35);
+var EventPluginUtils = __webpack_require__(44);
+var ReactErrorUtils = __webpack_require__(45);
 
 var accumulateInto = __webpack_require__(83);
 var forEachAccumulated = __webpack_require__(84);
@@ -13825,7 +13825,7 @@ module.exports = EventPluginHub;
 
 var SyntheticEvent = __webpack_require__(16);
 
-var getEventTarget = __webpack_require__(47);
+var getEventTarget = __webpack_require__(46);
 
 /**
  * @interface UIEvent
@@ -13923,65 +13923,6 @@ module.exports = ReactInstanceMap;
 
 /***/ }),
 /* 30 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__BrowserRouter__ = __webpack_require__(254);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "BrowserRouter", function() { return __WEBPACK_IMPORTED_MODULE_0__BrowserRouter__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__HashRouter__ = __webpack_require__(268);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "HashRouter", function() { return __WEBPACK_IMPORTED_MODULE_1__HashRouter__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Link__ = __webpack_require__(116);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Link", function() { return __WEBPACK_IMPORTED_MODULE_2__Link__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__MemoryRouter__ = __webpack_require__(270);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "MemoryRouter", function() { return __WEBPACK_IMPORTED_MODULE_3__MemoryRouter__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__NavLink__ = __webpack_require__(271);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NavLink", function() { return __WEBPACK_IMPORTED_MODULE_4__NavLink__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__Prompt__ = __webpack_require__(272);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Prompt", function() { return __WEBPACK_IMPORTED_MODULE_5__Prompt__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Redirect__ = __webpack_require__(273);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Redirect", function() { return __WEBPACK_IMPORTED_MODULE_6__Redirect__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Route__ = __webpack_require__(274);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Route", function() { return __WEBPACK_IMPORTED_MODULE_7__Route__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__Router__ = __webpack_require__(275);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Router", function() { return __WEBPACK_IMPORTED_MODULE_8__Router__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__StaticRouter__ = __webpack_require__(276);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "StaticRouter", function() { return __WEBPACK_IMPORTED_MODULE_9__StaticRouter__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__Switch__ = __webpack_require__(277);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Switch", function() { return __WEBPACK_IMPORTED_MODULE_10__Switch__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__matchPath__ = __webpack_require__(278);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "matchPath", function() { return __WEBPACK_IMPORTED_MODULE_11__matchPath__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__withRouter__ = __webpack_require__(279);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "withRouter", function() { return __WEBPACK_IMPORTED_MODULE_12__withRouter__["a"]; });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/***/ }),
-/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14040,7 +13981,7 @@ module.exports = invariant;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 32 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14107,7 +14048,7 @@ var createPath = exports.createPath = function createPath(location) {
 };
 
 /***/ }),
-/* 33 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14135,13 +14076,14 @@ var signUp = exports.signUp = function signUp(firstName, lastName, email, passwo
   };
 };
 
-var postMessage = exports.postMessage = function postMessage(senderId, body, priority, isComment, token) {
+var postMessage = exports.postMessage = function postMessage(senderId, groupId, body, priority, isComment, token) {
   return {
     type: 'POST_MESSAGE',
     body: body,
     priority: priority,
     isComment: isComment,
     senderId: senderId,
+    groupId: groupId,
     token: token
   };
 };
@@ -14236,9 +14178,9 @@ var deleteMember = exports.deleteMember = function deleteMember(ownerId, idToDel
   };
 };
 
-var loadChat = exports.loadChat = function loadChat(groupId) {
+var loadMessages = exports.loadMessages = function loadMessages(groupId) {
   return {
-    type: 'LOAD_CHAT',
+    type: 'LOAD_MESSAGES',
     groupId: groupId
   };
 };
@@ -14255,8 +14197,15 @@ var resetRedirect = exports.resetRedirect = function resetRedirect() {
   };
 };
 
+var verifyToken = exports.verifyToken = function verifyToken(token) {
+  return {
+    type: 'VERIFY_TOKEN',
+    token: token
+  };
+};
+
 /***/ }),
-/* 34 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14288,7 +14237,7 @@ module.exports = canDefineProperty;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 35 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14314,7 +14263,7 @@ module.exports = emptyObject;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14573,7 +14522,7 @@ module.exports = EventPluginRegistry;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14807,7 +14756,7 @@ module.exports = TransactionImpl;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 38 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14826,7 +14775,7 @@ module.exports = TransactionImpl;
 var SyntheticUIEvent = __webpack_require__(28);
 var ViewportMetrics = __webpack_require__(90);
 
-var getEventModifierState = __webpack_require__(49);
+var getEventModifierState = __webpack_require__(48);
 
 /**
  * @interface MouseEvent
@@ -14884,7 +14833,7 @@ SyntheticUIEvent.augmentClass(SyntheticMouseEvent, MouseEventInterface);
 module.exports = SyntheticMouseEvent;
 
 /***/ }),
-/* 39 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14901,12 +14850,12 @@ module.exports = SyntheticMouseEvent;
 
 
 var ExecutionEnvironment = __webpack_require__(8);
-var DOMNamespaces = __webpack_require__(51);
+var DOMNamespaces = __webpack_require__(50);
 
 var WHITESPACE_TEST = /^[ \r\n\t\f]/;
 var NONVISIBLE_TEST = /<(!--|link|noscript|meta|script|style)[ \r\n\t\f\/>]/;
 
-var createMicrosoftUnsafeLocalFunction = __webpack_require__(52);
+var createMicrosoftUnsafeLocalFunction = __webpack_require__(51);
 
 // SVG temp container for IE lacking innerHTML
 var reusableSVGContainer;
@@ -14987,7 +14936,7 @@ if (ExecutionEnvironment.canUseDOM) {
 module.exports = setInnerHTML;
 
 /***/ }),
-/* 40 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15114,7 +15063,7 @@ function escapeTextContentForBrowser(text) {
 module.exports = escapeTextContentForBrowser;
 
 /***/ }),
-/* 41 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15132,12 +15081,12 @@ module.exports = escapeTextContentForBrowser;
 
 var _assign = __webpack_require__(6);
 
-var EventPluginRegistry = __webpack_require__(36);
+var EventPluginRegistry = __webpack_require__(35);
 var ReactEventEmitterMixin = __webpack_require__(180);
 var ViewportMetrics = __webpack_require__(90);
 
 var getVendorPrefixedEventName = __webpack_require__(181);
-var isEventSupported = __webpack_require__(48);
+var isEventSupported = __webpack_require__(47);
 
 /**
  * Summary of `ReactBrowserEventEmitter` event handling:
@@ -15443,7 +15392,7 @@ var ReactBrowserEventEmitter = _assign({}, ReactEventEmitterMixin, {
 module.exports = ReactBrowserEventEmitter;
 
 /***/ }),
-/* 42 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15540,7 +15489,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 
 /***/ }),
-/* 43 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15611,7 +15560,7 @@ module.exports = lowPriorityWarning;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 44 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15632,7 +15581,7 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 45 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15650,7 +15599,7 @@ module.exports = ReactPropTypesSecret;
 
 var _prodInvariant = __webpack_require__(4);
 
-var ReactErrorUtils = __webpack_require__(46);
+var ReactErrorUtils = __webpack_require__(45);
 
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
@@ -15864,7 +15813,7 @@ module.exports = EventPluginUtils;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 46 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15946,7 +15895,7 @@ module.exports = ReactErrorUtils;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 47 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15986,7 +15935,7 @@ function getEventTarget(nativeEvent) {
 module.exports = getEventTarget;
 
 /***/ }),
-/* 48 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16051,7 +16000,7 @@ function isEventSupported(eventNameSuffix, capture) {
 module.exports = isEventSupported;
 
 /***/ }),
-/* 49 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16099,7 +16048,7 @@ function getEventModifierState(nativeEvent) {
 module.exports = getEventModifierState;
 
 /***/ }),
-/* 50 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16120,8 +16069,8 @@ var Danger = __webpack_require__(165);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactInstrumentation = __webpack_require__(12);
 
-var createMicrosoftUnsafeLocalFunction = __webpack_require__(52);
-var setInnerHTML = __webpack_require__(39);
+var createMicrosoftUnsafeLocalFunction = __webpack_require__(51);
+var setInnerHTML = __webpack_require__(38);
 var setTextContent = __webpack_require__(91);
 
 function getNodeAfter(parentNode, node) {
@@ -16331,7 +16280,7 @@ module.exports = DOMChildrenOperations;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 51 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16356,7 +16305,7 @@ var DOMNamespaces = {
 module.exports = DOMNamespaces;
 
 /***/ }),
-/* 52 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16393,7 +16342,7 @@ var createMicrosoftUnsafeLocalFunction = function (func) {
 module.exports = createMicrosoftUnsafeLocalFunction;
 
 /***/ }),
-/* 53 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16537,7 +16486,7 @@ module.exports = LinkedValueUtils;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 54 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16587,7 +16536,7 @@ module.exports = ReactComponentEnvironment;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 55 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16660,7 +16609,7 @@ function shallowEqual(objA, objB) {
 module.exports = shallowEqual;
 
 /***/ }),
-/* 56 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16707,7 +16656,7 @@ function shouldUpdateReactComponent(prevElement, nextElement) {
 module.exports = shouldUpdateReactComponent;
 
 /***/ }),
-/* 57 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16771,7 +16720,7 @@ var KeyEscapeUtils = {
 module.exports = KeyEscapeUtils;
 
 /***/ }),
-/* 58 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17011,7 +16960,7 @@ module.exports = ReactUpdateQueue;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 59 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17388,7 +17337,7 @@ module.exports = validateDOMNesting;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 60 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17443,7 +17392,7 @@ function getEventCharCode(nativeEvent) {
 module.exports = getEventCharCode;
 
 /***/ }),
-/* 61 */
+/* 60 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17480,7 +17429,7 @@ if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' 
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ }),
-/* 62 */
+/* 61 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -17552,6 +17501,65 @@ function isPlainObject(value) {
 
 
 /***/ }),
+/* 62 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__BrowserRouter__ = __webpack_require__(254);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "BrowserRouter", function() { return __WEBPACK_IMPORTED_MODULE_0__BrowserRouter__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__HashRouter__ = __webpack_require__(268);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "HashRouter", function() { return __WEBPACK_IMPORTED_MODULE_1__HashRouter__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Link__ = __webpack_require__(116);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Link", function() { return __WEBPACK_IMPORTED_MODULE_2__Link__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__MemoryRouter__ = __webpack_require__(270);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "MemoryRouter", function() { return __WEBPACK_IMPORTED_MODULE_3__MemoryRouter__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__NavLink__ = __webpack_require__(271);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NavLink", function() { return __WEBPACK_IMPORTED_MODULE_4__NavLink__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__Prompt__ = __webpack_require__(272);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Prompt", function() { return __WEBPACK_IMPORTED_MODULE_5__Prompt__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Redirect__ = __webpack_require__(273);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Redirect", function() { return __WEBPACK_IMPORTED_MODULE_6__Redirect__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Route__ = __webpack_require__(274);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Route", function() { return __WEBPACK_IMPORTED_MODULE_7__Route__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__Router__ = __webpack_require__(275);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Router", function() { return __WEBPACK_IMPORTED_MODULE_8__Router__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__StaticRouter__ = __webpack_require__(276);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "StaticRouter", function() { return __WEBPACK_IMPORTED_MODULE_9__StaticRouter__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__Switch__ = __webpack_require__(277);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Switch", function() { return __WEBPACK_IMPORTED_MODULE_10__Switch__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__matchPath__ = __webpack_require__(278);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "matchPath", function() { return __WEBPACK_IMPORTED_MODULE_11__matchPath__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__withRouter__ = __webpack_require__(279);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "withRouter", function() { return __WEBPACK_IMPORTED_MODULE_12__withRouter__["a"]; });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/***/ }),
 /* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17571,7 +17579,7 @@ var _valueEqual = __webpack_require__(258);
 
 var _valueEqual2 = _interopRequireDefault(_valueEqual);
 
-var _PathUtils = __webpack_require__(32);
+var _PathUtils = __webpack_require__(31);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17733,7 +17741,7 @@ exports.default = createTransitionManager;
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_warning__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant__ = __webpack_require__(30);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_invariant__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_react__);
@@ -27206,14 +27214,14 @@ module.exports = CONSTANTS;
 
 
 var _prodInvariant = __webpack_require__(22),
-    _assign = __webpack_require__(42);
+    _assign = __webpack_require__(41);
 
 var ReactNoopUpdateQueue = __webpack_require__(74);
 
-var canDefineProperty = __webpack_require__(34);
-var emptyObject = __webpack_require__(35);
+var canDefineProperty = __webpack_require__(33);
+var emptyObject = __webpack_require__(34);
 var invariant = __webpack_require__(1);
-var lowPriorityWarning = __webpack_require__(43);
+var lowPriorityWarning = __webpack_require__(42);
 
 /**
  * Base class helpers for the updating state of a component.
@@ -27539,10 +27547,10 @@ var ReactElement = __webpack_require__(18);
 
 var checkReactTypeSpec = __webpack_require__(137);
 
-var canDefineProperty = __webpack_require__(34);
+var canDefineProperty = __webpack_require__(33);
 var getIteratorFn = __webpack_require__(76);
 var warning = __webpack_require__(2);
-var lowPriorityWarning = __webpack_require__(43);
+var lowPriorityWarning = __webpack_require__(42);
 
 function getDeclarationErrorAddendum() {
   if (ReactCurrentOwner.current) {
@@ -27818,7 +27826,7 @@ var emptyFunction = __webpack_require__(10);
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
 
-var ReactPropTypesSecret = __webpack_require__(44);
+var ReactPropTypesSecret = __webpack_require__(43);
 var checkPropTypes = __webpack_require__(141);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
@@ -28337,7 +28345,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
 var _assign = __webpack_require__(144);
 
-var emptyObject = __webpack_require__(35);
+var emptyObject = __webpack_require__(34);
 var _invariant = __webpack_require__(1);
 
 if (process.env.NODE_ENV !== 'production') {
@@ -29753,8 +29761,8 @@ module.exports = ViewportMetrics;
 
 
 var ExecutionEnvironment = __webpack_require__(8);
-var escapeTextContentForBrowser = __webpack_require__(40);
-var setInnerHTML = __webpack_require__(39);
+var escapeTextContentForBrowser = __webpack_require__(39);
+var setInnerHTML = __webpack_require__(38);
 
 /**
  * Set the textContent property of a node, ensuring that whitespace is preserved
@@ -30265,7 +30273,7 @@ module.exports = ReactPropTypesSecret;
 
 var _assign = __webpack_require__(6);
 
-var LinkedValueUtils = __webpack_require__(53);
+var LinkedValueUtils = __webpack_require__(52);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactUpdates = __webpack_require__(15);
 
@@ -30766,7 +30774,7 @@ var REACT_ELEMENT_TYPE = __webpack_require__(191);
 
 var getIteratorFn = __webpack_require__(192);
 var invariant = __webpack_require__(1);
-var KeyEscapeUtils = __webpack_require__(57);
+var KeyEscapeUtils = __webpack_require__(56);
 var warning = __webpack_require__(2);
 
 var SEPARATOR = '.';
@@ -31208,7 +31216,7 @@ var _prodInvariant = __webpack_require__(4);
 var DOMLazyTree = __webpack_require__(24);
 var DOMProperty = __webpack_require__(17);
 var React = __webpack_require__(21);
-var ReactBrowserEventEmitter = __webpack_require__(41);
+var ReactBrowserEventEmitter = __webpack_require__(40);
 var ReactCurrentOwner = __webpack_require__(14);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactDOMContainerInfo = __webpack_require__(221);
@@ -31218,14 +31226,14 @@ var ReactInstanceMap = __webpack_require__(29);
 var ReactInstrumentation = __webpack_require__(12);
 var ReactMarkupChecksum = __webpack_require__(223);
 var ReactReconciler = __webpack_require__(23);
-var ReactUpdateQueue = __webpack_require__(58);
+var ReactUpdateQueue = __webpack_require__(57);
 var ReactUpdates = __webpack_require__(15);
 
-var emptyObject = __webpack_require__(35);
+var emptyObject = __webpack_require__(34);
 var instantiateReactComponent = __webpack_require__(97);
 var invariant = __webpack_require__(1);
-var setInnerHTML = __webpack_require__(39);
-var shouldUpdateReactComponent = __webpack_require__(56);
+var setInnerHTML = __webpack_require__(38);
+var shouldUpdateReactComponent = __webpack_require__(55);
 var warning = __webpack_require__(2);
 
 var ATTR_NAME = DOMProperty.ID_ATTRIBUTE_NAME;
@@ -31772,7 +31780,7 @@ module.exports = getHostComponentFromComposite;
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ActionTypes; });
 /* harmony export (immutable) */ __webpack_exports__["b"] = createStore;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_es_isPlainObject__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_es_isPlainObject__ = __webpack_require__(61);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_symbol_observable__ = __webpack_require__(239);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_symbol_observable___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_symbol_observable__);
 
@@ -32557,7 +32565,7 @@ var storeShape = __WEBPACK_IMPORTED_MODULE_0_prop_types___default.a.shape({
 /* WEBPACK VAR INJECTION */(function(process) {/* harmony export (immutable) */ __webpack_exports__["a"] = connectAdvanced;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_hoist_non_react_statics__ = __webpack_require__(115);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_hoist_non_react_statics___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_hoist_non_react_statics__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant__ = __webpack_require__(30);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_invariant__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_react__);
@@ -32921,7 +32929,7 @@ function wrapMapToPropsFunc(mapToProps, methodName) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = verifyPlainObject;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_es_isPlainObject__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_es_isPlainObject__ = __webpack_require__(61);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__warning__ = __webpack_require__(67);
 
 
@@ -36028,7 +36036,7 @@ if (true) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function($) {
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -36042,7 +36050,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(25);
 
-var _actions = __webpack_require__(33);
+var _actions = __webpack_require__(32);
 
 var _reactNotificationSystem = __webpack_require__(70);
 
@@ -36059,15 +36067,29 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Index = function (_React$Component) {
   _inherits(Index, _React$Component);
 
-  function Index() {
+  function Index(props) {
     _classCallCheck(this, Index);
 
-    return _possibleConstructorReturn(this, (Index.__proto__ || Object.getPrototypeOf(Index)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (Index.__proto__ || Object.getPrototypeOf(Index)).call(this, props));
   }
 
   _createClass(Index, [{
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      var token = localStorage.getItem('token');
+      if (token !== 'undefined' && token !== 'null' && token !== null) {
+        this.props.verifyToken(token);
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var redirect = this.props.apiError.redirect;
+      if (redirect.yes) {
+        this.props.resetRedirect();
+        console.log(redirect);
+        // window.location = redirect.to;
+      }
       return _react2.default.createElement(
         'div',
         null,
@@ -36079,16 +36101,16 @@ var Index = function (_React$Component) {
   return Index;
 }(_react2.default.Component);
 
-var Nav = function (_React$Component2) {
-  _inherits(Nav, _React$Component2);
+var NavBar = function (_React$Component2) {
+  _inherits(NavBar, _React$Component2);
 
-  function Nav() {
-    _classCallCheck(this, Nav);
+  function NavBar() {
+    _classCallCheck(this, NavBar);
 
-    return _possibleConstructorReturn(this, (Nav.__proto__ || Object.getPrototypeOf(Nav)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (NavBar.__proto__ || Object.getPrototypeOf(NavBar)).apply(this, arguments));
   }
 
-  _createClass(Nav, [{
+  _createClass(NavBar, [{
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -36164,16 +36186,16 @@ var Nav = function (_React$Component2) {
     }
   }]);
 
-  return Nav;
+  return NavBar;
 }(_react2.default.Component);
 
 var Body = function (_React$Component3) {
   _inherits(Body, _React$Component3);
 
-  function Body(props) {
+  function Body() {
     _classCallCheck(this, Body);
 
-    return _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).call(this, props));
+    return _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).apply(this, arguments));
   }
 
   _createClass(Body, [{
@@ -36182,7 +36204,7 @@ var Body = function (_React$Component3) {
       return _react2.default.createElement(
         'div',
         { id: 'body' },
-        _react2.default.createElement(Nav, null),
+        _react2.default.createElement(NavBar, null),
         _react2.default.createElement(
           'div',
           { id: 'main' },
@@ -36303,7 +36325,38 @@ var SignInForm = function (_React$Component4) {
   _createClass(SignInForm, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+      // Initialize notification component
       this._notificationSystem = this.notificationRef;
+      // Set focus to Sign in button
+      $('.signin-form').keypress(function (event) {
+        if (event.which && event.which == 13 || event.keyCode && event.keyCode == 13) {
+          $('#signInButton').click();
+          return false;
+        } else {
+          return true;
+        }
+      });
+    }
+  }, {
+    key: 'componentWillUpdate',
+    value: function componentWillUpdate() {
+      this.button.focus();
+      var isSignedIn = this.props._that.props.appInfo.authState.signedIn;
+      var errorMessage = this.props._that.props.apiError.message;
+      if (isSignedIn) {
+        var token = this.props._that.props.appInfo.userDetails.token;
+        var userId = this.props._that.props.appInfo.userDetails.id;
+        var userDetails = this.props._that.props.appInfo.userDetails;
+        localStorage.setItem('userId', userId);
+        localStorage.setItem('token', token);
+        localStorage.setItem('userDetails', JSON.stringify(userDetails));
+        window.location = '/messageboard';
+      } else {
+        if (errorMessage) {
+          this.showNotification('error', errorMessage);
+          this.props._that.props.resetErrorLog();
+        }
+      }
     }
   }, {
     key: 'signIn',
@@ -36319,21 +36372,6 @@ var SignInForm = function (_React$Component4) {
         message: message,
         level: level
       });
-    }
-  }, {
-    key: 'componentWillUpdate',
-    value: function componentWillUpdate() {
-      this.button.focus();
-      var isSignedIn = this.props._that.props.appInfo.authState.signedIn;
-      var errorMessage = this.props._that.props.apiError.message;
-      if (isSignedIn) {
-        this.props._that.props.history.push('/messageboard');
-      } else {
-        if (errorMessage) {
-          this.showNotification('success', errorMessage);
-          this.props._that.props.resetErrorLog();
-        }
-      }
     }
   }, {
     key: 'render',
@@ -36404,7 +36442,7 @@ var SignInForm = function (_React$Component4) {
               { className: 'col s12 center' },
               _react2.default.createElement(
                 'button',
-                { onClick: this.signIn, className: 'btn green darken-4', ref: function ref(button) {
+                { id: 'signInButton', onClick: this.signIn, className: 'btn green darken-4', ref: function ref(button) {
                     _this5.button = button;
                   } },
                 'Sign in'
@@ -36431,7 +36469,7 @@ var SignInForm = function (_React$Component4) {
                 'Don\'t have an account? ',
                 _react2.default.createElement(
                   'a',
-                  { href: '#' },
+                  { href: '/signup' },
                   'Sign up'
                 )
               )
@@ -36495,10 +36533,17 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     },
     resetErrorLog: function resetErrorLog() {
       return dispatch((0, _actions.resetErrorLog)());
+    },
+    resetRedirect: function resetRedirect() {
+      return dispatch((0, _actions.resetRedirect)());
+    },
+    verifyToken: function verifyToken(token) {
+      return dispatch((0, _actions.verifyToken)(token));
     }
   };
 };
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Index);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
 /* 125 */
@@ -36616,7 +36661,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(25);
 
-var _actions = __webpack_require__(33);
+var _actions = __webpack_require__(32);
 
 var _reactNotificationSystem = __webpack_require__(70);
 
@@ -36668,42 +36713,17 @@ var Body = function (_React$Component2) {
     _this2.createGroup = _this2.createGroup.bind(_this2);
     _this2.showNotification = _this2.showNotification.bind(_this2);
     _this2.selectedMembers = [];
-    _this2.registeredMembers = {
-      abracadabra: {
-        name: 'Victor Idongesit',
-        id: 'abracadabra',
-        email: 'victor@yahoo.com'
-      },
-      janana: {
-        name: 'Jane Does',
-        id: 'janana',
-        email: 'jane@doe.com'
-      },
-      obiisaboy: {
-        name: 'Obi Nna',
-        id: 'obiisaboy',
-        email: 'obi@ezekweseli.com'
-      }
-    };
     return _this2;
   }
 
   _createClass(Body, [{
-    key: 'showNotification',
-    value: function showNotification(level, message) {
-      this._notificationSystem.addNotification({
-        message: message,
-        level: level
-      });
-    }
-  }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
       // Bind the notifications component
       this._notificationSystem = this.notificationRef;
       // Load all registered members
-      var token = this.props._that.props.appInfo.userDetails.token;
-      var userId = this.props._that.props.appInfo.userDetails.id;
+      var token = localStorage.getItem('token');
+      var userId = localStorage.getItem('userId');
       this.props._that.props.getPostItMembers(token);
       this.props._that.props.getAllGroupsForUser(userId, token);
     }
@@ -36715,11 +36735,16 @@ var Body = function (_React$Component2) {
       var redirect = this.props._that.props.apiError.redirect;
       var errorMessage = this.props._that.props.apiError.message;
       this.registeredMembers = allUsers;
-      if (redirect) {
+      if (redirect.yes) {
+        if (redirect.to === '/postmessage') {
+          // If group was created successfully, redirect to conversation page and store groupId
+          var groupId = this.props._that.props.appInfo.loadedMessages.groupId;
+          localStorage.setItem('groupId', groupId); // Save id of group to
+        }
         // Reset state of redirect property
         this.props._that.props.resetRedirect();
-        console.log('redirecting');
-        this.props._that.props.history.push('/messageboard');
+        console.log(redirect);
+        window.location = redirect.to;
       } else {
         if (errorMessage) {
           // Empty the array of selected members
@@ -36729,17 +36754,23 @@ var Body = function (_React$Component2) {
           this.props._that.props.resetErrorLog();
         }
       }
-      // console.log(allUsers);
+    }
+  }, {
+    key: 'showNotification',
+    value: function showNotification(level, message) {
+      this._notificationSystem.addNotification({
+        message: message,
+        level: level
+      });
     }
   }, {
     key: 'createGroup',
     value: function createGroup() {
       var title = this.title.value;
       var description = this.description.value;
-      var creatorId = this.props._that.props.appInfo.userDetails.id;
-      var token = this.props._that.props.appInfo.userDetails.token;
+      var creatorId = localStorage.getItem('userId');
+      var token = localStorage.getItem('token');
       var selectedMembers = this.selectedMembers;
-      console.log(title, description, creatorId, selectedMembers, token);
       this.props._that.props.createGroup(creatorId, title, description, selectedMembers, token);
     }
   }, {
@@ -36762,6 +36793,7 @@ var Body = function (_React$Component2) {
   }, {
     key: 'addMember',
     value: function addMember(selected, memberEmail) {
+      console.log(memberEmail);
       if (selected) {
         // Add member
         this.selectedMembers.push(memberEmail);
@@ -36770,7 +36802,6 @@ var Body = function (_React$Component2) {
         var index = this.selectedMembers.indexOf(memberEmail);
         this.selectedMembers.splice(index, 1);
       }
-      console.log(this.selectedMembers);
     }
   }, {
     key: 'render',
@@ -36819,7 +36850,45 @@ var Body = function (_React$Component2) {
               'Add members'
             )
           ),
-          _react2.default.createElement(
+          dataLoading ? _react2.default.createElement(
+            'div',
+            { id: 'info', ref: 'info', className: 'tabcontent' },
+            _react2.default.createElement(
+              'div',
+              { className: 'row' },
+              _react2.default.createElement(
+                'div',
+                { className: 'col s12 m8 offset-m2 offset-l3 l6' },
+                _react2.default.createElement(
+                  'div',
+                  null,
+                  _react2.default.createElement(
+                    'div',
+                    { className: 'preloader-wrapper loader big active valign-wrapper' },
+                    _react2.default.createElement(
+                      'div',
+                      { className: 'spinner-layer spinner-white-only' },
+                      _react2.default.createElement(
+                        'div',
+                        { className: 'circle-clipper left' },
+                        _react2.default.createElement('div', { className: 'circle' })
+                      ),
+                      _react2.default.createElement(
+                        'div',
+                        { className: 'gap-patch' },
+                        _react2.default.createElement('div', { className: 'circle' })
+                      ),
+                      _react2.default.createElement(
+                        'div',
+                        { className: 'circle-clipper right' },
+                        _react2.default.createElement('div', { className: 'circle' })
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          ) : _react2.default.createElement(
             'div',
             { id: 'info', ref: 'info', className: 'tabcontent' },
             _react2.default.createElement(
@@ -36837,7 +36906,7 @@ var Body = function (_React$Component2) {
                     'Enter group details'
                   ),
                   _react2.default.createElement(
-                    'form',
+                    'div',
                     null,
                     _react2.default.createElement(
                       'div',
@@ -36878,58 +36947,83 @@ var Body = function (_React$Component2) {
                   'div',
                   null,
                   _react2.default.createElement(
-                    'form',
+                    'div',
                     null,
                     _react2.default.createElement(
-                      'ul',
-                      { className: 'collection with-header' },
+                      'div',
+                      { className: 'classListHolder' },
                       _react2.default.createElement(
-                        'li',
-                        { className: 'collection-header' },
+                        'ul',
+                        { className: 'collection with-header registeredMembersList' },
                         _react2.default.createElement(
-                          'h4',
-                          null,
-                          'Add members'
+                          'li',
+                          { className: 'collection-header' },
+                          _react2.default.createElement(
+                            'h4',
+                            { className: 'center' },
+                            'Add members'
+                          )
+                        ),
+                        _react2.default.createElement(
+                          'li',
+                          { className: 'collection-item' },
+                          _react2.default.createElement('input', { id: 'cb1', type: 'checkbox', disabled: true }),
+                          _react2.default.createElement(
+                            'label',
+                            { htmlFor: 'cb1', className: 'black-text' },
+                            _react2.default.createElement('small', { className: 'grey-text' })
+                          )
+                        ),
+                        _react2.default.createElement(
+                          'li',
+                          { className: 'collection-item' },
+                          _react2.default.createElement('input', { id: 'cb2', type: 'checkbox', disabled: true }),
+                          _react2.default.createElement(
+                            'label',
+                            { htmlFor: 'cb2', className: 'black-text' },
+                            _react2.default.createElement('small', { className: 'grey-text' })
+                          )
+                        ),
+                        _react2.default.createElement(
+                          'li',
+                          { className: 'collection-item' },
+                          _react2.default.createElement('input', { id: 'cb3', type: 'checkbox', disabled: true }),
+                          _react2.default.createElement(
+                            'label',
+                            { htmlFor: 'cb3', className: 'black-text' },
+                            _react2.default.createElement('small', { className: 'grey-text' })
+                          )
+                        ),
+                        _react2.default.createElement(
+                          'li',
+                          { className: 'collection-item' },
+                          _react2.default.createElement('input', { id: 'cb4', type: 'checkbox', disabled: true }),
+                          _react2.default.createElement(
+                            'label',
+                            { htmlFor: 'cb4', className: 'black-text' },
+                            _react2.default.createElement('small', { className: 'grey-text' })
+                          )
                         )
                       ),
                       _react2.default.createElement(
-                        'li',
-                        { className: 'collection-item' },
-                        _react2.default.createElement('input', { id: 'cb1', type: 'checkbox', disabled: true }),
+                        'div',
+                        { className: 'row' },
                         _react2.default.createElement(
-                          'label',
-                          { htmlFor: 'cb1', className: 'black-text' },
-                          _react2.default.createElement('small', { className: 'grey-text' })
-                        )
-                      ),
-                      _react2.default.createElement(
-                        'li',
-                        { className: 'collection-item' },
-                        _react2.default.createElement('input', { id: 'cb2', type: 'checkbox', disabled: true }),
+                          'button',
+                          { className: 'btn col s8 offset-s2 m5 l5 light-green darken-4', onClick: function onClick() {
+                              return _this3.switchTab("defaultTab", 'info');
+                            } },
+                          '<< Group info'
+                        ),
                         _react2.default.createElement(
-                          'label',
-                          { htmlFor: 'cb2', className: 'black-text' },
-                          _react2.default.createElement('small', { className: 'grey-text' })
-                        )
-                      ),
-                      _react2.default.createElement(
-                        'li',
-                        { className: 'collection-item' },
-                        _react2.default.createElement('input', { id: 'cb3', type: 'checkbox', disabled: true }),
+                          'div',
+                          { className: 'col s12 m2 s2' },
+                          _react2.default.createElement('br', null)
+                        ),
                         _react2.default.createElement(
-                          'label',
-                          { htmlFor: 'cb3', className: 'black-text' },
-                          _react2.default.createElement('small', { className: 'grey-text' })
-                        )
-                      ),
-                      _react2.default.createElement(
-                        'li',
-                        { className: 'collection-item' },
-                        _react2.default.createElement('input', { id: 'cb4', type: 'checkbox', disabled: true }),
-                        _react2.default.createElement(
-                          'label',
-                          { htmlFor: 'cb4', className: 'black-text' },
-                          _react2.default.createElement('small', { className: 'grey-text' })
+                          'button',
+                          { disabled: true, className: 'btn col s8 offset-s2 m5 l5 light-green darken-4' },
+                          'Create group'
                         )
                       )
                     )
@@ -36939,7 +37033,7 @@ var Body = function (_React$Component2) {
                     { className: 'userlist-preloader' },
                     _react2.default.createElement(
                       'div',
-                      { className: 'preloader-wrapper big active valign-wrapper' },
+                      { className: 'preloader-wrapper big loader active valign-wrapper' },
                       _react2.default.createElement(
                         'div',
                         { className: 'spinner-layer spinner-white-only' },
@@ -36960,70 +37054,53 @@ var Body = function (_React$Component2) {
                         )
                       )
                     )
-                  ),
-                  _react2.default.createElement(
-                    'div',
-                    { className: 'row' },
-                    _react2.default.createElement(
-                      'button',
-                      { className: 'btn col s8 offset-s2 m5 l5 light-green darken-4', onClick: function onClick() {
-                          return _this3.switchTab("defaultTab", 'info');
-                        } },
-                      '<< Group info'
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'col s12 m2 s2' },
-                      _react2.default.createElement('br', null)
-                    ),
-                    _react2.default.createElement(
-                      'button',
-                      { disabled: true, className: 'btn col s8 offset-s2 m5 l5 light-green darken-4' },
-                      'Create group'
-                    )
                   )
                 ) : _react2.default.createElement(
                   'div',
                   null,
                   _react2.default.createElement(
-                    'form',
+                    'div',
                     null,
                     _react2.default.createElement(
-                      'h3',
-                      { className: 'center' },
-                      'Add members'
-                    ),
-                    _react2.default.createElement(
                       'div',
-                      { className: 'registeredMembersList' },
+                      { className: 'classListHolder' },
                       _react2.default.createElement(
                         'ul',
-                        { className: 'collection' },
+                        { className: 'collection with-header registeredMembersList' },
+                        _react2.default.createElement(
+                          'li',
+                          { className: 'collection-header' },
+                          _react2.default.createElement(
+                            'h4',
+                            { className: 'center' },
+                            'Add members'
+                          )
+                        ),
                         Object.keys(this.registeredMembers).map(function (userId, index) {
                           return _react2.default.createElement(RegisteredMember, { addMember: _this3.addMember, key: index, id: userId, userInfo: _this3.registeredMembers[userId] });
                         })
+                      ),
+                      _react2.default.createElement(
+                        'div',
+                        { className: 'row' },
+                        _react2.default.createElement(
+                          'button',
+                          { className: 'btn col s8 offset-s2 m5 l5 light-green darken-4', onClick: function onClick() {
+                              return _this3.switchTab("defaultTab", 'info');
+                            } },
+                          '<< Group info'
+                        ),
+                        _react2.default.createElement(
+                          'div',
+                          { className: 'col s12 m2 s2' },
+                          _react2.default.createElement('br', null)
+                        ),
+                        _react2.default.createElement(
+                          'button',
+                          { onClick: this.createGroup, className: 'btn col s8 offset-s2 m5 l5 light-green darken-4' },
+                          'Create group'
+                        )
                       )
-                    )
-                  ),
-                  _react2.default.createElement(
-                    'div',
-                    { className: 'row' },
-                    _react2.default.createElement(
-                      'button',
-                      { className: 'btn col s8 offset-s2 m5 l5 light-green darken-4', onClick: function onClick() {
-                          return _this3.switchTab("defaultTab", 'info');
-                        } },
-                      '<< Group info'
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'col s12 m2 s2' },
-                      _react2.default.createElement('br', null)
-                    ),
-                    _react2.default.createElement(
-                      'button',
-                      { onClick: this.createGroup, className: 'btn col s8 offset-s2 m5 l5 light-green darken-4' },
-                      'Create group'
                     )
                   )
                 )
@@ -37083,7 +37160,8 @@ var NavBar = function (_React$Component4) {
   _createClass(NavBar, [{
     key: 'render',
     value: function render() {
-      var userDetails = this.props._that.props.appInfo.userDetails;
+      var userDetailsString = localStorage.getItem('userDetails');
+      var userDetails = JSON.parse(userDetailsString);
       var allUserGroups = this.props._that.props.allUserGroups.userGroups;
       return _react2.default.createElement(
         'div',
@@ -37111,6 +37189,19 @@ var NavBar = function (_React$Component4) {
             _react2.default.createElement(
               'ul',
               { className: 'right' },
+              _react2.default.createElement(
+                'li',
+                null,
+                _react2.default.createElement(
+                  'a',
+                  { href: '/messageboard' },
+                  _react2.default.createElement(
+                    'i',
+                    { className: 'material-icons' },
+                    'view_module'
+                  )
+                )
+              ),
               _react2.default.createElement(
                 'li',
                 null,
@@ -37318,26 +37409,7 @@ var NavBar = function (_React$Component4) {
                   )
                 )
               ),
-              _react2.default.createElement(
-                'ul',
-                { className: 'list-side-nav' },
-                Object.keys(allUserGroups).map(function (groupId, index) {
-                  return _react2.default.createElement(
-                    'li',
-                    { key: index },
-                    _react2.default.createElement(
-                      'a',
-                      { href: '#' },
-                      _react2.default.createElement(
-                        'i',
-                        { className: 'material-icons teal-text' },
-                        'people_outline'
-                      ),
-                      allUserGroups[groupId].info.title
-                    )
-                  );
-                })
-              ),
+              _react2.default.createElement(Groups, { _that: this.props._that, allUserGroups: allUserGroups }),
               _react2.default.createElement('hr', null),
               _react2.default.createElement(
                 'li',
@@ -37377,20 +37449,98 @@ var NavBar = function (_React$Component4) {
   return NavBar;
 }(_react2.default.Component);
 
+// Component to hold the groups a user belongs to
+
+
+var Groups = function (_React$Component5) {
+  _inherits(Groups, _React$Component5);
+
+  function Groups() {
+    _classCallCheck(this, Groups);
+
+    return _possibleConstructorReturn(this, (Groups.__proto__ || Object.getPrototypeOf(Groups)).apply(this, arguments));
+  }
+
+  _createClass(Groups, [{
+    key: 'render',
+    value: function render() {
+      var _this7 = this;
+
+      var allUserGroups = this.props.allUserGroups;
+      return _react2.default.createElement(
+        'ul',
+        { className: 'list-side-nav' },
+        Object.keys(allUserGroups).map(function (groupId, index) {
+          return _react2.default.createElement(UserGroup, { _that: _this7.props._that, key: index, groupDetails: allUserGroups[groupId].info });
+        })
+      );
+    }
+  }]);
+
+  return Groups;
+}(_react2.default.Component);
+// Component to hold the details of each group a user belongs to
+
+
+var UserGroup = function (_React$Component6) {
+  _inherits(UserGroup, _React$Component6);
+
+  function UserGroup(props) {
+    _classCallCheck(this, UserGroup);
+
+    var _this8 = _possibleConstructorReturn(this, (UserGroup.__proto__ || Object.getPrototypeOf(UserGroup)).call(this, props));
+
+    _this8.loadMessages = _this8.loadMessages.bind(_this8);
+    return _this8;
+  }
+
+  _createClass(UserGroup, [{
+    key: 'loadMessages',
+    value: function loadMessages(e) {
+      var groupId = e.target.id;
+      var token = localStorage.getItem('token');
+      // Load messages into the conversation page
+      this.props._that.props.loadMessages(groupId);
+      this.props._that.props.getMessages(groupId, token);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var groupDetails = this.props.groupDetails;
+      return _react2.default.createElement(
+        'li',
+        null,
+        _react2.default.createElement(
+          'a',
+          { onClick: this.loadMessages, id: groupDetails.id },
+          _react2.default.createElement(
+            'i',
+            { className: 'material-icons teal-text' },
+            'people_outline'
+          ),
+          groupDetails.title
+        )
+      );
+    }
+  }]);
+
+  return UserGroup;
+}(_react2.default.Component);
+
 // Component to contain a member loaded from the database
 
 
-var RegisteredMember = function (_React$Component5) {
-  _inherits(RegisteredMember, _React$Component5);
+var RegisteredMember = function (_React$Component7) {
+  _inherits(RegisteredMember, _React$Component7);
 
   function RegisteredMember(props) {
     _classCallCheck(this, RegisteredMember);
 
-    var _this6 = _possibleConstructorReturn(this, (RegisteredMember.__proto__ || Object.getPrototypeOf(RegisteredMember)).call(this, props));
+    var _this9 = _possibleConstructorReturn(this, (RegisteredMember.__proto__ || Object.getPrototypeOf(RegisteredMember)).call(this, props));
 
-    _this6.selected = false;
-    _this6.addOrRemove = _this6.addOrRemove.bind(_this6);
-    return _this6;
+    _this9.selected = false;
+    _this9.addOrRemove = _this9.addOrRemove.bind(_this9);
+    return _this9;
   }
   // Method add or remove a member
 
@@ -37404,7 +37554,7 @@ var RegisteredMember = function (_React$Component5) {
   }, {
     key: 'render',
     value: function render() {
-      var _this7 = this;
+      var _this10 = this;
 
       var userInfo = this.props.userInfo;
       return _react2.default.createElement(
@@ -37413,7 +37563,7 @@ var RegisteredMember = function (_React$Component5) {
         _react2.default.createElement('input', { id: this.props.userInfo.email,
           type: 'checkbox',
           onClick: function onClick() {
-            return _this7.addOrRemove(event, _this7.props.userInfo.email);
+            return _this10.addOrRemove(event, _this10.props.userInfo.email);
           },
           ref: this.props.userInfo.email }),
         _react2.default.createElement(
@@ -37444,7 +37594,8 @@ var mapStateToProps = function mapStateToProps(state) {
     allUserGroups: state.allUserGroups,
     appInfo: {
       userDetails: state.appInfo.userDetails,
-      authState: state.appInfo.authState
+      authState: state.appInfo.authState,
+      loadedMessages: state.appInfo.loadedMessages
     },
     postItInfo: state.postItInfo
   };
@@ -37458,11 +37609,20 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     resetRedirect: function resetRedirect() {
       return dispatch((0, _actions.resetRedirect)());
     },
+    verifyToken: function verifyToken(token) {
+      return dispatch((0, _actions.verifyToken)(token));
+    },
     getPostItMembers: function getPostItMembers(token) {
       return dispatch((0, _actions.getPostItMembers)(token));
     },
     getAllGroupsForUser: function getAllGroupsForUser(userId, token) {
       return dispatch((0, _actions.getAllGroupsForUser)(userId, token));
+    },
+    getMessages: function getMessages(groupId, token) {
+      return dispatch((0, _actions.getMessages)(groupId, token));
+    },
+    loadMessages: function loadMessages(groupId) {
+      return dispatch((0, _actions.loadMessages)(groupId));
     },
     createGroup: function createGroup(creatorId, title, description, selectedMembers, token) {
       return dispatch((0, _actions.createGroup)(creatorId, title, description, selectedMembers, token));
@@ -37479,7 +37639,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function($) {
+
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -37495,9 +37655,7 @@ var _reactPaginate = __webpack_require__(128);
 
 var _reactPaginate2 = _interopRequireDefault(_reactPaginate);
 
-var _reactRouterDom = __webpack_require__(30);
-
-var _actions = __webpack_require__(33);
+var _actions = __webpack_require__(32);
 
 var _reactRedux = __webpack_require__(25);
 
@@ -37536,27 +37694,20 @@ var MessageBoard = function (_React$Component) {
   return MessageBoard;
 }(_react2.default.Component);
 
-var Nav = function (_React$Component2) {
-  _inherits(Nav, _React$Component2);
+var NavBar = function (_React$Component2) {
+  _inherits(NavBar, _React$Component2);
 
-  function Nav() {
-    _classCallCheck(this, Nav);
+  function NavBar() {
+    _classCallCheck(this, NavBar);
 
-    return _possibleConstructorReturn(this, (Nav.__proto__ || Object.getPrototypeOf(Nav)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (NavBar.__proto__ || Object.getPrototypeOf(NavBar)).apply(this, arguments));
   }
 
-  _createClass(Nav, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      // Activate the sidenav
-      $(document).ready(function () {
-        $('.button-collapse').sideNav();
-      });
-    }
-  }, {
+  _createClass(NavBar, [{
     key: 'render',
     value: function render() {
-      var userDetails = this.props.userDetails;
+      var userDetailsString = localStorage.getItem('userDetails');
+      var userDetails = JSON.parse(userDetailsString);
       var allUserGroups = this.props.allUserGroups;
       return _react2.default.createElement(
         'div',
@@ -37569,7 +37720,7 @@ var Nav = function (_React$Component2) {
             { className: 'nav-wrapper' },
             _react2.default.createElement(
               'a',
-              { href: '#', id: 'brand', className: 'brand-logo left' },
+              { id: 'brand', className: 'brand-logo left' },
               'PostIt'
             ),
             _react2.default.createElement(
@@ -37664,8 +37815,8 @@ var Nav = function (_React$Component2) {
                     'li',
                     null,
                     _react2.default.createElement(
-                      _reactRouterDom.Link,
-                      { to: '/creategroup', className: 'black-text' },
+                      'a',
+                      { href: '/creategroup', className: 'black-text' },
                       _react2.default.createElement(
                         'i',
                         { className: 'material-icons green-text' },
@@ -37797,8 +37948,8 @@ var Nav = function (_React$Component2) {
                 'li',
                 null,
                 _react2.default.createElement(
-                  _reactRouterDom.Link,
-                  { to: '/creategroup' },
+                  'a',
+                  { href: '/creategroup' },
                   _react2.default.createElement(
                     'i',
                     { className: 'large material-icons green-text' },
@@ -37844,26 +37995,7 @@ var Nav = function (_React$Component2) {
                   )
                 )
               ),
-              _react2.default.createElement(
-                'ul',
-                { className: 'list-side-nav' },
-                Object.keys(allUserGroups).map(function (groupId, index) {
-                  return _react2.default.createElement(
-                    'li',
-                    { key: index },
-                    _react2.default.createElement(
-                      'a',
-                      { href: '#' },
-                      _react2.default.createElement(
-                        'i',
-                        { className: 'material-icons teal-text' },
-                        'people_outline'
-                      ),
-                      allUserGroups[groupId].info.title
-                    )
-                  );
-                })
-              ),
+              _react2.default.createElement(Groups, { _that: this.props._that, allUserGroups: allUserGroups }),
               _react2.default.createElement('hr', null),
               _react2.default.createElement(
                 'li',
@@ -37900,79 +38032,120 @@ var Nav = function (_React$Component2) {
     }
   }]);
 
-  return Nav;
+  return NavBar;
 }(_react2.default.Component);
+// Component to hold the groups a user belongs to
 
-var SideNav = function (_React$Component3) {
-  _inherits(SideNav, _React$Component3);
 
-  function SideNav(props) {
-    _classCallCheck(this, SideNav);
+var Groups = function (_React$Component3) {
+  _inherits(Groups, _React$Component3);
 
-    return _possibleConstructorReturn(this, (SideNav.__proto__ || Object.getPrototypeOf(SideNav)).call(this, props));
+  function Groups() {
+    _classCallCheck(this, Groups);
+
+    return _possibleConstructorReturn(this, (Groups.__proto__ || Object.getPrototypeOf(Groups)).apply(this, arguments));
   }
 
-  _createClass(SideNav, [{
+  _createClass(Groups, [{
     key: 'render',
     value: function render() {
-      var firstName = this.props.userDetails.firstName;
-      var lastName = this.props.userDetails.lastName;
-      var phone = this.props.userDetails.phone;
-      var email = this.props.userDetails.email;
+      var _this4 = this;
+
+      var allUserGroups = this.props.allUserGroups;
       return _react2.default.createElement(
         'ul',
-        { className: 'collection' },
+        { className: 'list-side-nav' },
+        Object.keys(allUserGroups).map(function (groupId, index) {
+          return _react2.default.createElement(UserGroup, { _that: _this4.props._that, key: index, groupDetails: allUserGroups[groupId].info });
+        })
+      );
+    }
+  }]);
+
+  return Groups;
+}(_react2.default.Component);
+// Component to hold the details of each group a user belongs to
+
+
+var UserGroup = function (_React$Component4) {
+  _inherits(UserGroup, _React$Component4);
+
+  function UserGroup(props) {
+    _classCallCheck(this, UserGroup);
+
+    var _this5 = _possibleConstructorReturn(this, (UserGroup.__proto__ || Object.getPrototypeOf(UserGroup)).call(this, props));
+
+    _this5.loadMessages = _this5.loadMessages.bind(_this5);
+    return _this5;
+  }
+
+  _createClass(UserGroup, [{
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      var redirect = this.props._that.props.apiError.redirect;
+      if (redirect.yes) {
+        if (redirect.to === '/postmessage') {
+          var groupId = this.props._that.props.appInfo.loadedMessages.groupId;
+          localStorage.setItem('groupId', groupId); // Save id of group to local storage
+        }
+        this.props._that.props.resetRedirect();
+        window.location = redirect.to;
+      }
+    }
+  }, {
+    key: 'loadMessages',
+    value: function loadMessages(e) {
+      var groupId = e.target.id;
+      var token = localStorage.getItem('token');
+      // Load messages into the conversation page
+      this.props._that.props.loadMessages(groupId);
+      this.props._that.props.getMessages(groupId, token);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var groupDetails = this.props.groupDetails;
+      return _react2.default.createElement(
+        'li',
+        null,
         _react2.default.createElement(
-          'li',
-          { className: 'collection-item avatar black-text' },
+          'a',
+          { onClick: this.loadMessages, id: groupDetails.id },
           _react2.default.createElement(
             'i',
-            { className: 'material-icons purple circle' },
-            'person'
+            { className: 'material-icons teal-text' },
+            'people_outline'
           ),
-          _react2.default.createElement(
-            'span',
-            { className: 'title black-text' },
-            firstName,
-            ' ',
-            lastName
-          ),
-          _react2.default.createElement(
-            'p',
-            null,
-            email,
-            _react2.default.createElement('br', null),
-            phone
-          )
+          groupDetails.title
         )
       );
     }
   }]);
 
-  return SideNav;
+  return UserGroup;
 }(_react2.default.Component);
 
-var Body = function (_React$Component4) {
-  _inherits(Body, _React$Component4);
+var Body = function (_React$Component5) {
+  _inherits(Body, _React$Component5);
 
   function Body(props) {
     _classCallCheck(this, Body);
 
-    var _this4 = _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).call(this, props));
+    var _this6 = _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).call(this, props));
 
-    _this4.handlePageNumberClick = _this4.handlePageNumberClick.bind(_this4);
-    _this4.state = {
+    _this6.handlePageNumberClick = _this6.handlePageNumberClick.bind(_this6);
+    _this6.state = {
       offset: 0,
       perPage: 6
     };
-    return _this4;
+    return _this6;
   }
 
   _createClass(Body, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var userId = this.props._that.props.appInfo.userDetails.id;
-      var token = this.props._that.props.appInfo.userDetails.token;
+      var token = localStorage.getItem('token');
+      var userId = localStorage.getItem('userId');
       var offset = 0;
       var limit = this.state.perPage;
       this.props._that.props.getGroupsForUser(userId, offset, limit, token);
@@ -37981,24 +38154,23 @@ var Body = function (_React$Component4) {
   }, {
     key: 'handlePageNumberClick',
     value: function handlePageNumberClick(data) {
-      var _this5 = this;
+      var _this7 = this;
 
-      var userId = this.props._that.props.appInfo.userDetails.id;
-      var token = this.props._that.props.appInfo.userDetails.token;
+      var token = localStorage.getItem('token');
+      var userId = localStorage.getItem('userId');
 
       var selected = data.selected;
       var offset = Math.ceil(selected * this.state.perPage);
       var limit = this.state.perPage;
       this.setState({ offset: offset }, function () {
-        _this5.props._that.props.getGroupsForUser(userId, offset, limit, token);
+        _this7.props._that.props.getGroupsForUser(userId, offset, limit, token);
       });
     }
   }, {
-    key: 'componentWillUpdate',
-    value: function componentWillUpdate() {}
-  }, {
     key: 'render',
     value: function render() {
+      var _this8 = this;
+
       var userGroups = this.props._that.props.groups.userGroups;
       var dataLoading = this.props._that.props.dataLoading;
       var totalNoOfGroups = this.props._that.props.groups.meta.count;
@@ -38009,7 +38181,7 @@ var Body = function (_React$Component4) {
       return _react2.default.createElement(
         'div',
         { id: 'body' },
-        _react2.default.createElement(Nav, { allUserGroups: allUserGroups, userDetails: userDetails }),
+        _react2.default.createElement(NavBar, { _that: this.props._that, allUserGroups: allUserGroups, userDetails: userDetails }),
         _react2.default.createElement(
           'div',
           { id: 'main' },
@@ -38022,7 +38194,7 @@ var Body = function (_React$Component4) {
             'div',
             { className: 'row' },
             Object.keys(userGroups).map(function (groupId, index) {
-              return _react2.default.createElement(Group, { key: index, id: groupId, loading: dataLoading, groupDetails: userGroups[groupId].info });
+              return _react2.default.createElement(Group, { _that: _this8.props._that, key: index, id: groupId, loading: dataLoading, groupDetails: userGroups[groupId].info });
             })
           )
         ),
@@ -38052,8 +38224,8 @@ var Body = function (_React$Component4) {
   return Body;
 }(_react2.default.Component);
 
-var Footer = function (_React$Component5) {
-  _inherits(Footer, _React$Component5);
+var Footer = function (_React$Component6) {
+  _inherits(Footer, _React$Component6);
 
   function Footer() {
     _classCallCheck(this, Footer);
@@ -38083,17 +38255,31 @@ var Footer = function (_React$Component5) {
 
   return Footer;
 }(_react2.default.Component);
+// This component renders the card that displays the details of a group with a notification
 
-var Group = function (_React$Component6) {
-  _inherits(Group, _React$Component6);
 
-  function Group() {
+var Group = function (_React$Component7) {
+  _inherits(Group, _React$Component7);
+
+  function Group(props) {
     _classCallCheck(this, Group);
 
-    return _possibleConstructorReturn(this, (Group.__proto__ || Object.getPrototypeOf(Group)).apply(this, arguments));
+    var _this10 = _possibleConstructorReturn(this, (Group.__proto__ || Object.getPrototypeOf(Group)).call(this, props));
+
+    _this10.loadMessages = _this10.loadMessages.bind(_this10);
+    return _this10;
   }
 
   _createClass(Group, [{
+    key: 'loadMessages',
+    value: function loadMessages(e) {
+      var groupId = e.target.id;
+      var token = localStorage.getItem('token');
+      // Load messages into the conversation page
+      this.props._that.props.loadMessages(groupId);
+      this.props._that.props.getMessages(groupId, token);
+    }
+  }, {
     key: 'render',
     value: function render() {
       if (this.props.loading) {
@@ -38145,7 +38331,7 @@ var Group = function (_React$Component6) {
               null,
               _react2.default.createElement(
                 'a',
-                { href: '#', className: 'card-title grey-text text-darken-4' },
+                { onClick: this.loadMessages, id: groupDetails.id, className: 'card-title grey-text groupLink text-darken-4' },
                 groupDetails.title,
                 _react2.default.createElement(
                   'span',
@@ -38206,7 +38392,8 @@ var mapStateToProps = function mapStateToProps(state) {
     allUserGroups: state.allUserGroups,
     appInfo: {
       userDetails: state.appInfo.userDetails,
-      authState: state.appInfo.authState
+      authState: state.appInfo.authState,
+      loadedMessages: state.appInfo.loadedMessages
     }
   };
 };
@@ -38215,6 +38402,15 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
     getGroupsForUser: function getGroupsForUser(userId, offset, limit, token) {
       return dispatch((0, _actions.getGroupsForUser)(userId, offset, limit, token));
+    },
+    loadMessages: function loadMessages(groupId) {
+      return dispatch((0, _actions.loadMessages)(groupId));
+    },
+    resetRedirect: function resetRedirect() {
+      return dispatch((0, _actions.resetRedirect)());
+    },
+    getMessages: function getMessages(groupId, token) {
+      return dispatch((0, _actions.getMessages)(groupId, token));
     },
     getAllGroupsForUser: function getAllGroupsForUser(userId, token) {
       return dispatch((0, _actions.getAllGroupsForUser)(userId, token));
@@ -38231,11 +38427,13 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
       return resetErrorLog;
     }(function () {
       return dispatch(resetErrorLog());
-    })
+    }),
+    verifyToken: function verifyToken(token) {
+      return dispatch((0, _actions.verifyToken)(token));
+    }
   };
 };
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(MessageBoard);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
 /* 128 */
@@ -38274,9 +38472,7 @@ var _reactPaginate = __webpack_require__(128);
 
 var _reactPaginate2 = _interopRequireDefault(_reactPaginate);
 
-var _reactRouterDom = __webpack_require__(30);
-
-var _actions = __webpack_require__(33);
+var _actions = __webpack_require__(32);
 
 var _reactRedux = __webpack_require__(25);
 
@@ -38295,10 +38491,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var PostMessage = function (_React$Component) {
   _inherits(PostMessage, _React$Component);
 
-  function PostMessage(props) {
+  function PostMessage() {
     _classCallCheck(this, PostMessage);
 
-    return _possibleConstructorReturn(this, (PostMessage.__proto__ || Object.getPrototypeOf(PostMessage)).call(this, props));
+    return _possibleConstructorReturn(this, (PostMessage.__proto__ || Object.getPrototypeOf(PostMessage)).apply(this, arguments));
   }
 
   _createClass(PostMessage, [{
@@ -38323,106 +38519,104 @@ var Body = function (_React$Component2) {
 
     var _this2 = _possibleConstructorReturn(this, (Body.__proto__ || Object.getPrototypeOf(Body)).call(this, props));
 
-    _this2.getFormattedTimeStamp = _this2.getFormattedTimeStamp.bind(_this2);
     _this2.deleteMember = _this2.deleteMember.bind(_this2);
     _this2.deleteGroup = _this2.deleteGroup.bind(_this2);
     _this2.memberIdToDelete = '';
     _this2.groupIdToDelete = '';
-    _this2.allMessages = null;
-    _this2.allMembers = null;
-    _this2.creatorEmail = "";
     return _this2;
   }
 
   _createClass(Body, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this3 = this;
+
+      var token = localStorage.getItem('token');
+      var userId = localStorage.getItem('userId');
+      var groupId = localStorage.getItem('groupId');
+      // Load all messages for the group
+      this.props._that.props.getMessages(groupId, token);
+      // Load user groups
+      this.props._that.props.getAllGroupsForUser(userId, token);
+      // Load all members of the group
+      this.props._that.props.getGroupMembers(groupId, token);
+
+      /**  */
+      $('.button-collapse').sideNav();
+      $('#member-list-toggle').off().on('click', function () {
+        $('#memberList').animate({ width: 'toggle' });
+      });
+      $('.modal').modal({
+        // Handle modal dialog box
+        ready: function ready(modal, trigger) {
+          // Check if modal is for deleting group member or entire group
+          if (modal[0].id === 'deleteMemberModal') {
+            _this3.memberIdToDelete = trigger[0].id;
+          } else {
+            _this3.groupIdToDelete = trigger[0].id;
+          }
+        }
+      });
+      // Toggle memberList
+      $(document).on('click', function (e) {
+        var target = $(e.target);
+        // Hide member list when a click is made outside of memberlist window or deleteMemberModal
+        if (!target.is('#member-list-toggle')) {
+          if (!target.parents('#memberList').length) {
+            if (!target.parents('#deleteMemberModal').length) {
+              if (!target.parents('#addMemberModal').length) {
+                $('#memberList').fadeOut();
+              }
+            }
+          }
+        }
+      });
+    }
+  }, {
     key: 'deleteMember',
     value: function deleteMember() {
-      var token = this.props._that.props.appInfo.userDetails.token;
+      var token = localStorage.getItem('token');
+      var ownerId = localStorage.getItem('userId');
       var idToDelete = this.memberIdToDelete;
-      var ownerId = this.props._that.props.appInfo.userDetails.id;
-      var groupId = this.props._that.props.appInfo.loadedChat.groupId;
+      var groupId = localStorage.getItem('groupId');
       // Call the redux action to delete the member
       this.props._that.props.deleteMember(ownerId, idToDelete, groupId, token);
     }
   }, {
     key: 'deleteGroup',
     value: function deleteGroup() {
-      var token = this.props._that.props.appInfo.userDetails.token;
-      var groupId = this.memberIdToDelete;
-      var ownerId = this.props._that.props.appInfo.userDetails.id;
+      var token = localStorage.getItem('token');
+      var ownerId = localStorage.getItem('userId');
+      var groupId = this.groupIdToDelete;
       // Call redux action to delete the group
       this.props._that.props.deleteGroup(ownerId, groupId, token);
     }
   }, {
-    key: 'componentWillMount',
-    value: function componentWillMount() {
-      var userId = this.props._that.props.appInfo.userDetails.id;
-      var token = this.props._that.props.appInfo.userDetails.token;
-      var groupId = this.props._that.props.appInfo.loadedChat.groupId;
-      // Load user groups
-      this.props._that.props.getAllGroupsForUser(userId, token);
-      // Load all messages for the group
-      this.props._that.props.getMessages(groupId, token);
-      // Load all registered members of the stated group
-      this.props._that.props.getGroupMembers(groupId, token);
-    }
-  }, {
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      var _this3 = this;
-
-      // Custom JS to handle sidenav and modal
-      $(document).ready(function () {
-        $('.button-collapse').sideNav();
-        $('#member-list-toggle').off().on('click', function () {
-          $('#memberList').animate({ width: 'toggle' });
-        });
-        $('.modal').modal({
-          // Handle modal dialog box
-          ready: function ready(modal, trigger) {
-            // Check if modal is for deleting group member or group entire
-            if (modal[0].id === 'deleteMemberModal') {
-              _this3.memberIdToDelete = trigger[0].id;
-            } else {
-              _this3.groupIdToDelete = trigger[0].id;
-            }
-          }
-        });
-        // Toggle memberList
-        $(document).on('click', function (e) {
-          var target = $(e.target);
-          // Hide member list when a click is made outside of memberlist window or deleteMemberModal
-          if (!target.is('#member-list-toggle')) {
-            if (!target.parents('#memberList').length) {
-              if (!target.parents('#deleteMemberModal').length) {
-                $('#memberList').fadeOut();
-              }
-            }
-          }
-        });
-      });
-    }
-  }, {
-    key: 'getFormattedTimeStamp',
-    value: function getFormattedTimeStamp(timeStamp, callback) {
-      var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-      var year = timeStamp.slice(0, 4);
-      var monthString = timeStamp.slice(5, 7);
-      var month = months[parseInt(monthString) - 1];
-      var dayString = timeStamp.slice(8, 10);
-      var day = parseInt(dayString);
-      var hour = timeStamp.slice(11, 13);
-      var minute = timeStamp.slice(14, 16);
-      var formattedTime = month + ' ' + day + ', ' + year + ', at ' + hour + ':' + minute;
-      callback(formattedTime);
-    }
-  }, {
     key: 'render',
     value: function render() {
+      // Accessing a deleted group, or loading messages from a group you've been removed from
+      var redirect = this.props._that.props.apiError.redirect;
+      console.log(redirect);
+      if (redirect.yes) {
+        if (redirect.to === '/postmessage') {
+          // No page reloading when opening a different group
+          this.props._that.props.resetRedirect();
+        } else {
+          window.location = redirect.to;
+        }
+      }
+      var groupId = localStorage.getItem('groupId');
+      var groupLoaded = this.props._that.props.allUserGroups.userGroups[groupId];
+      var groupTitle = void 0;
+      if (groupLoaded) {
+        groupTitle = groupLoaded.info.title;
+      } else {
+        groupTitle = 'Loading...';
+      }
       return _react2.default.createElement(
         'div',
         { id: 'body' },
-        _react2.default.createElement(Nav, { deleteGroup: this.deleteGroup, _that: this.props._that }),
+        _react2.default.createElement(NavBar, { deleteGroup: this.deleteGroup, _that: this.props._that }),
         _react2.default.createElement(
           'div',
           { id: 'main' },
@@ -38450,17 +38644,18 @@ var Body = function (_React$Component2) {
                   _react2.default.createElement(
                     'h5',
                     { className: 'col s8 m8 l8 center' },
-                    'Project NexBigThing'
+                    groupTitle
                   )
                 ),
-                _react2.default.createElement(Messages, null)
+                _react2.default.createElement(Messages, { _that: this.props._that })
               ),
               _react2.default.createElement(GroupListToggle, { _that: this.props._that })
             )
           ),
           _react2.default.createElement(MemberDeleteModal, { deleteMember: this.deleteMember }),
-          _react2.default.createElement(MessageInputBox, { _that: this.props._that })
-        )
+          _react2.default.createElement(AddMemberModal, { _that: this.props._that })
+        ),
+        _react2.default.createElement(MessageInputBox, { _that: this.props._that })
       );
     }
   }]);
@@ -38503,12 +38698,12 @@ var MemberDeleteModal = function (_React$Component3) {
           _react2.default.createElement(
             'a',
             { href: '#!', onClick: this.props.deleteMember, className: 'modal-action modal-close waves-effect waves-green btn-flat green-text' },
-            'Agree'
+            'Delete'
           ),
           _react2.default.createElement(
             'a',
             { className: 'modal-action modal-close waves-effect waves-green btn-flat green-text' },
-            'Disagree'
+            'Cancel'
           )
         )
       );
@@ -38530,12 +38725,24 @@ var GroupListToggle = function (_React$Component4) {
   _createClass(GroupListToggle, [{
     key: 'render',
     value: function render() {
-      var groupId = this.props._that.props.appInfo.loadedChat.groupId;
+      var groupId = localStorage.getItem('groupId');
       var groupLoaded = this.props._that.props.groups.userGroups[groupId];
+      var titleLoaded = this.props._that.props.allUserGroups.userGroups[groupId];
+      var groupCount = '...';
+      var groupTitle = '...';
       var groupMembers = void 0;
+      var creatorEmail = void 0;
+      // Get group title if loading is complete
+      if (titleLoaded) {
+        groupTitle = titleLoaded.info.title;
+        creatorEmail = titleLoaded.info.creatorEmail;
+      }
       // Load the group members if group has loaded
       if (groupLoaded) {
         groupMembers = this.props._that.props.groups.userGroups[groupId].members;
+        if (groupMembers) {
+          groupCount = Object.keys(groupMembers).length;
+        }
       }
       return _react2.default.createElement(
         'div',
@@ -38565,28 +38772,61 @@ var GroupListToggle = function (_React$Component4) {
         groupLoaded ? _react2.default.createElement(
           'div',
           null,
-          'Project NextBigThing ',
+          groupTitle,
+          ' ',
           _react2.default.createElement(
             'span',
             { className: 'badge' },
-            '24'
+            groupCount
           )
         ) : _react2.default.createElement(
           'div',
           null,
-          'Project NextBigThing ',
+          groupTitle,
+          ' ',
           _react2.default.createElement('span', { className: 'badge' })
         ),
         _react2.default.createElement('hr', null),
         _react2.default.createElement(
-          'span',
+          'p',
           null,
-          'Members List'
+          _react2.default.createElement(
+            'span',
+            null,
+            'Members List',
+            _react2.default.createElement(
+              'a',
+              { href: '#addMemberModal', className: 'secondary-content modal-trigger green-text' },
+              _react2.default.createElement(
+                'i',
+                { className: 'material-icons' },
+                'person_add'
+              )
+            )
+          )
         ),
-        groupLoaded ? _react2.default.createElement(GroupMembers, { groupMembers: groupMembers }) : _react2.default.createElement(
+        groupLoaded ? _react2.default.createElement(GroupMembers, { creatorEmail: creatorEmail, groupMembers: groupMembers }) : _react2.default.createElement(
           'div',
-          { className: 'pink-text' },
-          'Loading...'
+          { className: 'preloader-wrapper loader small active' },
+          _react2.default.createElement(
+            'div',
+            { className: 'spinner-layer spinner-green-only' },
+            _react2.default.createElement(
+              'div',
+              { className: 'circle-clipper left' },
+              _react2.default.createElement('div', { className: 'circle' })
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'gap-patch' },
+              _react2.default.createElement('div', { className: 'circle' })
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'circle-clipper right' },
+              _react2.default.createElement('div', { className: 'circle' })
+            )
+          )
         )
       );
     }
@@ -38595,43 +38835,243 @@ var GroupListToggle = function (_React$Component4) {
   return GroupListToggle;
 }(_react2.default.Component);
 
-var MessageInputBox = function (_React$Component5) {
-  _inherits(MessageInputBox, _React$Component5);
+var AddMemberModal = function (_React$Component5) {
+  _inherits(AddMemberModal, _React$Component5);
 
-  function MessageInputBox(props) {
-    _classCallCheck(this, MessageInputBox);
+  function AddMemberModal(props) {
+    _classCallCheck(this, AddMemberModal);
 
-    var _this6 = _possibleConstructorReturn(this, (MessageInputBox.__proto__ || Object.getPrototypeOf(MessageInputBox)).call(this, props));
+    var _this6 = _possibleConstructorReturn(this, (AddMemberModal.__proto__ || Object.getPrototypeOf(AddMemberModal)).call(this, props));
 
-    _this6.priority = 'normal'; // Default priority
-    _this6.isComment = 'true';
-    _this6.setPriority = _this6.setPriority.bind(_this6);
-    _this6.sendMessage = _this6.sendMessage.bind(_this6);
-    _this6.state = {
-      priority: 'normal'
-    };
+    _this6.selectedMembers = [];
+    _this6.registeredMembers = {};
+    _this6.addMember = _this6.addMember.bind(_this6);
+    _this6.addNewMembers = _this6.addNewMembers.bind(_this6);
     return _this6;
   }
 
-  _createClass(MessageInputBox, [{
-    key: 'setPriority',
-    value: function setPriority(e) {
-      var _this7 = this;
-
-      var priority = e.target.id;
-      this.setState({ priority: priority }, function () {
-        console.log(_this7.state.priority);
-      });
+  _createClass(AddMemberModal, [{
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      var token = localStorage.getItem('token');
+      this.props._that.props.getPostItMembers(token);
     }
   }, {
-    key: 'sendMessage',
-    value: function sendMessage() {
-      var token = this.props._that.props.appInfo.userDetails.token;
+    key: 'componentWillUpdate',
+    value: function componentWillUpdate() {
+      this.registeredMembers = this.props._that.props.postItInfo.members.postItMembers;
+    }
+    // Method to add members to the group
+
+  }, {
+    key: 'addMember',
+    value: function addMember(selected, memberEmail) {
+      if (selected) {
+        // Add member
+        this.selectedMembers.push(memberEmail);
+      } else {
+        // Remove member if added earlier
+        var index = this.selectedMembers.indexOf(memberEmail);
+        this.selectedMembers.splice(index, 1);
+      }
+    }
+  }, {
+    key: 'addNewMembers',
+    value: function addNewMembers() {
+      var adderId = localStorage.getItem('userId');
+      var groupId = localStorage.getItem('groupId');
+      var token = localStorage.getItem('token');
+      var email = this.selectedMembers;
+      if (email.length > 0) {
+        this.props._that.props.addUser(email, groupId, adderId, token);
+      }
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this8 = this;
+      var _this7 = this;
+
+      var dataLoading = this.props._that.props.dataLoading;
+      var registeredMembers = this.registeredMembers;
+      return _react2.default.createElement(
+        'div',
+        { id: 'addMemberModal', className: 'modal grey' },
+        _react2.default.createElement(
+          'div',
+          { className: 'modal-content' },
+          _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(
+              'form',
+              null,
+              _react2.default.createElement(
+                'h3',
+                { className: 'center' },
+                'Add members'
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'registeredMembersList' },
+                _react2.default.createElement(
+                  'ul',
+                  { className: 'collection' },
+                  Object.keys(this.registeredMembers).map(function (userId, index) {
+                    return _react2.default.createElement(RegisteredMember, { addMember: _this7.addMember, key: index, id: userId, userInfo: _this7.registeredMembers[userId] });
+                  })
+                )
+              )
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'modal-footer' },
+          _react2.default.createElement(
+            'a',
+            { href: '#!', onClick: this.addNewMembers,
+              className: 'modal-action modal-close waves-effect waves-green btn-flat green-text' },
+            'Add'
+          ),
+          _react2.default.createElement(
+            'a',
+            { className: 'modal-action modal-close waves-effect waves-green btn-flat green-text' },
+            'Cancel'
+          )
+        )
+      );
+    }
+  }]);
+
+  return AddMemberModal;
+}(_react2.default.Component);
+
+// Component to contain a member loaded from the database
+
+
+var RegisteredMember = function (_React$Component6) {
+  _inherits(RegisteredMember, _React$Component6);
+
+  function RegisteredMember(props) {
+    _classCallCheck(this, RegisteredMember);
+
+    var _this8 = _possibleConstructorReturn(this, (RegisteredMember.__proto__ || Object.getPrototypeOf(RegisteredMember)).call(this, props));
+
+    _this8.selected = false;
+    _this8.addOrRemove = _this8.addOrRemove.bind(_this8);
+    return _this8;
+  }
+  // Method add or remove a member
+
+
+  _createClass(RegisteredMember, [{
+    key: 'addOrRemove',
+    value: function addOrRemove(event, email) {
+      this.selected = !this.selected;
+      this.props.addMember(this.selected, email);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this9 = this;
+
+      var userInfo = this.props.userInfo;
+      return _react2.default.createElement(
+        'li',
+        { className: 'collection-item' },
+        _react2.default.createElement('input', { id: this.props.userInfo.email,
+          type: 'checkbox',
+          onClick: function onClick() {
+            return _this9.addOrRemove(event, _this9.props.userInfo.email);
+          },
+          ref: this.props.userInfo.email }),
+        _react2.default.createElement(
+          'label',
+          { className: 'brown-text', htmlFor: this.props.userInfo.email },
+          userInfo.firstName,
+          ' ',
+          userInfo.lastName,
+          _react2.default.createElement(
+            'small',
+            { className: 'red-text' },
+            '   ',
+            this.props.userInfo.email
+          )
+        )
+      );
+    }
+  }]);
+
+  return RegisteredMember;
+}(_react2.default.Component);
+
+var MessageInputBox = function (_React$Component7) {
+  _inherits(MessageInputBox, _React$Component7);
+
+  function MessageInputBox(props) {
+    _classCallCheck(this, MessageInputBox);
+
+    var _this10 = _possibleConstructorReturn(this, (MessageInputBox.__proto__ || Object.getPrototypeOf(MessageInputBox)).call(this, props));
+
+    _this10.priority = 'normal'; // Default priority
+    _this10.isComment = 'true';
+    _this10.setPriority = _this10.setPriority.bind(_this10);
+    _this10.sendMessage = _this10.sendMessage.bind(_this10);
+    _this10.state = {
+      priority: 'normal'
+    };
+    return _this10;
+  }
+
+  _createClass(MessageInputBox, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      // Set focus to 'send' button
+      $('.message-box').keypress(function (event) {
+        if (event.which && event.which == 13 || event.keyCode && event.keyCode == 13) {
+          $('#member-list-button').click();
+          return false;
+        } else {
+          return true;
+        }
+      });
+    }
+  }, {
+    key: 'setPriority',
+    value: function setPriority(e) {
+      var priority = e.target.id;
+      this.setState({ priority: priority });
+    }
+  }, {
+    key: 'sendMessage',
+    value: function sendMessage() {
+      var token = localStorage.getItem('token');
+      var senderId = localStorage.getItem('userId');
+      var groupId = localStorage.getItem('groupId');
+      var isComment = this.isComment;
+      var priority = this.state.priority;
+      var body = void 0;
+      if (this.state.priority === 'comment') {
+        priority = 'normal'; // A comment has normal priority
+        body = this.commentBody.value;
+        this.isComment = 'true';
+        // Clear input bo
+        this.commentBody.value = '';
+      } else {
+        body = this.postBody.value;
+        this.isComment = 'false';
+        // Clear input box
+        this.postBody.value = '';
+      }
+      // Check for empty message body before sending
+      if (body && body.trim()) {
+        this.props._that.props.postMessage(senderId, groupId, body, priority, this.isComment, token);
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this11 = this;
 
       return _react2.default.createElement(
         'div',
@@ -38646,7 +39086,7 @@ var MessageInputBox = function (_React$Component5) {
               'div',
               { className: 'col center s12 m8 offset-m2 l8 offset-l2' },
               _react2.default.createElement('input', { name: 'priority', onClick: this.setPriority, ref: function ref(normal) {
-                  _this8.normal = normal;
+                  _this11.normal = normal;
                 }, type: 'radio', id: 'normal', defaultChecked: true }),
               _react2.default.createElement(
                 'label',
@@ -38654,7 +39094,7 @@ var MessageInputBox = function (_React$Component5) {
                 'Normal'
               ),
               _react2.default.createElement('input', { name: 'priority', onClick: this.setPriority, ref: function ref(urgent) {
-                  _this8.urgent = urgent;
+                  _this11.urgent = urgent;
                 }, type: 'radio', id: 'urgent' }),
               _react2.default.createElement(
                 'label',
@@ -38662,7 +39102,7 @@ var MessageInputBox = function (_React$Component5) {
                 'Urgent'
               ),
               _react2.default.createElement('input', { name: 'priority', onClick: this.setPriority, ref: function ref(critical) {
-                  _this8.critical = critical;
+                  _this11.critical = critical;
                 }, type: 'radio', id: 'critical' }),
               _react2.default.createElement(
                 'label',
@@ -38670,7 +39110,7 @@ var MessageInputBox = function (_React$Component5) {
                 'Critical'
               ),
               _react2.default.createElement('input', { name: 'priority', onClick: this.setPriority, ref: function ref(comment) {
-                  _this8.comment = comment;
+                  _this11.comment = comment;
                 }, type: 'radio', id: 'comment' }),
               _react2.default.createElement(
                 'label',
@@ -38687,14 +39127,16 @@ var MessageInputBox = function (_React$Component5) {
                 _react2.default.createElement(
                   'div',
                   { className: 'text-input-field' },
-                  _react2.default.createElement('input', { className: 'black-text materialize-textarea', type: 'text', name: 'mymessage', defaultValue: "" })
+                  _react2.default.createElement('input', { className: 'black-text materialize-textarea', ref: function ref(commentBody) {
+                      _this11.commentBody = commentBody;
+                    }, type: 'text', name: 'mymessage', defaultValue: "" })
                 ),
                 _react2.default.createElement(
                   'div',
                   { className: 'send-comment-button' },
                   _react2.default.createElement(
                     'button',
-                    { id: 'member-list-button', className: 'btn' },
+                    { autoFocus: true, id: 'member-list-button', onClick: this.sendMessage, className: 'btn' },
                     _react2.default.createElement(
                       'i',
                       { className: 'material-icons' },
@@ -38708,14 +39150,16 @@ var MessageInputBox = function (_React$Component5) {
                 _react2.default.createElement(
                   'div',
                   { className: 'text-input-field' },
-                  _react2.default.createElement('textarea', { className: 'black-text materialize-textarea', type: 'text', name: 'mymessage', defaultValue: "" })
+                  _react2.default.createElement('textarea', { className: 'black-text materialize-textarea', ref: function ref(postBody) {
+                      _this11.postBody = postBody;
+                    }, type: 'text', name: 'mymessage', defaultValue: "" })
                 ),
                 _react2.default.createElement(
                   'div',
                   { className: 'send-button' },
                   _react2.default.createElement(
                     'button',
-                    { id: 'member-list-button', className: 'btn' },
+                    { autoFocus: true, id: 'member-list-button', onClick: this.sendMessage, className: 'btn' },
                     _react2.default.createElement(
                       'i',
                       { className: 'material-icons' },
@@ -38734,8 +39178,8 @@ var MessageInputBox = function (_React$Component5) {
   return MessageInputBox;
 }(_react2.default.Component);
 
-var Messages = function (_React$Component6) {
-  _inherits(Messages, _React$Component6);
+var Messages = function (_React$Component8) {
+  _inherits(Messages, _React$Component8);
 
   function Messages() {
     _classCallCheck(this, Messages);
@@ -38744,60 +39188,61 @@ var Messages = function (_React$Component6) {
   }
 
   _createClass(Messages, [{
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      // Scroll page body to last message
+      this.bodyRef.scrollIntoView({
+        behavior: 'smooth'
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var messages = [{
-        sentBy: 'Ade Balogun',
-        body: 'I will not be able to make it to the meeting',
-        createdAt: 'Post created 12:06:2017, 11:34am',
-        priority: 'critical'
-      }, {
-        sentBy: 'John Smith',
-        body: 'We will try to make up for your absence. Take care.',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'urgent'
-      }, {
-        sentBy: 'Joy Okafor',
-        body: 'Can we get someone to fill his place?',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'normal'
-      }, {
-        sentBy: 'John Keneddy',
-        body: 'Can we get someone to fill his place?',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'comment'
-      }, {
-        sentBy: 'John Smith',
-        body: 'We will try to make up for your absence. Take care.',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'critical'
-      }, {
-        sentBy: 'John Smith',
-        body: 'We will try to make up for your absence. Take care.',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'urgent'
-      }, {
-        sentBy: 'Joy Okafor',
-        body: 'Can we get someone to fill his place?',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'normal'
-      }, {
-        sentBy: 'John Keneddy',
-        body: 'Can we get someone to fill his place?',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'none'
-      }, {
-        sentBy: 'John Smith',
-        body: 'We will try to make up for your absence. Take care.',
-        createdAt: 'Post created 12:06:2017, 11:50am',
-        priority: 'none'
-      }];
+      var _this13 = this;
+
+      var groupId = localStorage.getItem('groupId');
+      var groupLoaded = this.props._that.props.groups.userGroups[groupId];
+      var userId = localStorage.getItem('userId');
+      var messages = void 0;
+      // Check that group data is loaded
+      if (groupLoaded && userId) {
+        messages = this.props._that.props.groups.userGroups[groupId].messages;
+      }
       return _react2.default.createElement(
-        'ul',
-        { id: 'messages', className: 'messages row' },
-        messages.map(function (messageDetails, index) {
-          return _react2.default.createElement(Message, { key: index, messageDetails: messageDetails });
-        })
+        'div',
+        null,
+        _react2.default.createElement(
+          'ul',
+          { id: 'messages', className: 'messages row' },
+          messages ? messages.map(function (messageDetails, index) {
+            return _react2.default.createElement(Message, { userId: userId, key: index, messageDetails: messageDetails });
+          }) : _react2.default.createElement(
+            'div',
+            { className: 'preloader-wrapper loader big active' },
+            _react2.default.createElement(
+              'div',
+              { className: 'spinner-layer spinner-green-only' },
+              _react2.default.createElement(
+                'div',
+                { className: 'circle-clipper left' },
+                _react2.default.createElement('div', { className: 'circle' })
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'gap-patch' },
+                _react2.default.createElement('div', { className: 'circle' })
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'circle-clipper right' },
+                _react2.default.createElement('div', { className: 'circle' })
+              )
+            )
+          )
+        ),
+        _react2.default.createElement('div', { id: '', ref: function ref(bodyRef) {
+            _this13.bodyRef = bodyRef;
+          } })
       );
     }
   }]);
@@ -38805,8 +39250,8 @@ var Messages = function (_React$Component6) {
   return Messages;
 }(_react2.default.Component);
 
-var GroupMembers = function (_React$Component7) {
-  _inherits(GroupMembers, _React$Component7);
+var GroupMembers = function (_React$Component9) {
+  _inherits(GroupMembers, _React$Component9);
 
   function GroupMembers(props) {
     _classCallCheck(this, GroupMembers);
@@ -38818,58 +39263,16 @@ var GroupMembers = function (_React$Component7) {
     key: 'render',
     value: function render() {
       var groupMembers = this.props.groupMembers;
-      var groupaMembers = {
-        1: {
-          firstName: 'Ade Balogun',
-          lastName: 'Balogun',
-          email: 'adebalogun@yahoo.com',
-          id: 1
-        },
-        2: {
-          firstName: 'John Smith',
-          lastName: 'Smith',
-          email: 'johnsmith@yahoo.com',
-          id: 2
-        },
-        3: {
-          firstName: 'Joy Okafor',
-          lastName: 'Okafor',
-          email: 'joyokafor@yahoo.com',
-          id: 3
-        },
-        4: {
-          firstName: 'John Kennedy',
-          lastName: 'John',
-          email: 'johnkennedy@yahoo.com',
-          id: 4
-        },
-        5: {
-          firstName: 'Ade Balogun',
-          lastName: 'Ade',
-          email: 'adebalogun@yahoo.com',
-          id: 5
-        },
-        6: {
-          firstName: 'John Smith',
-          lastName: 'Smith',
-          email: 'johnsmith@yahoo.com',
-          id: 6
-        },
-        7: {
-          name: 'Joy Okafor',
-          email: 'joyokafor@yahoo.com',
-          id: 7
-        }
-      };
+      var creatorEmail = this.props.creatorEmail;
       return _react2.default.createElement(
         'ul',
         { className: 'collection members-list' },
         groupMembers ? Object.keys(groupMembers).map(function (memberId, index) {
-          return _react2.default.createElement(GroupMember, { key: index, memberDetails: groupMembers[memberId] });
+          return _react2.default.createElement(GroupMember, { key: index, creatorEmail: creatorEmail, memberDetails: groupMembers[memberId] });
         }) : _react2.default.createElement(
           'div',
-          null,
-          'Loading...'
+          { className: 'progress center pink-text' },
+          _react2.default.createElement('div', { className: 'indeterminate' })
         )
       );
     }
@@ -38878,20 +39281,42 @@ var GroupMembers = function (_React$Component7) {
   return GroupMembers;
 }(_react2.default.Component);
 
-var GroupMember = function (_React$Component8) {
-  _inherits(GroupMember, _React$Component8);
+var GroupMember = function (_React$Component10) {
+  _inherits(GroupMember, _React$Component10);
 
-  function GroupMember() {
+  function GroupMember(props) {
     _classCallCheck(this, GroupMember);
 
-    return _possibleConstructorReturn(this, (GroupMember.__proto__ || Object.getPrototypeOf(GroupMember)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (GroupMember.__proto__ || Object.getPrototypeOf(GroupMember)).call(this, props));
   }
 
   _createClass(GroupMember, [{
     key: 'render',
     value: function render() {
       var memberDetails = this.props.memberDetails;
-      return _react2.default.createElement(
+      var creatorEmail = this.props.creatorEmail;
+      return memberDetails.email === creatorEmail ? _react2.default.createElement(
+        'li',
+        { className: 'collection-item' },
+        memberDetails.firstName,
+        ' ',
+        memberDetails.lastName,
+        _react2.default.createElement('br', null),
+        _react2.default.createElement(
+          'small',
+          { className: 'grey-text' },
+          memberDetails.email
+        ),
+        _react2.default.createElement(
+          'a',
+          { id: memberDetails.id, value: memberDetails.name, className: 'secondary-content modal-trigger pink-text text-darken-4' },
+          _react2.default.createElement(
+            'i',
+            { className: 'material-icons' },
+            'person'
+          )
+        )
+      ) : _react2.default.createElement(
         'li',
         { className: 'collection-item' },
         memberDetails.firstName,
@@ -38919,8 +39344,8 @@ var GroupMember = function (_React$Component8) {
   return GroupMember;
 }(_react2.default.Component);
 
-var Message = function (_React$Component9) {
-  _inherits(Message, _React$Component9);
+var Message = function (_React$Component11) {
+  _inherits(Message, _React$Component11);
 
   function Message() {
     _classCallCheck(this, Message);
@@ -38932,12 +39357,52 @@ var Message = function (_React$Component9) {
     key: 'render',
     value: function render() {
       var messageDetails = this.props.messageDetails;
+      var userId = this.props.userId;
       var priority = messageDetails.priority;
+      var isComment = messageDetails.isComment;
+      var className = void 0;
+      if (userId === messageDetails.senderId) {
+        className = 'ownmessage message card col s11 offset-s1';
+      } else {
+        className = 'message card col s11';
+      }
       switch (priority) {
         case 'normal':
-          return _react2.default.createElement(
+          // Comments also have normal priority, but don't send notificatins
+          return isComment ? _react2.default.createElement(
             'li',
-            { className: 'message card col s11' },
+            { className: className },
+            _react2.default.createElement(
+              'small',
+              { className: 'sender-name' },
+              messageDetails.sentBy,
+              _react2.default.createElement(
+                'a',
+                { className: 'secondary-content grey-text' },
+                _react2.default.createElement(
+                  'i',
+                  { className: 'material-icons' },
+                  'lens'
+                )
+              )
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'message-body white-text' },
+              messageDetails.body
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'message-info' },
+              _react2.default.createElement(
+                'small',
+                null,
+                messageDetails.createdAt
+              )
+            )
+          ) : _react2.default.createElement(
+            'li',
+            { className: className },
             _react2.default.createElement(
               'small',
               { className: 'sender-name' },
@@ -38970,7 +39435,7 @@ var Message = function (_React$Component9) {
         case 'urgent':
           return _react2.default.createElement(
             'li',
-            { className: 'message card col s11' },
+            { className: className },
             _react2.default.createElement(
               'small',
               { className: 'sender-name' },
@@ -39003,7 +39468,7 @@ var Message = function (_React$Component9) {
         case 'critical':
           return _react2.default.createElement(
             'li',
-            { className: 'ownmessage message card col s11 offset-s1' },
+            { className: className },
             _react2.default.createElement(
               'small',
               { className: 'sender-name' },
@@ -39036,7 +39501,7 @@ var Message = function (_React$Component9) {
         default:
           return _react2.default.createElement(
             'li',
-            { className: 'ownmessage message card col s11 offset-s1' },
+            { className: className },
             _react2.default.createElement(
               'small',
               { className: 'sender-name' },
@@ -39073,21 +39538,22 @@ var Message = function (_React$Component9) {
   return Message;
 }(_react2.default.Component);
 
-var Nav = function (_React$Component10) {
-  _inherits(Nav, _React$Component10);
+var NavBar = function (_React$Component12) {
+  _inherits(NavBar, _React$Component12);
 
-  function Nav() {
-    _classCallCheck(this, Nav);
+  function NavBar() {
+    _classCallCheck(this, NavBar);
 
-    return _possibleConstructorReturn(this, (Nav.__proto__ || Object.getPrototypeOf(Nav)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (NavBar.__proto__ || Object.getPrototypeOf(NavBar)).apply(this, arguments));
   }
 
-  _createClass(Nav, [{
+  _createClass(NavBar, [{
     key: 'render',
     value: function render() {
-      var groupId = this.props._that.props.appInfo.loadedChat.groupId;
+      var groupId = localStorage.getItem('groupId');
       var userGroups = this.props._that.props.allUserGroups;
-      var userDetails = this.props._that.props.appInfo.userDetails;
+      var userDetailsString = localStorage.getItem('userDetails');
+      var userDetails = JSON.parse(userDetailsString);
       var allUserGroups = this.props._that.props.allUserGroups.userGroups;
       return _react2.default.createElement(
         'div',
@@ -39115,6 +39581,19 @@ var Nav = function (_React$Component10) {
             _react2.default.createElement(
               'ul',
               { className: 'right' },
+              _react2.default.createElement(
+                'li',
+                null,
+                _react2.default.createElement(
+                  'a',
+                  { href: '/messageboard' },
+                  _react2.default.createElement(
+                    'i',
+                    { className: 'material-icons' },
+                    'view_module'
+                  )
+                )
+              ),
               _react2.default.createElement(
                 'li',
                 null,
@@ -39195,8 +39674,8 @@ var Nav = function (_React$Component10) {
                     'li',
                     null,
                     _react2.default.createElement(
-                      _reactRouterDom.Link,
-                      { to: '/creategroup', className: 'black-text' },
+                      'a',
+                      { href: '/creategroup', className: 'black-text' },
                       _react2.default.createElement(
                         'i',
                         { className: 'material-icons green-text' },
@@ -39384,7 +39863,7 @@ var Nav = function (_React$Component10) {
                   )
                 )
               ),
-              _react2.default.createElement(Groups, { allUserGroups: allUserGroups }),
+              _react2.default.createElement(Groups, { _that: this.props._that, allUserGroups: allUserGroups }),
               _react2.default.createElement('hr', null),
               _react2.default.createElement(
                 'li',
@@ -39422,11 +39901,14 @@ var Nav = function (_React$Component10) {
     }
   }]);
 
-  return Nav;
+  return NavBar;
 }(_react2.default.Component);
 
-var Groups = function (_React$Component11) {
-  _inherits(Groups, _React$Component11);
+// Component to hold the groups a user belongs to
+
+
+var Groups = function (_React$Component13) {
+  _inherits(Groups, _React$Component13);
 
   function Groups() {
     _classCallCheck(this, Groups);
@@ -39437,25 +39919,14 @@ var Groups = function (_React$Component11) {
   _createClass(Groups, [{
     key: 'render',
     value: function render() {
+      var _this19 = this;
+
       var allUserGroups = this.props.allUserGroups;
       return _react2.default.createElement(
         'ul',
         { className: 'list-side-nav' },
         Object.keys(allUserGroups).map(function (groupId, index) {
-          return _react2.default.createElement(
-            'li',
-            { key: index },
-            _react2.default.createElement(
-              'a',
-              { href: '#' },
-              _react2.default.createElement(
-                'i',
-                { className: 'material-icons teal-text' },
-                'people_outline'
-              ),
-              allUserGroups[groupId].info.title
-            )
-          );
+          return _react2.default.createElement(UserGroup, { _that: _this19.props._that, key: index, groupDetails: allUserGroups[groupId].info });
         })
       );
     }
@@ -39463,9 +39934,63 @@ var Groups = function (_React$Component11) {
 
   return Groups;
 }(_react2.default.Component);
+// Component to hold the details of each group a user belongs to
 
-var GroupDeleteModal = function (_React$Component12) {
-  _inherits(GroupDeleteModal, _React$Component12);
+
+var UserGroup = function (_React$Component14) {
+  _inherits(UserGroup, _React$Component14);
+
+  function UserGroup(props) {
+    _classCallCheck(this, UserGroup);
+
+    var _this20 = _possibleConstructorReturn(this, (UserGroup.__proto__ || Object.getPrototypeOf(UserGroup)).call(this, props));
+
+    _this20.loadMessagesAndMembers = _this20.loadMessagesAndMembers.bind(_this20);
+    return _this20;
+  }
+
+  _createClass(UserGroup, [{
+    key: 'loadMessagesAndMembers',
+    value: function loadMessagesAndMembers(e) {
+      var groupId = e.target.id;
+      var token = localStorage.getItem('token');
+      // Load messages into the conversation page
+      this.props._that.props.loadMessages(groupId);
+      this.props._that.props.getMessages(groupId, token);
+
+      var userId = localStorage.getItem('userId');
+      // Load user groups
+      this.props._that.props.getAllGroupsForUser(userId, token);
+      // Load all members of the group
+      this.props._that.props.getGroupMembers(groupId, token);
+      localStorage.setItem('groupId', groupId);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var groupDetails = this.props.groupDetails;
+      return _react2.default.createElement(
+        'li',
+        null,
+        _react2.default.createElement(
+          'a',
+          { onClick: this.loadMessagesAndMembers, id: groupDetails.id },
+          _react2.default.createElement(
+            'i',
+            { className: 'material-icons teal-text' },
+            'people_outline'
+          ),
+          groupDetails.title
+        )
+      );
+    }
+  }]);
+
+  return UserGroup;
+}(_react2.default.Component);
+
+var GroupDeleteModal = function (_React$Component15) {
+  _inherits(GroupDeleteModal, _React$Component15);
 
   function GroupDeleteModal() {
     _classCallCheck(this, GroupDeleteModal);
@@ -39498,13 +40023,14 @@ var GroupDeleteModal = function (_React$Component12) {
           { className: 'modal-footer' },
           _react2.default.createElement(
             'a',
-            { href: '#!', onClick: this.props.deleteGroup, className: 'modal-action modal-close waves-effect waves-green btn-flat green-text' },
-            'Agree'
+            { href: '#!', onClick: this.props.deleteGroup,
+              className: 'modal-action modal-close waves-effect waves-green btn-flat green-text' },
+            'Delete'
           ),
           _react2.default.createElement(
             'a',
             { className: 'modal-action modal-close waves-effect waves-green btn-flat green-text' },
-            'Disagree'
+            'Cancel'
           )
         )
       );
@@ -39523,8 +40049,9 @@ var mapStateToProps = function mapStateToProps(state) {
     appInfo: {
       userDetails: state.appInfo.userDetails,
       authState: state.appInfo.authState,
-      loadedChat: state.appInfo.loadedChat
-    }
+      loadedMessages: state.appInfo.loadedMessages
+    },
+    postItInfo: state.postItInfo
   };
 };
 
@@ -39549,6 +40076,12 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     }(function () {
       return dispatch(resetErrorLog());
     }),
+    resetRedirect: function resetRedirect() {
+      return dispatch((0, _actions.resetRedirect)());
+    },
+    verifyToken: function verifyToken(token) {
+      return dispatch((0, _actions.verifyToken)(token));
+    },
     deleteMember: function deleteMember(ownerId, idToDelete, groupId, token) {
       return dispatch((0, _actions.deleteMember)(ownerId, idToDelete, groupId, token));
     },
@@ -39558,8 +40091,17 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     getMessages: function getMessages(groupId, token) {
       return dispatch((0, _actions.getMessages)(groupId, token));
     },
-    postMessage: function postMessage(senderId, body, priority, isComment, token) {
-      return dispatch((0, _actions.postMessage)(senderId, body, priority, isComment, token));
+    loadMessages: function loadMessages() {
+      return dispatch((0, _actions.loadMessages)());
+    },
+    getPostItMembers: function getPostItMembers(token) {
+      return dispatch((0, _actions.getPostItMembers)(token));
+    },
+    addUser: function addUser(email, groupId, adderId, token) {
+      return dispatch((0, _actions.addUser)(email, groupId, adderId, token));
+    },
+    postMessage: function postMessage(senderId, groupId, body, priority, isComment, token) {
+      return dispatch((0, _actions.postMessage)(senderId, groupId, body, priority, isComment, token));
     }
   };
 };
@@ -39571,7 +40113,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function($) {
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -39589,7 +40131,7 @@ var _reactNotificationSystem = __webpack_require__(70);
 
 var _reactNotificationSystem2 = _interopRequireDefault(_reactNotificationSystem);
 
-var _actions = __webpack_require__(33);
+var _actions = __webpack_require__(32);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -39622,19 +40164,16 @@ var SignUp = function (_React$Component) {
   return SignUp;
 }(_react2.default.Component);
 
-var Nav = function (_React$Component2) {
-  _inherits(Nav, _React$Component2);
+var NavBar = function (_React$Component2) {
+  _inherits(NavBar, _React$Component2);
 
-  function Nav() {
-    _classCallCheck(this, Nav);
+  function NavBar() {
+    _classCallCheck(this, NavBar);
 
-    return _possibleConstructorReturn(this, (Nav.__proto__ || Object.getPrototypeOf(Nav)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (NavBar.__proto__ || Object.getPrototypeOf(NavBar)).apply(this, arguments));
   }
 
-  _createClass(Nav, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {}
-  }, {
+  _createClass(NavBar, [{
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -39710,7 +40249,7 @@ var Nav = function (_React$Component2) {
     }
   }]);
 
-  return Nav;
+  return NavBar;
 }(_react2.default.Component);
 
 var Body = function (_React$Component3) {
@@ -39730,7 +40269,37 @@ var Body = function (_React$Component3) {
   _createClass(Body, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+      // Initialize notification component
       this._notificationSystem = this.notificationRef;
+      // Set focus to SignUp button
+      $('#signUpForm').keypress(function (event) {
+        if (event.which && event.which == 13 || event.keyCode && event.keyCode == 13) {
+          $('#signUpButton').click();
+          return false;
+        } else {
+          return true;
+        }
+      });
+    }
+  }, {
+    key: 'componentWillUpdate',
+    value: function componentWillUpdate() {
+      var isSignedIn = this.props._that.props.appInfo.authState.signedIn;
+      var errorMessage = this.props._that.props.apiError.message;
+      if (isSignedIn) {
+        var token = this.props._that.props.appInfo.userDetails.token;
+        var userId = this.props._that.props.appInfo.userDetails.id;
+        var userDetails = this.props._that.props.appInfo.userDetails;
+        localStorage.setItem('userId', userId);
+        localStorage.setItem('token', token);
+        localStorage.setItem('userDetails', JSON.stringify(userDetails));
+        window.location = '/messageboard';
+      } else {
+        if (errorMessage) {
+          this.showNotification('error', errorMessage);
+          this.props._that.props.resetErrorLog();
+        }
+      }
     }
   }, {
     key: 'signUp',
@@ -39749,21 +40318,6 @@ var Body = function (_React$Component3) {
         message: message,
         level: level
       });
-    }
-  }, {
-    key: 'componentWillUpdate',
-    value: function componentWillUpdate() {
-      var isSignedIn = this.props._that.props.appInfo.authState.signedIn;
-      var errorMessage = this.props._that.props.apiError.message;
-      console.log(isSignedIn, errorMessage);
-      if (isSignedIn) {
-        this.props._that.props.history.push('/messageboard');
-      } else {
-        if (errorMessage) {
-          this.showNotification('success', errorMessage);
-          this.props._that.props.resetErrorLog();
-        }
-      }
     }
   }, {
     key: 'render',
@@ -39786,7 +40340,7 @@ var Body = function (_React$Component3) {
       return _react2.default.createElement(
         'div',
         { id: 'body' },
-        _react2.default.createElement(Nav, null),
+        _react2.default.createElement(NavBar, null),
         _react2.default.createElement(
           'div',
           { id: 'main' },
@@ -39801,7 +40355,7 @@ var Body = function (_React$Component3) {
                 } }),
               _react2.default.createElement(
                 'div',
-                { className: 'row' },
+                { id: 'signUpForm', className: 'row' },
                 _react2.default.createElement(
                   'div',
                   null,
@@ -39876,7 +40430,7 @@ var Body = function (_React$Component3) {
                   { className: 'center' },
                   _react2.default.createElement(
                     'button',
-                    { onClick: this.signUp, className: 'btn center green darken-4', autoFocus: true },
+                    { onClick: this.signUp, id: 'signUpButton', className: 'btn center green darken-4', autoFocus: true },
                     'Sign up'
                   )
                 ),
@@ -39889,7 +40443,7 @@ var Body = function (_React$Component3) {
                     'Already have an account? ',
                     _react2.default.createElement(
                       'a',
-                      { href: '#' },
+                      { href: '/' },
                       'Sign in'
                     )
                   )
@@ -39960,6 +40514,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   };
 };
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(SignUp);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
 /***/ }),
 /* 131 */
@@ -39976,13 +40531,13 @@ var _reactDom = __webpack_require__(81);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _redux = __webpack_require__(61);
+var _redux = __webpack_require__(60);
 
 var _reducers = __webpack_require__(245);
 
 var _reducers2 = _interopRequireDefault(_reducers);
 
-var _reactRouterDom = __webpack_require__(30);
+var _reactRouterDom = __webpack_require__(62);
 
 var _reactRedux = __webpack_require__(25);
 
@@ -40039,12 +40594,12 @@ var appStore = {
   groups: { meta: { count: 0 }, userGroups: { 1: { members: { 1: {}, 2: {} }, groupId: '1', messages: [], info: { title: 'A Test Group', description: 'Details about it' } } } },
   // This will contain all the groups and everything about each
   allUserGroups: { meta: { count: 0 }, userGroups: { 1: { members: { 1: {}, 2: {} }, groupId: '1', messages: [], info: { title: 'Just A Test Group', description: 'Some Deets' } } } },
-  apiError: { errored: false, message: null }, // This indicates any error during queries to the API
+  apiError: { errored: false, message: null, redirect: { yes: false, to: null } }, // This indicates any error during queries to the API
   appInfo: {
-    userDetails: { firstName: 'a', lastName: 'a', id: 'ee1c8fed-6dff-491d-a4fc-31bedb63bde3', token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmaXJzdE5hbWUiOiJWaWN0b3IiLCJsYXN0TmFtZSI6Iklkb25nZXNpdCIsImVtYWlsIjoidmljdG9yLmlkb25nZXNpdEBhbmRlbGEuY29tIiwicGhvbmUiOiIwNzA2OTc0OTk0NSIsImlkIjoiZWUxYzhmZWQtNmRmZi00OTFkLWE0ZmMtMzFiZWRiNjNiZGUzIiwiaWF0IjoxNTAxNDQ5Mzg0LCJleHAiOjE1MDE2MjIxODR9.84HRVf7wOGJ2uZIUue8HymRAndScO7Le0g2fRZvPw5k', email: '', phone: '' },
-    authState: { signedIn: false, redirect: false },
-    loadedChat: {
-      groupId: '5f91c780-4d6d-40b6-815a-7fc1962c9563'
+    userDetails: { firstName: null, lastName: null, id: null, token: null, email: null, phone: null },
+    authState: { signedIn: false, message: null },
+    loadedMessages: {
+      groupId: null
     }
   },
   dataLoading: true,
@@ -41001,7 +41556,7 @@ module.exports = factory(isValidElement);
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(1);
   var warning = __webpack_require__(2);
-  var ReactPropTypesSecret = __webpack_require__(44);
+  var ReactPropTypesSecret = __webpack_require__(43);
   var loggedTypeFailures = {};
 }
 
@@ -42123,8 +42678,8 @@ var ReactUpdates = __webpack_require__(15);
 var SyntheticEvent = __webpack_require__(16);
 
 var inputValueTracking = __webpack_require__(88);
-var getEventTarget = __webpack_require__(47);
-var isEventSupported = __webpack_require__(48);
+var getEventTarget = __webpack_require__(46);
+var isEventSupported = __webpack_require__(47);
 var isTextInputElement = __webpack_require__(89);
 
 var eventTypes = {
@@ -43174,7 +43729,7 @@ module.exports = DefaultEventPluginOrder;
 
 var EventPropagators = __webpack_require__(26);
 var ReactDOMComponentTree = __webpack_require__(5);
-var SyntheticMouseEvent = __webpack_require__(38);
+var SyntheticMouseEvent = __webpack_require__(37);
 
 var eventTypes = {
   mouseEnter: {
@@ -43516,7 +44071,7 @@ module.exports = HTMLDOMPropertyConfig;
 
 
 
-var DOMChildrenOperations = __webpack_require__(50);
+var DOMChildrenOperations = __webpack_require__(49);
 var ReactDOMIDOperations = __webpack_require__(169);
 
 /**
@@ -43925,7 +44480,7 @@ module.exports = getMarkupWrap;
 
 
 
-var DOMChildrenOperations = __webpack_require__(50);
+var DOMChildrenOperations = __webpack_require__(49);
 var ReactDOMComponentTree = __webpack_require__(5);
 
 /**
@@ -43971,12 +44526,12 @@ var _prodInvariant = __webpack_require__(4),
 var AutoFocusUtils = __webpack_require__(171);
 var CSSPropertyOperations = __webpack_require__(172);
 var DOMLazyTree = __webpack_require__(24);
-var DOMNamespaces = __webpack_require__(51);
+var DOMNamespaces = __webpack_require__(50);
 var DOMProperty = __webpack_require__(17);
 var DOMPropertyOperations = __webpack_require__(94);
 var EventPluginHub = __webpack_require__(27);
-var EventPluginRegistry = __webpack_require__(36);
-var ReactBrowserEventEmitter = __webpack_require__(41);
+var EventPluginRegistry = __webpack_require__(35);
+var ReactBrowserEventEmitter = __webpack_require__(40);
 var ReactDOMComponentFlags = __webpack_require__(82);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactDOMInput = __webpack_require__(182);
@@ -43988,12 +44543,12 @@ var ReactMultiChild = __webpack_require__(185);
 var ReactServerRenderingTransaction = __webpack_require__(194);
 
 var emptyFunction = __webpack_require__(10);
-var escapeTextContentForBrowser = __webpack_require__(40);
+var escapeTextContentForBrowser = __webpack_require__(39);
 var invariant = __webpack_require__(1);
-var isEventSupported = __webpack_require__(48);
-var shallowEqual = __webpack_require__(55);
+var isEventSupported = __webpack_require__(47);
+var shallowEqual = __webpack_require__(54);
 var inputValueTracking = __webpack_require__(88);
-var validateDOMNesting = __webpack_require__(59);
+var validateDOMNesting = __webpack_require__(58);
 var warning = __webpack_require__(2);
 
 var Flags = ReactDOMComponentFlags;
@@ -45513,7 +46068,7 @@ module.exports = memoizeStringOnly;
 
 
 
-var escapeTextContentForBrowser = __webpack_require__(40);
+var escapeTextContentForBrowser = __webpack_require__(39);
 
 /**
  * Escapes attribute value to prevent scripting attacks.
@@ -45691,7 +46246,7 @@ var _prodInvariant = __webpack_require__(4),
     _assign = __webpack_require__(6);
 
 var DOMPropertyOperations = __webpack_require__(94);
-var LinkedValueUtils = __webpack_require__(53);
+var LinkedValueUtils = __webpack_require__(52);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactUpdates = __webpack_require__(15);
 
@@ -46111,7 +46666,7 @@ module.exports = ReactDOMOption;
 var _prodInvariant = __webpack_require__(4),
     _assign = __webpack_require__(6);
 
-var LinkedValueUtils = __webpack_require__(53);
+var LinkedValueUtils = __webpack_require__(52);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactUpdates = __webpack_require__(15);
 
@@ -46276,7 +46831,7 @@ module.exports = ReactDOMTextarea;
 
 var _prodInvariant = __webpack_require__(4);
 
-var ReactComponentEnvironment = __webpack_require__(54);
+var ReactComponentEnvironment = __webpack_require__(53);
 var ReactInstanceMap = __webpack_require__(29);
 var ReactInstrumentation = __webpack_require__(12);
 
@@ -46729,8 +47284,8 @@ module.exports = ReactMultiChild;
 var ReactReconciler = __webpack_require__(23);
 
 var instantiateReactComponent = __webpack_require__(97);
-var KeyEscapeUtils = __webpack_require__(57);
-var shouldUpdateReactComponent = __webpack_require__(56);
+var KeyEscapeUtils = __webpack_require__(56);
+var shouldUpdateReactComponent = __webpack_require__(55);
 var traverseAllChildren = __webpack_require__(101);
 var warning = __webpack_require__(2);
 
@@ -46889,9 +47444,9 @@ var _prodInvariant = __webpack_require__(4),
     _assign = __webpack_require__(6);
 
 var React = __webpack_require__(21);
-var ReactComponentEnvironment = __webpack_require__(54);
+var ReactComponentEnvironment = __webpack_require__(53);
 var ReactCurrentOwner = __webpack_require__(14);
-var ReactErrorUtils = __webpack_require__(46);
+var ReactErrorUtils = __webpack_require__(45);
 var ReactInstanceMap = __webpack_require__(29);
 var ReactInstrumentation = __webpack_require__(12);
 var ReactNodeTypes = __webpack_require__(98);
@@ -46901,10 +47456,10 @@ if (process.env.NODE_ENV !== 'production') {
   var checkReactTypeSpec = __webpack_require__(188);
 }
 
-var emptyObject = __webpack_require__(35);
+var emptyObject = __webpack_require__(34);
 var invariant = __webpack_require__(1);
-var shallowEqual = __webpack_require__(55);
-var shouldUpdateReactComponent = __webpack_require__(56);
+var shallowEqual = __webpack_require__(54);
+var shouldUpdateReactComponent = __webpack_require__(55);
 var warning = __webpack_require__(2);
 
 var CompositeTypes = {
@@ -48013,7 +48568,7 @@ module.exports = getIteratorFn;
 
 
 
-var KeyEscapeUtils = __webpack_require__(57);
+var KeyEscapeUtils = __webpack_require__(56);
 var traverseAllChildren = __webpack_require__(101);
 var warning = __webpack_require__(2);
 
@@ -48097,7 +48652,7 @@ module.exports = flattenChildren;
 var _assign = __webpack_require__(6);
 
 var PooledClass = __webpack_require__(19);
-var Transaction = __webpack_require__(37);
+var Transaction = __webpack_require__(36);
 var ReactInstrumentation = __webpack_require__(12);
 var ReactServerUpdateQueue = __webpack_require__(195);
 
@@ -48193,7 +48748,7 @@ module.exports = ReactServerRenderingTransaction;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var ReactUpdateQueue = __webpack_require__(58);
+var ReactUpdateQueue = __webpack_require__(57);
 
 var warning = __webpack_require__(2);
 
@@ -48545,13 +49100,13 @@ module.exports = {
 var _prodInvariant = __webpack_require__(4),
     _assign = __webpack_require__(6);
 
-var DOMChildrenOperations = __webpack_require__(50);
+var DOMChildrenOperations = __webpack_require__(49);
 var DOMLazyTree = __webpack_require__(24);
 var ReactDOMComponentTree = __webpack_require__(5);
 
-var escapeTextContentForBrowser = __webpack_require__(40);
+var escapeTextContentForBrowser = __webpack_require__(39);
 var invariant = __webpack_require__(1);
-var validateDOMNesting = __webpack_require__(59);
+var validateDOMNesting = __webpack_require__(58);
 
 /**
  * Text nodes violate a couple assumptions that React makes about components:
@@ -48713,7 +49268,7 @@ module.exports = ReactDOMTextComponent;
 var _assign = __webpack_require__(6);
 
 var ReactUpdates = __webpack_require__(15);
-var Transaction = __webpack_require__(37);
+var Transaction = __webpack_require__(36);
 
 var emptyFunction = __webpack_require__(10);
 
@@ -48791,7 +49346,7 @@ var PooledClass = __webpack_require__(19);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactUpdates = __webpack_require__(15);
 
-var getEventTarget = __webpack_require__(47);
+var getEventTarget = __webpack_require__(46);
 var getUnboundedScrollPosition = __webpack_require__(201);
 
 /**
@@ -48989,10 +49544,10 @@ module.exports = getUnboundedScrollPosition;
 
 var DOMProperty = __webpack_require__(17);
 var EventPluginHub = __webpack_require__(27);
-var EventPluginUtils = __webpack_require__(45);
-var ReactComponentEnvironment = __webpack_require__(54);
+var EventPluginUtils = __webpack_require__(44);
+var ReactComponentEnvironment = __webpack_require__(53);
 var ReactEmptyComponent = __webpack_require__(99);
-var ReactBrowserEventEmitter = __webpack_require__(41);
+var ReactBrowserEventEmitter = __webpack_require__(40);
 var ReactHostComponent = __webpack_require__(100);
 var ReactUpdates = __webpack_require__(15);
 
@@ -49030,11 +49585,11 @@ var _assign = __webpack_require__(6);
 
 var CallbackQueue = __webpack_require__(86);
 var PooledClass = __webpack_require__(19);
-var ReactBrowserEventEmitter = __webpack_require__(41);
+var ReactBrowserEventEmitter = __webpack_require__(40);
 var ReactInputSelection = __webpack_require__(103);
 var ReactInstrumentation = __webpack_require__(12);
-var Transaction = __webpack_require__(37);
-var ReactUpdateQueue = __webpack_require__(58);
+var Transaction = __webpack_require__(36);
+var ReactUpdateQueue = __webpack_require__(57);
 
 /**
  * Ensures that, when possible, the selection range (currently selected text
@@ -49926,7 +50481,7 @@ var SyntheticEvent = __webpack_require__(16);
 
 var getActiveElement = __webpack_require__(104);
 var isTextInputElement = __webpack_require__(89);
-var shallowEqual = __webpack_require__(55);
+var shallowEqual = __webpack_require__(54);
 
 var skipSelectionChangeEvent = ExecutionEnvironment.canUseDOM && 'documentMode' in document && document.documentMode <= 11;
 
@@ -50122,7 +50677,7 @@ var SyntheticClipboardEvent = __webpack_require__(213);
 var SyntheticEvent = __webpack_require__(16);
 var SyntheticFocusEvent = __webpack_require__(214);
 var SyntheticKeyboardEvent = __webpack_require__(215);
-var SyntheticMouseEvent = __webpack_require__(38);
+var SyntheticMouseEvent = __webpack_require__(37);
 var SyntheticDragEvent = __webpack_require__(217);
 var SyntheticTouchEvent = __webpack_require__(218);
 var SyntheticTransitionEvent = __webpack_require__(219);
@@ -50130,7 +50685,7 @@ var SyntheticUIEvent = __webpack_require__(28);
 var SyntheticWheelEvent = __webpack_require__(220);
 
 var emptyFunction = __webpack_require__(10);
-var getEventCharCode = __webpack_require__(60);
+var getEventCharCode = __webpack_require__(59);
 var invariant = __webpack_require__(1);
 
 /**
@@ -50473,9 +51028,9 @@ module.exports = SyntheticFocusEvent;
 
 var SyntheticUIEvent = __webpack_require__(28);
 
-var getEventCharCode = __webpack_require__(60);
+var getEventCharCode = __webpack_require__(59);
 var getEventKey = __webpack_require__(216);
-var getEventModifierState = __webpack_require__(49);
+var getEventModifierState = __webpack_require__(48);
 
 /**
  * @interface KeyboardEvent
@@ -50560,7 +51115,7 @@ module.exports = SyntheticKeyboardEvent;
 
 
 
-var getEventCharCode = __webpack_require__(60);
+var getEventCharCode = __webpack_require__(59);
 
 /**
  * Normalization of deprecated HTML5 `key` values
@@ -50677,7 +51232,7 @@ module.exports = getEventKey;
 
 
 
-var SyntheticMouseEvent = __webpack_require__(38);
+var SyntheticMouseEvent = __webpack_require__(37);
 
 /**
  * @interface DragEvent
@@ -50720,7 +51275,7 @@ module.exports = SyntheticDragEvent;
 
 var SyntheticUIEvent = __webpack_require__(28);
 
-var getEventModifierState = __webpack_require__(49);
+var getEventModifierState = __webpack_require__(48);
 
 /**
  * @interface TouchEvent
@@ -50812,7 +51367,7 @@ module.exports = SyntheticTransitionEvent;
 
 
 
-var SyntheticMouseEvent = __webpack_require__(38);
+var SyntheticMouseEvent = __webpack_require__(37);
 
 /**
  * @interface WheelEvent
@@ -50868,7 +51423,7 @@ module.exports = SyntheticWheelEvent;
 
 
 
-var validateDOMNesting = __webpack_require__(59);
+var validateDOMNesting = __webpack_require__(58);
 
 var DOC_NODE_TYPE = 9;
 
@@ -51142,7 +51697,7 @@ module.exports = ReactMount.renderSubtreeIntoContainer;
 
 
 var DOMProperty = __webpack_require__(17);
-var EventPluginRegistry = __webpack_require__(36);
+var EventPluginRegistry = __webpack_require__(35);
 var ReactComponentTreeHook = __webpack_require__(11);
 
 var warning = __webpack_require__(2);
@@ -51691,7 +52246,7 @@ function symbolObservablePonyfill(root) {
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {/* harmony export (immutable) */ __webpack_exports__["a"] = combineReducers;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(107);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_es_isPlainObject__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_es_isPlainObject__ = __webpack_require__(61);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_warning__ = __webpack_require__(111);
 
 
@@ -51946,7 +52501,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _redux = __webpack_require__(61);
+var _redux = __webpack_require__(60);
 
 var _errorReducer = __webpack_require__(246);
 
@@ -51976,9 +52531,9 @@ var _allUserGroupsReducer = __webpack_require__(252);
 
 var _allUserGroupsReducer2 = _interopRequireDefault(_allUserGroupsReducer);
 
-var _loadedChatReducer = __webpack_require__(253);
+var _loadedMessagesReducer = __webpack_require__(253);
 
-var _loadedChatReducer2 = _interopRequireDefault(_loadedChatReducer);
+var _loadedMessagesReducer2 = _interopRequireDefault(_loadedMessagesReducer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -51990,7 +52545,7 @@ var postItApp = (0, _redux.combineReducers)({
   appInfo: (0, _redux.combineReducers)({
     userDetails: _userReducer2.default,
     authState: _authStateReducer2.default,
-    loadedChat: _loadedChatReducer2.default
+    loadedMessages: _loadedMessagesReducer2.default
   }),
   postItInfo: _postItInfoReducer2.default
 });
@@ -52014,111 +52569,214 @@ var errorReducer = function errorReducer() {
   switch (action.type) {
     case 'SIGN_IN_ERROR':
       return {
-        errored: true,
-        redirect: false,
-        message: action.message
+        message: action.message,
+        redirect: {
+          yes: false,
+          to: null
+        },
+        errored: true
+      };
+    case 'SIGN_IN_SUCCESS':
+      return {
+        message: null,
+        redirect: {
+          yes: true,
+          to: '/messageboard'
+        },
+        errored: false
       };
     case 'SIGN_UP_ERROR':
       return {
-        errored: true,
-        redirect: false,
-        message: action.message
+        message: action.message,
+        redirect: {
+          yes: false,
+          to: null
+        },
+        errored: true
       };
     case 'ADD_MEMBER_ERROR':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: true
       });
     case 'ADD_MEMBER_SUCCESS':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: true,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: false
       });
     case 'DELETE_MEMBER_ERROR':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: true
       });
     case 'DELETE_MEMBER_SUCCESS':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
+        errored: false
+      });
+    case 'DELETE_A_GROUP_SUCCESS':
+      return Object.assign({}, state, {
+        message: action.message,
+        redirect: {
+          yes: true,
+          to: '/messageboard'
+        },
         errored: false
       });
     case 'GET_GROUP_MEMBERS_ERROR':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: true
       });
     case 'GET_GROUP_MEMBERS_SUCCESS':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: false
       });
     case 'GET_ALL_GROUPS_ERROR':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: true
       });
     case 'GET_ALL_GROUPS_SUCCESS':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
-        errored: true
+        redirect: {
+          yes: false,
+          to: null
+        },
+        errored: false
       });
     case 'POST_MESSAGE_ERROR':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: true
       });
     case 'POST_MESSAGE_SUCCESS':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: false
       });
     case 'GET_MESSAGES_ERROR':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: true,
+          to: '/messageboard'
+        },
         errored: true
+      });
+    case 'INVALID_AUTH':
+      return Object.assign({}, state, {
+        message: action.message,
+        redirect: {
+          yes: true,
+          to: '/'
+        }
       });
     case 'CREATE_GROUP_ERROR':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: true
       });
     case 'CREATE_GROUP_SUCCESS':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: true,
-        errored: true
+        redirect: {
+          yes: true,
+          to: '/postmessage'
+        },
+        errored: false
       });
     case 'GET_MESSAGES_SUCCESS':
       return Object.assign({}, state, {
         message: action.message,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: false
       });
     case 'RESET_ERROR_LOG':
       return Object.assign({}, state, {
         message: null,
-        redirect: false,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: false
       });
-    case 'RESET_REDIRECT':
+    case 'LOAD_MESSAGES':
       return Object.assign({}, state, {
         message: null,
-        redirect: false,
+        redirect: {
+          yes: true,
+          to: '/postmessage'
+        }
+      });
+    case 'RESET_REDIRECT_STATE':
+      return Object.assign({}, state, {
+        message: null,
+        redirect: {
+          yes: false,
+          to: null
+        },
         errored: false
+      });
+    case 'VERIFY_TOKEN_ERROR':
+      return Object.assign({}, state, {
+        message: 'You have been away for a while. Please sign in again',
+        redirect: {
+          yes: true,
+          to: '/'
+        }
+      });
+    case 'GET_ALL_GROUPS_FOR_A_USER_ERROR':
+      return Object.assign({}, state, {
+        redirect: {
+          yes: true,
+          to: '/'
+        }
       });
     default:
       return state;
@@ -52179,20 +52837,45 @@ var structureUserGroupMembersFromDb = function structureUserGroupMembersFromDb(s
   }
   return appState;
 };
+// Helper method to structure the time stamp on a message
+var getFormattedTimeStamp = function getFormattedTimeStamp(timeStamp, callback) {
+  var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  var year = timeStamp.slice(0, 4);
+  var monthString = timeStamp.slice(5, 7);
+  var month = months[parseInt(monthString, 10) - 1];
+  var dayString = timeStamp.slice(8, 10);
+  var day = parseInt(dayString, 10);
+  var hour = timeStamp.slice(11, 13);
+  var minute = timeStamp.slice(14, 16);
+  var formattedTime = month + ' ' + day + ', ' + year + ', at ' + hour + ':' + minute;
+  callback(formattedTime);
+};
 // Restructure group messages from db
 var structureGroupMessagesFromDb = function structureGroupMessagesFromDb(state, newMessage, groupId) {
   var appState = Object.assign({}, state);
-  var groupMessages = appState[groupId].messages;
-  groupMessages = [].concat(_toConsumableArray(groupMessages), [newMessage]);
-  appState[groupId].messages = groupMessages;
+  // Initialize the fields with empty objects and array if they had no previous content
+  appState.userGroups[groupId] = appState.userGroups[groupId] || {};
+  appState.userGroups[groupId].messages = appState.userGroups[groupId].messages || [];
+  var groupMessages = appState.userGroups[groupId].messages;
+  // Format the time stamp of new message
+  getFormattedTimeStamp(newMessage.createdAt, function (formattedTime) {
+    newMessage.createdAt = 'Sent ' + formattedTime;
+    groupMessages = [].concat(_toConsumableArray(groupMessages), [newMessage]);
+    appState.userGroups[groupId].messages = groupMessages;
+  });
+  return appState;
 };
 
 // Restructure data received after adding member to group
 var structureMembersAfterAddingNew = function structureMembersAfterAddingNew(state, newMembers, groupId) {
   var appState = Object.assign({}, state);
-  var groupMembers = appState[groupId].members;
-  groupMembers = [].concat(_toConsumableArray(groupMembers), [newMembers]);
-  appState[groupId].members = groupMembers;
+  var groupMembers = appState.userGroups[groupId].members;
+  newMembers.map(function (newMember) {
+    var userId = newMember.id;
+    groupMembers[userId] = newMember;
+  });
+  appState.userGroups[groupId].members = groupMembers;
+  return appState;
 };
 
 // Restructure data after deleting a member
@@ -52205,10 +52888,16 @@ var structureStateAfterDeletingMember = function structureStateAfterDeletingMemb
 };
 // Restructure data after loading group messages
 var structureStateAfterLoadingMessages = function structureStateAfterLoadingMessages(state, messagesDbSnapshot, groupId) {
+  var messages = messagesDbSnapshot.rows;
+  messages.map(function (message, index) {
+    getFormattedTimeStamp(message.createdAt, function (formattedTime) {
+      messages[index].createdAt = 'Sent ' + formattedTime;
+    });
+  });
   var appState = Object.assign({}, state);
   // Load the group with empty data if it has no data in store
   appState.userGroups[groupId] = appState.userGroups[groupId] || {};
-  appState.userGroups[groupId].messages = messagesDbSnapshot.rows;
+  appState.userGroups[groupId].messages = messages;
   return appState;
 };
 
@@ -52225,9 +52914,9 @@ var userGroupsReducer = function userGroupsReducer() {
     case 'DELETE_A_GROUP':
       return deleteGroup(appState, action.groupId);
     case 'POST_MESSAGE_SUCCESS':
-      return structureGroupMessagesFromDb(appState, action.data, action.groupId);
+      return structureGroupMessagesFromDb(appState, action.message, action.groupId);
     case 'ADD_MEMBER_SUCCESS':
-      return structureMembersAfterAddingNew(appState, action.data, action.groupId);
+      return structureMembersAfterAddingNew(appState, action.addedMembers, action.groupId);
     case 'DELETE_GROUP_MEMBER_SUCCESS':
       return structureStateAfterDeletingMember(appState, action.deletedId, action.groupId);
     case 'GET_MESSAGES_SUCCESS':
@@ -52445,13 +53134,17 @@ var authStateReducer = function authStateReducer() {
   var authState = Object.assign({}, state);
   switch (action.type) {
     case 'SIGN_IN_SUCCESS':
-      return Object.assign({}, state, { signedIn: true, message: action.message, redirect: true });
+      return Object.assign({}, state, { signedIn: true, message: action.message });
     case 'SIGN_UP_SUCCESS':
-      return Object.assign({}, state, { signedIn: true, message: action.messsage, redirect: true });
+      return Object.assign({}, state, { signedIn: true, message: action.messsage });
+    case 'VERIFY_TOKEN_SUCCESS':
+      return Object.assign({}, state, { signedIn: true, message: action.message });
     case 'SIGN_IN_ERROR':
-      return Object.assign({}, state, { signedIn: false, message: action.messsage, redirect: false });
+      return Object.assign({}, state, { signedIn: false, message: action.message });
     case 'SIGN_UP_ERROR':
-      return Object.assign({}, state, { signedIn: false, message: action.messsage, redirect: false });
+      return Object.assign({}, state, { signedIn: false, message: action.message });
+    case 'VERIFY_TOKEN_ERROR':
+      return Object.assign({}, state, { signedIn: false, message: action.message });
     default:
       return authState;
   }
@@ -52509,22 +53202,32 @@ exports.default = allUserGroupsReducer;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var loadedChatReducer = function loadedChatReducer() {
+var loadedMessagesReducer = function loadedMessagesReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var action = arguments[1];
 
   switch (action.type) {
-    case 'LOAD_CHAT':
+    case 'LOAD_MESSAGES':
       {
         var groupId = action.groupId;
         return Object.assign({}, state, { groupId: groupId });
+      }
+    case 'CREATE_GROUP_SUCCESS':
+      {
+        var _groupId = action.data.createdGroup.id;
+        return Object.assign({}, state, { groupId: _groupId });
+      }
+    case 'DELETE_GROUP_SUCCESS':
+      {
+        var _groupId2 = null;
+        return Object.assign({}, state, _groupId2);
       }
     default:
       return state;
   }
 };
 
-exports.default = loadedChatReducer;
+exports.default = loadedMessagesReducer;
 
 /***/ }),
 /* 254 */
@@ -52604,7 +53307,7 @@ BrowserRouter.propTypes = {
 
 var emptyFunction = __webpack_require__(10);
 var invariant = __webpack_require__(1);
-var ReactPropTypesSecret = __webpack_require__(44);
+var ReactPropTypesSecret = __webpack_require__(43);
 
 module.exports = function() {
   function shim(props, propName, componentName, location, propFullName, secret) {
@@ -52669,13 +53372,13 @@ var _warning = __webpack_require__(20);
 
 var _warning2 = _interopRequireDefault(_warning);
 
-var _invariant = __webpack_require__(31);
+var _invariant = __webpack_require__(30);
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
 var _LocationUtils = __webpack_require__(63);
 
-var _PathUtils = __webpack_require__(32);
+var _PathUtils = __webpack_require__(31);
 
 var _createTransitionManager = __webpack_require__(64);
 
@@ -53164,7 +53867,7 @@ var _warning = __webpack_require__(20);
 
 var _warning2 = _interopRequireDefault(_warning);
 
-var _PathUtils = __webpack_require__(32);
+var _PathUtils = __webpack_require__(31);
 
 var _LocationUtils = __webpack_require__(63);
 
@@ -53941,13 +54644,13 @@ module.exports = Array.isArray || function (arr) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant__ = __webpack_require__(30);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_invariant__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_prop_types__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_prop_types__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_history_PathUtils__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_history_PathUtils__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_history_PathUtils___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_history_PathUtils__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Router__ = __webpack_require__(65);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -54317,13 +55020,13 @@ var _warning = __webpack_require__(20);
 
 var _warning2 = _interopRequireDefault(_warning);
 
-var _invariant = __webpack_require__(31);
+var _invariant = __webpack_require__(30);
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
 var _LocationUtils = __webpack_require__(63);
 
-var _PathUtils = __webpack_require__(32);
+var _PathUtils = __webpack_require__(31);
 
 var _createTransitionManager = __webpack_require__(64);
 
@@ -55134,7 +55837,7 @@ function shallowEqual(objA, objB) {
 /* unused harmony export whenMapDispatchToPropsIsFunction */
 /* unused harmony export whenMapDispatchToPropsIsMissing */
 /* unused harmony export whenMapDispatchToPropsIsObject */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_redux__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_redux__ = __webpack_require__(60);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__wrapMapToProps__ = __webpack_require__(119);
 
 
@@ -55404,11 +56107,15 @@ var dataService = function dataService(store) {
             email: action.email,
             password: action.password
           }).end(function (err, res) {
-            if (err) {
-              return next({
-                type: 'SIGN_IN_ERROR',
-                message: res.body.message
-              });
+            // Return the first error message when there are many
+            if (res) {
+              // Ignore browser errors which do not have a res object
+              if (err) {
+                return next({
+                  type: 'SIGN_IN_ERROR',
+                  message: res.body.message
+                });
+              }
             }
             var userDetails = res.body.user;
             userDetails.token = res.body.token;
@@ -55428,17 +56135,20 @@ var dataService = function dataService(store) {
             password: action.password
           }).end(function (err, res) {
             if (err) {
-              if (res.body.messages) {
-                // Return the first error message when there are many
-                return next({
-                  type: 'SIGN_UP_ERROR',
-                  message: res.body.messages[0]
-                });
-              } else {
-                return next({
-                  type: 'SIGN_UP_ERROR',
-                  message: res.body.message
-                });
+              // Ignore browser errors which do not have a res object
+              if (res) {
+                if (res.body.messages) {
+                  // Return the first error message when there are many
+                  return next({
+                    type: 'SIGN_UP_ERROR',
+                    message: res.body.messages[0]
+                  });
+                } else {
+                  return next({
+                    type: 'SIGN_UP_ERROR',
+                    message: res.body.message
+                  });
+                }
               }
             }
             var userDetails = res.body.user;
@@ -55452,7 +56162,7 @@ var dataService = function dataService(store) {
         // Post a message to a group
         case 'POST_MESSAGE':
           _superagent2.default.post(url + '/group/' + action.groupId + '/message').set('x-access-token', action.token).send({
-            message: action.message,
+            body: action.body,
             priority: action.priority,
             isComment: action.isComment,
             senderId: action.senderId
@@ -55463,10 +56173,11 @@ var dataService = function dataService(store) {
                 message: err.message
               });
             }
-            var message = res.body;
+            var message = res.body.message;
             next({
               type: 'POST_MESSAGE_SUCCESS',
-              message: message
+              message: message,
+              groupId: action.groupId
             });
           });
           break;
@@ -55478,14 +56189,15 @@ var dataService = function dataService(store) {
           }).end(function (err, res) {
             if (err) {
               return next({
-                type: 'ADD_MEMBER_SUCCESS',
+                type: 'ADD_MEMBER_ERROR',
                 message: err.message
               });
             }
-            var members = res.body;
+            var addedMembers = res.body;
             next({
-              type: 'ADD_MEMBER_ERROR',
-              members: members
+              type: 'ADD_MEMBER_SUCCESS',
+              addedMembers: addedMembers,
+              groupId: action.groupId
             });
           });
           break;
@@ -55516,11 +56228,14 @@ var dataService = function dataService(store) {
             initialMembers: action.initialMembers
           }).end(function (err, res) {
             if (err) {
-              return next({
-                type: 'CREATE_GROUP_ERROR',
-                // Return the first error if there are many
-                message: res.body.messages[0]
-              });
+              // Ignore browser errors which do not have a res object
+              if (res) {
+                return next({
+                  type: 'CREATE_GROUP_ERROR',
+                  // Return the first error if there are many
+                  message: res.body.messages[0]
+                });
+              }
             }
             var data = res.body;
             next({
@@ -55533,10 +56248,23 @@ var dataService = function dataService(store) {
         case 'GET_MESSAGES':
           _superagent2.default.get(url + '/group/' + action.groupId + '/messages').set('x-access-token', action.token).end(function (err, res) {
             if (err) {
-              return next({
-                type: 'GET_MESSAGES_ERROR',
-                message: err.message
-              });
+              // Ignore browser errors which do not have a res object
+              if (res) {
+                // If group no found
+                if (res.status === 404) {
+                  return next({
+                    type: 'GET_MESSAGES_ERROR',
+                    message: err.message
+                  });
+                }
+                // No authentication
+                if (res.status === 401) {
+                  return next({
+                    type: 'INVALID_AUTH'
+                  });
+                }
+              }
+              return;
             }
             var messagesDbSnapshot = res.body;
             next({
@@ -55550,10 +56278,13 @@ var dataService = function dataService(store) {
         case 'GET_GROUP_MEMBERS':
           _superagent2.default.get(url + '/group/' + action.groupId + '/members/').set('x-access-token', action.token).end(function (err, res) {
             if (err) {
-              return next({
-                type: 'GET_GROUP_MEMBERS_ERROR',
-                message: err.message
-              });
+              // Ignore browser errors which do not have a res object
+              if (res) {
+                return next({
+                  type: 'GET_GROUP_MEMBERS_ERROR',
+                  message: err.message
+                });
+              }
             }
             var membersDBSnapshot = res.body;
             next({
@@ -55567,10 +56298,19 @@ var dataService = function dataService(store) {
         case 'GET_POST_IT_MEMBERS':
           _superagent2.default.get(url + '/members').set('x-access-token', action.token).end(function (err, res) {
             if (err) {
-              return next({
-                type: 'GET_POST_IT_MEMBERS_ERROR',
-                message: err.message
-              });
+              // Ignore browser errors which do not have a res object
+              if (res) {
+                if (res.status === 401) {
+                  return next({
+                    type: 'INVALID_AUTH'
+                  });
+                } else {
+                  return next({
+                    type: 'GET_POST_IT_MEMBERS_ERROR',
+                    message: err.message
+                  });
+                }
+              }
             }
             var dbSnapShot = res.body;
             next({
@@ -55599,10 +56339,13 @@ var dataService = function dataService(store) {
         case 'GET_ALL_GROUPS_FOR_A_USER':
           _superagent2.default.get(url + '/user/' + action.userId + '/groups/' + action.offset + '/' + action.limit).set('x-access-token', action.token).end(function (err, res) {
             if (err) {
-              return next({
-                type: 'GET_ALL_GROUPS_FOR_A_USER_ERROR',
-                message: err.message
-              });
+              // Ignore browser errors
+              if (res) {
+                return next({
+                  type: 'GET_ALL_GROUPS_FOR_A_USER_ERROR',
+                  message: err.message
+                });
+              }
             }
             var data = res.body;
             next({
@@ -55645,6 +56388,19 @@ var dataService = function dataService(store) {
               type: 'DELETE_GROUP_MEMBER_SUCCESS',
               deletedId: deletedId,
               groupId: groupId
+            });
+          });
+          break;
+        // Verify token
+        case 'VERIFY_TOKEN':
+          _superagent2.default.get(url + '/token').set('x-access-token', action.token).end(function (err, res) {
+            if (err) {
+              return next({
+                type: 'VERIFY_TOKEN_ERROR'
+              });
+            }
+            next({
+              type: 'VERIFY_TOKEN_SUCCESS'
             });
           });
           break;
@@ -57865,7 +58621,7 @@ exports = module.exports = __webpack_require__(121)(undefined);
 exports.push([module.i, "@import url(https://fonts.googleapis.com/icon?family=Material+Icons);", ""]);
 
 // module
-exports.push([module.i, "/* Style the tab */\ndiv.tab {\n  overflow: hidden;\n  border: 1px solid #ccc;\n  background-color: #f1f1f1; }\n\n/* Style the buttons inside the tab */\ndiv.tab button {\n  background-color: inherit;\n  float: left;\n  border: none;\n  outline: none;\n  cursor: pointer;\n  padding: 14px 16px;\n  transition: 0.3s; }\n\n/* Change background color of buttons on hover */\ndiv.tab button:hover {\n  background-color: #ddd; }\n\n/* Create an active/current tablink class */\ndiv.tab button.active {\n  background-color: #ccc; }\n\n/* Style the tab content */\n.tabcontent {\n  display: none;\n  padding: 6px 12px;\n  border: 1px solid #ccc;\n  border-top: none; }\n\n#body {\n  background-image: url(" + __webpack_require__(312) + ");\n  background-repeat: repeat-y;\n  background-position: center;\n  background-size: cover;\n  background-attachment: fixed; }\n\n#brand {\n  padding-left: 50px; }\n\n.signin-form {\n  margin-top: 20px;\n  padding: 20px;\n  border-style: solid;\n  border-radius: 20px;\n  border-color: black; }\n\n.signup-form {\n  margin-top: 20px;\n  padding: 20px;\n  border-style: solid;\n  border-radius: 20px;\n  border-color: black;\n  padding-bottom: 30px; }\n\n.group-details {\n  background-color: white;\n  padding: 20px; }\n\n.message {\n  padding: 10px;\n  margin: 2px;\n  background: rgba(0, 0, 0, 0.5); }\n\n.ownmessage {\n  padding: 10px;\n  margin: 2px;\n  background: rgba(136, 14, 79, 0.5); }\n\n#body {\n  display: flex;\n  min-height: 100vh;\n  flex-direction: column; }\n\n.transparent-body {\n  background: rgba(255, 255, 255, 0); }\n\n.shift-left {\n  margin-left: 10px; }\n\n#main {\n  flex: 1 0 auto; }\n\n.revealed {\n  margin: 30px; }\n\n.group-info {\n  overflow: auto;\n  height: 70px;\n  font-family: 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; }\n\n.dropdowns {\n  width: auto !important; }\n\n.input-field {\n  float: left;\n  width: 85%; }\n\n.members-list-container {\n  height: 400px;\n  position: fixed;\n  right: 30px;\n  top: 120px;\n  border: solid;\n  padding: 20px;\n  background: rgba(255, 255, 255, 0.9);\n  display: none; }\n\n.members-list {\n  height: 200px;\n  overflow: auto;\n  width: auto !important; }\n\n.project-title {\n  padding: 10px;\n  background: rgba(255, 255, 255, 0.5);\n  width: 200px; }\n\n.searchbox {\n  background: rgba(0, 0, 0, 0.5);\n  height: 50px; }\n\n.list-side-nav {\n  height: 200px;\n  overflow: auto; }\n\n.navbar-fixed {\n  z-index: 1003; }\n\n::-webkit-input-placeholder {\n  color: rgba(0, 0, 0, 0.5); }\n\n/* label underline focus color */\n.input-field input[type=text]:focus {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n.input-field input[type=password]:focus {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n.input-field input[type=email]:focus {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n.input-field input[type=text]:focus + label {\n  color: #000; }\n\n.input-field input[type=password]:focus + label {\n  color: #000; }\n\n.input-field input[type=email]:focus + label {\n  color: #000; }\n\n.input-field input[type=text].valid {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n/* invalid color */\n.input-field input[type=email].invalid {\n  border-bottom: 1px solid #880e4f;\n  box-shadow: 0 1px 0 0 #880e4f; }\n\n.preloader-background {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: fixed;\n  z-index: 0;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0; }\n\n.userlist-preloader {\n  display: flex;\n  align-items: center;\n  justify-content: center; }\n\n.registeredMembersList {\n  height: 250px;\n  overflow: auto;\n  padding-left: 50px;\n  padding-right: 50px;\n  background-color: white; }\n\n.sign-out-button {\n  width: 180px;\n  color: red; }\n\nheader, #messageInputBox, #main-postmessage, #footer {\n  padding-left: 300px; }\n\n@media only screen and (max-width: 992px) {\n  #header, #main-postmessage, #messageInputBox, #footer {\n    padding-left: 0; } }\n\n.memberListToggle {\n  position: fixed;\n  right: 0px;\n  z-index: 2; }\n\n#member-list-toggle {\n  background: transparent; }\n\n#member-list-toggle:hover {\n  background: #880e4f; }\n\n#messageInputBox {\n  background: rgba(255, 255, 255, 0.5); }\n\n.message-box {\n  display: flex;\n  flex-direction: row; }\n\n.text-input-field {\n  flex: 1 0 auto;\n  margin-left: 10px; }\n\n.send-button {\n  position: relative;\n  float: right;\n  width: 20%;\n  margin-left: 18px;\n  right: 10px;\n  top: 30px; }\n\n.send-comment-button {\n  position: relative;\n  float: right;\n  width: 20%;\n  margin-left: 18px;\n  right: 10px;\n  top: 0px; }\n\n/* Styling for radio buttons */\n#normal[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:after {\n  background-color: green; }\n\n#normal[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:before, [type=\"radio\"].with-gap:checked + label:after {\n  border: 2px solid green; }\n\n#urgent[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:after {\n  background-color: orange; }\n\n#urgent[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:before, [type=\"radio\"].with-gap:checked + label:after {\n  border: 2px solid orange; }\n\n#critical[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:after {\n  background-color: red; }\n\n#critical[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:before, [type=\"radio\"].with-gap:checked + label:after {\n  border: 2px solid red; }\n\n#comment[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:after {\n  background-color: grey; }\n\n#comment[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:before, [type=\"radio\"].with-gap:checked + label:after {\n  border: 2px solid grey; }\n\n#deleteMemberModal {\n  z-index: 0; }\n\n#emptySpace {\n  height: 65px;\n  padding-left: 20px; }\n", ""]);
+exports.push([module.i, "/* Style the tab */\ndiv.tab {\n  overflow: hidden;\n  border: 1px solid #ccc;\n  background-color: #f1f1f1; }\n\n/* Style the buttons inside the tab */\ndiv.tab button {\n  background-color: inherit;\n  float: left;\n  border: none;\n  outline: none;\n  cursor: pointer;\n  padding: 14px 16px;\n  transition: 0.3s; }\n\n/* Change background color of buttons on hover */\ndiv.tab button:hover {\n  background-color: #ddd; }\n\n/* Create an active/current tablink class */\ndiv.tab button.active {\n  background-color: #ccc; }\n\n/* Style the tab content */\n.tabcontent {\n  display: none;\n  padding: 6px 12px;\n  border: 1px solid #ccc;\n  border-top: none; }\n\n#body {\n  background-image: url(" + __webpack_require__(312) + ");\n  background-repeat: repeat-y;\n  background-position: center;\n  background-size: cover;\n  background-attachment: fixed; }\n\n#brand {\n  padding-left: 50px; }\n\n.signin-form {\n  margin-top: 20px;\n  padding: 20px;\n  border-style: solid;\n  border-radius: 20px;\n  border-color: black; }\n\n.signup-form {\n  margin-top: 20px;\n  padding: 20px;\n  border-style: solid;\n  border-radius: 20px;\n  border-color: black;\n  padding-bottom: 30px; }\n\n.group-details {\n  background-color: white;\n  padding: 20px; }\n\n.message {\n  padding: 10px;\n  margin: 2px;\n  background: rgba(0, 0, 0, 0.5); }\n\n.ownmessage {\n  padding: 10px;\n  margin: 2px;\n  background: rgba(136, 14, 79, 0.5); }\n\n#body {\n  display: flex;\n  min-height: 100vh;\n  flex-direction: column; }\n\n.transparent-body {\n  background: rgba(255, 255, 255, 0); }\n\n.shift-left {\n  margin-left: 10px; }\n\n#main {\n  flex: 1 0 auto;\n  overflow: auto; }\n\n.revealed {\n  margin: 30px; }\n\n.group-info {\n  overflow: auto;\n  height: 70px;\n  font-family: 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; }\n\n.dropdowns {\n  width: auto !important; }\n\n.input-field {\n  float: left;\n  width: 85%; }\n\n.members-list-container {\n  height: 400px;\n  position: fixed;\n  right: 30px;\n  top: 120px;\n  border: solid;\n  padding: 20px;\n  background: rgba(255, 255, 255, 0.9);\n  display: none; }\n\n.members-list {\n  height: 200px;\n  overflow: auto;\n  width: auto !important; }\n\n.project-title {\n  padding: 10px;\n  background: rgba(255, 255, 255, 0.5);\n  width: 200px; }\n\n.searchbox {\n  background: rgba(0, 0, 0, 0.5);\n  height: 50px; }\n\n.list-side-nav {\n  height: 200px;\n  overflow: auto; }\n\n.navbar-fixed {\n  z-index: 1003; }\n\n::-webkit-input-placeholder {\n  color: rgba(0, 0, 0, 0.5); }\n\n/* label underline focus color */\n.input-field input[type=text]:focus {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n.input-field input[type=password]:focus {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n.input-field input[type=email]:focus {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n.input-field input[type=text]:focus + label {\n  color: #000; }\n\n.input-field input[type=password]:focus + label {\n  color: #000; }\n\n.input-field input[type=email]:focus + label {\n  color: #000; }\n\n.input-field input[type=text].valid {\n  border-bottom: 1px solid #000;\n  box-shadow: 0 1px 0 0 #000; }\n\n/* invalid color */\n.input-field input[type=email].invalid {\n  border-bottom: 1px solid #880e4f;\n  box-shadow: 0 1px 0 0 #880e4f; }\n\n.preloader-background {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  position: fixed;\n  z-index: 0;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0; }\n\n.userlist-preloader {\n  display: flex;\n  align-items: center;\n  justify-content: center; }\n\n.registeredMembersList {\n  height: 250px;\n  overflow: auto;\n  background-color: white; }\n\n.classListHolder {\n  background-color: white;\n  padding: 10px; }\n\n.sign-out-button {\n  width: 180px;\n  color: red; }\n\nheader, #messageInputBox, #main-postmessage, #footer {\n  padding-left: 300px; }\n\n@media only screen and (max-width: 992px) {\n  #header, #main-postmessage, #messageInputBox, #footer {\n    padding-left: 0; } }\n\n.memberListToggle {\n  position: fixed;\n  right: 0px;\n  z-index: 2; }\n\n#member-list-toggle {\n  background: transparent; }\n\n#member-list-toggle:hover {\n  background: #880e4f; }\n\n#messageInputBox {\n  background: rgba(255, 255, 255, 0.5);\n  padding-bottom: 0px;\n  position: fixed;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  height: 120px; }\n\n.message-box {\n  display: flex;\n  flex-direction: row; }\n\n.message-body {\n  word-wrap: break-word; }\n\n.text-input-field {\n  flex: 1 0 auto;\n  margin-left: 10px; }\n\n.send-button {\n  position: relative;\n  float: right;\n  width: 20%;\n  margin-left: 18px;\n  right: 10px;\n  top: 30px; }\n\n.send-comment-button {\n  position: relative;\n  float: right;\n  width: 20%;\n  margin-left: 18px;\n  right: 10px;\n  top: 0px; }\n\n/* Styling for radio buttons */\n#normal[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:after {\n  background-color: green; }\n\n#normal[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:before, [type=\"radio\"].with-gap:checked + label:after {\n  border: 2px solid green; }\n\n#urgent[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:after {\n  background-color: orange; }\n\n#urgent[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:before, [type=\"radio\"].with-gap:checked + label:after {\n  border: 2px solid orange; }\n\n#critical[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:after {\n  background-color: red; }\n\n#critical[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:before, [type=\"radio\"].with-gap:checked + label:after {\n  border: 2px solid red; }\n\n#comment[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:after {\n  background-color: grey; }\n\n#comment[type=\"radio\"]:checked + label:after, [type=\"radio\"].with-gap:checked + label:before, [type=\"radio\"].with-gap:checked + label:after {\n  border: 2px solid grey; }\n\n#deleteMemberModal, #addMemberModal {\n  z-index: 0; }\n\n#emptySpace {\n  height: 65px;\n  padding-left: 20px; }\n\n#messages {\n  padding-bottom: 100px; }\n\n.loader {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  margin: auto; }\n\n.groupLink {\n  cursor: pointer; }\n", ""]);
 
 // exports
 
@@ -57886,16 +58642,14 @@ module.exports = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxI
 __webpack_require__(9);
 
 var switchTab = function switchTab(evt, cityName) {
-  var i = void 0,
-      tabcontent = void 0,
-      tablinks = void 0;
-  tabcontent = document.getElementsByClassName('tabcontent');
-  for (i = 0; i < tabcontent.length; i += 1) {
+  // let i, tabcontent, tablinks;
+  var tabcontent = document.getElementsByClassName('tabcontent');
+  for (var i = 0; i < tabcontent.length; i += 1) {
     tabcontent[i].style.display = 'none';
   }
-  tablinks = document.getElementsByClassName('tablinks');
-  for (i = 0; i < tablinks.length; i += 1) {
-    tablinks[i].className = tablinks[i].className.replace(' active', '');
+  var tablinks = document.getElementsByClassName('tablinks');
+  for (var _i = 0; _i < tablinks.length; _i += 1) {
+    tablinks[_i].className = tablinks[_i].className.replace(' active', '');
   }
   document.getElementById(cityName).style.display = 'block';
   evt.currentTarget.className += ' active';
@@ -57906,7 +58660,9 @@ window.addEventListener('load', function () {
   // Load a default tab for the createGroup page
   try {
     $('#defaultTab')[0].click();
-  } catch (e) {};
+  } catch (e) {
+    return false;
+  }
 }, false);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
 
@@ -57948,10 +58704,6 @@ var _react2 = _interopRequireDefault(_react);
 var _Main = __webpack_require__(317);
 
 var _Main2 = _interopRequireDefault(_Main);
-
-var _Header = __webpack_require__(327);
-
-var _Header2 = _interopRequireDefault(_Header);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -57999,7 +58751,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _reactRouterDom = __webpack_require__(30);
+var _reactRouterDom = __webpack_require__(62);
 
 var _react = __webpack_require__(3);
 
@@ -59542,110 +60294,6 @@ var BreakView = function BreakView(props) {
 
 exports.default = BreakView;
 //# sourceMappingURL=BreakView.js.map
-
-/***/ }),
-/* 327 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _reactRouterDom = __webpack_require__(30);
-
-var _react = __webpack_require__(3);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Header = function (_React$Component) {
-  _inherits(Header, _React$Component);
-
-  function Header() {
-    _classCallCheck(this, Header);
-
-    return _possibleConstructorReturn(this, (Header.__proto__ || Object.getPrototypeOf(Header)).apply(this, arguments));
-  }
-
-  _createClass(Header, [{
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(
-        'header',
-        null,
-        _react2.default.createElement(
-          'nav',
-          null,
-          _react2.default.createElement(
-            'ul',
-            null,
-            _react2.default.createElement(
-              'li',
-              null,
-              _react2.default.createElement(
-                _reactRouterDom.Link,
-                { to: '/' },
-                'Home'
-              )
-            ),
-            _react2.default.createElement(
-              'li',
-              null,
-              _react2.default.createElement(
-                _reactRouterDom.Link,
-                { to: '/creategroup' },
-                'Create A Group'
-              )
-            ),
-            _react2.default.createElement(
-              'li',
-              null,
-              _react2.default.createElement(
-                _reactRouterDom.Link,
-                { to: '/messageboard' },
-                'Message Board'
-              )
-            ),
-            _react2.default.createElement(
-              'li',
-              null,
-              _react2.default.createElement(
-                _reactRouterDom.Link,
-                { to: '/postmessage' },
-                'Post A Message'
-              )
-            ),
-            _react2.default.createElement(
-              'li',
-              null,
-              _react2.default.createElement(
-                _reactRouterDom.Link,
-                { to: '/signup' },
-                'Sign Up'
-              )
-            )
-          )
-        )
-      );
-    }
-  }]);
-
-  return Header;
-}(_react2.default.Component);
-
-exports.default = Header;
 
 /***/ })
 /******/ ]);

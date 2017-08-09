@@ -1,6 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { getGroupsForUser, getAllGroupsForUser, resetErrorLog,resetRedirect, getPostItMembers, createGroup } from '../../actions';
+import {
+  getGroupsForUser, getAllGroupsForUser, resetErrorLog,
+  getMessages, loadMessages, resetRedirect,
+  getPostItMembers, createGroup, verifyToken
+} from '../../actions';
 import NotificationSystem from 'react-notification-system';
 
 import 'jquery';
@@ -24,36 +28,13 @@ class Body extends React.Component {
     this.createGroup = this.createGroup.bind(this);
     this.showNotification = this.showNotification.bind(this);
     this.selectedMembers = [];
-    this.registeredMembers = {
-      abracadabra: {
-        name: 'Victor Idongesit',
-        id: 'abracadabra',
-        email: 'victor@yahoo.com'
-      },
-      janana: {
-        name: 'Jane Does',
-        id: 'janana',
-        email: 'jane@doe.com'
-      },
-      obiisaboy: {
-        name: 'Obi Nna',
-        id: 'obiisaboy',
-        email: 'obi@ezekweseli.com'
-      }
-    };
-  }
-  showNotification(level, message) {
-      this._notificationSystem.addNotification({
-      message: message,
-      level: level
-    });
   }
   componentDidMount() {
     // Bind the notifications component
     this._notificationSystem = this.notificationRef;
     // Load all registered members
-    const token = this.props._that.props.appInfo.userDetails.token;
-    const userId = this.props._that.props.appInfo.userDetails.id;
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
     this.props._that.props.getPostItMembers(token);
     this.props._that.props.getAllGroupsForUser(userId, token);
   }
@@ -63,11 +44,16 @@ class Body extends React.Component {
     const redirect = this.props._that.props.apiError.redirect;
     const errorMessage = this.props._that.props.apiError.message;
     this.registeredMembers = allUsers;
-    if(redirect) {
+    if(redirect.yes) {
+      if(redirect.to === '/postmessage'){
+        // If group was created successfully, redirect to conversation page and store groupId
+        const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
+        localStorage.setItem('groupId', groupId); // Save id of group to
+      }
       // Reset state of redirect property
       this.props._that.props.resetRedirect();
-      console.log('redirecting');
-      this.props._that.props.history.push('/messageboard');
+      console.log(redirect);
+      window.location = redirect.to;
     } else {
       if(errorMessage) {
         // Empty the array of selected members
@@ -77,15 +63,19 @@ class Body extends React.Component {
         this.props._that.props.resetErrorLog();
       }
     }
-    // console.log(allUsers);
   };
+  showNotification(level, message) {
+      this._notificationSystem.addNotification({
+      message: message,
+      level: level
+    });
+  }
   createGroup() {
     const title = this.title.value;
     const description = this.description.value;
-    const creatorId = this.props._that.props.appInfo.userDetails.id;
-    const token = this.props._that.props.appInfo.userDetails.token;
+    const creatorId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
     const selectedMembers = this.selectedMembers;
-    console.log(title, description, creatorId, selectedMembers, token);
     this.props._that.props.createGroup(creatorId, title, description, selectedMembers, token);
   }
   switchTab(button, tabName) {
@@ -103,6 +93,7 @@ class Body extends React.Component {
   }
     // Method to add a member to the list of selected members
   addMember(selected, memberEmail) {
+    console.log(memberEmail);
     if(selected) {
       // Add member
       this.selectedMembers.push(memberEmail);
@@ -111,7 +102,6 @@ class Body extends React.Component {
       const index = this.selectedMembers.indexOf(memberEmail);
       this.selectedMembers.splice(index, 1);
     }
-    console.log(this.selectedMembers);
   }
 
   render() {
@@ -138,54 +128,85 @@ class Body extends React.Component {
             <button className="tablinks" id="defaultTab" ref="defaultTab" onClick={() => this.switchTab("defaultTab", 'info')}>Group info</button>
             <button className="tablinks" id="add-members" ref="add-members" onClick={() => this.switchTab("add-members", 'members')}>Add members</button>
           </div>
-          <div id="info" ref="info" className="tabcontent">
-            <div className="row">
-              <div className="col s12 m8 offset-m2 offset-l3 l6">
-                <div className="group-details">
-                  <h4 className="center">Enter group details</h4>
-                  <form>
+          { dataLoading ? (
+              <div id="info" ref="info" className="tabcontent">
+                <div className="row">
+                  <div className="col s12 m8 offset-m2 offset-l3 l6">            
                     <div>
-                      <input type="text" ref={(title) => { this.title = title; }} name="group-title" placeholder="Group Title" />
+                      <div className="preloader-wrapper loader big active valign-wrapper">
+                        <div className="spinner-layer spinner-white-only">
+                          <div className="circle-clipper left">
+                          <div className="circle"></div>
+                          </div>
+                          <div className="gap-patch">
+                          <div className="circle"></div>
+                          </div>
+                          <div className="circle-clipper right">
+                          <div className="circle"></div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <textarea id="groupDescription" ref={(description) => { this.description = description; }} type="text" className="materialize-textarea" placeholder="Description" name="group-desc" defaultValue={""} />
-                    </div>
-                  </form>
-                  <button className="btn light-green darken-4" onClick={() => this.switchTab("add-members", 'members')}>Next &gt;&gt;</button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-
+            ):(
+              <div id="info" ref="info" className="tabcontent">
+                <div className="row">
+                  <div className="col s12 m8 offset-m2 offset-l3 l6">
+                    <div className="group-details">
+                      <h4 className="center">Enter group details</h4>
+                      <div>
+                        <div>
+                          <input type="text" ref={(title) => { this.title = title; }} name="group-title" placeholder="Group Title" />
+                        </div>
+                        <div>
+                          <textarea id="groupDescription" ref={(description) => { this.description = description; }} type="text" className="materialize-textarea" placeholder="Description" name="group-desc" defaultValue={""} />
+                        </div>
+                      </div>
+                      <button className="btn light-green darken-4" onClick={() => this.switchTab("add-members", 'members')}>Next &gt;&gt;</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          }
           <div id="members" ref="members" className="tabcontent">
             <div className="row">
               <div className="col s12 m8 offset-m2 l6 offset-l3">
           { /* Load spinner while contacting server */ }
           {dataLoading ? (
           <div>
-              <form>
-                <ul className="collection with-header">
-                  <li className="collection-header"><h4>Add members</h4></li>
-                  <li className="collection-item">
-                    <input id="cb1" type="checkbox" disabled  />
-                    <label htmlFor="cb1" className="black-text"><small className="grey-text"></small></label>
-                  </li>
-                  <li className="collection-item">
-                    <input id="cb2" type="checkbox" disabled  />
-                    <label htmlFor="cb2" className="black-text"><small className="grey-text"></small></label>
-                  </li>
-                  <li className="collection-item">
-                    <input id="cb3" type="checkbox" disabled  />
-                    <label htmlFor="cb3" className="black-text"><small className="grey-text"></small></label>
-                  </li>
-                  <li className="collection-item">
-                    <input id="cb4" type="checkbox" disabled  />
-                    <label htmlFor="cb4" className="black-text"><small className="grey-text"></small></label>
-                  </li>
-                </ul>
-              </form>
+              <div>
+                <div className="classListHolder">
+                  <ul className="collection with-header registeredMembersList">
+                    <li className="collection-header"><h4 className="center">Add members</h4></li>
+                    <li className="collection-item">
+                      <input id="cb1" type="checkbox" disabled  />
+                      <label htmlFor="cb1" className="black-text"><small className="grey-text"></small></label>
+                    </li>
+                    <li className="collection-item">
+                      <input id="cb2" type="checkbox" disabled  />
+                      <label htmlFor="cb2" className="black-text"><small className="grey-text"></small></label>
+                    </li>
+                    <li className="collection-item">
+                      <input id="cb3" type="checkbox" disabled  />
+                      <label htmlFor="cb3" className="black-text"><small className="grey-text"></small></label>
+                    </li>
+                    <li className="collection-item">
+                      <input id="cb4" type="checkbox" disabled  />
+                      <label htmlFor="cb4" className="black-text"><small className="grey-text"></small></label>
+                    </li>
+                  </ul>
+                  <div className="row">
+                    <button className="btn col s8 offset-s2 m5 l5 light-green darken-4" onClick={() => this.switchTab("defaultTab", 'info')}>&lt;&lt; Group info</button>
+                    <div className="col s12 m2 s2"><br /></div>
+                    <button disabled className="btn col s8 offset-s2 m5 l5 light-green darken-4">Create group</button>
+                  </div>
+                </div>
+              </div>
               <div className="userlist-preloader">
-                <div className="preloader-wrapper big active valign-wrapper">
+                <div className="preloader-wrapper big loader active valign-wrapper">
                   <div className="spinner-layer spinner-white-only">
                     <div className="circle-clipper left">
                     <div className="circle"></div>
@@ -199,30 +220,25 @@ class Body extends React.Component {
                   </div>
                 </div>
               </div>
-              <div className="row">
-                <button className="btn col s8 offset-s2 m5 l5 light-green darken-4" onClick={() => this.switchTab("defaultTab", 'info')}>&lt;&lt; Group info</button>
-                <div className="col s12 m2 s2"><br /></div>
-                <button disabled className="btn col s8 offset-s2 m5 l5 light-green darken-4">Create group</button>
-              </div>
           </div>
           ) : (
             <div>
-              <form>
-                <h3 className="center">Add members</h3>
-                <div className="registeredMembersList">
-                  <ul className="collection">
+              <div>
+                <div className="classListHolder">
+                  <ul className="collection with-header registeredMembersList">
+                    <li className="collection-header"><h4 className="center">Add members</h4></li>
                     {
                     Object.keys(this.registeredMembers).map((userId, index ) => {
                       return <RegisteredMember addMember={this.addMember} key={index} id={userId} userInfo={this.registeredMembers[userId]}/>
                     })
                     }
                   </ul>
+                  <div className="row">
+                    <button className="btn col s8 offset-s2 m5 l5 light-green darken-4" onClick={() => this.switchTab("defaultTab", 'info')}>&lt;&lt; Group info</button>
+                    <div className="col s12 m2 s2"><br /></div>
+                    <button onClick={this.createGroup} className="btn col s8 offset-s2 m5 l5 light-green darken-4">Create group</button>
+                  </div>
                 </div>
-              </form>
-              <div className="row">
-                <button className="btn col s8 offset-s2 m5 l5 light-green darken-4" onClick={() => this.switchTab("defaultTab", 'info')}>&lt;&lt; Group info</button>
-                <div className="col s12 m2 s2"><br /></div>
-                <button onClick={this.createGroup} className="btn col s8 offset-s2 m5 l5 light-green darken-4">Create group</button>
               </div>
             </div>
           )}
@@ -255,7 +271,8 @@ class NavBar extends React.Component {
     super(props);
   }
   render() {
-    const userDetails = this.props._that.props.appInfo.userDetails;
+    const userDetailsString = localStorage.getItem('userDetails');
+    const userDetails = JSON.parse(userDetailsString);
     const allUserGroups = this.props._that.props.allUserGroups.userGroups;
     return (
       <div className="navbar-fixed">
@@ -264,6 +281,11 @@ class NavBar extends React.Component {
             <a href="#" id="brand" className="brand-logo left">PostIt</a>
             <a href="#" data-activates="mobile-demo" data-hover="true" className="button-collapse show-on-large"><i className="material-icons">menu</i></a>
             <ul className="right">
+              <li>
+                    <a href="/messageboard">
+                      <i className="material-icons">view_module</i>
+                    </a>                
+              </li>
               <li>
                 {/* Dropdown Trigger */}
                 <ul>
@@ -335,13 +357,7 @@ class NavBar extends React.Component {
                   <span><i className="material-icons black-text">search</i></span>
                 </div>
               </div>
-              <ul className="list-side-nav">
-                {
-                  Object.keys(allUserGroups).map((groupId, index) => {
-                    return <li key={index}><a href="#"><i className="material-icons teal-text">people_outline</i>{allUserGroups[groupId].info.title}</a></li>
-                  })
-                }
-              </ul>
+              <Groups _that={this.props._that} allUserGroups={allUserGroups} />
               <hr />
               <li><a href="#"><i className="large material-icons black-text">info</i>About PostIt</a></li>
               <li><a href="#"><i className="large material-icons red-text">info</i>Sign Out</a></li>
@@ -349,6 +365,43 @@ class NavBar extends React.Component {
           </div>
         </nav>
       </div>
+    )
+  }
+}
+
+
+// Component to hold the groups a user belongs to
+class Groups extends React.Component{
+  render() {
+    const allUserGroups = this.props.allUserGroups;
+    return(
+      <ul className="list-side-nav">
+        {
+          Object.keys(allUserGroups).map((groupId, index) => {
+            return <UserGroup _that={this.props._that} key={index} groupDetails={allUserGroups[groupId].info} />
+          })
+        }
+      </ul>
+    )
+  }
+}
+// Component to hold the details of each group a user belongs to
+class UserGroup extends React.Component {
+  constructor(props) {
+    super(props);
+    this.loadMessages = this.loadMessages.bind(this);
+  }
+  loadMessages(e) {
+    const groupId = e.target.id;
+    const token = localStorage.getItem('token');
+    // Load messages into the conversation page
+    this.props._that.props.loadMessages(groupId);
+    this.props._that.props.getMessages(groupId, token);
+  }
+  render() {
+    const groupDetails = this.props.groupDetails;
+    return (
+     <li><a onClick={this.loadMessages} id={groupDetails.id} ><i className="material-icons teal-text">people_outline</i>{groupDetails.title}</a></li>
     )
   }
 }
@@ -374,7 +427,10 @@ class RegisteredMember extends React.Component {
           type="checkbox"
           onClick={() => this.addOrRemove(event, this.props.userInfo.email)}
           ref={this.props.userInfo.email} />
-        <label className="brown-text" htmlFor={this.props.userInfo.email}>{userInfo.firstName} {userInfo.lastName}<small className="red-text">   {this.props.userInfo.email}</small></label>
+        <label className="brown-text" htmlFor={this.props.userInfo.email}>
+          {userInfo.firstName} {userInfo.lastName}
+          <small className="red-text">   {this.props.userInfo.email}</small>
+        </label>
       </li>
     )
   }
@@ -388,7 +444,8 @@ const mapStateToProps = (state)  => {
     allUserGroups: state.allUserGroups,
     appInfo: {
       userDetails: state.appInfo.userDetails,
-      authState: state.appInfo.authState
+      authState: state.appInfo.authState,
+      loadedMessages: state.appInfo.loadedMessages
     },
     postItInfo: state.postItInfo
   };
@@ -398,8 +455,11 @@ const mapDispatchToProps = (dispatch) => {
   return {
     resetErrorLog: () => dispatch(resetErrorLog()),
     resetRedirect: () => dispatch(resetRedirect()),
+    verifyToken: (token) => dispatch(verifyToken(token)),
     getPostItMembers: (token) => dispatch(getPostItMembers(token)),
     getAllGroupsForUser: (userId, token) => dispatch(getAllGroupsForUser(userId, token)),
+    getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
+    loadMessages: (groupId) => dispatch(loadMessages(groupId)),
     createGroup: (creatorId, title, description, selectedMembers, token) =>
       dispatch(createGroup(creatorId, title, description, selectedMembers, token)),
     getGroupsForUser: (userId, offset, limit, token) => dispatch(getGroupsForUser(userID, offset, limit, token))

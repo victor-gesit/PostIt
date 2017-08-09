@@ -13,10 +13,7 @@ class SignUp extends React.Component {
   }
 }
 
-
-class Nav extends React.Component {
-  componentDidMount() {
-  }
+class NavBar extends React.Component {
   render() {
     return(
       <div className="navbar-fixed">
@@ -52,7 +49,36 @@ class Body extends React.Component {
     this._notificationSystem = null;
   }
   componentDidMount() {
+    // Initialize notification component
     this._notificationSystem = this.notificationRef;
+    // Set focus to SignUp button
+    $('#signUpForm').keypress((event) => {
+      if ((event.which && event.which == 13) || (event.keyCode && event.keyCode == 13)) {
+          $('#signUpButton').click();
+          return false;
+      } else {
+          return true;
+      }
+    })
+  }
+  componentWillUpdate() {
+    const isSignedIn = this.props._that.props.appInfo.authState.signedIn;
+    const errorMessage = this.props._that.props.apiError.message;
+    if(isSignedIn) {
+      const token = this.props._that.props.appInfo.userDetails.token;
+      const userId = this.props._that.props.appInfo.userDetails.id;
+      const userDetails = this.props._that.props.appInfo.userDetails;
+      localStorage.setItem('userId', userId);
+      localStorage.setItem('token', token);
+      localStorage.setItem('userDetails', JSON.stringify(userDetails));
+      window.location = '/messageboard';
+    } else {
+      if(errorMessage) {
+        this.showNotification('error', errorMessage);
+        this.props._that.props.resetErrorLog();
+      }
+    }
+    
   }
   signUp() {
     const firstName = this.firstName.value;
@@ -67,20 +93,6 @@ class Body extends React.Component {
       message: message,
       level: level
     });
-  }
-  componentWillUpdate() {
-    const isSignedIn = this.props._that.props.appInfo.authState.signedIn;
-    const errorMessage = this.props._that.props.apiError.message;
-    console.log(isSignedIn, errorMessage);
-    if(isSignedIn) {
-      this.props._that.props.history.push('/messageboard');
-    } else {
-      if(errorMessage) {
-        this.showNotification('success', errorMessage);
-        this.props._that.props.resetErrorLog();
-      }
-    }
-    
   }
   render() {
     const style = {
@@ -98,12 +110,12 @@ class Body extends React.Component {
     }
     return(
       <div id="body">
-      <Nav/>
+      <NavBar/>
       <div id="main">
         <div className="row">
           <div className="col s8 m6 l4 offset-s2 offset-m3 offset-l4 signup-form">
             <NotificationSystem className='notification' style={style} ref={(notificationRef) => { this.notificationRef = notificationRef }} />
-            <div className="row">
+            <div id="signUpForm" className="row">
               <div>
                 <h3 className="center">Sign Up</h3>
               </div>
@@ -128,10 +140,10 @@ class Body extends React.Component {
                 <label htmlFor="password">Password</label>
               </div>
               <div className="center">
-                <button onClick={this.signUp} className="btn center green darken-4" autoFocus>Sign up</button>
+                <button onClick={this.signUp} id="signUpButton" className="btn center green darken-4" autoFocus>Sign up</button>
               </div>
               <div>
-                <p>Already have an account? <a href="#">Sign in</a></p>
+                <p>Already have an account? <a href="/" >Sign in</a></p>
               </div>
             </div>
           </div>

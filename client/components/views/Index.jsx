@@ -1,10 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { signIn, resetErrorLog } from '../../actions';
+import { signIn, resetErrorLog, resetRedirect, verifyToken } from '../../actions';
 import NotificationSystem from 'react-notification-system';
 
 class Index extends React.Component {
+  constructor(props){
+    super(props);
+  };
+  componentWillMount() {
+    const token = localStorage.getItem('token');
+    if(token !== 'undefined' && token !== 'null' && token !== null) {
+      this.props.verifyToken(token);
+    }
+  }
   render() {
+    const redirect = this.props.apiError.redirect;
+    if(redirect.yes) {
+      this.props.resetRedirect();
+      console.log(redirect);
+      // window.location = redirect.to;
+    }
     return(
       <div>
         <Body _that={this}/>
@@ -14,7 +29,7 @@ class Index extends React.Component {
 }
 
 
-class Nav extends React.Component {
+class NavBar extends React.Component {
   render() {
     return(
       <div className="navbar-fixed">
@@ -43,13 +58,10 @@ class Nav extends React.Component {
 }
 
 class Body extends React.Component {
-  constructor(props) {
-    super(props);
-  }
   render() {
     return(
       <div id="body">
-        <Nav/>
+        <NavBar/>
         <div id="main">
           <div className="fixed-action-btn hide-on-med-and-up">
             <a className="btn-floating btn-large red" href="#signinform">
@@ -99,7 +111,36 @@ class SignInForm extends React.Component {
     this._notificationSystem = null;
   }
   componentDidMount() {
+    // Initialize notification component
     this._notificationSystem = this.notificationRef;
+    // Set focus to Sign in button
+    $('.signin-form').keypress((event) => {
+      if ((event.which && event.which == 13) || (event.keyCode && event.keyCode == 13)) {
+          $('#signInButton').click();
+          return false;
+      } else {
+          return true;
+      }
+    })
+  }
+  componentWillUpdate() {
+    this.button.focus();
+    const isSignedIn = this.props._that.props.appInfo.authState.signedIn;
+    const errorMessage = this.props._that.props.apiError.message;
+    if(isSignedIn) {
+      const token = this.props._that.props.appInfo.userDetails.token;
+      const userId = this.props._that.props.appInfo.userDetails.id;
+      const userDetails = this.props._that.props.appInfo.userDetails;
+      localStorage.setItem('userId', userId);
+      localStorage.setItem('token', token);
+      localStorage.setItem('userDetails', JSON.stringify(userDetails));
+      window.location = '/messageboard';
+    } else {
+      if(errorMessage) {
+        this.showNotification('error', errorMessage);
+        this.props._that.props.resetErrorLog();
+      }
+    }
   }
   signIn(e) {
     const email = this.email.value;
@@ -111,20 +152,6 @@ class SignInForm extends React.Component {
       message: message,
       level: level
     });
-  }
-  componentWillUpdate() {
-    this.button.focus();
-    const isSignedIn = this.props._that.props.appInfo.authState.signedIn;
-    const errorMessage = this.props._that.props.apiError.message;
-    if(isSignedIn) {
-      this.props._that.props.history.push('/messageboard');
-    } else {
-      if(errorMessage) {
-        this.showNotification('success', errorMessage);
-        this.props._that.props.resetErrorLog();
-      }
-    }
-    
   }
   render() {
     // Style for notification
@@ -158,7 +185,7 @@ class SignInForm extends React.Component {
               <label htmlFor="password">Password</label>
             </div>
             <div className="col s12 center">
-              <button onClick={this.signIn} className="btn green darken-4" ref={(button) => { this.button = button; }} >Sign in</button>
+              <button id="signInButton" onClick={this.signIn} className="btn green darken-4" ref={(button) => { this.button = button; }} >Sign in</button>
             </div>
             <br /><br />
             <div className="col s12">
@@ -166,7 +193,7 @@ class SignInForm extends React.Component {
               <label htmlFor="signedin">Keep me signed in</label>
             </div>
             <div>
-              <p>Don't have an account? <a href="#">Sign up</a></p>
+              <p>Don't have an account? <a href="/signup">Sign up</a></p>
             </div>
           </div>
         </div>
@@ -201,7 +228,9 @@ const mapStateToProps = (state)  => {
 const mapDispatchToProps = (dispatch) => {
   return {
     signIn: (email, password) => dispatch(signIn(email, password)),
-    resetErrorLog: () => dispatch(resetErrorLog())
+    resetErrorLog: () => dispatch(resetErrorLog()),
+    resetRedirect: () => dispatch(resetRedirect()),
+    verifyToken: (token) => dispatch(verifyToken(token))
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Index);

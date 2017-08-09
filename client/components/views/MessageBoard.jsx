@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
-import { Link } from 'react-router-dom';
-import { getGroupsForUser, createGroup, deleteGroup, getAllGroupsForUser } from '../../actions';
+import { getGroupsForUser, getMessages, verifyToken, loadMessages, resetRedirect, createGroup, deleteGroup, getAllGroupsForUser } from '../../actions';
 import { connect } from 'react-redux';
 import 'jquery/dist/jquery';
 import '../../js/materialize';
@@ -17,22 +16,16 @@ class MessageBoard extends React.Component {
   }
 }
 
-class Nav extends React.Component {
-  componentDidMount(){
-    // Activate the sidenav
-    $(document).ready(() => {
-      $('.button-collapse').sideNav();
-    });
-  }
-
+class NavBar extends React.Component {
   render() {
-    const userDetails = this.props.userDetails;
+    const userDetailsString = localStorage.getItem('userDetails');
+    const userDetails = JSON.parse(userDetailsString);
     const allUserGroups = this.props.allUserGroups;
     return(
       <div className="navbar-fixed">
         <nav className="pink darken-4">
           <div className="nav-wrapper">
-            <a href="#" id="brand" className="brand-logo left">PostIt</a>
+            <a id="brand" className="brand-logo left">PostIt</a>
             <a href="#" data-activates="mobile-demo" data-hover="true" className="button-collapse show-on-large"><i className="material-icons">menu</i></a>
             <ul className="right">
               <li>
@@ -61,7 +54,7 @@ class Nav extends React.Component {
                 </ul>
                 {/* Dropdown Structure */}
                 <ul id="dropdown1" className="dropdowns dropdown-content">
-                  <li><Link to='/creategroup' className="black-text"><i className="material-icons green-text">library_add</i>Create Group</Link></li>
+                  <li><a href="/creategroup" className="black-text"><i className="material-icons green-text">library_add</i>Create Group</a></li>
                 </ul>
               </li>
               <li>
@@ -110,7 +103,7 @@ class Nav extends React.Component {
                   </li>
                 </ul>
               </li>
-              <li><Link to='/creategroup'><i className="large material-icons green-text">library_add</i>Create New Group</Link></li>
+              <li><a href='/creategroup'><i className="large material-icons green-text">library_add</i>Create New Group</a></li>
               <hr />
               <li><a href="#"><i className="large material-icons black-text">texture</i>All Groups</a></li>
               <div className="row searchbox valign-wrapper">
@@ -121,13 +114,7 @@ class Nav extends React.Component {
                   <span><i className="material-icons black-text">search</i></span>
                 </div>
               </div>
-              <ul className="list-side-nav">
-                {
-                  Object.keys(allUserGroups).map((groupId, index) => {
-                    return <li key={index}><a href="#"><i className="material-icons teal-text">people_outline</i>{allUserGroups[groupId].info.title}</a></li>
-                  })
-                }
-              </ul>
+              <Groups _that={this.props._that} allUserGroups={allUserGroups}/>
               <hr />
               <li><a href="#"><i className="large material-icons black-text">info</i>About PostIt</a></li>
               <li><a href="#"><i className="large material-icons red-text">info</i>Sign Out</a></li>
@@ -138,27 +125,53 @@ class Nav extends React.Component {
     );
   }
 }
-
-class SideNav extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+// Component to hold the groups a user belongs to
+class Groups extends React.Component{
   render() {
-    let firstName = this.props.userDetails.firstName;
-    let lastName = this.props.userDetails.lastName;
-    let phone = this.props.userDetails.phone;
-    let email = this.props.userDetails.email;
+    const allUserGroups = this.props.allUserGroups;
     return(
-      <ul className="collection">
-        <li className="collection-item avatar black-text">
-          <i className="material-icons purple circle">person</i>
-          <span className="title black-text">{firstName} {lastName}</span>
-          <p>{email}<br />{phone}</p>
-        </li>
+      <ul className="list-side-nav">
+        {
+          Object.keys(allUserGroups).map((groupId, index) => {
+            return <UserGroup _that={this.props._that} key={index} groupDetails={allUserGroups[groupId].info} />
+          })
+        }
       </ul>
     )
   }
 }
+// Component to hold the details of each group a user belongs to
+class UserGroup extends React.Component {
+  constructor(props) {
+    super(props);
+    this.loadMessages = this.loadMessages.bind(this);
+  }
+  componentDidUpdate() {
+    const redirect = this.props._that.props.apiError.redirect;
+    if(redirect.yes){
+      if(redirect.to === '/postmessage') {
+        const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
+        localStorage.setItem('groupId', groupId); // Save id of group to local storage
+      }
+      this.props._that.props.resetRedirect();
+      window.location = redirect.to;
+    }
+  }
+  loadMessages(e) {
+    const groupId = e.target.id;
+    const token = localStorage.getItem('token');
+    // Load messages into the conversation page
+    this.props._that.props.loadMessages(groupId);
+    this.props._that.props.getMessages(groupId, token);
+  }
+  render() {
+    const groupDetails = this.props.groupDetails;
+    return (
+     <li><a onClick={this.loadMessages} id={groupDetails.id} ><i className="material-icons teal-text">people_outline</i>{groupDetails.title}</a></li>
+    )
+  }
+}
+
 class Body extends React.Component {
   constructor(props) {
     super(props);
@@ -169,16 +182,16 @@ class Body extends React.Component {
     }
   }
   componentDidMount() {
-    const userId = this.props._that.props.appInfo.userDetails.id;
-    const token = this.props._that.props.appInfo.userDetails.token;
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
     let offset = 0;
     let limit = this.state.perPage;
     this.props._that.props.getGroupsForUser(userId, offset, limit, token);
     this.props._that.props.getAllGroupsForUser(userId, token);
   }
   handlePageNumberClick(data) {
-    const userId = this.props._that.props.appInfo.userDetails.id;
-    const token = this.props._that.props.appInfo.userDetails.token;
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
 
     let selected = data.selected;
     let offset =  Math.ceil(selected * this.state.perPage);
@@ -186,8 +199,6 @@ class Body extends React.Component {
     this.setState({offset: offset}, () => {
       this.props._that.props.getGroupsForUser(userId, offset, limit, token);
     });
-  }
-  componentWillUpdate() {
   }
   render() {
     let userGroups = this.props._that.props.groups.userGroups;
@@ -199,7 +210,7 @@ class Body extends React.Component {
     let allUserGroups = this.props._that.props.allUserGroups.userGroups;
     return(
       <div id="body">
-        <Nav allUserGroups={allUserGroups} userDetails={userDetails}/>
+        <NavBar _that={this.props._that} allUserGroups={allUserGroups} userDetails={userDetails}/>
         <div id="main">
           <h3 className="board-title center black-text">Message Board</h3>
 
@@ -207,7 +218,7 @@ class Body extends React.Component {
           <div className="row">
             {
               Object.keys(userGroups).map((groupId, index) => {
-                return <Group key={index} id={groupId} loading={dataLoading} groupDetails={userGroups[groupId].info}/>
+                return <Group _that={this.props._that} key={index} id={groupId} loading={dataLoading} groupDetails={userGroups[groupId].info}/>
                }
               )
             }
@@ -245,8 +256,19 @@ class Footer extends React.Component {
     );
   }
 }
-
+// This component renders the card that displays the details of a group with a notification
 class Group extends React.Component {
+  constructor(props) {
+    super(props);
+    this.loadMessages = this.loadMessages.bind(this);
+  }
+  loadMessages(e) {
+    const groupId = e.target.id;
+    const token = localStorage.getItem('token');
+    // Load messages into the conversation page
+    this.props._that.props.loadMessages(groupId);
+    this.props._that.props.getMessages(groupId, token);
+  }
   render() {
     if(this.props.loading) {
       return (
@@ -276,7 +298,7 @@ class Group extends React.Component {
           </div>
           <div className="card-content">
             <div>
-              <a href="#" className="card-title grey-text text-darken-4">{groupDetails.title}<span className="badge new pink">4</span></a>
+              <a onClick={this.loadMessages} id={groupDetails.id} className="card-title grey-text groupLink text-darken-4">{groupDetails.title}<span className="badge new pink">4</span></a>
               <p className="blue-text">Created by {groupDetails.createdBy}</p>
             </div>
           </div>
@@ -304,7 +326,8 @@ const mapStateToProps = (state)  => {
     allUserGroups: state.allUserGroups,
     appInfo: {
       userDetails: state.appInfo.userDetails,
-      authState: state.appInfo.authState
+      authState: state.appInfo.authState,
+      loadedMessages: state.appInfo.loadedMessages
     }
   };
 }
@@ -312,8 +335,12 @@ const mapStateToProps = (state)  => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getGroupsForUser: (userId, offset, limit, token) => dispatch(getGroupsForUser(userId, offset, limit, token)),
+    loadMessages: (groupId) => dispatch(loadMessages(groupId)),
+    resetRedirect: () => dispatch(resetRedirect()),
+    getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
     getAllGroupsForUser: (userId, token) => dispatch(getAllGroupsForUser(userId, token)), 
-    resetErrorLog: () => dispatch(resetErrorLog())
+    resetErrorLog: () => dispatch(resetErrorLog()),
+    verifyToken: (token) => dispatch(verifyToken(token)) 
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(MessageBoard);

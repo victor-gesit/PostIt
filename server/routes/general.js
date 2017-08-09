@@ -21,9 +21,13 @@ router.use('/groups/:offset/:limit', tokenValidator.validateToken, generalContro
 router.use('/groups/:offset', tokenValidator.validateToken, generalController.getAllGroups);
 // Load all created groups at once
 router.use('/groups', tokenValidator.validateToken, generalController.getAllGroups);
+// Verify token, useful for react components that require authentication before they can be accessed
+router.use('/token', tokenValidator.validateToken, (req, res) => {
+  res.status(200).send({ success: true, message: 'Token is valid' });
+});
 // Give sensible response for random routes
 router.use('/*', (req, res) => {
-  res.status(200).send({ message: 'Api up and running. Check documentation for appropriate routes' });
+  res.status(404).send({ message: 'Api up and running. Check documentation for appropriate routes' });
 });
 
 export default router;

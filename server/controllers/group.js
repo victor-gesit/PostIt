@@ -97,6 +97,7 @@ export default {
     let priority = req.body.priority || 'normal';
     let messageBody = req.body.body || '';
     let isCommentString = req.body.isComment;
+
     if (isCommentString !== null && isCommentString !== undefined) {
       isCommentString = isCommentString.toLowerCase();
     }
@@ -119,7 +120,8 @@ export default {
           sentBy: `${users[0].firstName} ${users[0].lastName}`,
           body: messageBody,
           groupId,
-          priority
+          priority,
+          senderId
         }).save().then((createdMessage) => {
           foundGroup.addMessage(createdMessage).then(() => res.status(200).send({ success: true, message: createdMessage }));
         }).catch(() => res.status(400).send({ success: false, message: 'Incomplete fields. Specify senderId, message and priority (normal, urgent or critical)' }));
@@ -152,7 +154,7 @@ export default {
         }
         Message.findAndCountAll({
           where: { groupId },
-          attributes: ['sentBy', 'body', 'createdAt', 'priority', 'isComment'],
+          attributes: ['sentBy', 'senderId', 'body', 'createdAt', 'priority', 'isComment'],
           offset,
           limit
         }).then(result =>

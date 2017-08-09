@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
+    senderId: {
+      type: DataTypes.UUID,
+      allowNull: false
+    },
     priority: {
       type: DataTypes.TEXT,
       allowNull: false,
