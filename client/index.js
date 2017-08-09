@@ -27,9 +27,9 @@ $(document).ready(() => {
 
 const appStore = {
   // Hold some groups (batch loading from db for pagination)
-  groups: { meta: { count: 0 }, userGroups: { 1: { members: { 1: {}, 2: {}}, groupId: '1', messages: [], info: { title: 'A Test Group', description: 'Details about it'}} } },
+  groups: { meta: { count: 0 }, userGroups: {} },
   // This will contain all the groups and everything about each
-  allUserGroups : { meta: {count: 0}, userGroups: {1: {members: {1: {}, 2: {}}, groupId: '1', messages: [], info: {title: 'Just A Test Group', description: 'Some Deets'}}}},
+  allUserGroups : { meta: {count: 0}, userGroups: {}},
   apiError: { errored: false, message: null, redirect: { yes: false, to: null} }, // This indicates any error during queries to the API
   appInfo: {
     userDetails: { firstName: null, lastName: null, id: null, token: null, email: null, phone: null},
@@ -42,15 +42,16 @@ const appStore = {
   postItInfo: {
     members: {
       postItMembers: {
-        1: {firstName: 'John', lastName: 'Doe', email: 'john@doe.com', id: 1}
+        // 1: {firstName: 'John', lastName: 'Doe', email: 'john@doe.com', id: 1}
       },
-      meta: {count: 5}
+      meta: {count: 0}
     },
     groups: {
-      postItGroups: {
-        1: {},
-        2: {} },
-        meta: {count: 5}
+      // postItGroups: {
+      //   1: {},
+      //   2: {} 
+      // },
+      //   meta: {count: 5}
       }
     }
 }
