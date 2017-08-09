@@ -88,7 +88,6 @@ class Body extends React.Component {
   render() {
     // Accessing a deleted group, or loading messages from a group you've been removed from
     const redirect = this.props._that.props.apiError.redirect;
-    console.log(redirect);
     if(redirect.yes) {
       if(redirect.to === '/postmessage'){
         // No page reloading when opening a different group
