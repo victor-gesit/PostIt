@@ -93,6 +93,7 @@ class Body extends React.Component {
   }
     // Method to add a member to the list of selected members
   addMember(selected, memberEmail) {
+    console.log(memberEmail);
     if(selected) {
       // Add member
       this.selectedMembers.push(memberEmail);
@@ -131,8 +132,8 @@ class Body extends React.Component {
               <div id="info" ref="info" className="tabcontent">
                 <div className="row">
                   <div className="col s12 m8 offset-m2 offset-l3 l6">            
-                    <div className="userlist-preloader loader">
-                      <div className="preloader-wrapper big active valign-wrapper">
+                    <div>
+                      <div className="preloader-wrapper loader big active valign-wrapper">
                         <div className="spinner-layer spinner-white-only">
                           <div className="circle-clipper left">
                           <div className="circle"></div>
@@ -155,14 +156,14 @@ class Body extends React.Component {
                   <div className="col s12 m8 offset-m2 offset-l3 l6">
                     <div className="group-details">
                       <h4 className="center">Enter group details</h4>
-                      <form>
+                      <div>
                         <div>
                           <input type="text" ref={(title) => { this.title = title; }} name="group-title" placeholder="Group Title" />
                         </div>
                         <div>
                           <textarea id="groupDescription" ref={(description) => { this.description = description; }} type="text" className="materialize-textarea" placeholder="Description" name="group-desc" defaultValue={""} />
                         </div>
-                      </form>
+                      </div>
                       <button className="btn light-green darken-4" onClick={() => this.switchTab("add-members", 'members')}>Next &gt;&gt;</button>
                     </div>
                   </div>
@@ -176,10 +177,10 @@ class Body extends React.Component {
           { /* Load spinner while contacting server */ }
           {dataLoading ? (
           <div>
-              <form>
-                <h3 className="center">Add members</h3>
-                <div className="registeredMembersList">
-                  <ul className="collection">
+              <div>
+                <div className="classListHolder">
+                  <ul className="collection with-header registeredMembersList">
+                    <li className="collection-header"><h4 className="center">Add members</h4></li>
                     <li className="collection-item">
                       <input id="cb1" type="checkbox" disabled  />
                       <label htmlFor="cb1" className="black-text"><small className="grey-text"></small></label>
@@ -197,10 +198,15 @@ class Body extends React.Component {
                       <label htmlFor="cb4" className="black-text"><small className="grey-text"></small></label>
                     </li>
                   </ul>
+                  <div className="row">
+                    <button className="btn col s8 offset-s2 m5 l5 light-green darken-4" onClick={() => this.switchTab("defaultTab", 'info')}>&lt;&lt; Group info</button>
+                    <div className="col s12 m2 s2"><br /></div>
+                    <button disabled className="btn col s8 offset-s2 m5 l5 light-green darken-4">Create group</button>
+                  </div>
                 </div>
-              </form>
+              </div>
               <div className="userlist-preloader">
-                <div className="preloader-wrapper big active valign-wrapper">
+                <div className="preloader-wrapper big loader active valign-wrapper">
                   <div className="spinner-layer spinner-white-only">
                     <div className="circle-clipper left">
                     <div className="circle"></div>
@@ -214,30 +220,25 @@ class Body extends React.Component {
                   </div>
                 </div>
               </div>
-              <div className="row">
-                <button className="btn col s8 offset-s2 m5 l5 light-green darken-4" onClick={() => this.switchTab("defaultTab", 'info')}>&lt;&lt; Group info</button>
-                <div className="col s12 m2 s2"><br /></div>
-                <button disabled className="btn col s8 offset-s2 m5 l5 light-green darken-4">Create group</button>
-              </div>
           </div>
           ) : (
             <div>
-              <form>
-                <h3 className="center">Add members</h3>
-                <div className="registeredMembersList">
-                  <ul className="collection">
+              <div>
+                <div className="classListHolder">
+                  <ul className="collection with-header registeredMembersList">
+                    <li className="collection-header"><h4 className="center">Add members</h4></li>
                     {
                     Object.keys(this.registeredMembers).map((userId, index ) => {
                       return <RegisteredMember addMember={this.addMember} key={index} id={userId} userInfo={this.registeredMembers[userId]}/>
                     })
                     }
                   </ul>
+                  <div className="row">
+                    <button className="btn col s8 offset-s2 m5 l5 light-green darken-4" onClick={() => this.switchTab("defaultTab", 'info')}>&lt;&lt; Group info</button>
+                    <div className="col s12 m2 s2"><br /></div>
+                    <button onClick={this.createGroup} className="btn col s8 offset-s2 m5 l5 light-green darken-4">Create group</button>
+                  </div>
                 </div>
-              </form>
-              <div className="row">
-                <button className="btn col s8 offset-s2 m5 l5 light-green darken-4" onClick={() => this.switchTab("defaultTab", 'info')}>&lt;&lt; Group info</button>
-                <div className="col s12 m2 s2"><br /></div>
-                <button onClick={this.createGroup} className="btn col s8 offset-s2 m5 l5 light-green darken-4">Create group</button>
               </div>
             </div>
           )}
