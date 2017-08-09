@@ -14,9 +14,9 @@ const dataService = store => next => (action) => {
         })
         .end((err, res) => {
           // Return the first error message when there are many
-          if (res) {
+          if (err) {
             // Ignore browser errors which do not have a res object
-            if (err) {
+            if (res) {
               return next({
                 type: 'SIGN_IN_ERROR',
                 message: res.body.message
