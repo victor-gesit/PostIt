@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
-import { Link } from 'react-router-dom';
 import { getGroupsForUser, getMessages, verifyToken, loadMessages, resetRedirect, createGroup, deleteGroup, getAllGroupsForUser } from '../../actions';
 import { connect } from 'react-redux';
 import 'jquery/dist/jquery';
@@ -17,7 +16,7 @@ class MessageBoard extends React.Component {
   }
 }
 
-class Nav extends React.Component {
+class NavBar extends React.Component {
   render() {
     const userDetailsString = localStorage.getItem('userDetails');
     const userDetails = JSON.parse(userDetailsString);
@@ -211,7 +210,7 @@ class Body extends React.Component {
     let allUserGroups = this.props._that.props.allUserGroups.userGroups;
     return(
       <div id="body">
-        <Nav _that={this.props._that} allUserGroups={allUserGroups} userDetails={userDetails}/>
+        <NavBar _that={this.props._that} allUserGroups={allUserGroups} userDetails={userDetails}/>
         <div id="main">
           <h3 className="board-title center black-text">Message Board</h3>
 
@@ -219,7 +218,7 @@ class Body extends React.Component {
           <div className="row">
             {
               Object.keys(userGroups).map((groupId, index) => {
-                return <Group key={index} id={groupId} loading={dataLoading} groupDetails={userGroups[groupId].info}/>
+                return <Group _that={this.props._that} key={index} id={groupId} loading={dataLoading} groupDetails={userGroups[groupId].info}/>
                }
               )
             }
@@ -259,6 +258,17 @@ class Footer extends React.Component {
 }
 // This component renders the card that displays the details of a group with a notification
 class Group extends React.Component {
+  constructor(props) {
+    super(props);
+    this.loadMessages = this.loadMessages.bind(this);
+  }
+  loadMessages(e) {
+    const groupId = e.target.id;
+    const token = localStorage.getItem('token');
+    // Load messages into the conversation page
+    this.props._that.props.loadMessages(groupId);
+    this.props._that.props.getMessages(groupId, token);
+  }
   render() {
     if(this.props.loading) {
       return (
@@ -288,7 +298,7 @@ class Group extends React.Component {
           </div>
           <div className="card-content">
             <div>
-              <a href="#" className="card-title grey-text text-darken-4">{groupDetails.title}<span className="badge new pink">4</span></a>
+              <a onClick={this.loadMessages} id={groupDetails.id} className="card-title grey-text groupLink text-darken-4">{groupDetails.title}<span className="badge new pink">4</span></a>
               <p className="blue-text">Created by {groupDetails.createdBy}</p>
             </div>
           </div>
