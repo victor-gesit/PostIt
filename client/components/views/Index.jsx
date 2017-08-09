@@ -8,14 +8,9 @@ class Index extends React.Component {
     super(props);
   };
   componentWillMount() {
-    console.log(window.location);
-    if(window.location.pathname === '/') {
-      const token = localStorage.getItem('token');
-      console.log(token);
-      if(token !== 'undefined' && token !== 'null') {
-        console.log('i here');
-        this.props.verifyToken(token);
-      }
+    const token = localStorage.getItem('token');
+    if(token !== 'undefined' && token !== 'null' && token !== null) {
+      this.props.verifyToken(token);
     }
   }
   render() {
@@ -34,7 +29,7 @@ class Index extends React.Component {
 }
 
 
-class Nav extends React.Component {
+class NavBar extends React.Component {
   render() {
     return(
       <div className="navbar-fixed">
@@ -66,7 +61,7 @@ class Body extends React.Component {
   render() {
     return(
       <div id="body">
-        <Nav/>
+        <NavBar/>
         <div id="main">
           <div className="fixed-action-btn hide-on-med-and-up">
             <a className="btn-floating btn-large red" href="#signinform">
