@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
-import { Link } from 'react-router-dom';
 import { 
   getGroupMembers, addUser, getMessages, loadMessages,
   resetRedirect, createGroup, deleteMember, getPostItMembers,
@@ -108,7 +107,7 @@ class Body extends React.Component {
     }
     return(
     <div id="body" >
-      <Nav deleteGroup={this.deleteGroup} _that={this.props._that}/>
+      <NavBar deleteGroup={this.deleteGroup} _that={this.props._that}/>
       <div id="main" >
         <div id="main-postmessage">
           <div className="memberListToggle">
@@ -559,7 +558,7 @@ class Message extends React.Component {
     }
   }
 }
-class Nav extends React.Component {
+class NavBar extends React.Component {
   render() {
     const groupId = localStorage.getItem('groupId');
     const userGroups = this.props._that.props.allUserGroups;
