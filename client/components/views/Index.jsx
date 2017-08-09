@@ -17,7 +17,6 @@ class Index extends React.Component {
     const redirect = this.props.apiError.redirect;
     if(redirect.yes) {
       this.props.resetRedirect();
-      console.log(redirect);
       // window.location = redirect.to;
     }
     return(
