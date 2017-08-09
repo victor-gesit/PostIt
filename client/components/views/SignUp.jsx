@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link, NavLink } from 'react-router-dom';
 import NotificationSystem from 'react-notification-system';
 import { signUp, resetErrorLog } from '../../actions';
 
@@ -14,9 +13,7 @@ class SignUp extends React.Component {
   }
 }
 
-class Nav extends React.Component {
-  componentDidMount() {
-  }
+class NavBar extends React.Component {
   render() {
     return(
       <div className="navbar-fixed">
@@ -113,7 +110,7 @@ class Body extends React.Component {
     }
     return(
       <div id="body">
-      <Nav/>
+      <NavBar/>
       <div id="main">
         <div className="row">
           <div className="col s8 m6 l4 offset-s2 offset-m3 offset-l4 signup-form">
