@@ -52,7 +52,6 @@ class Body extends React.Component {
       }
       // Reset state of redirect property
       this.props._that.props.resetRedirect();
-      console.log(redirect);
       window.location = redirect.to;
     } else {
       if(errorMessage) {
@@ -93,7 +92,6 @@ class Body extends React.Component {
   }
     // Method to add a member to the list of selected members
   addMember(selected, memberEmail) {
-    console.log(memberEmail);
     if(selected) {
       // Add member
       this.selectedMembers.push(memberEmail);
