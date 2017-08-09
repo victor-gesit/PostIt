@@ -213,9 +213,11 @@ div.tab button.active {
 .registeredMembersList {
     height: 250px;
     overflow: auto;
-    padding-left: 50px;
-    padding-right: 50px;
     background-color: white;
+}
+.classListHolder{
+    background-color: white;
+    padding: 10px;
 }
 .sign-out-button {
     width: 180px;
@@ -324,10 +326,13 @@ header, #messageInputBox, #main-postmessage, #footer {
 
 .loader {
 position: absolute;
-top :0;
-left: 0;
-right: 0;
-bottom: 0;
-margin: auto;
+    top :0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
 }
 
+.groupLink{
+    cursor: pointer;
+}
