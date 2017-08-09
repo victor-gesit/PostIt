@@ -198,7 +198,7 @@ const errorReducer = (state = {}, action) => {
       });
     case 'VERIFY_TOKEN_ERROR':
       return Object.assign({}, state, {
-        message: 'Session expired. Please sign in',
+        message: 'You have been away for a while. Please sign in again',
         redirect: {
           yes: true,
           to: '/'
