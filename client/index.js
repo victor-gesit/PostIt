@@ -29,7 +29,7 @@ const appStore = {
   // Hold some groups (batch loading from db for pagination)
   groups: { meta: { count: 0 }, userGroups: {} },
   // This will contain all the groups and everything about each
-  allUserGroups : { meta: {count: 0}, userGroups: {}},
+  allUserGroups: { meta: {count: 0}, userGroups: {}},
   apiError: { errored: false, message: null, redirect: { yes: false, to: null} }, // This indicates any error during queries to the API
   appInfo: {
     userDetails: { firstName: null, lastName: null, id: null, token: null, email: null, phone: null},
@@ -38,20 +38,16 @@ const appStore = {
       groupId: null
     }
   },
-  dataLoading: true,
+  dataLoading: false,
   postItInfo: {
     members: {
       postItMembers: {
-        // 1: {firstName: 'John', lastName: 'Doe', email: 'john@doe.com', id: 1}
       },
       meta: {count: 0}
     },
     groups: {
-      // postItGroups: {
-      //   1: {},
-      //   2: {} 
-      // },
-      //   meta: {count: 5}
+      postItGroups: {},
+      meta: {count: 0}
       }
     }
 }
