@@ -1,98 +1,144 @@
+/* eslint-env browser */
 import React from 'react';
 import { connect } from 'react-redux';
+import 'jquery';
+import NotificationSystem from 'react-notification-system';
 import {
   getGroupsForUser, getAllGroupsForUser, resetErrorLog,
   getMessages, loadMessages, resetRedirect,
   getPostItMembers, createGroup, verifyToken
 } from '../../actions';
-import NotificationSystem from 'react-notification-system';
 
-import 'jquery';
+// Partials
+import Footer from './partials/Footer.jsx';
+import NavBar from './partials/NavBar.jsx';
 
 
+/**
+ * React component that displays the page for creating a new group
+ */
 class CreateGroup extends React.Component {
+  /**
+   * Render method of React component
+   * @returns {Object} Returns the DOM object to be rendered
+   */
   render() {
     return (
       <div>
-        <Body _that={this}/>
+        <Body store={this.props}/>
       </div>
-    )
+    );
   }
 }
 
+/**
+ * React component for displaying page body
+ */
 class Body extends React.Component {
-  constructor(props){
+  /**
+   * Constructor initializes component parameters
+   * @param {Object} props Properties passed from parent component
+   */
+  constructor(props) {
     super(props);
     this.switchTab = this.switchTab.bind(this);
     this.addMember = this.addMember.bind(this);
     this.createGroup = this.createGroup.bind(this);
     this.showNotification = this.showNotification.bind(this);
     this.selectedMembers = [];
+    this.registeredMembers = {};
   }
+  /**
+   * React component method called after component render
+   * @return {undefined} this method returns nothing
+   */
   componentDidMount() {
     // Bind the notifications component
-    this._notificationSystem = this.notificationRef;
+    this.notificationSystem = this.notificationRef;
     // Load all registered members
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
-    this.props._that.props.getPostItMembers(token);
-    this.props._that.props.getAllGroupsForUser(userId, token);
+    this.props.store.getPostItMembers(token);
+    this.props.store.getAllGroupsForUser(userId, token);
   }
+  /**
+   * React component method called before componet receives new props
+   * @returns {undefined} this method returns nothing
+   */
   componentWillUpdate() {
-    const allUsers = this.props._that.props.postItInfo.members.postItMembers;
-    const apiError = this.props._that.props.apiError.errored;
-    const redirect = this.props._that.props.apiError.redirect;
-    const errorMessage = this.props._that.props.apiError.message;
+    const allUsers = this.props.store.postItInfo.members.postItMembers;
+    const redirect = this.props.store.apiError.redirect;
+    const errorMessage = this.props.store.apiError.message;
     this.registeredMembers = allUsers;
-    if(redirect.yes) {
-      if(redirect.to === '/postmessage'){
+    if (redirect.yes) {
+      if (redirect.to === '/postmessage') {
         // If group was created successfully, redirect to conversation page and store groupId
-        const groupId = this.props._that.props.appInfo.loadedMessages.groupId;
+        const groupId = this.props.store.appInfo.loadedMessages.groupId;
         localStorage.setItem('groupId', groupId); // Save id of group to
       }
       // Reset state of redirect property
-      this.props._that.props.resetRedirect();
+      this.props.store.resetRedirect();
       window.location = redirect.to;
     } else {
-      if(errorMessage) {
+      if (errorMessage) {
         // Empty the array of selected members
         this.selectedMembers = [];
         this.showNotification('error', errorMessage);
         // Reset error log
-        this.props._that.props.resetErrorLog();
+        this.props.store.resetErrorLog();
       }
     }
-  };
+  }
+  /**
+   * Method to display notifications
+   * @param {String} level the severity of the notification
+   * @param {String} message the message to be diplayed
+   * @return {undefined} this method returns nothing
+   */
   showNotification(level, message) {
-      this._notificationSystem.addNotification({
-      message: message,
-      level: level
+    this.notificationSystem.addNotification({
+      message,
+      level
     });
   }
+  /**
+   * Method for sending new group details to the api
+   * @returns {undefined} This method returns nothing
+   */
   createGroup() {
     const title = this.title.value;
     const description = this.description.value;
     const creatorId = localStorage.getItem('userId');
     const token = localStorage.getItem('token');
     const selectedMembers = this.selectedMembers;
-    this.props._that.props.createGroup(creatorId, title, description, selectedMembers, token);
+    this.props.store.createGroup(creatorId, title, description, selectedMembers, token);
   }
+  /**
+   * This method handles switching tabs in this react component
+   * @param {String} button The button that was clicked
+   * @param {String} tabName The div for the selected tab
+   * @returns {undefined} This method returns nothing
+   */
   switchTab(button, tabName) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-      tabcontent[i].style.display = "none";
+    const tabcontent = document.getElementsByClassName('tabcontent');
+    for (let i = 0; i < tabcontent.length; i += 1) {
+      tabcontent[i].style.display = 'none';
     }
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    const tablinks = document.getElementsByClassName('tablinks');
+    for (let i = 0; i < tablinks.length; i += 1) {
+      tablinks[i].className = tablinks[i].className.replace(' active', '');
     }
-    this.refs[tabName].style.display = "block";
-    this.refs[button].className += " active";
+    this.refs[tabName].style.display = 'block';
+    this.refs[button].className += ' active';
   }
-    // Method to add a member to the list of selected members
+  /**
+   * Method to add a member to the list of selected members
+   * @param {Boolean} selected indicates if a member was selected or deselected
+   * @param {String} memberEmail Email of member to be added
+   * @returns {undefined} this method returns nothing
+   */
   addMember(selected, memberEmail) {
-    if(selected) {
+    if (selected) {
       // Add member
       this.selectedMembers.push(memberEmail);
     } else {
@@ -101,35 +147,41 @@ class Body extends React.Component {
       this.selectedMembers.splice(index, 1);
     }
   }
-
+  /**
+   * Render method of React component
+   * @returns {Object} Returns the DOM object to be rendered
+   */
   render() {
     const style = {
-      NotificationItem: { 
-        DefaultStyle: { 
+      NotificationItem: {
+        DefaultStyle: {
           margin: '100px 5px 2px 1px',
           position: 'fixed',
           width: '320px'
         },
-    
-        success: { 
+        success: {
           color: 'red'
         }
       }
-    }
-    let dataLoading  = this.props._that.props.dataLoading;
+    };
+    const dataLoading = this.props.store.dataLoading;
+    const allUserGroups = this.props.store.allUserGroups.userGroups;
     return (
       <div id="body">
-        <NavBar _that={this.props._that}/>
-        <NotificationSystem className='notification' style={style} ref={(notificationRef) => { this.notificationRef = notificationRef }} />
+        <NavBar store={this.props.store} allUserGroups={allUserGroups}/>
+        <NotificationSystem className='notification' style={style}
+          ref={(notificationRef) => { this.notificationRef = notificationRef; }} />
         <div id="main">
           <div className="tab">
-            <button className="tablinks" id="defaultTab" ref="defaultTab" onClick={() => this.switchTab("defaultTab", 'info')}>Group info</button>
-            <button className="tablinks" id="add-members" ref="add-members" onClick={() => this.switchTab("add-members", 'members')}>Add members</button>
+            <button className="tablinks" id="defaultTab" ref="defaultTab"
+              onClick={() => this.switchTab('defaultTab', 'info')}>Group info</button>
+            <button className="tablinks" id="add-members" ref="add-members"
+              onClick={() => this.switchTab('add-members', 'members')}>Add members</button>
           </div>
           { dataLoading ? (
               <div id="info" ref="info" className="tabcontent">
                 <div className="row">
-                  <div className="col s12 m8 offset-m2 offset-l3 l6">            
+                  <div className="col s12 m8 offset-m2 offset-l3 l6">
                     <div>
                       <div className="preloader-wrapper loader big active valign-wrapper">
                         <div className="spinner-layer spinner-white-only">
@@ -148,7 +200,7 @@ class Body extends React.Component {
                   </div>
                 </div>
               </div>
-            ):(
+            ) : (
               <div id="info" ref="info" className="tabcontent">
                 <div className="row">
                   <div className="col s12 m8 offset-m2 offset-l3 l6">
@@ -156,13 +208,18 @@ class Body extends React.Component {
                       <h4 className="center">Enter group details</h4>
                       <div>
                         <div>
-                          <input type="text" ref={(title) => { this.title = title; }} name="group-title" placeholder="Group Title" />
+                          <input type="text" ref={(title) => { this.title = title; }}
+                            name="group-title" placeholder="Group Title" />
                         </div>
                         <div>
-                          <textarea id="groupDescription" ref={(description) => { this.description = description; }} type="text" className="materialize-textarea" placeholder="Description" name="group-desc" defaultValue={""} />
+                          <textarea id="groupDescription"
+                            ref={(description) => { this.description = description; }}
+                            type="text" className="materialize-textarea" placeholder="Description"
+                            name="group-desc" defaultValue={''} />
                         </div>
                       </div>
-                      <button className="btn light-green darken-4" onClick={() => this.switchTab("add-members", 'members')}>Next &gt;&gt;</button>
+                      <button className="btn light-green darken-4"
+                        onClick={() => this.switchTab('add-members', 'members')}>Next &gt;&gt;</button>
                     </div>
                   </div>
                 </div>
@@ -180,26 +237,32 @@ class Body extends React.Component {
                   <ul className="collection with-header registeredMembersList">
                     <li className="collection-header"><h4 className="center">Add members</h4></li>
                     <li className="collection-item">
-                      <input id="cb1" type="checkbox" disabled  />
-                      <label htmlFor="cb1" className="black-text"><small className="grey-text"></small></label>
+                      <input id="cb1" type="checkbox" disabled />
+                      <label htmlFor="cb1" className="black-text">
+                        <small className="grey-text"></small></label>
                     </li>
                     <li className="collection-item">
-                      <input id="cb2" type="checkbox" disabled  />
-                      <label htmlFor="cb2" className="black-text"><small className="grey-text"></small></label>
+                      <input id="cb2" type="checkbox" disabled />
+                      <label htmlFor="cb2" className="black-text">
+                        <small className="grey-text"></small></label>
                     </li>
                     <li className="collection-item">
-                      <input id="cb3" type="checkbox" disabled  />
-                      <label htmlFor="cb3" className="black-text"><small className="grey-text"></small></label>
+                      <input id="cb3" type="checkbox" disabled />
+                      <label htmlFor="cb3" className="black-text">
+                        <small className="grey-text"></small></label>
                     </li>
                     <li className="collection-item">
-                      <input id="cb4" type="checkbox" disabled  />
-                      <label htmlFor="cb4" className="black-text"><small className="grey-text"></small></label>
+                      <input id="cb4" type="checkbox" disabled />
+                      <label htmlFor="cb4" className="black-text">
+                        <small className="grey-text"></small></label>
                     </li>
                   </ul>
                   <div className="row">
-                    <button className="btn col s8 offset-s2 m5 l5 light-green darken-4" onClick={() => this.switchTab("defaultTab", 'info')}>&lt;&lt; Group info</button>
+                    <button className="btn col s8 offset-s2 m5 l5 light-green darken-4"
+                      onClick={() => this.switchTab('defaultTab', 'info')}>&lt;&lt; Group info</button>
                     <div className="col s12 m2 s2"><br /></div>
-                    <button disabled className="btn col s8 offset-s2 m5 l5 light-green darken-4">Create group</button>
+                    <button disabled className="btn col s8 offset-s2 m5 \
+                      l5 light-green darken-4">Create group</button>
                   </div>
                 </div>
               </div>
@@ -226,15 +289,21 @@ class Body extends React.Component {
                   <ul className="collection with-header registeredMembersList">
                     <li className="collection-header"><h4 className="center">Add members</h4></li>
                     {
-                    Object.keys(this.registeredMembers).map((userId, index ) => {
-                      return <RegisteredMember addMember={this.addMember} key={index} id={userId} userInfo={this.registeredMembers[userId]}/>
-                    })
+                      Object.keys(this.registeredMembers).map((userId, index) =>
+                        <RegisteredMember addMember={this.addMember} key={index}
+                        id={userId} userInfo={this.registeredMembers[userId]}/>
+                      )
                     }
                   </ul>
                   <div className="row">
-                    <button className="btn col s8 offset-s2 m5 l5 light-green darken-4" onClick={() => this.switchTab("defaultTab", 'info')}>&lt;&lt; Group info</button>
+                    <button className="btn col s8 offset-s2 m5 l5 light-green darken-4"
+                      onClick={() => this.switchTab('defaultTab', 'info')}>&lt;&lt; Group info
+                    </button>
                     <div className="col s12 m2 s2"><br /></div>
-                    <button onClick={this.createGroup} className="btn col s8 offset-s2 m5 l5 light-green darken-4">Create group</button>
+                    <button onClick={this.createGroup}
+                      className="btn col s8 offset-s2 m5 l5 light-green darken-4">
+                      Create group
+                    </button>
                   </div>
                 </div>
               </div>
@@ -247,195 +316,54 @@ class Body extends React.Component {
         </div>
         <Footer/>
       </div>
-    )
+    );
   }
 }
 
-
-
-class Footer extends React.Component {
-  render() {
-    return (
-      <footer className="page-footer pink darken-4">
-        <div className="shift-left white-text">Built by Victor Idongesit</div>
-        <div className="footer-copyright shift-left">© Andela, 2017</div>
-      </footer>
-    )
-  }
-}
-
-class NavBar extends React.Component {
-  constructor(props){
-    super(props);
-  }
-  render() {
-    const userDetailsString = localStorage.getItem('userDetails');
-    const userDetails = JSON.parse(userDetailsString);
-    const allUserGroups = this.props._that.props.allUserGroups.userGroups;
-    return (
-      <div className="navbar-fixed">
-        <nav className="pink darken-4">
-          <div className="nav-wrapper">
-            <a href="#" id="brand" className="brand-logo left">PostIt</a>
-            <a href="#" data-activates="mobile-demo" data-hover="true" className="button-collapse show-on-large"><i className="material-icons">menu</i></a>
-            <ul className="right">
-              <li>
-                    <a href="/messageboard">
-                      <i className="material-icons">view_module</i>
-                    </a>                
-              </li>
-              <li>
-                {/* Dropdown Trigger */}
-                <ul>
-                  <li>
-                    <a className="dropdown-button" data-alignment="right" data-constrainwidth="false" data-beloworigin="true" data-hover="true" href="#" data-activates="dropdown0">
-                      <i className="material-icons">notifications_active</i>
-                    </a>
-                  </li>
-                </ul>
-                {/* Dropdown Structure */}
-                <ul id="dropdown0" className="dropdown-content">
-                  <li><a href="#!" className="black-text">Family and Friends<span className="badge">1</span></a></li>
-                  <li><a href="#!" className="black-text">DisruptI.T. Project<span className="new pink badge">1</span></a></li>
-                </ul>
-              </li>
-              <li>
-                {/* Dropdown Trigger */}
-                <ul>
-                  <li>
-                    <a className="dropdown-button" data-beloworigin="true" data-hover="true" href="#" data-activates="dropdown3">
-                      <i className="material-icons">person</i>
-                    </a>
-                  </li>
-                </ul>
-                {/* Dropdown Structure */}
-                <ul id="dropdown3" className="dropdowns dropdown-content">
-                  <li className="user-profile-container">
-                    <ul className="collection">
-                      <li className="collection-item avatar black-text">
-                        <i className="material-icons purple circle">person</i>
-                        <div className="title black-text">{userDetails.firstName} {userDetails.lastName}</div>
-                        <p>{userDetails.email}<br />{userDetails.phone}</p>
-                      </li>
-                    </ul>
-                  </li>
-                  <li>
-                    <div className="row valign-wrapper">
-                      <div className="col s12 center">
-                        <button className="btn  black sign-out-button">Sign out</button>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-            {/* Side Nav */}
-            <ul id="mobile-demo" className="side-nav">
-              <li>
-                <div className="user-details">
-                  <div className="background">
-                    <img src="images/fire2.png" />
-                  </div>
-                </div>
-                <ul className="collection">
-                  <li className="collection-item avatar black-text">
-                    <i className="material-icons purple circle">person</i>
-                    <span className="title black-text">{userDetails.firstName} {userDetails.lastName}</span>
-                    <p>{userDetails.email}<br />{userDetails.phone}</p>
-                  </li>
-                </ul>
-              </li>
-              <hr />
-              <li><a href="#"><i className="large material-icons red-text">texture</i>All Groups</a></li>
-              <div className="row searchbox valign-wrapper">
-                <div className="col s9">
-                  <input type="search" placeholder="Find a group" className="white-text" />
-                </div>
-                <div className="col s3">
-                  <span><i className="material-icons black-text">search</i></span>
-                </div>
-              </div>
-              <Groups _that={this.props._that} allUserGroups={allUserGroups} />
-              <hr />
-              <li><a href="#"><i className="large material-icons black-text">info</i>About PostIt</a></li>
-              <li><a href="#"><i className="large material-icons red-text">info</i>Sign Out</a></li>
-            </ul>
-          </div>
-        </nav>
-      </div>
-    )
-  }
-}
-
-
-// Component to hold the groups a user belongs to
-class Groups extends React.Component{
-  render() {
-    const allUserGroups = this.props.allUserGroups;
-    return(
-      <ul className="list-side-nav">
-        {
-          Object.keys(allUserGroups).map((groupId, index) => {
-            return <UserGroup _that={this.props._that} key={index} groupDetails={allUserGroups[groupId].info} />
-          })
-        }
-      </ul>
-    )
-  }
-}
-// Component to hold the details of each group a user belongs to
-class UserGroup extends React.Component {
-  constructor(props) {
-    super(props);
-    this.loadMessages = this.loadMessages.bind(this);
-  }
-  loadMessages(e) {
-    const groupId = e.target.id;
-    const token = localStorage.getItem('token');
-    // Load messages into the conversation page
-    this.props._that.props.loadMessages(groupId);
-    this.props._that.props.getMessages(groupId, token);
-  }
-  render() {
-    const groupDetails = this.props.groupDetails;
-    return (
-     <li><a onClick={this.loadMessages} id={groupDetails.id} ><i className="material-icons teal-text">people_outline</i>{groupDetails.title}</a></li>
-    )
-  }
-}
-
-
-// Component to contain a member loaded from the database
+/**
+ *  Component to contain a member loaded from the database
+ */
 class RegisteredMember extends React.Component {
+  /**
+   * @param {Object} props component props passed from parent component
+   */
   constructor(props) {
     super(props);
     this.selected = false;
     this.addOrRemove = this.addOrRemove.bind(this);
   }
-  // Method add or remove a member
-  addOrRemove(state, email) {
+  /**
+   * Method to add a member to a group
+   * @param {String} email Email of member to be added
+   * @returns {undefined} This method returns nothing
+   */
+  addOrRemove(email) {
     this.selected = !this.selected;
     this.props.addMember(this.selected, email);
   }
+  /**
+   * Render method of React component
+   * @returns {Object} Returns the DOM object to be rendered
+   */
   render() {
     const userInfo = this.props.userInfo;
     return (
       <li className="collection-item">
         <input id={this.props.userInfo.email}
           type="checkbox"
-          onClick={() => this.addOrRemove(event, this.props.userInfo.email)}
+          onClick={() => this.addOrRemove(this.props.userInfo.email)}
           ref={this.props.userInfo.email} />
         <label className="brown-text" htmlFor={this.props.userInfo.email}>
           {userInfo.firstName} {userInfo.lastName}
-          <small className="red-text">   {this.props.userInfo.email}</small>
+          <small className="red-text"> { this.props.userInfo.email }</small>
         </label>
       </li>
-    )
+    );
   }
 }
 
-const mapStateToProps = (state)  => {
-  return {
+const mapStateToProps = state => (
+  {
     apiError: state.apiError,
     dataLoading: state.dataLoading,
     groups: state.groups,
@@ -446,21 +374,23 @@ const mapStateToProps = (state)  => {
       loadedMessages: state.appInfo.loadedMessages
     },
     postItInfo: state.postItInfo
-  };
-}
+  }
+);
 
-const mapDispatchToProps = (dispatch) => {
-  return {
+
+const mapDispatchToProps = dispatch =>
+  ({
     resetErrorLog: () => dispatch(resetErrorLog()),
     resetRedirect: () => dispatch(resetRedirect()),
-    verifyToken: (token) => dispatch(verifyToken(token)),
-    getPostItMembers: (token) => dispatch(getPostItMembers(token)),
+    verifyToken: token => dispatch(verifyToken(token)),
+    getPostItMembers: token => dispatch(getPostItMembers(token)),
     getAllGroupsForUser: (userId, token) => dispatch(getAllGroupsForUser(userId, token)),
     getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
-    loadMessages: (groupId) => dispatch(loadMessages(groupId)),
+    loadMessages: groupId => dispatch(loadMessages(groupId)),
     createGroup: (creatorId, title, description, selectedMembers, token) =>
       dispatch(createGroup(creatorId, title, description, selectedMembers, token)),
-    getGroupsForUser: (userId, offset, limit, token) => dispatch(getGroupsForUser(userID, offset, limit, token))
-  };
-};
+    getGroupsForUser: (userId, offset, limit, token) =>
+    dispatch(getGroupsForUser(userId, offset, limit, token))
+  });
+
 export default connect(mapStateToProps, mapDispatchToProps)(CreateGroup);
