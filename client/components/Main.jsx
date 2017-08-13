@@ -8,9 +8,14 @@ import MessageBoard from './views/MessageBoard.jsx';
 import PostMessage from './views/PostMessage.jsx';
 import SignUp from './views/SignUp.jsx';
 
-
+/**
+ * Component to load routes
+ */
 class Main extends React.Component {
-  
+  /**
+   * Render method of React component
+   * @returns {Object} Returns the DOM object to be rendered
+   */
   render() {
     return (
       <main>
@@ -22,7 +27,7 @@ class Main extends React.Component {
           <Route exact path='/signup' component={SignUp}/>
         </Switch>
       </main>
-    )
+    );
   }
 }
 
