@@ -1,5 +1,5 @@
 import React from 'react';
-
+import jwtDecode from 'jwt-decode';
 /**
  * A React ccomponent that displays all the messages for a group
  */
@@ -19,9 +19,12 @@ export default class Messages extends React.Component {
    * @returns {Object} Returns the DOM object to be rendered
    */
   render() {
-    const groupId = localStorage.getItem('groupId');
+    const groupId = localStorage.getItem('groupId'); // My Hack
     const groupLoaded = this.props.store.groups.userGroups[groupId];
-    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
+    const dataLoading = this.props.store.dataLoading;
+    const decode = jwtDecode(token);
+    const userId = decode.id;
     let messages;
     // Check that group data is loaded
     if (groupLoaded && userId) {
