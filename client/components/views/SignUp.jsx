@@ -79,6 +79,10 @@ class Body extends React.Component {
    * @returns {undefined} This method returns nothing
    */
   componentDidMount() {
+    // Initialize the side nav
+    $('.button-collapse').sideNav({
+      closeOnClick: true
+    });
     // Initialize notification component
     this.notificationSystem = this.notificationRef;
     // Set focus to SignUp button
@@ -101,12 +105,8 @@ class Body extends React.Component {
     const errorMessage = this.props.store.apiError.message;
     if (isSignedIn) {
       const token = this.props.store.appInfo.userDetails.token;
-      const userId = this.props.store.appInfo.userDetails.id;
-      const userDetails = this.props.store.appInfo.userDetails;
-      localStorage.setItem('userId', userId);
       localStorage.setItem('token', token);
-      localStorage.setItem('userDetails', JSON.stringify(userDetails));
-      window.location = '/messageboard';
+      window.location = '/#/messageboard';
     } else {
       if(errorMessage) {
         this.showNotification('error', errorMessage);
@@ -196,7 +196,7 @@ class Body extends React.Component {
                   className="btn center green darken-4" autoFocus>Sign up</button>
               </div>
               <div>
-                <p>Already have an account? <a href="/" >Sign in</a></p>
+                <p>Already have an account? <a href="/#/" >Sign in</a></p>
               </div>
             </div>
           </div>
