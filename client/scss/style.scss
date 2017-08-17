@@ -128,6 +128,7 @@ div.tab button.active {
     padding: 20px;
     background: rgba(255, 255, 255, .9);
     display: none;
+    z-index: 1;
 }
 
 .members-list {
@@ -146,7 +147,7 @@ div.tab button.active {
     height: 50px;
 }
 .list-side-nav {
-    height: 200px;
+    height: 175px;
     overflow: auto;
 }
 .navbar-fixed {
@@ -325,7 +326,7 @@ header, #messageInputBox, #main-postmessage, #footer {
 }
 
 .loader {
-position: absolute;
+    position: absolute;
     top :0;
     left: 0;
     right: 0;
@@ -335,4 +336,13 @@ position: absolute;
 
 .groupLink{
     cursor: pointer;
+}
+#sideNavImage {
+    overflow: hidden;
+    width: 300px;
+}
+#sideNavIcon{
+    cursor: pointer;
+}
+#sidenav-overlay {
 }

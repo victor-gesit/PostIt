@@ -1,26 +1,44 @@
+/* eslint-env browser */
 import React from 'react';
 import { connect } from 'react-redux';
 import NotificationSystem from 'react-notification-system';
 import { signUp, resetErrorLog } from '../../actions';
+import Footer from './partials/Footer.jsx';
 
+/**
+ * React component that displays the Sign Up page
+ */
 class SignUp extends React.Component {
+  /**
+   * Render method of React component
+   * @returns {Object} Returns the DOM object to be rendered
+   */
   render() {
-    return(
+    return (
       <div>
-        <Body _that={this}/>
+        <Body store={this.props}/>
       </div>
     );
   }
 }
 
+
+/**
+ * React componet that displays Navigation Bar
+ */
 class NavBar extends React.Component {
+  /**
+   * Render method of React component
+   * @returns {Object} Returns the DOM object to be rendered
+   */
   render() {
-    return(
+    return (
       <div className="navbar-fixed">
         <nav className="pink darken-4" role="navigation">
           <div className="nav-wrapper">
             <a href="#" id="brand" className="brand-logo">PostIt</a>
-            <a href="#" data-activates="mobile-demo" className="button-collapse"><i className="material-icons">menu</i></a>
+            <a href="#" data-activates="mobile-demo"
+              className="button-collapse"><i className="material-icons">menu</i></a>
             <ul className="right hide-on-med-and-down">
               <li><a href="#">About PostIt</a></li>
             </ul>
@@ -32,7 +50,8 @@ class NavBar extends React.Component {
                   </div>
                 </div>
               </li>
-              <li><a href="#"><i className="large material-icons black-text">info</i>About PostIt</a></li>
+              <li><a href="#"><i className="large material-icons black-text">info</i>
+                About PostIt</a></li>
             </ul>
           </div>
         </nav>
@@ -41,109 +60,144 @@ class NavBar extends React.Component {
   }
 }
 
+/**
+ * React component that loads page body
+ */
 class Body extends React.Component {
+  /**
+   * Constructor initializes component parameters
+   * @param {Object} props Properties passed from parent component
+   */
   constructor(props) {
     super(props);
     this.signUp = this.signUp.bind(this);
     this.showNotification = this.showNotification.bind(this);
-    this._notificationSystem = null;
+    this.notificationSystem = null;
   }
+  /**
+   * Component method called after component has rendered to make
+   * sign in button hold page focus
+   * @returns {undefined} This method returns nothing
+   */
   componentDidMount() {
+    // Initialize the side nav
+    $('.button-collapse').sideNav({
+      closeOnClick: true
+    });
     // Initialize notification component
-    this._notificationSystem = this.notificationRef;
+    this.notificationSystem = this.notificationRef;
     // Set focus to SignUp button
     $('#signUpForm').keypress((event) => {
-      if ((event.which && event.which == 13) || (event.keyCode && event.keyCode == 13)) {
-          $('#signUpButton').click();
-          return false;
+      if ((event.which && event.which === 13) || (event.keyCode && event.keyCode === 13)) {
+        $('#signUpButton').click();
+        return false;
       } else {
-          return true;
+        return true;
       }
-    })
+    });
   }
+  /**
+   * Component method called before component properties are updated,
+   * to save user token to local storage, or flash an error message if sign up failed
+   * @returns {undefined} This method returns nothing
+   */
   componentWillUpdate() {
-    const isSignedIn = this.props._that.props.appInfo.authState.signedIn;
-    const errorMessage = this.props._that.props.apiError.message;
-    if(isSignedIn) {
-      const token = this.props._that.props.appInfo.userDetails.token;
-      const userId = this.props._that.props.appInfo.userDetails.id;
-      const userDetails = this.props._that.props.appInfo.userDetails;
-      localStorage.setItem('userId', userId);
+    const isSignedIn = this.props.store.appInfo.authState.signedIn;
+    const errorMessage = this.props.store.apiError.message;
+    if (isSignedIn) {
+      const token = this.props.store.appInfo.userDetails.token;
       localStorage.setItem('token', token);
-      localStorage.setItem('userDetails', JSON.stringify(userDetails));
-      window.location = '/messageboard';
+      window.location = '/#/messageboard';
     } else {
-      if(errorMessage) {
+      if (errorMessage) {
         this.showNotification('error', errorMessage);
-        this.props._that.props.resetErrorLog();
+        this.props.store.resetErrorLog();
       }
     }
-    
   }
+  /**
+   * Method called to sign up a user
+   * @returns {undefined} This method returns nothing
+   */
   signUp() {
     const firstName = this.firstName.value;
     const lastName = this.lastName.value;
     const email = this.email.value;
     const phone = this.phone.value;
     const password = this.password.value;
-    this.props._that.props.signUp(firstName, lastName, email, password, phone);
+    this.props.store.signUp(firstName, lastName, email, password, phone);
   }
+  /**
+   * @param {Sring} level The type of notification (success or failure)
+   * @param {String} message The message in the notification
+   * @returns {undefined} This method returns nothing
+   */
   showNotification(level, message) {
-      this._notificationSystem.addNotification({
-      message: message,
-      level: level
+    this.notificationSystem.addNotification({
+      message,
+      level,
     });
   }
+  /**
+   * Render method of React component
+   * @returns {Object} Returns the DOM object to be rendered
+   */
   render() {
     const style = {
-      NotificationItem: { 
-        DefaultStyle: { 
+      NotificationItem: {
+        DefaultStyle: {
           margin: '100px 5px 2px 1px',
           position: 'fixed',
           width: '320px'
         },
-    
-        success: { 
-          color: 'red'
+        success: {
+          color: 'green'
         }
       }
-    }
-    return(
+    };
+    return (
       <div id="body">
       <NavBar/>
       <div id="main">
         <div className="row">
-          <div className="col s8 m6 l4 offset-s2 offset-m3 offset-l4 signup-form">
-            <NotificationSystem className='notification' style={style} ref={(notificationRef) => { this.notificationRef = notificationRef }} />
+          <div className="col s10 m6 l4 offset-s1 offset-m3 offset-l4 signup-form">
+            <NotificationSystem className='notification'style={style}
+              ref={(notificationRef) => { this.notificationRef = notificationRef; }} />
             <div id="signUpForm" className="row">
               <div>
                 <h3 className="center">Sign Up</h3>
               </div>
               <div className="input-field col s12">
-                <input id="firstName" ref={(firstName) => {this.firstName = firstName;}} type="text" name="fname" className="validate" />
+                <input id="firstName" ref={(firstName) => { this.firstName = firstName; }}
+                  type="text" name="fname" className="validate" />
                 <label htmlFor="firstName">First Name</label>
               </div>
               <div className="input-field col s12">
-                <input id="lastName" ref={(lastName) => {this.lastName = lastName;}} type="text" name="lastName" className="validate" />
+                <input id="lastName" ref={(lastName) => { this.lastName = lastName; }}
+                  type="text" name="lastName" className="validate" />
                 <label htmlFor="lastName">Last Name</label>
               </div>
               <div className="input-field col s12">
-                <input type="text" ref={(phone) => {this.phone = phone;}}   id="phone" name="number" className="validate" />
+                <input type="text" ref={(phone) => { this.phone = phone; }} id="phone"
+                  name="number" className="validate" />
                 <label htmlFor="phone">Phone</label>
               </div>
               <div className="input-field col s12">
-                <input id="email" ref={(email) => {this.email = email;}}  type="email" name="email" className="validate" />
+                <input id="email" ref={(email) => { this.email = email; }}
+                  type="email" name="email" className="validate" />
                 <label htmlFor="email" data-error="Enter valid email">Email</label>
               </div>
               <div className="input-field col s12">
-                <input ref={(password) => {this.password = password;}} id="password" type="password" className="validate" />
+                <input ref={(password) => { this.password = password; }}
+                  id="password" type="password" className="validate" />
                 <label htmlFor="password">Password</label>
               </div>
               <div className="center">
-                <button onClick={this.signUp} id="signUpButton" className="btn center green darken-4" autoFocus>Sign up</button>
+                <button onClick={this.signUp} id="signUpButton"
+                  className="btn center green darken-4" autoFocus>Sign up</button>
               </div>
               <div>
-                <p>Already have an account? <a href="/" >Sign in</a></p>
+                <p>Already have an account? <a href="/#/" >Sign in</a></p>
               </div>
             </div>
           </div>
@@ -155,33 +209,22 @@ class Body extends React.Component {
   }
 }
 
-class Footer extends React.Component {
-  render() {
-      return (
-      <footer className="page-footer pink darken-4">
-        <div className="shift-left white-text">Built by Victor Idongesit</div>
-        <div className="footer-copyright shift-left">    © Andela, 2017</div>
-      </footer>
-    );
-  }
-}
 
-
-function mapStateToProps(state) {
-  return {
+const mapStateToProps = state =>
+  ({
     apiError: state.apiError,
     dataLoading: state.dataLoading,
     appInfo: {
       userDetails: state.appInfo.userDetails,
       authState: state.appInfo.authState
     }
-  };
-}
+  });
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    signUp: (firstName, lastName, email, password, phone) => dispatch(signUp(firstName, lastName, email, password, phone)),
+const mapDispatchToProps = dispatch =>
+  ({
+    signUp: (firstName, lastName, email, password, phone) =>
+      dispatch(signUp(firstName, lastName, email, password, phone)),
     resetErrorLog: () => dispatch(resetErrorLog())
-  };
-};
+  });
+
 export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

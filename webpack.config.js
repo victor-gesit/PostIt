@@ -1,16 +1,19 @@
 const path = require('path');
 const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
-  entry: './index.js',
+  entry: [
+    './client/index.js'
+  ],
   output: {
-    path: path.resolve(__dirname, './build'),
-    filename: './bundle.js',
+    path: path.resolve(__dirname, './client/build'),
+    filename: 'bundle.js',
+    publicPath: '/build/'
   },
   watch: true,
   devtool: 'source-map',
   devServer: {
-    contentBase: './',
     historyApiFallback: true
   },
   plugins: [
@@ -19,7 +22,10 @@ module.exports = {
       jQuery: 'jquery',
       'window.jQuery': 'jquery',
       Hammer: 'hammerjs/hammer'
-    })
+    }),
+    new ExtractTextPlugin('styles.css'),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoEmitOnErrorsPlugin()
   ],
   module: {
     loaders: [
@@ -34,7 +40,10 @@ module.exports = {
       {
         test: /\.scss$/,
         exclude: /node_modules/,
-        loader: 'style-loader!css-loader!sass-loader'
+        loader: ExtractTextPlugin.extract({
+          fallback: 'style-loader', // The backup style loader
+          use: 'css-loader!sass-loader'
+        })
       },
       {
         test: /\.html$/,
@@ -43,7 +52,9 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: 'style-loader!css-loader'
+        loader: ExtractTextPlugin.extract({
+          use: 'css-loader'
+        })
       },
       {
         test: /\.(eot|svg|ttf|woff|woff2|styl)$/,

@@ -14,7 +14,7 @@ const errorReducer = (state = {}, action) => {
         message: null,
         redirect: {
           yes: true,
-          to: '/messageboard'
+          to: '/#/messageboard'
         },
         errored: false
       };
@@ -45,7 +45,7 @@ const errorReducer = (state = {}, action) => {
         },
         errored: false
       });
-    case 'DELETE_MEMBER_ERROR':
+    case 'DELETE_GROUP_MEMBER_ERROR':
       return Object.assign({}, state, {
         message: action.message,
         redirect: {
@@ -54,7 +54,7 @@ const errorReducer = (state = {}, action) => {
         },
         errored: true
       });
-    case 'DELETE_MEMBER_SUCCESS':
+    case 'DELETE_GROUP_MEMBER_SUCCESS':
       return Object.assign({}, state, {
         message: action.message,
         redirect: {
@@ -68,7 +68,7 @@ const errorReducer = (state = {}, action) => {
         message: action.message,
         redirect: {
           yes: true,
-          to: '/messageboard'
+          to: '/#/messageboard'
         },
         errored: false
       });
@@ -131,7 +131,7 @@ const errorReducer = (state = {}, action) => {
         message: action.message,
         redirect: {
           yes: true,
-          to: '/messageboard'
+          to: '/#/messageboard'
         },
         errored: true
       });
@@ -157,7 +157,7 @@ const errorReducer = (state = {}, action) => {
         message: action.message,
         redirect: {
           yes: true,
-          to: '/postmessage'
+          to: `/#/postmessage/${action.data.createdGroup.id}`
         },
         errored: false
       });
@@ -184,7 +184,7 @@ const errorReducer = (state = {}, action) => {
         message: null,
         redirect: {
           yes: true,
-          to: '/postmessage'
+          to: `/#/postmessage/${action.groupId}`
         }
       });
     case 'RESET_REDIRECT_STATE':
