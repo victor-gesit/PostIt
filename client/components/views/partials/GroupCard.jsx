@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import React from 'react';
 
 /**
@@ -58,7 +59,7 @@ export default class GroupCard extends React.Component {
             <div>
               <a onClick={this.loadMessages} id={groupDetails.id}
                 className="card-title grey-text groupLink text-darken-4">{groupDetails.title}
-                <span className="badge new pink">4</span></a>
+                <span className="badge new pink" id={groupDetails.id}>4</span></a>
               <p className="blue-text">Created by {groupDetails.createdBy}</p>
             </div>
           </div>
