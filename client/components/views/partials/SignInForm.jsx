@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import React from 'react';
 import NotificationSystem from 'react-notification-system';
 
@@ -46,7 +47,7 @@ export default class SignInForm extends React.Component {
       localStorage.setItem('token', token);
       window.location = '/#/messageboard';
     } else {
-      if(errorMessage) {
+      if (errorMessage) {
         this.showNotification('error', errorMessage);
         this.props.store.resetErrorLog();
       }
@@ -62,9 +63,9 @@ export default class SignInForm extends React.Component {
     this.props.store.signIn(email, password);
   }
   /**
-   * 
    * @param {String} level The severity of the notification
    * @param {String} message The message to be displayed by the notification
+   * @returns {undefined} This method returns nothing
    */
   showNotification(level, message) {
     this.notificationSystem.addNotification({

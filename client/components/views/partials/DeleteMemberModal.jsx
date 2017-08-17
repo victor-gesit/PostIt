@@ -1,5 +1,7 @@
 import React from 'react';
-
+/**
+ * React component to display a modal for deleting a member
+ */
 export default class DeleteMemberModal extends React.Component {
   /**
    * Render method of React component

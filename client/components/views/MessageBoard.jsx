@@ -1,8 +1,8 @@
+/* eslint-env browser */
 import React from 'react';
 import ReactPaginate from 'react-paginate';
 import { connect } from 'react-redux';
 import jwtDecode from 'jwt-decode';
-import { NavLink } from 'react-router-dom';
 import 'jquery/dist/jquery';
 import { getGroupsForUser, getMessages, getGroupMembers, verifyToken,
   loadMessages, resetRedirect, getAllGroupsForUser

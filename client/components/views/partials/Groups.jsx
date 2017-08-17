@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import React from 'react';
 import jwtDecode from 'jwt-decode';
 
@@ -42,12 +43,11 @@ class UserGroup extends React.Component {
   componentDidUpdate() {
     const redirect = this.props.store.apiError.redirect;
     const path = this.props.store.match.path;
-    let redirectTo;
     // Check to see what page is loading the group. /postmessage route shouldn't reload page
     if (path !== '/postmessage' && redirect.yes) {
       // If page is redirecting to postmessage page
       if (redirect.to.indexOf('postmessage') !== -1) {
-        let groupId = this.props.store.appInfo.loadedMessages.groupId;
+        const groupId = this.props.store.appInfo.loadedMessages.groupId;
         localStorage.setItem('groupId', groupId); // Save id of group to local storage
       }
       this.props.store.resetRedirect();

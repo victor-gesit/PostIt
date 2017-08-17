@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import React from 'react';
 import jwtDecode from 'jwt-decode';
 /**

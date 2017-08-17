@@ -1,10 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { signIn, resetErrorLog, resetRedirect, verifyToken } from '../../actions';
-import NotificationSystem from 'react-notification-system';
 import SignInForm from './partials/SignInForm.jsx';
 import Footer from './partials/Footer.jsx';
 
+/**
+ * React component to display landing page
+ */
 class Index extends React.Component {
   /**
    * Render method of React component
@@ -12,7 +14,6 @@ class Index extends React.Component {
    */
   render() {
     const redirect = this.props.apiError.redirect;
-      console.log(redirect.to);
     if (redirect.yes) {
       this.props.resetRedirect();
       // window.location = redirect.to;
@@ -72,7 +73,7 @@ class Body extends React.Component {
    * listener to floating action button and activate side nav
    * @returns {undefined} This method returns nothing
    */
-  componentDidMount(){
+  componentDidMount() {
     $('.button-collapse').sideNav({
       closeOnClick: true
     });
@@ -100,7 +101,8 @@ class Body extends React.Component {
           <div className="transparent-body">
             <div className="row">
               <div className="col s12 m6 l7 center">
-                <h3 className="brown-text accent-4 lighten-3 center">Why meet when you can PostIt?</h3>
+                <h3 className="brown-text accent-4 lighten-3 center">
+                  Why meet when you can PostIt?</h3>
                 <div className="row">
                   <div className="col s12 m12 l6">
                     <i className="large green-text text-darken-4 material-icons">people</i>

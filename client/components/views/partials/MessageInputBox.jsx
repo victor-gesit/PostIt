@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import React from 'react';
 import jwtDecode from 'jwt-decode';
 
@@ -35,6 +36,7 @@ export default class MessageInputBox extends React.Component {
   }
   /**
    * This method sets the priority of the message to be sent
+   * @param {Object} event fired when setting message priority
    * @return {undefined} This method returns nothing
    */
   setPriority(event) {

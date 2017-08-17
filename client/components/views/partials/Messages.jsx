@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import React from 'react';
 import jwtDecode from 'jwt-decode';
 /**
@@ -22,7 +23,6 @@ export default class Messages extends React.Component {
     const groupId = localStorage.getItem('groupId'); // My Hack
     const groupLoaded = this.props.store.groups.userGroups[groupId];
     const token = localStorage.getItem('token');
-    const dataLoading = this.props.store.dataLoading;
     const decode = jwtDecode(token);
     const userId = decode.id;
     let messages;

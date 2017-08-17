@@ -1,3 +1,4 @@
+/* eslint-env browser */
 import React from 'react';
 import { connect } from 'react-redux';
 import NotificationSystem from 'react-notification-system';
@@ -108,7 +109,7 @@ class Body extends React.Component {
       localStorage.setItem('token', token);
       window.location = '/#/messageboard';
     } else {
-      if(errorMessage) {
+      if (errorMessage) {
         this.showNotification('error', errorMessage);
         this.props.store.resetErrorLog();
       }
@@ -187,7 +188,7 @@ class Body extends React.Component {
                 <label htmlFor="email" data-error="Enter valid email">Email</label>
               </div>
               <div className="input-field col s12">
-                <input ref={(password) => {this.password = password; }}
+                <input ref={(password) => { this.password = password; }}
                   id="password" type="password" className="validate" />
                 <label htmlFor="password">Password</label>
               </div>

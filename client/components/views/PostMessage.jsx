@@ -1,4 +1,5 @@
 
+/* eslint-env browser */
 import React from 'react';
 import 'jquery/dist/jquery';
 import { connect } from 'react-redux';
