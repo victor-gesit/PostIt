@@ -12,6 +12,7 @@ class Index extends React.Component {
    */
   render() {
     const redirect = this.props.apiError.redirect;
+      console.log(redirect.to);
     if (redirect.yes) {
       this.props.resetRedirect();
       // window.location = redirect.to;
@@ -25,7 +26,7 @@ class Index extends React.Component {
 }
 
 /**
- * React componet that displays Navigation Bar
+ * React component that displays Navigation Bar
  */
 class NavBar extends React.Component {
   /**
@@ -67,6 +68,21 @@ class NavBar extends React.Component {
  */
 class Body extends React.Component {
   /**
+   * Component method called after component renders to add
+   * listener to floating action button and activate side nav
+   * @returns {undefined} This method returns nothing
+   */
+  componentDidMount(){
+    $('.button-collapse').sideNav({
+      closeOnClick: true
+    });
+    $('#goToSignin').click(() => {
+      $('html, body').animate({
+        scrollTop: $('#signinform').offset().top
+      }, 2000);
+    });
+  }
+  /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
    */
@@ -76,7 +92,7 @@ class Body extends React.Component {
         <NavBar/>
         <div id="main">
           <div className="fixed-action-btn hide-on-med-and-up">
-            <a className="btn-floating btn-large red" href="#signinform">
+            <a id="goToSignin" className="btn-floating btn-large red">
               <i className="large material-icons">lock_outline</i>
             </a>
           </div>
@@ -84,8 +100,7 @@ class Body extends React.Component {
           <div className="transparent-body">
             <div className="row">
               <div className="col s12 m6 l7 center">
-                <h3 className="brown-text accent-4\
-                  lighten-3 center">Why meet when you can PostIt?</h3>
+                <h3 className="brown-text accent-4 lighten-3 center">Why meet when you can PostIt?</h3>
                 <div className="row">
                   <div className="col s12 m12 l6">
                     <i className="large green-text text-darken-4 material-icons">people</i>
