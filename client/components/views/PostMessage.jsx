@@ -1,7 +1,9 @@
-/* eslint-env browser */
+
 import React from 'react';
 import 'jquery/dist/jquery';
 import { connect } from 'react-redux';
+import jwtDecode from 'jwt-decode';
+
 import {
   getGroupMembers, addUser, getMessages, loadMessages,
   resetRedirect, deleteMember, getPostItMembers,
@@ -14,7 +16,7 @@ import GroupList from './partials/GroupList.jsx';
 import Messages from './partials/Messages.jsx';
 import AddMemberModal from './partials/AddMemberModal.jsx';
 import MessageInputBox from './partials/MessageInputBox.jsx';
-import MemberDeleteModal from './partials/MemberDeleteModal.jsx';
+import DeleteMemberModal from './partials/DeleteMemberModal.jsx';
 import '../../js/materialize';
 
 /**
@@ -55,8 +57,9 @@ class Body extends React.Component {
    */
   componentDidMount() {
     const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
-    const groupId = localStorage.getItem('groupId');
+    const decode = jwtDecode(token);
+    const userId = decode.id;
+    const groupId = this.props.store.match.params.groupId;
     // Load all messages for the group
     this.props.store.getMessages(groupId, token);
     // Load user groups
@@ -64,8 +67,9 @@ class Body extends React.Component {
     // Load all members of the group
     this.props.store.getGroupMembers(groupId, token);
 
-    /* Toggle group list*/
+    // Initialize side nav
     $('.button-collapse').sideNav();
+    /* Toggle group list*/
     $('#member-list-toggle').off().on('click', () => {
       $('#memberList').animate({ width: 'toggle' });
     });
@@ -101,9 +105,10 @@ class Body extends React.Component {
    */
   deleteMember() {
     const token = localStorage.getItem('token');
-    const ownerId = localStorage.getItem('userId');
+    const decode = jwtDecode(token);
+    const ownerId = decode.id;
     const idToDelete = this.memberIdToDelete;
-    const groupId = localStorage.getItem('groupId');
+    const groupId = this.props.store.match.params.groupId;
     // Call the redux action to delete the member
     this.props.store.deleteMember(ownerId, idToDelete, groupId, token);
   }
@@ -113,7 +118,8 @@ class Body extends React.Component {
    */
   deleteGroup() {
     const token = localStorage.getItem('token');
-    const ownerId = localStorage.getItem('userId');
+    const decode = jwtDecode(token);
+    const ownerId = decode.id;
     const groupId = this.groupIdToDelete;
     // Call redux action to delete the group
     this.props.store.deleteGroup(ownerId, groupId, token);
@@ -126,7 +132,7 @@ class Body extends React.Component {
     // Accessing a deleted group, or loading messages from a group you've been removed from
     const redirect = this.props.store.apiError.redirect;
     if (redirect.yes) {
-      if (redirect.to === '/postmessage'){
+      if (redirect.to.indexOf('postmessage') !== -1){
         // No page reloading when opening a different group
         this.props.store.resetRedirect();
       } else {
@@ -134,7 +140,7 @@ class Body extends React.Component {
       }
     }
     let allUserGroups = {};
-    const groupId = localStorage.getItem('groupId');
+    const groupId = this.props.store.match.params.groupId;
     const groupLoaded = this.props.store.allUserGroups.userGroups[groupId];
     let groupTitle;
     if (groupLoaded) {
@@ -162,7 +168,7 @@ class Body extends React.Component {
           </div>
         </div>
         {/* Modal to handle deleting a member from a group */}
-         <MemberDeleteModal deleteMember={this.deleteMember}/>
+         <DeleteMemberModal deleteMember={this.deleteMember}/>
         {/* Modal to handle adding a member to a group */}
          <AddMemberModal store={this.props.store}/>
         {/* Message Input Box */}
@@ -197,7 +203,7 @@ const mapDispatchToProps = dispatch =>
       dispatch(deleteMember(ownerId, idToDelete, groupId, token)),
     deleteGroup: (ownerId, groupId, token) => dispatch(deleteGroup(ownerId, groupId, token)),
     getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
-    loadMessages: () => dispatch(loadMessages()),
+    loadMessages: groupId => dispatch(loadMessages(groupId)),
     getPostItMembers: token => dispatch(getPostItMembers(token)),
     addUser: (email, groupId, adderId, token) => dispatch(addUser(email, groupId, adderId, token)),
     postMessage: (senderId, groupId, body, priority, isComment, token) =>
