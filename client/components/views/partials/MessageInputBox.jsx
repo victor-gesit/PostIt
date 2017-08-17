@@ -1,4 +1,5 @@
 import React from 'react';
+import jwtDecode from 'jwt-decode';
 
 /**
  * React component to display the message input div
@@ -46,7 +47,8 @@ export default class MessageInputBox extends React.Component {
    */
   sendMessage() {
     const token = localStorage.getItem('token');
-    const senderId = localStorage.getItem('userId');
+    const decode = jwtDecode(token);
+    const senderId = decode.id;
     const groupId = localStorage.getItem('groupId');
     let priority = this.state.priority;
     let body;
