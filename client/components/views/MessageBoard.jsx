@@ -1,8 +1,10 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
 import { connect } from 'react-redux';
+import jwtDecode from 'jwt-decode';
+import { NavLink } from 'react-router-dom';
 import 'jquery/dist/jquery';
-import { getGroupsForUser, getMessages, verifyToken,
+import { getGroupsForUser, getMessages, getGroupMembers, verifyToken,
   loadMessages, resetRedirect, getAllGroupsForUser
 } from '../../actions';
 import NavBar from './partials/NavBar.jsx';
@@ -48,8 +50,12 @@ class Body extends React.Component {
    * @returns {undefined} This method returns nothing
    */
   componentDidMount() {
+    $('.button-collapse').sideNav({
+      closeOnClick: true
+    });
     const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
+    const decode = jwtDecode(token);
+    const userId = decode.id;
     const offset = 0;
     const limit = this.state.perPage;
     this.props.store.getGroupsForUser(userId, offset, limit, token);
@@ -61,7 +67,8 @@ class Body extends React.Component {
    */
   handlePageNumberClick(event) {
     const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
+    const decode = jwtDecode(token);
+    const userId = decode.id;
 
     const selected = event.selected;
     const offset = Math.ceil(selected * this.state.perPage);
@@ -86,8 +93,6 @@ class Body extends React.Component {
       <div id="body">
         <NavBar store={this.props.store} allUserGroups={allUserGroups} userDetails={userDetails}/>
         <div id="main">
-          <h3 className="board-title center black-text">Message Board</h3>
-
           {/* Groups */}
           {
             dataLoading ? (
@@ -107,10 +112,11 @@ class Body extends React.Component {
                 { !dataLoading && totalNoOfGroups === 0 ? (
                   <div className="row center">
                     <h4 className="grey-text">You don't belong to any group</h4>
-                    <a href="/creategroup" className="btn">Create One</a>
+                    <a href="/#/creategroup" className="btn">Create One</a>
                   </div>
                   ) : (
                   <div className="row">
+                    <h3 className="board-title center black-text">Message Board</h3>
                     {
                       Object.keys(userGroups).map((groupId, index) =>
                         <GroupCard store={this.props.store}
@@ -166,6 +172,7 @@ const mapDispatchToProps = dispatch =>
     loadMessages: groupId => dispatch(loadMessages(groupId)),
     resetRedirect: () => dispatch(resetRedirect()),
     getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
+    getGroupMembers: (groupId, token) => dispatch(getGroupMembers(groupId, token)),
     getAllGroupsForUser: (userId, token) =>
       dispatch(getAllGroupsForUser(userId, token)),
     verifyToken: token => dispatch(verifyToken(token))
