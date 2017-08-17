@@ -128,6 +128,7 @@ div.tab button.active {
     padding: 20px;
     background: rgba(255, 255, 255, .9);
     display: none;
+    z-index: 1;
 }
 
 .members-list {
@@ -339,4 +340,9 @@ header, #messageInputBox, #main-postmessage, #footer {
 #sideNavImage {
     overflow: hidden;
     width: 300px;
+}
+#sideNavIcon{
+    cursor: pointer;
+}
+#sidenav-overlay {
 }
