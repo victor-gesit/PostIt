@@ -1,5 +1,5 @@
 import React from 'react';
-
+import jwtDecode from 'jwt-decode';
 /**
  * A React component that displays the groups a user belongs to, as a list
  */
@@ -12,7 +12,8 @@ export default class GroupList extends React.Component {
     const groupId = localStorage.getItem('groupId');
     const groupLoaded = this.props.store.groups.userGroups[groupId];
     const titleLoaded = this.props.store.allUserGroups.userGroups[groupId];
-    const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+    const token = localStorage.getItem('token');
+    const userDetails = jwtDecode(token);
     let groupCount = '...';
     let groupTitle = '...';
     let groupMembers;
@@ -47,8 +48,10 @@ export default class GroupList extends React.Component {
           )
         }
         <hr />
-        <p><span>Members List<a href="#addMemberModal" className="secondary-content\
-          modal-trigger green-text"><i className="material-icons">person_add</i></a></span></p>
+        <p><span>Members List<a href="#addMemberModal"
+          className="secondary-content modal-trigger green-text">
+          <i className="material-icons">person_add</i></a></span>
+        </p>
         {
           groupLoaded ?
           (
@@ -119,6 +122,12 @@ class GroupMember extends React.Component {
     const memberDetails = this.props.memberDetails;
     const creatorEmail = this.props.creatorEmail;
     const userIsCreator = this.props.userIsCreator;
+    let styleClassName = 'secondary-content modal-trigger green-text text-darken-4',
+      icon = 'person';
+    if (userIsCreator) {
+      styleClassName = 'secondary-content modal-trigger red-text';
+      icon = 'clear';
+    }
     return (
           memberDetails.email === creatorEmail ?
           (
@@ -131,9 +140,17 @@ class GroupMember extends React.Component {
           ) : (
             <li className="collection-item">{memberDetails.firstName} {memberDetails.lastName}<br />
               <small className="grey-text">{memberDetails.email}</small>
-              <a href="#deleteMemberModal" id={memberDetails.id} value={memberDetails.name}
-                className="secondary-content modal-trigger red-text">
-              <i className="material-icons">clear</i></a>
+              {
+                userIsCreator ? (
+              <a href='#deleteMemberModal' id={memberDetails.id} value={memberDetails.name}
+                className={styleClassName}>
+              <i className="material-icons">{icon}</i></a>
+                ) : (
+              <a id={memberDetails.id} value={memberDetails.name}
+                className={styleClassName}>
+              <i className="material-icons">{icon}</i></a>
+                )
+              }
             </li>
           )
     );
