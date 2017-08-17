@@ -1,12 +1,13 @@
-/* eslint-env browser */
 import React from 'react';
 import { connect } from 'react-redux';
 import 'jquery';
+import jwtDecode from 'jwt-decode';
 import NotificationSystem from 'react-notification-system';
 import {
   getGroupsForUser, getAllGroupsForUser, resetErrorLog,
   getMessages, loadMessages, resetRedirect,
-  getPostItMembers, createGroup, verifyToken
+  getPostItMembers, createGroup, verifyToken,
+  getGroupMembers,
 } from '../../actions';
 
 // Partials
@@ -53,11 +54,20 @@ class Body extends React.Component {
    * @return {undefined} this method returns nothing
    */
   componentDidMount() {
+    // Initialize navbar
+    $('.button-collapse').sideNav({
+      closeOnClick: true
+    });
+    // Load a default tab for the createGroup page
+    try {
+      $('#defaultTab')[0].click();
+    } catch (e) { return false; }
     // Bind the notifications component
     this.notificationSystem = this.notificationRef;
     // Load all registered members
     const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
+    const decode = jwtDecode(token);
+    const userId = decode.id;
     this.props.store.getPostItMembers(token);
     this.props.store.getAllGroupsForUser(userId, token);
   }
@@ -71,11 +81,6 @@ class Body extends React.Component {
     const errorMessage = this.props.store.apiError.message;
     this.registeredMembers = allUsers;
     if (redirect.yes) {
-      if (redirect.to === '/postmessage') {
-        // If group was created successfully, redirect to conversation page and store groupId
-        const groupId = this.props.store.appInfo.loadedMessages.groupId;
-        localStorage.setItem('groupId', groupId); // Save id of group to
-      }
       // Reset state of redirect property
       this.props.store.resetRedirect();
       window.location = redirect.to;
@@ -108,8 +113,9 @@ class Body extends React.Component {
   createGroup() {
     const title = this.title.value;
     const description = this.description.value;
-    const creatorId = localStorage.getItem('userId');
     const token = localStorage.getItem('token');
+    const decode = jwtDecode(token);
+    const creatorId = decode.id;
     const selectedMembers = this.selectedMembers;
     this.props.store.createGroup(creatorId, title, description, selectedMembers, token);
   }
@@ -261,8 +267,8 @@ class Body extends React.Component {
                     <button className="btn col s8 offset-s2 m5 l5 light-green darken-4"
                       onClick={() => this.switchTab('defaultTab', 'info')}>&lt;&lt; Group info</button>
                     <div className="col s12 m2 s2"><br /></div>
-                    <button disabled className="btn col s8 offset-s2 m5 \
-                      l5 light-green darken-4">Create group</button>
+                    <button disabled className="btn col s8 offset-s2 m5 l5 light-green darken-4">
+                      Create group</button>
                   </div>
                 </div>
               </div>
@@ -387,6 +393,7 @@ const mapDispatchToProps = dispatch =>
     getAllGroupsForUser: (userId, token) => dispatch(getAllGroupsForUser(userId, token)),
     getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
     loadMessages: groupId => dispatch(loadMessages(groupId)),
+    getGroupMembers: (groupId, token) => dispatch(getGroupMembers(groupId, token)),
     createGroup: (creatorId, title, description, selectedMembers, token) =>
       dispatch(createGroup(creatorId, title, description, selectedMembers, token)),
     getGroupsForUser: (userId, offset, limit, token) =>
