@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import logger from 'morgan';
 import dotenv from 'dotenv';
+import path from 'path';
 import cors from 'cors';
 import group from './routes/group';
 import user from './routes/user';
@@ -19,6 +20,11 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+const indexPath = path.join(__dirname, '../client/index.html');
+const publicPath = express.static(path.join(__dirname, '../client'));
+
+app.use(publicPath);
+app.get('/', (_, res) => { res.sendFile(indexPath); });
 
 // Authentication/User routes
 app.use('/api/user', user);
