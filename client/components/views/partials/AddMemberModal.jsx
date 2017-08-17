@@ -1,5 +1,6 @@
+/* eslint-env browser */
 import React from 'react';
-
+import jwtDecode from 'jwt-decode';
 /**
  * A Component that displays a modal for adding a member
  */
@@ -49,12 +50,13 @@ export default class AddMemberModal extends React.Component {
    * @returns {undefined} This function returns nothing
    */
   addNewMembers() {
-    const adderId = localStorage.getItem('userId');
-    const groupId = localStorage.getItem('groupId');
+    const groupId = this.props.store.match.params.groupId;
     const token = localStorage.getItem('token');
-    const email = this.selectedMembers;
-    if (email.length > 0) {
-      this.props.store.addUser(email, groupId, adderId, token);
+    const decode = jwtDecode(token);
+    const adderId = decode.id;
+    const emails = this.selectedMembers;
+    if (emails.length > 0) {
+      this.props.store.addUser(emails, groupId, adderId, token);
     }
   }
   /**
@@ -81,11 +83,11 @@ export default class AddMemberModal extends React.Component {
             </div>
         </div>
         <div className="modal-footer">
-          <a href="#!" onClick={this.addNewMembers}
-            className="modal-action modal-close waves-effect \
-            waves-green btn-flat green-text">Add</a>
-          <a className="modal-action modal-close waves-effect \
-           waves-green btn-flat green-text">Cancel</a>
+          <button onClick={this.addNewMembers}
+            className="modal-action modal-close waves-effectwaves-green btn-flat green-text">
+              Add</button>
+          <button className="modal-action modal-close waves-effect waves-green btn-flat green-text">
+              Cancel</button>
         </div>
       </div>
     );
