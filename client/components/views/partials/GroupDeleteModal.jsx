@@ -16,11 +16,11 @@ export default class GroupDeleteModal extends React.Component {
           <p className="white-text">This group will be deleted.</p>
         </div>
         <div className="modal-footer">
-          <a href="#!" onClick={this.props.deleteGroup}
-            className="modal-action modal-close waves-effect waves-green \
-            btn-flat green-text">Delete</a>
-          <a className="modal-action modal-close waves-effect waves-green \
-            btn-flat green-text">Cancel</a>
+          <button onClick={this.props.deleteGroup}
+            className="modal-action modal-close waves-effect waves-green btn-flat green-text">
+              Delete</button>
+          <button className="modal-action modal-close waves-effect waves-green btn-flat green-text">
+              Cancel</button>
         </div>
       </div>
     );
