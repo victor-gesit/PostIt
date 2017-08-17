@@ -3,7 +3,7 @@ import request from 'superagent';
 const dataService = store => next => (action) => {
   // Pass all actions through by default
   next(action);
-  const url = 'http://localhost:8002/api';
+  const url = 'http://postit-api-victor.herokuapp.com/api';
   switch (action.type) {
     // Signin a user
     case 'SIGN_IN':
@@ -130,10 +130,10 @@ const dataService = store => next => (action) => {
               message: err.message
             });
           }
-          const data = res.body;
+          const groupId = action.groupId;
           next({
             type: 'DELETE_A_GROUP_SUCCESS',
-            data
+            groupId
           });
         });
       break;
