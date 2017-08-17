@@ -24,8 +24,6 @@ module.exports = {
       Hammer: 'hammerjs/hammer'
     }),
     new ExtractTextPlugin('styles.css'),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin()
   ],
   module: {
     loaders: [

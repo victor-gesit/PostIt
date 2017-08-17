@@ -7,7 +7,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, './client/build'),
     filename: 'bundle.js',
-    publicPath: '/client/'
+    publicPath: '/build/'
   },
   devtool: 'source-map',
   devServer: {
