@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const indexPath = path.join(__dirname, '../client/index.html');
 const publicPath = express.static(path.join(__dirname, '../client'));
 
-app.use(publicPath);
+// app.use(publicPath);
 
 // Load landing page
 app.get('/', (req, res) => { res.sendFile(indexPath); });
