@@ -4,7 +4,8 @@ import 'jquery';
 import {
   getGroupsForUser, getAllGroupsForUser, resetErrorLog,
   getMessages, loadMessages, resetRedirect, getGroupMembers,
-  getPostItMembers, createGroup, verifyToken
+  getPostItMembers, createGroup, verifyToken, signOut,
+  resetLoadingState
 } from '../../actions';
 
 // Partials
@@ -16,6 +17,17 @@ import NavBar from './partials/NavBar.jsx';
  * React component that displays the page for creating a new group
  */
 class CreateGroup extends React.Component {
+  /**
+   * Component method called when component loads to reset state of spinner
+   * @returns {undefined} This method returns nothing
+   */
+  componentDidMount() {
+    this.props.resetLoadingState();
+      // Initialize navbar
+    $('.button-collapse').sideNav({
+      closeOnClick: true
+    });
+  }
   /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
@@ -79,6 +91,7 @@ const mapDispatchToProps = dispatch =>
   ({
     resetErrorLog: () => dispatch(resetErrorLog()),
     resetRedirect: () => dispatch(resetRedirect()),
+    resetLoadingState: () => dispatch(resetLoadingState()),
     verifyToken: token => dispatch(verifyToken(token)),
     getPostItMembers: token => dispatch(getPostItMembers(token)),
     getAllGroupsForUser: (userId, token) => dispatch(getAllGroupsForUser(userId, token)),
@@ -88,7 +101,8 @@ const mapDispatchToProps = dispatch =>
     createGroup: (creatorId, title, description, selectedMembers, token) =>
       dispatch(createGroup(creatorId, title, description, selectedMembers, token)),
     getGroupsForUser: (userId, offset, limit, token) =>
-    dispatch(getGroupsForUser(userId, offset, limit, token))
+    dispatch(getGroupsForUser(userId, offset, limit, token)),
+    signOut: () => dispatch(signOut())
   });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateGroup);
