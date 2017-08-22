@@ -29,6 +29,17 @@ const postItInfoReducer = (state = {}, action) => {
       return getPostItMembers(appState, action.dbSnapShot);
     case 'GET_ALL_GROUPS_SUCCESS':
       return getAllPostItGroups(state, action.postItGroups);
+    case 'SIGN_OUT':
+      return {
+        members: {
+          postItMembers: {},
+          meta: { count: 0 }
+        },
+        groups: {
+          postItGroups: {},
+          meta: { count: 0 }
+        }
+      };
     default:
       return appState;
   }
