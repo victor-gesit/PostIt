@@ -4,7 +4,7 @@
   "description": "\u0016PostIt is a simple application that allows friends and colleagues create groups for notifications. ",
   "main": "index.js",
   "scripts": {
-    "start": "node server/app.js",
+    "start": "babel-node server/index.js",
     "test": "gulp run-tests",
     "build": "webpack --config ./webpack.prod.config.js --progress --colors"
   },
@@ -44,6 +44,7 @@
     "webpack-dev-server": "^2.5.1"
   },
   "dependencies": {
+    "babel-cli": "^6.26.0",
     "babel-register": "^6.24.1",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.17.2",
