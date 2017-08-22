@@ -1,28 +1,11 @@
 /* eslint-env browser */
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 /**
  * A component that displays a card for each group a user belongs to
  */
 export default class GroupCard extends React.Component {
-  /**
-   * @param {Object} props Properties passed from parent component
-   */
-  constructor(props) {
-    super(props);
-    this.loadMessages = this.loadMessages.bind(this);
-  }
-  /**
-   * @param {Object} event fired when the button for loading messages for a group is clicked.
-   * @returns {undefined} This method returns nothing
-   */
-  loadMessages(event) {
-    const groupId = event.target.id;
-    const token = localStorage.getItem('token');
-    // Load messages into the conversation page
-    this.props.store.loadMessages(groupId);
-    this.props.store.getMessages(groupId, token);
-  }
   /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
@@ -57,9 +40,9 @@ export default class GroupCard extends React.Component {
           </div>
           <div className="card-content">
             <div>
-              <a onClick={this.loadMessages} id={groupDetails.id}
+              <Link to={`/postmessage/${groupDetails.id}`} id={groupDetails.id}
                 className="card-title grey-text groupLink text-darken-4">{groupDetails.title}
-                <span className="badge new pink" id={groupDetails.id}>4</span></a>
+                <span className="badge new pink" id={groupDetails.id}>4</span></Link>
               <p className="blue-text">Created by {groupDetails.createdBy}</p>
             </div>
           </div>

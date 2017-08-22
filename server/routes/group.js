@@ -30,6 +30,9 @@ router.delete('/:id/members', groupController.deleteMembers);
 // Delete a group
 router.delete('/:id/delete', groupController.deleteGroup);
 
+// Leave a group
+router.delete('/:id/leave', groupController.leaveGroup);
+
 // Give sensible response for random routes
 router.use('/*', (req, res) => {
   res.status(404).send({ message: 'Api up and running. Check documentation for appropriate routes' });

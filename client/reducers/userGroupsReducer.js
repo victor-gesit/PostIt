@@ -1,12 +1,12 @@
-// Delete a group
-const deleteGroup = (state, action) => {
-  const groupsState = [...state];
-  const index = groupsState.indexOf(action.groupId);
-  if (index >= 1) {
-    state.splice(index, 1);
-  }
-  return state;
+// Delete a group from State
+const deleteGroup = (state, groupId) => {
+  const appState = Object.assign({}, state);
+  const userGroups = appState.userGroups;
+  delete userGroups[groupId];
+  appState.userGroups = userGroups;
+  return appState;
 };
+
 
 // Load groups a user belongs to
 const getGroups = (state, dbSnapshot) => {
@@ -39,7 +39,7 @@ const getMembers = (state, dbSnapshot, groupId) => {
   return appState;
 };
 // Create time stamp for messages
-const getFormattedTimeStamp = (timeStamp, callback) => {
+const getTimeStamp = (timeStamp, callback) => {
   const months = ['January', 'February', 'March', 'April',
     'May', 'June', 'July', 'August', 'September', 'October',
     'November', 'December'
@@ -62,7 +62,7 @@ const postMessage = (state, newMessage, groupId) => {
   appState.userGroups[groupId].messages = appState.userGroups[groupId].messages || [];
   let groupMessages = appState.userGroups[groupId].messages;
   // Format the time stamp of new message
-  getFormattedTimeStamp(newMessage.createdAt, (formattedTime) => {
+  getTimeStamp(newMessage.createdAt, (formattedTime) => {
     newMessage.createdAt = `Sent ${formattedTime}`;
     groupMessages = [...groupMessages, newMessage];
     appState.userGroups[groupId].messages = groupMessages;
@@ -94,7 +94,7 @@ const deleteMember = (state, deletedId, groupId) => {
 const loadMessages = (state, messagesDbSnapshot, groupId) => {
   const messages = messagesDbSnapshot.rows;
   messages.map((message, index) => {
-    getFormattedTimeStamp(message.createdAt, (formattedTime) => {
+    getTimeStamp(message.createdAt, (formattedTime) => {
       messages[index].createdAt = `Sent ${formattedTime}`;
     });
   });
@@ -122,6 +122,10 @@ const userGroupsReducer = (state = {}, action) => {
       return deleteMember(appState, action.deletedId, action.groupId);
     case 'GET_MESSAGES_SUCCESS':
       return loadMessages(appState, action.messagesDbSnapshot, action.groupId);
+    case 'LEAVE_GROUP_SUCCESS':
+      return deleteGroup(appState, action.groupId);
+    case 'SIGN_OUT':
+      return { meta: { count: 0 }, userGroups: {} };
     default:
       return appState;
   }

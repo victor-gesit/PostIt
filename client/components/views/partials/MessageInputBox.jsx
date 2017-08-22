@@ -49,16 +49,21 @@ export default class MessageInputBox extends React.Component {
    */
   sendMessage() {
     const token = localStorage.getItem('token');
-    const decode = jwtDecode(token);
+    let decode;
+    try {
+      decode = jwtDecode(token);
+    } catch (err) {
+      this.props.store.history.push('/');
+    }
     const senderId = decode.id;
-    const groupId = localStorage.getItem('groupId');
+    const groupId = this.props.store.match.params.groupId;
     let priority = this.state.priority;
     let body;
     if (this.state.priority === 'comment') {
       priority = 'normal'; // A comment has normal priority
       body = this.commentBody.value;
       this.isComment = 'true';
-      // Clear input bo
+      // Clear input box
       this.commentBody.value = '';
     } else {
       body = this.postBody.value;

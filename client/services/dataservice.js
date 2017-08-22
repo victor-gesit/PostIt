@@ -2,7 +2,10 @@ import request from 'superagent';
 
 const dataService = store => next => (action) => {
   // Pass all actions through by default
-  next(action);
+  if (action.type !== 'VERIFY_TOKEN') {
+    next(action);
+  }
+  // next(action);
   const url = 'http://postit-api-victor.herokuapp.com/api';
   switch (action.type) {
     // Signin a user
@@ -347,6 +350,26 @@ const dataService = store => next => (action) => {
           }
           next({
             type: 'VERIFY_TOKEN_SUCCESS',
+          });
+        });
+      break;
+    case 'LEAVE_GROUP':
+      request
+        .delete(`${url}/group/${action.groupId}/leave`)
+        .set('x-access-token', action.token)
+        .end((err, res) => {
+          if (err) {
+            return next({
+              type: 'LEAVE_GROUP_ERROR',
+              message: err.message
+            });
+          }
+          const deletedId = action.idToDelete;
+          const groupId = action.groupId;
+          next({
+            type: 'LEAVE_GROUP_SUCCESS',
+            deletedId,
+            groupId
           });
         });
       break;

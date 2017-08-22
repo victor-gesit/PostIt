@@ -17,6 +17,7 @@ export default class AddMemberModal extends React.Component {
     this.addNewMembers = this.addNewMembers.bind(this);
   }
   /**
+   * This functions is called before the component is rendered to load the members on PostIt
    * @returns {undefined} This function returns nothing
    */
   componentWillMount() {
@@ -52,7 +53,12 @@ export default class AddMemberModal extends React.Component {
   addNewMembers() {
     const groupId = this.props.store.match.params.groupId;
     const token = localStorage.getItem('token');
-    const decode = jwtDecode(token);
+    let decode;
+    try {
+      decode = jwtDecode(token);
+    } catch (err) {
+      this.props.store.history.push('/');
+    }
     const adderId = decode.id;
     const emails = this.selectedMembers;
     if (emails.length > 0) {

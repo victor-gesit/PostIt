@@ -9,15 +9,6 @@ const errorReducer = (state = {}, action) => {
         },
         errored: true
       };
-    case 'SIGN_IN_SUCCESS':
-      return {
-        message: null,
-        redirect: {
-          yes: true,
-          to: '/#/messageboard'
-        },
-        errored: false
-      };
     case 'SIGN_UP_ERROR':
       return {
         message: action.message,
@@ -71,6 +62,14 @@ const errorReducer = (state = {}, action) => {
           to: '/#/messageboard'
         },
         errored: false
+      });
+    case 'LEAVE_GROUP_SUCCESS':
+      return Object.assign({}, state, {
+        message: action.message,
+        redirect: {
+          yes: true,
+          to: '/#/messageboard'
+        }
       });
     case 'GET_GROUP_MEMBERS_ERROR':
       return Object.assign({}, state, {
@@ -211,6 +210,14 @@ const errorReducer = (state = {}, action) => {
           to: '/'
         }
       });
+    case 'SIGN_OUT':
+      return {
+        errored: false,
+        message: null,
+        redirect: {
+          yes: false,
+          to: null }
+      };
     default:
       return state;
   }

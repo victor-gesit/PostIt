@@ -1,6 +1,7 @@
 /* eslint-env browser */
 import React from 'react';
 import jwtDecode from 'jwt-decode';
+import { Link } from 'react-router-dom';
 import Groups from './Groups.jsx';
 import GroupDeleteModal from './GroupDeleteModal.jsx';
 
@@ -9,19 +10,48 @@ import GroupDeleteModal from './GroupDeleteModal.jsx';
  */
 export default class NavBar extends React.Component {
   /**
+   * 
+   * @param {Object} props component properties passed from parent component
+   */
+  constructor(props) {
+    super(props);
+    this.signOut = this.signOut.bind(this);
+  }
+  /**
+   * Sign out a user by deleting token from local storage
+   * @returns {undefined} This method returns nothing
+   */
+  signOut() {
+    localStorage.removeItem('token');
+    this.props.store.signOut();
+    this.props.store.history.push('/');
+  }
+  /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
    */
   render() {
-    const groupId = localStorage.getItem('groupId');
+    const groupId = this.props.store.match.params.groupId;
+    const isCreator = this.props.isCreator;
     const token = localStorage.getItem('token');
-    const decode = jwtDecode(token);
+    let decode;
+    try {
+      decode = jwtDecode(token);
+    } catch (err) {
+      this.props.store.history.push('/');
+    }
     const userDetails = decode;
     const allUserGroups = this.props.allUserGroups;
     const path = this.props.store.match.path;
+    let modalText = 'Leave Group';
+    let modalHREF = '#leaveGroupModal';
     let sideNavClass = 'side-nav';
     if (path === '/postmessage/:groupId') {
       sideNavClass = 'side-nav fixed';
+    }
+    if (isCreator) {
+      modalText = 'Delete Group';
+      modalHREF = '#deleteGroupModal';
     }
     return (
       <div className="navbar-fixed">
@@ -39,16 +69,16 @@ export default class NavBar extends React.Component {
               </li>
                 ) : (
                 <li>
-                      <a href="/#/messageboard">
+                      <Link to="/messageboard">
                         <i className="material-icons">view_module</i>
-                      </a>
+                      </Link>
                 </li>
                 )
               }
               <li>
-                    <a href="/#/creategroup">
+                    <Link to="/creategroup">
                       <i className="material-icons">library_add</i>
-                    </a>
+                    </Link>
               </li>
             </ul>
             {/* Side Nav */}
@@ -94,17 +124,17 @@ export default class NavBar extends React.Component {
               }
               {
                 path === '/postmessage/:groupId' ? (
-                  <li><a href="#groupDeleteModal" id={groupId}>
+                  <li><a href={modalHREF} id={groupId}>
                     <i className="large material-icons red-text">
-                    texture</i>Delete Group</a></li>
+                    texture</i>{modalText}</a></li>
                 ) : (
                   path === '/#/creategroup' ? (
                     <li><a><i className="large material-icons green-text">library_add</i>
                     Create New Group</a></li>
                   ) : (
-                    <li><a href='/#/creategroup'>
+                    <li><Link to='/creategroup'>
                     <i className="large material-icons green-text">library_add</i>
-                    Create New Group</a></li>
+                    Create New Group</Link></li>
                   )
                 )
               }
@@ -123,7 +153,7 @@ export default class NavBar extends React.Component {
               <hr />
               <li><a><i className="large material-icons black-text">info</i>
                 About PostIt</a></li>
-              <li><a><i className="large material-icons red-text">exit_to_app</i>
+              <li><a onClick={this.signOut}><i className="large material-icons red-text">exit_to_app</i>
                 Sign Out</a></li>
             </ul>
           </div>

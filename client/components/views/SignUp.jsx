@@ -2,13 +2,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import NotificationSystem from 'react-notification-system';
-import { signUp, resetErrorLog } from '../../actions';
+import { signUp, resetErrorLog, resetLoadingState } from '../../actions';
 import Footer from './partials/Footer.jsx';
 
 /**
  * React component that displays the Sign Up page
  */
 class SignUp extends React.Component {
+  /**
+   * Component method called when component loads to reset state of spinner
+   * @returns {undefined} This method returns nothing
+   */
+  componentDidMount() {
+    this.props.resetLoadingState();
+    $('#sidenav-overlay').trigger('click');
+  }
   /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
@@ -224,7 +232,8 @@ const mapDispatchToProps = dispatch =>
   ({
     signUp: (firstName, lastName, email, password, phone) =>
       dispatch(signUp(firstName, lastName, email, password, phone)),
-    resetErrorLog: () => dispatch(resetErrorLog())
+    resetErrorLog: () => dispatch(resetErrorLog()),
+    resetLoadingState: () => dispatch(resetLoadingState())
   });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

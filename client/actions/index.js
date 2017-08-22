@@ -138,9 +138,30 @@ export const resetRedirect = () => {
   };
 };
 
+export const resetLoadingState = () => {
+  return {
+    type: 'RESET_LOADING_STATE'
+  };
+};
+
+export const signOut = () => {
+  return {
+    type: 'SIGN_OUT',
+  };
+};
+
 export const verifyToken = (token) => {
   return {
     type: 'VERIFY_TOKEN',
     token
   };
 };
+
+export const leaveGroup = (token, groupId) => {
+  return {
+    type: 'LEAVE_GROUP',
+    token,
+    groupId
+  };
+};
+

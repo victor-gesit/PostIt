@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { signIn, resetErrorLog, resetRedirect, verifyToken } from '../../actions';
+import { signIn, resetErrorLog, resetRedirect, resetLoadingState, verifyToken } from '../../actions';
 import SignInForm from './partials/SignInForm.jsx';
 import Footer from './partials/Footer.jsx';
 
@@ -9,15 +9,18 @@ import Footer from './partials/Footer.jsx';
  */
 class Index extends React.Component {
   /**
+   * Component method called when component loads to reset state of spinner and hide side nav
+   * @returns {undefined} This method returns nothing
+   */
+  componentDidMount() {
+    this.props.resetLoadingState();
+    $('#sidenav-overlay').trigger('click');
+  }
+  /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
    */
   render() {
-    const redirect = this.props.apiError.redirect;
-    if (redirect.yes) {
-      this.props.resetRedirect();
-      // window.location = redirect.to;
-    }
     return (
       <div>
         <Body store={this.props}/>
@@ -149,6 +152,7 @@ const mapDispatchToProps = dispatch =>
     signIn: (email, password) => dispatch(signIn(email, password)),
     resetErrorLog: () => dispatch(resetErrorLog()),
     resetRedirect: () => dispatch(resetRedirect()),
+    resetLoadingState: () => dispatch(resetLoadingState()),
     verifyToken: token => dispatch(verifyToken(token))
   });
 

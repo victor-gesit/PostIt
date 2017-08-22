@@ -12,6 +12,14 @@ const loadedMessagesReducer = (state = {}, action) => {
       const groupId = null;
       return Object.assign({}, state, groupId);
     }
+    case 'LEAVE_GROUP_SUCCESS': {
+      const groupId = null;
+      return Object.assign({}, state, groupId);
+    }
+    case 'SIGN_OUT':
+      return {
+        groupId: null
+      };
     default:
       return state;
   }

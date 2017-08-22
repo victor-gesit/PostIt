@@ -7,8 +7,9 @@ import jwtDecode from 'jwt-decode';
 
 import {
   getGroupMembers, addUser, getMessages, loadMessages,
-  resetRedirect, deleteMember, getPostItMembers,
-  deleteGroup, getAllGroupsForUser, postMessage, verifyToken
+  resetRedirect, deleteMember, leaveGroup, getPostItMembers,
+  deleteGroup, getAllGroupsForUser, resetLoadingState,
+  postMessage, verifyToken, signOut
 } from '../../actions';
 
 // Partials
@@ -18,12 +19,29 @@ import Messages from './partials/Messages.jsx';
 import AddMemberModal from './partials/AddMemberModal.jsx';
 import MessageInputBox from './partials/MessageInputBox.jsx';
 import DeleteMemberModal from './partials/DeleteMemberModal.jsx';
+import LeaveGroupModal from './partials/LeaveGroupModal.jsx';
+
 import '../../js/materialize';
 
 /**
  * React component that displays the Post Message page
  */
 class PostMessage extends React.Component {
+  /**
+   * Component method called when component loads to reset state of spinner
+   * and hide navbar on small screens
+   * @returns {undefined} This method returns nothing
+   */
+  componentDidMount() {
+    const matchQuery = window.matchMedia('(max-width: 992px)');
+    if (matchQuery.matches) {
+      $('.button-collapse').sideNav({
+        closeOnClick: true
+      });
+    }
+    $('#sidenav-overlay').trigger('click');
+    this.props.resetLoadingState();
+  }
   /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
@@ -49,6 +67,7 @@ class Body extends React.Component {
     super(props);
     this.deleteMember = this.deleteMember.bind(this);
     this.deleteGroup = this.deleteGroup.bind(this);
+    this.leaveGroup = this.leaveGroup.bind(this);
     this.memberIdToDelete = '';
     this.groupIdToDelete = '';
   }
@@ -58,12 +77,17 @@ class Body extends React.Component {
    */
   componentDidMount() {
     const token = localStorage.getItem('token');
-    const decode = jwtDecode(token);
+    let decode;
+    try {
+      decode = jwtDecode(token);
+    } catch (err) {
+      this.props.store.signOut();
+    }
     const userId = decode.id;
     const groupId = this.props.store.match.params.groupId;
     // Load all messages for the group
     this.props.store.getMessages(groupId, token);
-    // Load user groups
+    // // Load user groups
     this.props.store.getAllGroupsForUser(userId, token);
     // Load all members of the group
     this.props.store.getGroupMembers(groupId, token);
@@ -126,6 +150,15 @@ class Body extends React.Component {
     this.props.store.deleteGroup(ownerId, groupId, token);
   }
   /**
+   * Method for leaving a group
+   * @returns {undefined} This method returns nothing
+   */
+  leaveGroup() {
+    const token = localStorage.getItem('token');
+    const groupId = this.groupIdToDelete;
+    this.props.store.leaveGroup(token, groupId);
+  }
+  /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
    */
@@ -137,22 +170,35 @@ class Body extends React.Component {
         // No page reloading when opening a different group
         this.props.store.resetRedirect();
       } else {
-        window.location = redirect.to;
+        this.props.store.history.push(redirect.to);
       }
     }
     let allUserGroups = {};
     const groupId = this.props.store.match.params.groupId;
     const groupLoaded = this.props.store.allUserGroups.userGroups[groupId];
-    let groupTitle;
+    const token = localStorage.getItem('token');
+    let decode;
+    try {
+      decode = jwtDecode(token);
+    } catch (err) {
+      this.props.store.history.push('/');
+    }
+    const userEmail = decode.email;
+    let groupTitle, creatorEmail, isCreator;
     if (groupLoaded) {
       groupTitle = groupLoaded.info.title;
+      creatorEmail = groupLoaded.info.creatorEmail;
+      isCreator = creatorEmail === userEmail;
       allUserGroups = this.props.store.allUserGroups.userGroups;
     } else {
       groupTitle = 'Loading...';
     }
     return (
     <div id="body" >
-      <NavBar deleteGroup={this.deleteGroup} allUserGroups={allUserGroups}
+      <NavBar deleteGroup={this.deleteGroup}
+        isCreator={isCreator} creatorEmail={creatorEmail}
+        allUserGroups={allUserGroups}
+        leaveGroup={leaveGroup}
         store={this.props.store}/>
       <div id="main" >
         <div id="main-postmessage">
@@ -172,6 +218,8 @@ class Body extends React.Component {
          <DeleteMemberModal deleteMember={this.deleteMember}/>
         {/* Modal to handle adding a member to a group */}
          <AddMemberModal store={this.props.store}/>
+        {/* Modal to handle leaving a gorup */}
+         <LeaveGroupModal leaveGroup={this.leaveGroup}/>
         {/* Message Input Box */}
       </div>
       <MessageInputBox store={this.props.store}/>
@@ -202,12 +250,15 @@ const mapDispatchToProps = dispatch =>
     verifyToken: token => dispatch(verifyToken(token)),
     deleteMember: (ownerId, idToDelete, groupId, token) =>
       dispatch(deleteMember(ownerId, idToDelete, groupId, token)),
+    leaveGroup: (token, groupId) => dispatch(leaveGroup(token, groupId)),
     deleteGroup: (ownerId, groupId, token) => dispatch(deleteGroup(ownerId, groupId, token)),
     getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
     loadMessages: groupId => dispatch(loadMessages(groupId)),
     getPostItMembers: token => dispatch(getPostItMembers(token)),
     addUser: (email, groupId, adderId, token) => dispatch(addUser(email, groupId, adderId, token)),
     postMessage: (senderId, groupId, body, priority, isComment, token) =>
-      dispatch(postMessage(senderId, groupId, body, priority, isComment, token))
+      dispatch(postMessage(senderId, groupId, body, priority, isComment, token)),
+    resetLoadingState: () => dispatch(resetLoadingState()),
+    signOut: () => dispatch(signOut())
   });
 export default connect(mapStateToProps, mapDispatchToProps)(PostMessage);
