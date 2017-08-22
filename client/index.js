@@ -16,12 +16,7 @@ import postItApp from './reducers';
 import dataService from './services/dataservice';
 
 // Routes
-import Home from './components/views/Index.jsx';
-import CreateGroup from './components/views/CreateGroup.jsx';
-import MessageBoard from './components/views/MessageBoard.jsx';
-import PostMessage from './components/views/PostMessage.jsx';
-import SignUp from './components/views/SignUp.jsx';
-import NotFound from './components/views/NotFound.jsx';
+import App from './components/App.jsx';
 
 $(document).ready(() => {
   $('.button-collapse').sideNav();
@@ -48,7 +43,7 @@ const appStore = {
       groupId: null
     }
   },
-  dataLoading: false,
+  dataLoading: true,
   postItInfo: {
     members: {
       postItMembers: {
@@ -63,22 +58,26 @@ const appStore = {
 };
 
 
-let store = createStore(postItApp, appStore, applyMiddleware(dataService));
+const store = createStore(postItApp, appStore, applyMiddleware(dataService));
+
+const authState = {
+  authenticated: store.getState().appInfo.authState.signedIn,
+  authenticate() {
+    const token = localStorage.getItem('token');
+    if (token !== null) {
+      store.dispatch({
+        type: 'VERIFY_TOKEN',
+        token
+      });
+    }
+  }
+};
+
+authState.authenticate();
 
 ReactDOM.render(
   <Provider store={store}>
-    <HashRouter>
-      <div>
-        <Switch>
-          <Route exact path='/' component={Home}/>
-          <Route exact path='/creategroup' component={CreateGroup}/>
-          <Route exact path='/messageboard' component={MessageBoard}/>
-          <Route exact path="/postmessage/:groupId" component={PostMessage}/>
-          <Route exact path='/signup' component={SignUp}/>
-          <Route path="*" component={NotFound}/>
-        </Switch>
-      </div>
-    </HashRouter>
+      <App/>
   </Provider>, document.getElementById('app')
 );
 
