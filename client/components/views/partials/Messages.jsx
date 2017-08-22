@@ -20,14 +20,19 @@ export default class Messages extends React.Component {
    * @returns {Object} Returns the DOM object to be rendered
    */
   render() {
-    const groupId = localStorage.getItem('groupId'); // My Hack
+    const groupId = this.props.store.match.params.groupId;
     const groupLoaded = this.props.store.groups.userGroups[groupId];
     const token = localStorage.getItem('token');
-    const decode = jwtDecode(token);
+    let decode;
+    try {
+      decode = jwtDecode(token);
+    } catch (err) {
+      this.props.store.history.push('/');
+    }
     const userId = decode.id;
     let messages;
     // Check that group data is loaded
-    if (groupLoaded && userId) {
+    if (groupLoaded) {
       messages = this.props.store.groups.userGroups[groupId].messages;
     }
     return (
