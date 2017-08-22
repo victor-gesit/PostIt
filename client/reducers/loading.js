@@ -29,8 +29,8 @@ const loading = (state = false, action) => {
     case 'GET_MESSAGES_SUCCESS': return false;
 
     case 'GET_GROUP_MEMBERS': return true;
-    case 'GET_GROUP_MEMBERS_ERROR': return true;
-    case 'GET_GROUP_MEMBERS_SUCCESS': return true;
+    case 'GET_GROUP_MEMBERS_ERROR': return false;
+    case 'GET_GROUP_MEMBERS_SUCCESS': return false;
 
     case 'GET_POST_IT_MEMBERS': return true;
     case 'GET_POST_IT_MEMBERS_ERROR': return false;
@@ -51,6 +51,18 @@ const loading = (state = false, action) => {
     case 'DELETE_MEMBER': return true;
     case 'DELETE_MEMBER_ERROR': return false;
     case 'DELETE_MEMBER_SUCCESS': return false;
+
+    case 'LEAVE_GROUP': return true;
+    case 'LEAVE_GROUP_ERROR': return false;
+    case 'LEAVE_GROUP_SUCCESS': return false;
+
+    // case 'VERIFY_TOKEN': return true;
+    case 'VERIFY_TOKEN_ERROR': return false;
+    case 'VERIFY_TOKEN_SUCCESS': return false;
+
+    case 'SIGN_OUT': return false;
+
+    case 'RESET_LOADING_STATE': return false;
 
     default: return state;
   }
