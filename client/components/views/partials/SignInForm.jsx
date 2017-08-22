@@ -38,14 +38,12 @@ export default class SignInForm extends React.Component {
    * Component method called before component receives new properties
    * @returns {undefined} This method returns nothing
    */
-  componentWillUpdate() {
+  componentDidUpdate() {
     this.button.focus();
     const isSignedIn = this.props.store.appInfo.authState.signedIn;
     const errorMessage = this.props.store.apiError.message;
     if (isSignedIn) {
-      const token = this.props.store.appInfo.userDetails.token;
-      localStorage.setItem('token', token);
-      window.location = '/#/messageboard';
+      this.props.store.history.push('/messageboard');
     } else {
       if (errorMessage) {
         this.showNotification('error', errorMessage);
