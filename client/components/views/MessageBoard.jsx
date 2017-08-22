@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import jwtDecode from 'jwt-decode';
 import 'jquery/dist/jquery';
 import { getGroupsForUser, getMessages, getGroupMembers, verifyToken,
-  loadMessages, resetRedirect, getAllGroupsForUser
+  loadMessages, resetRedirect, resetLoadingState, getAllGroupsForUser, signOut
 } from '../../actions';
 import NavBar from './partials/NavBar.jsx';
 import Footer from './partials/Footer.jsx';
@@ -16,6 +16,19 @@ import '../../js/materialize';
  * React component that displays content of the Message Board page
  */
 class MessageBoard extends React.Component {
+  /**
+   * Component method called when component loads to reset state of spinner, redirect
+   * @returns {undefined} This method returns nothing
+   */
+  componentDidMount() {
+    this.props.resetLoadingState();
+    this.props.resetRedirect();
+    // Initialize navbar
+    $('.button-collapse').sideNav({
+      closeOnClick: true
+    });
+    $('#sidenav-overlay').trigger('click');
+  }
   /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
@@ -54,7 +67,12 @@ class Body extends React.Component {
       closeOnClick: true
     });
     const token = localStorage.getItem('token');
-    const decode = jwtDecode(token);
+    let decode;
+    try {
+      decode = jwtDecode(token);
+    } catch (err) {
+      this.props.store.signOut();
+    }
     const userId = decode.id;
     const offset = 0;
     const limit = this.state.perPage;
@@ -175,6 +193,8 @@ const mapDispatchToProps = dispatch =>
     getGroupMembers: (groupId, token) => dispatch(getGroupMembers(groupId, token)),
     getAllGroupsForUser: (userId, token) =>
       dispatch(getAllGroupsForUser(userId, token)),
-    verifyToken: token => dispatch(verifyToken(token))
+    resetLoadingState: () => dispatch(resetLoadingState()),
+    verifyToken: token => dispatch(verifyToken(token)),
+    signOut: () => dispatch(signOut())
   });
 export default connect(mapStateToProps, mapDispatchToProps)(MessageBoard);
