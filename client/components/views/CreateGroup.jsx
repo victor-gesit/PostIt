@@ -6,8 +6,8 @@ import jwtDecode from 'jwt-decode';
 import NotificationSystem from 'react-notification-system';
 import {
   getGroupsForUser, getAllGroupsForUser, resetErrorLog,
-  getMessages, loadMessages, resetRedirect,
-  getPostItMembers, createGroup, verifyToken,
+  getMessages, loadMessages, resetRedirect, resetLoadingState,
+  getPostItMembers, createGroup, verifyToken, signOut,
   getGroupMembers,
 } from '../../actions';
 
@@ -20,6 +20,18 @@ import NavBar from './partials/NavBar.jsx';
  * React component that displays the page for creating a new group
  */
 class CreateGroup extends React.Component {
+  /**
+   * Component method called when component loads to reset state of spinner
+   * and hide sidenav
+   * @returns {undefined} This method returns nothing
+   */
+  componentDidMount() {
+    this.props.resetLoadingState();
+    $('.button-collapse').sideNav({
+      closeOnClick: true
+    });
+    $('#sidenav-overlay').trigger('click');
+  }
   /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
@@ -50,6 +62,19 @@ class Body extends React.Component {
     this.selectedMembers = [];
     this.registeredMembers = {};
   }
+  componentWillMount() {
+    // Load all registered members
+    const token = localStorage.getItem('token');
+    let decode;
+    try {
+      decode = jwtDecode(token);
+    } catch (err) {
+      this.props.store.history.push('/');
+    }
+    const userId = decode.id;
+    this.props.store.getPostItMembers(token);
+    this.props.store.getAllGroupsForUser(userId, token);
+  }
   /**
    * React component method called after component render
    * @return {undefined} this method returns nothing
@@ -65,18 +90,12 @@ class Body extends React.Component {
     } catch (e) { return false; }
     // Bind the notifications component
     this.notificationSystem = this.notificationRef;
-    // Load all registered members
-    const token = localStorage.getItem('token');
-    const decode = jwtDecode(token);
-    const userId = decode.id;
-    this.props.store.getPostItMembers(token);
-    this.props.store.getAllGroupsForUser(userId, token);
   }
   /**
    * React component method called before componet receives new props
    * @returns {undefined} this method returns nothing
    */
-  componentWillUpdate() {
+  componentDidUpdate() {
     const allUsers = this.props.store.postItInfo.members.postItMembers;
     const redirect = this.props.store.apiError.redirect;
     const errorMessage = this.props.store.apiError.message;
@@ -84,6 +103,7 @@ class Body extends React.Component {
     if (redirect.yes) {
       // Reset state of redirect property
       this.props.store.resetRedirect();
+      // this.props.store.history.push(redirect.to);
       window.location = redirect.to;
     } else {
       if (errorMessage) {
@@ -115,7 +135,12 @@ class Body extends React.Component {
     const title = this.title.value;
     const description = this.description.value;
     const token = localStorage.getItem('token');
-    const decode = jwtDecode(token);
+    let decode;
+    try {
+      decode = jwtDecode(token);
+    } catch (err) {
+      console.log(err);
+    }
     const creatorId = decode.id;
     const selectedMembers = this.selectedMembers;
     this.props.store.createGroup(creatorId, title, description, selectedMembers, token);
@@ -389,6 +414,7 @@ const mapDispatchToProps = dispatch =>
   ({
     resetErrorLog: () => dispatch(resetErrorLog()),
     resetRedirect: () => dispatch(resetRedirect()),
+    resetLoadingState: () => dispatch(resetLoadingState()),
     verifyToken: token => dispatch(verifyToken(token)),
     getPostItMembers: token => dispatch(getPostItMembers(token)),
     getAllGroupsForUser: (userId, token) => dispatch(getAllGroupsForUser(userId, token)),
@@ -398,7 +424,8 @@ const mapDispatchToProps = dispatch =>
     createGroup: (creatorId, title, description, selectedMembers, token) =>
       dispatch(createGroup(creatorId, title, description, selectedMembers, token)),
     getGroupsForUser: (userId, offset, limit, token) =>
-    dispatch(getGroupsForUser(userId, offset, limit, token))
+      dispatch(getGroupsForUser(userId, offset, limit, token)),
+    signOut: () => dispatch(signOut())
   });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateGroup);
