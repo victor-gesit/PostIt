@@ -19,6 +19,8 @@ const authStateReducer = (state = {}, action) => {
     case 'VERIFY_TOKEN_ERROR':
       return Object.assign({}, state,
       { signedIn: false, message: action.message });
+    case 'SIGN_OUT':
+      return { signedIn: false, message: null };
     default:
       return authState;
   }
