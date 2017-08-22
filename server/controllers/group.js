@@ -204,7 +204,6 @@ export default {
     const ownerId = req.body.ownerId;
 
     let membersToDelete = [];
-    // Add new members if specified
     if (toBeDeleted !== undefined && toBeDeleted !== null) {
       if (typeof (toBeDeleted) === 'string') {
         membersToDelete.push(toBeDeleted);
@@ -267,5 +266,52 @@ export default {
           res.status(200).send({ success: true, message: 'Group deleted successfully' }));
       });
     }).catch(() => res.status(404).send({ success: false, message: 'Group not found' }));
+  },
+  // Leaving a group
+  leaveGroup: (req, res) => {
+    const groupId = req.params.id;
+    const token = req.body.token || req.query.token || req.headers['x-access-token'];
+    const decode = jwt.decode(token);
+    const userId = decode.id;
+
+    let membersLeaving = [];
+    // Add new members if specified
+    if (userId !== undefined && userId !== null) {
+      if (typeof (toBeDeleted) === 'string') {
+        membersLeaving.push(userId);
+      }
+      if (userId.constructor === Array) {
+        membersLeaving = membersLeaving.concat(userId);
+      }
+    }
+    Group.find({ where: { id: groupId } }).then((foundGroup) => {
+      foundGroup.getUsers({ where: { id: userId } }).then((foundUsers) => {
+        // Check to see if person to be deleted belongs to the group
+        if (foundUsers.length === 0) {
+          return res.status(403).send({ success: false, message: 'You are not a member of this group' });
+        }
+        if (foundUsers.length === 0) {
+          return res.status(404).send({ success: false, message: 'The person(s) to be deleted do not belong to the group' });
+        }
+        // You cannot leave if you are the group creator
+        if (foundGroup.creatorEmail === foundUsers[0].email) {
+          return res.status(403).send({ success: false, message: 'You cannot leave a group you created. Delete group instead' });
+        }
+        foundGroup.removeUsers(foundUsers).then(() =>
+          res.status(200).send({ success: true, message: 'Left group successfully' }));
+      }).catch((err) => {
+        // Check if it's a sequelize error or user id doesn't exist
+        if (err.constructor === TypeError) {
+          return res.status(404).send({ success: false, message: 'User not found' });
+        }
+        return res.status(400).send({ success: false, message: 'Invalid User Id' });
+      });
+    }).catch((err) => {
+      // Check if it's a sequelize error or group doesn't exist
+      if (err.constructor === TypeError) {
+        return res.status(404).send({ success: false, message: 'Group not found' });
+      }
+      return res.status(400).send({ success: false, message: 'Invalid Group Id' });
+    });
   }
 };
