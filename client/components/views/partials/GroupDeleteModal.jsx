@@ -10,7 +10,7 @@ export default class GroupDeleteModal extends React.Component {
    */
   render() {
     return (
-      <div id="groupDeleteModal" className="modal grey">
+      <div id="deleteGroupModal" className="modal grey">
         <div className="modal-content">
           <h5 className="orange-text">Delete Group?</h5>
           <p className="white-text">This group will be deleted.</p>
