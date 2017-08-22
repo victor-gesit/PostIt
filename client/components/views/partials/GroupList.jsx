@@ -10,11 +10,16 @@ export default class GroupList extends React.Component {
    * @returns {Object} Returns the DOM object to be rendered
    */
   render() {
-    const groupId = localStorage.getItem('groupId');
+    const groupId = this.props.store.match.params.groupId;
     const groupLoaded = this.props.store.groups.userGroups[groupId];
     const titleLoaded = this.props.store.allUserGroups.userGroups[groupId];
     const token = localStorage.getItem('token');
-    const userDetails = jwtDecode(token);
+    let userDetails;
+    try {
+      userDetails = jwtDecode(token);
+    } catch (err) {
+      this.props.store.history.push('/');
+    }
     let groupCount = '...';
     let groupTitle = '...';
     let groupMembers;
