@@ -6,7 +6,7 @@ const dataService = store => next => (action) => {
     next(action);
   }
   // next(action);
-  const url = 'http://postit-api-victor.herokuapp.com/api';
+  // const url = 'http://postit-api-victor.herokuapp.com/api';
   switch (action.type) {
     // Signin a user
     case 'SIGN_IN':
