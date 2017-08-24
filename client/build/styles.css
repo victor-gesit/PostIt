@@ -9247,4 +9247,13 @@ header, #messageInputBox, #main-postmessage, #footer {
 #sideNavIcon {
   cursor: pointer; }
 
+#messageInfo {
+  display: none; }
+
+#messageInfo:hover {
+  display: block; }
+
+.message:hover #messageInfo {
+  display: block; }
+
 /*# sourceMappingURL=styles.css.map*/
