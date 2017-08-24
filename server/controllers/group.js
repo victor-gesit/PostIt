@@ -97,7 +97,7 @@ export default {
     let priority = req.body.priority || 'normal';
     let messageBody = req.body.body || '';
     let isCommentString = req.body.isComment;
-
+    const client = req.app.client;
     if (isCommentString !== null && isCommentString !== undefined) {
       isCommentString = isCommentString.toLowerCase();
     }
@@ -123,7 +123,10 @@ export default {
           priority,
           senderId
         }).save().then((createdMessage) => {
-          foundGroup.addMessage(createdMessage).then(() => res.status(200).send({ success: true, message: createdMessage }));
+          foundGroup.addMessage(createdMessage).then(() => {
+            client.broadcast.to(groupId).emit('notify', createdMessage);
+            res.status(200).send({ success: true, message: createdMessage });
+          });
         }).catch(() => res.status(400).send({ success: false, message: 'Incomplete fields. Specify senderId, message and priority (normal, urgent or critical)' }));
       }).catch(() => res.status(400).send({ success: false, message: 'Invalid User Id' }));
     }).catch((err) => {
