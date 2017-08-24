@@ -102,7 +102,10 @@ class Message extends React.Component {
                 <a className="secondary-content grey-text">
                   <i className="material-icons">lens</i></a></small>
               <div className="message-body white-text">{messageDetails.body}</div>
-              <div className="message-info"><small>{messageDetails.createdAt}</small></div>
+              <div className="message-info"><small>{messageDetails.createdAt}
+                <a id="messageInfo" href="#messageInfoModal"className="secondary-content white-text">
+                <i className="material-icons">expand_less</i></a>
+                </small></div>
             </li>
           ) : (
             <li className={className}>
@@ -110,7 +113,10 @@ class Message extends React.Component {
                 <a className="secondary-content green-text">
                 <i className="material-icons">lens</i></a></small>
               <div className="message-body white-text">{messageDetails.body}</div>
-              <div className="message-info"><small>{messageDetails.createdAt}</small></div>
+              <div className="message-info"><small>{messageDetails.createdAt}
+                  <a id="messageInfo" href="#messageInfoModal"className="secondary-content white-text">
+                <i className="material-icons">expand_less</i></a>
+                </small></div>
             </li>
           )
         );
@@ -120,7 +126,10 @@ class Message extends React.Component {
             <a className="secondary-content orange-text">
             <i className="material-icons">lens</i></a></small>
           <div className="message-body white-text">{messageDetails.body}</div>
-          <div className="message-info"><small>{messageDetails.createdAt}</small></div>
+          <div className="message-info"><small>{messageDetails.createdAt}
+            <a id="messageInfo" href="#messageInfoModal"className="secondary-content white-text">
+            <i className="material-icons">expand_less</i></a>
+            </small></div>
         </li>
       );
       case 'critical': return (
@@ -129,7 +138,10 @@ class Message extends React.Component {
             <a className="secondary-content red-text">
             <i className="material-icons">lens</i></a></small>
           <div className="message-body white-text">{messageDetails.body}</div>
-          <div className="message-info"><small>{messageDetails.createdAt}</small></div>
+          <div className="message-info"><small>{messageDetails.createdAt}
+            <a id="messageInfo" href="#messageInfoModal"className="secondary-content white-text">
+            <i className="material-icons">expand_less</i></a>
+            </small></div>
         </li>
       );
       default: return (
@@ -138,7 +150,10 @@ class Message extends React.Component {
             <a className="secondary-content grey-text">
             <i className="material-icons">lens</i></a></small>
           <div className="message-body white-text">{messageDetails.body}</div>
-          <div className="message-info"><small>{messageDetails.createdAt}</small></div>
+          <div className="message-info"><small>{messageDetails.createdAt}
+            <a id="messageInfo" href="#messageInfoModal"className="secondary-content white-text">
+            <i className="material-icons">expand_less</i></a>
+            </small></div>
         </li>
       );
     }
