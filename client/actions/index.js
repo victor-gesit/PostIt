@@ -165,3 +165,10 @@ export const leaveGroup = (token, groupId) => {
   };
 };
 
+export const notify = (newMessage, groupId) => {
+  return {
+    type: 'NOTIFY',
+    newMessage,
+    groupId
+  };
+};
