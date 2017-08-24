@@ -116,6 +116,8 @@ const userGroupsReducer = (state = {}, action) => {
       return deleteGroup(appState, action.groupId);
     case 'POST_MESSAGE_SUCCESS':
       return postMessage(appState, action.message, action.groupId);
+    case 'NOTIFY':
+      return postMessage(appState, action.newMessage, action.groupId);
     case 'ADD_MEMBER_SUCCESS':
       return addMembers(appState, action.addedMembers, action.groupId);
     case 'DELETE_GROUP_MEMBER_SUCCESS':
