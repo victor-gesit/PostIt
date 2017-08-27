@@ -59,7 +59,7 @@ export default {
     }).catch(() => res.status(401).send({ success: false, message: 'Supply a valid user id' }));
   },
   // Add a user to a group
-  adduser: (req, res) => {
+  addUser: (req, res) => {
     const groupId = req.params.id;
     const newUserEmail = req.body.email;
     const adderId = req.body.adderId;
@@ -92,7 +92,7 @@ export default {
     }).catch(() => res.status(404).send({ success: false, message: 'Group not found' }));
   },
   // Post a message to a group
-  postmessage: (req, res) => {
+  postMessage: (req, res) => {
     const groupId = req.params.id;
     let priority = req.body.priority || 'normal';
     let messageBody = req.body.body || '';
@@ -109,7 +109,9 @@ export default {
       priority = 'normal';
     }
     messageBody = messageBody.trim();
-    const senderId = req.body.senderId;
+    const token = req.body.token || req.query.token || req.headers['x-access-token'];
+    const decode = jwt.decode(token);
+    const senderId = decode.id;
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
       foundGroup.getUsers({ where: { id: senderId } }).then((users) => {
         if (users.length === 0) {
@@ -124,10 +126,12 @@ export default {
           senderId
         }).save().then((createdMessage) => {
           foundGroup.addMessage(createdMessage).then(() => {
-            client.broadcast.to(groupId).emit('notify', createdMessage);
+            if (client) {
+              client.broadcast.to(groupId).emit('notify', createdMessage);
+            };
             res.status(200).send({ success: true, message: createdMessage });
           });
-        }).catch(() => res.status(400).send({ success: false, message: 'Incomplete fields. Specify senderId, message and priority (normal, urgent or critical)' }));
+        }).catch(err => res.status(400).send({ err, success: false, message: 'Incomplete fields. Specify body and priority (normal, urgent or critical)' }));
       }).catch(() => res.status(400).send({ success: false, message: 'Invalid User Id' }));
     }).catch((err) => {
       // Check if it's a sequelize error or group doesn't exist
@@ -137,8 +141,27 @@ export default {
       return res.status(400).send({ success: false, message: 'Invalid Group Id' });
     });
   },
+  // See the list of those who have seen a message
+  seenBy: (req, res) => {
+    const messageId = req.params.id;
+    Message.find({ where: { id: messageId }, attributes: ['seenBy', 'id', 'body', 'sentBy'] })
+    .then((result) => {
+      if (result) {
+        return res.send({ result });
+      } else {
+        return res.status(404).send({ success: false, message: 'Message not found' });
+      }
+    })
+    .catch((err) => {
+      // Check if it's a sequelize error or group doesn't exist
+      if (err.constructor === TypeError) {
+        return res.status(404).send({ success: false, message: 'Message not found' });
+      }
+      return res.status(400).send({ success: false, message: 'Invalid Message Id' });
+    });
+  },
   // Load messages from a particular group
-  getmessages: (req, res) => {
+  getMessages: (req, res) => {
     const groupId = req.params.id;
     const offset = req.params.offset;
     const limit = req.params.limit;
@@ -157,17 +180,18 @@ export default {
         }
         Message.findAndCountAll({
           where: { groupId },
-          attributes: ['sentBy', 'senderId', 'body', 'createdAt', 'priority', 'isComment'],
+          attributes: ['sentBy', 'id', 'senderId', 'body', 'createdAt', 'priority', 'isComment'],
           offset,
           limit
         }).then(result =>
-        res.send(result)).catch(() =>
+          res.send(result)
+        ).catch(() =>
           res.status(401).send({ success: false, message: 'Invalid query in url' }));
       });
     }).catch(() => res.status(400).send({ success: false, message: 'Invalid Group Id' }));
   },
   // Get the list of members in a particular group
-  getmembers: (req, res) => {
+  getMembers: (req, res) => {
     const groupId = req.params.id;
     const offset = req.params.offset;
     const limit = req.params.limit;
