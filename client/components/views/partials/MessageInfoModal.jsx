@@ -6,7 +6,8 @@ export default class MessageInfoModal extends React.Component {
    * @returns {Object} Returns the DOM object to be rendered
    */
   render() {
-    const readBy = [
+    const seenBy = this.props.messageInfo.seenBy;
+    const dummy = [
       {
         name: 'Victor Idongesit',
         email: 'victor.idongesit@andela.com'
@@ -30,7 +31,7 @@ export default class MessageInfoModal extends React.Component {
           <h5 className="orange-text">Read By</h5>
           <ul className="collection">
             {
-              readBy.map((user, index) => {
+              seenBy.map((user, index) => {
                 return (
                   <li key={index} className="collection-item">
                     <div>
