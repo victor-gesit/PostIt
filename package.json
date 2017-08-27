@@ -65,6 +65,7 @@
     "material-icons": "^0.1.0",
     "materialize-css": "^0.98.2",
     "morgan": "^1.8.2",
+    "nodemailer": "^4.0.1",
     "passport": "^0.3.2",
     "passport-jwt": "^2.2.1",
     "passport-local": "^1.0.0",
