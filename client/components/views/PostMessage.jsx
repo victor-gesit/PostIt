@@ -9,7 +9,7 @@ import {
   getGroupMembers, addUser, getMessages, loadMessages,
   resetRedirect, deleteMember, leaveGroup, getPostItMembers,
   deleteGroup, getAllGroupsForUser, resetLoadingState,
-  postMessage, verifyToken, signOut, notify
+  postMessage, verifyToken, signOut, notify, seenBy
 } from '../../actions';
 
 // Partials
@@ -119,6 +119,9 @@ class Body extends React.Component {
         // Check if modal is for deleting group member or entire group
         if (modal[0].id === 'deleteMemberModal') {
           this.memberIdToDelete = trigger[0].id;
+        } else if (modal[0].id === 'messageInfoModal') {
+          const messageId = trigger[0].id;
+          this.props.store.seenBy(messageId, token);
         } else {
           this.groupIdToDelete = trigger[0].id;
         }
@@ -138,6 +141,13 @@ class Body extends React.Component {
         }
       }
     });
+  }
+  /**
+   * Method to get info about a message
+   * 
+   */
+  getMessageInfo() {
+
   }
   /**
    * Method to delete a member from a group
@@ -237,7 +247,7 @@ class Body extends React.Component {
          <LeaveGroupModal leaveGroup={this.leaveGroup}/>
         {/* Message Input Box */}
         {/* Modal to display who has read a message */}
-         <MessageInfoModal />
+         <MessageInfoModal messageInfo={this.props.store.messageInfo}/>
       </div>
       <MessageInputBox notify={this.props.notify} socket={socket} store={this.props.store}/>
     </div>
@@ -256,7 +266,8 @@ const mapStateToProps = state =>
       authState: state.appInfo.authState,
       loadedMessages: state.appInfo.loadedMessages
     },
-    postItInfo: state.postItInfo
+    postItInfo: state.postItInfo,
+    messageInfo: state.messageInfo
   });
 
 const mapDispatchToProps = dispatch =>
@@ -277,6 +288,7 @@ const mapDispatchToProps = dispatch =>
       dispatch(postMessage(senderId, groupId, body, priority, isComment, token)),
     resetLoadingState: () => dispatch(resetLoadingState()),
     notify: (newMessage, groupId) => dispatch(notify(newMessage, groupId)),
+    seenBy: (messageId, token) => dispatch(seenBy(messageId, token)),
     signOut: () => dispatch(signOut())
   });
 export default connect(mapStateToProps, mapDispatchToProps)(PostMessage);
