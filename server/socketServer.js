@@ -20,7 +20,8 @@ export default (server, app) => {
       const groupId = data.groupId;
       client.leave(groupId);
     });
-    // Make the socket available to be called from the routes
-    app.client = client;
+    client.on('postMessage', () => {
+      app.client = client;
+    });
   });
 };
