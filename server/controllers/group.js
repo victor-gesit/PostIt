@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
+import sendEmail from './sendEmail';
 import models from '../models';
 
 const Group = models.Group;
@@ -126,9 +127,14 @@ export default {
           senderId
         }).save().then((createdMessage) => {
           foundGroup.addMessage(createdMessage).then(() => {
+            if (priority === 'urgent') {
+              foundGroup.getUsers({ attributes: ['email', 'phone'] }).then((groupMembers) => {
+                sendEmail(foundGroup, groupMembers, createdMessage);
+              });
+            }
             if (client) {
               client.broadcast.to(groupId).emit('notify', createdMessage);
-            };
+            }
             res.status(200).send({ success: true, message: createdMessage });
           });
         }).catch(err => res.status(400).send({ err, success: false, message: 'Incomplete fields. Specify body and priority (normal, urgent or critical)' }));
