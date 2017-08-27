@@ -59,12 +59,12 @@ const postMessage = (state, newMessage, groupId) => {
   const appState = Object.assign({}, state);
   // Initialize the fields with empty objects and array if they had no previous content
   appState.userGroups[groupId] = appState.userGroups[groupId] || {};
-  appState.userGroups[groupId].messages = appState.userGroups[groupId].messages || [];
-  let groupMessages = appState.userGroups[groupId].messages;
+  appState.userGroups[groupId].messages = appState.userGroups[groupId].messages || {};
+  const groupMessages = appState.userGroups[groupId].messages;
   // Format the time stamp of new message
   getTimeStamp(newMessage.createdAt, (formattedTime) => {
     newMessage.createdAt = `Sent ${formattedTime}`;
-    groupMessages = [...groupMessages, newMessage];
+    groupMessages[newMessage.id] = newMessage;
     appState.userGroups[groupId].messages = groupMessages;
   });
   return appState;
@@ -93,15 +93,19 @@ const deleteMember = (state, deletedId, groupId) => {
 // Load message into a group
 const loadMessages = (state, messagesDbSnapshot, groupId) => {
   const messages = messagesDbSnapshot.rows;
+  const messagesObject = {};
   messages.map((message, index) => {
     getTimeStamp(message.createdAt, (formattedTime) => {
       messages[index].createdAt = `Sent ${formattedTime}`;
     });
   });
+  for (let i = 0; i < messages.length; i += 1) {
+    messagesObject[messages[i].id] = messages[i];
+  }
   const appState = Object.assign({}, state);
   // Load the group with empty data if it has no data in store
   appState.userGroups[groupId] = appState.userGroups[groupId] || {};
-  appState.userGroups[groupId].messages = messages;
+  appState.userGroups[groupId].messages = messagesObject;
   return appState;
 };
 
