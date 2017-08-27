@@ -15,7 +15,7 @@ export default (groupInfo, groupMembers, message) => {
     to: mailList,
     subject: `Unread message in ${groupInfo.title}`,
     html: `<p>You have a new message in <b>${groupInfo.title}</b><p/><br/><b>Sender:
-     <b/>${message.sentBy}<br/><b>Message: </b> ${message.body}<br/>
+     </b> ${message.sentBy}<br/><b>Message: </b> ${message.body}<br/>
      <a href="http://postit-api-victor.herokuapp.com/#/postmessage/${groupInfo.id}">
      Click here</a> to go to PostIt page`
   };

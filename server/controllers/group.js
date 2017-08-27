@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import sendEmail from './sendEmail';
+import sendSMS from './sendSMS';
 import models from '../models';
 
 const Group = models.Group;
@@ -127,9 +128,14 @@ export default {
           senderId
         }).save().then((createdMessage) => {
           foundGroup.addMessage(createdMessage).then(() => {
-            if (priority === 'urgent') {
+            if (priority !== 'normal') {
               foundGroup.getUsers({ attributes: ['email', 'phone'] }).then((groupMembers) => {
-                sendEmail(foundGroup, groupMembers, createdMessage);
+                if (priority === 'critical') {
+                  sendEmail(foundGroup, groupMembers, createdMessage);
+                  sendSMS(foundGroup, groupMembers, createdMessage);
+                } else {
+                  sendEmail(foundGroup, groupMembers, createdMessage);
+                }
               });
             }
             if (client) {
