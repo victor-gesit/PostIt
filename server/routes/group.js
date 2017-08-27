@@ -7,22 +7,24 @@ const router = express.Router();
 router.use(tokenValidator.validateToken);
 
 router.post('/', groupController.create);
-router.post('/:id/user', groupController.adduser);
-router.post('/:id/message', groupController.postmessage);
+router.post('/:id/user', groupController.addUser);
+router.post('/:id/message', groupController.postMessage);
 
 // Get all messages with offset and limit
-router.get('/:id/messages/:offset/:limit', groupController.getmessages);
+router.get('/:id/messages/:offset/:limit', groupController.getMessages);
 // Get all messages with offset only
-router.get('/:id/messages/:offset', groupController.getmessages);
+router.get('/:id/messages/:offset', groupController.getMessages);
 // Get all messages
-router.get('/:id/messages', groupController.getmessages);
+router.get('/:id/messages', groupController.getMessages);
 
 // Get group members with offset and limit
-router.get('/:id/members/:offset/:limit', groupController.getmembers);
+router.get('/:id/members/:offset/:limit', groupController.getMembers);
 // Get group members with offset only
-router.get('/:id/members/:offset', groupController.getmembers);
+router.get('/:id/members/:offset', groupController.getMembers);
+// See who has read a message
+router.get('/:id/message/seenby', groupController.seenBy);
 // Get group members (all)
-router.get('/:id/members', groupController.getmembers);
+router.get('/:id/members', groupController.getMembers);
 
 // Delete group members
 router.delete('/:id/members', groupController.deleteMembers);
