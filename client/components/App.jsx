@@ -1,8 +1,5 @@
 import React from 'react';
 import { Switch, Route, HashRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-
-import { verifyToken } from '../actions/';
 
 // Routes
 import Home from './views/Index.jsx';
@@ -13,8 +10,14 @@ import SignUp from './views/SignUp.jsx';
 import NotFound from './views/NotFound.jsx';
 import PrivateRoute from './views/PrivateRoute.jsx';
 
-
+/**
+ * React component to server the various routes in the app
+ */
 class App extends React.Component {
+  /**
+   * Component render method to display the DOM of the component
+   * @returns {Object} This method returns the DOM object of the react component
+   */
   render() {
     return (
       <HashRouter>
