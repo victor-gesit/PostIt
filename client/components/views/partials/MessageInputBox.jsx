@@ -1,7 +1,6 @@
 /* eslint-env browser */
 import React from 'react';
 import jwtDecode from 'jwt-decode';
-import io from 'socket.io-client';
 
 /**
  * React component to display the message input div
@@ -28,8 +27,7 @@ export default class MessageInputBox extends React.Component {
     const socket = this.props.socket;
     const groupId = this.props.store.match.params.groupId;
     socket.on('notify', (newMessage) => {
-      console.log(newMessage);
-      // this.props.store.notify(newMessage, groupId);
+      this.props.store.notify(newMessage, groupId);
     });
     // Set focus to 'send' button
     $('.message-box').keypress((event) => {
@@ -80,6 +78,14 @@ export default class MessageInputBox extends React.Component {
     }
     // Check for empty message body before sending
     if (body && body.trim()) {
+      const socket = this.props.socket;
+      socket.emit('postMessage', {
+        senderId,
+        groupId,
+        body,
+        priority,
+        isComment: this.isComment,
+      });
       this.props.store.postMessage(senderId, groupId, body, priority, this.isComment, token);
     }
   }
