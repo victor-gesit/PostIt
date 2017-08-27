@@ -344,14 +344,14 @@ header, #messageInputBox, #main-postmessage, #footer {
 #sideNavIcon{
     cursor: pointer;
 }
-#messageInfo {
+.messageInfo {
     display: none;
 }
 
-#messageInfo:hover {
+.messageInfo:hover {
     display: block;
 }
 
-.message:hover #messageInfo {
+.message:hover .messageInfo {
     display: block;
 }
