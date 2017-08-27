@@ -143,13 +143,6 @@ class Body extends React.Component {
     });
   }
   /**
-   * Method to get info about a message
-   * 
-   */
-  getMessageInfo() {
-
-  }
-  /**
    * Method to delete a member from a group
    * @returns {undefined} This method returns nothing
    */
