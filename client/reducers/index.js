@@ -7,12 +7,14 @@ import loadingReducer from './loading';
 import authStateReducer from './authStateReducer';
 import allUserGroupsReducer from './allUserGroupsReducer';
 import loadedMessagesReducer from './loadedMessagesReducer';
+import messageInfoReducer from './messageInfoReducer';
 
 const postItApp = combineReducers({
   groups: userGroupsReducer,
   allUserGroups: allUserGroupsReducer,
   apiError: errorReducer,
   dataLoading: loadingReducer,
+  messageInfo: messageInfoReducer,
   appInfo: combineReducers({
     userDetails: userReducer,
     authState: authStateReducer,

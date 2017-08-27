@@ -40,15 +40,15 @@ export default class Messages extends React.Component {
         <ul id="messages" className="messages row">
         {
           messages ? (
-            messages.length === 0 ? (
+            Object.keys(messages).length === 0 ? (
               <div>
                 <h3 className="grey-text center">No Messages</h3>
               </div>
             ) : (
               <div>
                 {
-                  messages.map((messageDetails, index) =>
-                    <Message userId={userId} key={index} messageDetails={messageDetails}/>)
+                  Object.keys(messages).map((messageId, index) =>
+                    <Message userId={userId} key={index} messageDetails={messages[messageId]}/>)
                 }
               </div>
             )
@@ -86,6 +86,7 @@ class Message extends React.Component {
     const userId = this.props.userId;
     const priority = messageDetails.priority;
     const isComment = messageDetails.isComment;
+    const messageId = messageDetails.id;
     let className;
     if (userId === messageDetails.senderId) {
       className = 'ownmessage message card col s11 offset-s1';
@@ -102,7 +103,10 @@ class Message extends React.Component {
                 <a className="secondary-content grey-text">
                   <i className="material-icons">lens</i></a></small>
               <div className="message-body white-text">{messageDetails.body}</div>
-              <div className="message-info"><small>{messageDetails.createdAt}</small></div>
+              <div className="message-info"><small>{messageDetails.createdAt}
+                <a id={messageId} href="#messageInfoModal"className="secondary-content messageInfo white-text">
+                <i className="material-icons">expand_less</i></a>
+                </small></div>
             </li>
           ) : (
             <li className={className}>
@@ -110,7 +114,11 @@ class Message extends React.Component {
                 <a className="secondary-content green-text">
                 <i className="material-icons">lens</i></a></small>
               <div className="message-body white-text">{messageDetails.body}</div>
-              <div className="message-info"><small>{messageDetails.createdAt}</small></div>
+              <div className="message-info"><small>{messageDetails.createdAt}
+                  <a id={messageId} href="#messageInfoModal"
+                    className="secondary-content messageInfo white-text">
+                <i className="material-icons">expand_less</i></a>
+                </small></div>
             </li>
           )
         );
@@ -120,7 +128,11 @@ class Message extends React.Component {
             <a className="secondary-content orange-text">
             <i className="material-icons">lens</i></a></small>
           <div className="message-body white-text">{messageDetails.body}</div>
-          <div className="message-info"><small>{messageDetails.createdAt}</small></div>
+          <div className="message-info"><small>{messageDetails.createdAt}
+            <a id={messageId} href="#messageInfoModal"
+              className="secondary-content messageInfo white-text">
+            <i className="material-icons">expand_less</i></a>
+            </small></div>
         </li>
       );
       case 'critical': return (
@@ -129,7 +141,11 @@ class Message extends React.Component {
             <a className="secondary-content red-text">
             <i className="material-icons">lens</i></a></small>
           <div className="message-body white-text">{messageDetails.body}</div>
-          <div className="message-info"><small>{messageDetails.createdAt}</small></div>
+          <div className="message-info"><small>{messageDetails.createdAt}
+            <a id={messageId} href="#messageInfoModal"
+            className="secondary-content messageInfo white-text">
+            <i className="material-icons">expand_less</i></a>
+            </small></div>
         </li>
       );
       default: return (
@@ -138,7 +154,11 @@ class Message extends React.Component {
             <a className="secondary-content grey-text">
             <i className="material-icons">lens</i></a></small>
           <div className="message-body white-text">{messageDetails.body}</div>
-          <div className="message-info"><small>{messageDetails.createdAt}</small></div>
+          <div className="message-info"><small>{messageDetails.createdAt}
+            <a id={messageId} href="#messageInfoModal"
+            className="secondary-content messageInfo white-text">
+            <i className="material-icons">expand_less</i></a>
+            </small></div>
         </li>
       );
     }

@@ -4,15 +4,21 @@ import logger from 'morgan';
 import dotenv from 'dotenv';
 import path from 'path';
 import cors from 'cors';
+import http from 'http';
 import group from './routes/group';
 import user from './routes/user';
 import general from './routes/general';
 import models from './models';
+import socketServer from './socketServer';
 
 dotenv.config();
 const app = express();
-// Middlewares
 
+// Link app to socket io
+const httpServer = http.createServer(app);
+socketServer(httpServer, app);
+
+// Middlewares
 // Cross Origin Resource Sharing
 app.use(cors());
 
@@ -43,7 +49,7 @@ app.use('/*', (req, res) => {
 const port = process.env.PORT || 8002;
 
 models.sequelize.sync();
-const server = app.listen(port, () => {
+const server = httpServer.listen(port, () => {
   console.log(`Listening at port ${port}`);
 });
 

@@ -126,6 +126,14 @@ export const loadMessages = (groupId) => {
   };
 };
 
+export const seenBy = (messageId, token) => {
+  return {
+    type: 'SEEN_BY',
+    messageId,
+    token
+  };
+};
+
 export const resetErrorLog = () => {
   return {
     type: 'RESET_ERROR_LOG',
@@ -165,3 +173,10 @@ export const leaveGroup = (token, groupId) => {
   };
 };
 
+export const notify = (newMessage, groupId) => {
+  return {
+    type: 'NOTIFY',
+    newMessage,
+    groupId
+  };
+};

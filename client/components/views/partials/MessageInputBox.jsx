@@ -24,6 +24,11 @@ export default class MessageInputBox extends React.Component {
    * @return {undefined} This method returns nothing
    */
   componentDidMount() {
+    const socket = this.props.socket;
+    const groupId = this.props.store.match.params.groupId;
+    socket.on('notify', (newMessage) => {
+      this.props.store.notify(newMessage, groupId);
+    });
     // Set focus to 'send' button
     $('.message-box').keypress((event) => {
       if ((event.which && event.which === 13) || (event.keyCode && event.keyCode === 13)) {
@@ -73,6 +78,14 @@ export default class MessageInputBox extends React.Component {
     }
     // Check for empty message body before sending
     if (body && body.trim()) {
+      const socket = this.props.socket;
+      socket.emit('postMessage', {
+        senderId,
+        groupId,
+        body,
+        priority,
+        isComment: this.isComment,
+      });
       this.props.store.postMessage(senderId, groupId, body, priority, this.isComment, token);
     }
   }

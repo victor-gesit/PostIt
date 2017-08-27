@@ -4,12 +4,12 @@ import React from 'react';
 import 'jquery/dist/jquery';
 import { connect } from 'react-redux';
 import jwtDecode from 'jwt-decode';
-
+import io from 'socket.io-client';
 import {
   getGroupMembers, addUser, getMessages, loadMessages,
   resetRedirect, deleteMember, leaveGroup, getPostItMembers,
   deleteGroup, getAllGroupsForUser, resetLoadingState,
-  postMessage, verifyToken, signOut
+  postMessage, verifyToken, signOut, notify, seenBy
 } from '../../actions';
 
 // Partials
@@ -20,13 +20,20 @@ import AddMemberModal from './partials/AddMemberModal.jsx';
 import MessageInputBox from './partials/MessageInputBox.jsx';
 import DeleteMemberModal from './partials/DeleteMemberModal.jsx';
 import LeaveGroupModal from './partials/LeaveGroupModal.jsx';
+import MessageInfoModal from './partials/MessageInfoModal.jsx';
 
 import '../../js/materialize';
 
+const socket = io();
 /**
  * React component that displays the Post Message page
  */
 class PostMessage extends React.Component {
+  constructor(props){
+    super(props);
+    const groupId = this.props.match.params.groupId;
+    socket.emit('open group', { groupId });
+  }
   /**
    * Component method called when component loads to reset state of spinner
    * and hide navbar on small screens
@@ -41,6 +48,14 @@ class PostMessage extends React.Component {
     }
     $('#sidenav-overlay').trigger('click');
     this.props.resetLoadingState();
+  }
+  /**
+   * Component method called when a user leaves the Post Message page
+   * to notify the socket of the user leaving the conversation
+   */
+  componentWillUnmount() {
+    const groupId = this.props.match.params.groupId;
+    socket.emit('close group', { groupId });
   }
   /**
    * Render method of React component
@@ -104,6 +119,9 @@ class Body extends React.Component {
         // Check if modal is for deleting group member or entire group
         if (modal[0].id === 'deleteMemberModal') {
           this.memberIdToDelete = trigger[0].id;
+        } else if (modal[0].id === 'messageInfoModal') {
+          const messageId = trigger[0].id;
+          this.props.store.seenBy(messageId, token);
         } else {
           this.groupIdToDelete = trigger[0].id;
         }
@@ -221,8 +239,10 @@ class Body extends React.Component {
         {/* Modal to handle leaving a gorup */}
          <LeaveGroupModal leaveGroup={this.leaveGroup}/>
         {/* Message Input Box */}
+        {/* Modal to display who has read a message */}
+         <MessageInfoModal messageInfo={this.props.store.messageInfo}/>
       </div>
-      <MessageInputBox store={this.props.store}/>
+      <MessageInputBox notify={this.props.notify} socket={socket} store={this.props.store}/>
     </div>
     );
   }
@@ -239,7 +259,8 @@ const mapStateToProps = state =>
       authState: state.appInfo.authState,
       loadedMessages: state.appInfo.loadedMessages
     },
-    postItInfo: state.postItInfo
+    postItInfo: state.postItInfo,
+    messageInfo: state.messageInfo
   });
 
 const mapDispatchToProps = dispatch =>
@@ -259,6 +280,8 @@ const mapDispatchToProps = dispatch =>
     postMessage: (senderId, groupId, body, priority, isComment, token) =>
       dispatch(postMessage(senderId, groupId, body, priority, isComment, token)),
     resetLoadingState: () => dispatch(resetLoadingState()),
+    notify: (newMessage, groupId) => dispatch(notify(newMessage, groupId)),
+    seenBy: (messageId, token) => dispatch(seenBy(messageId, token)),
     signOut: () => dispatch(signOut())
   });
 export default connect(mapStateToProps, mapDispatchToProps)(PostMessage);

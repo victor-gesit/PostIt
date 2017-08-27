@@ -43,6 +43,9 @@ const appStore = {
       groupId: null
     }
   },
+  messageInfo: {
+    seenBy: []
+  },
   dataLoading: true,
   postItInfo: {
     members: {

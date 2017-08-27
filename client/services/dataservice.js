@@ -5,8 +5,8 @@ const dataService = store => next => (action) => {
   if (action.type !== 'VERIFY_TOKEN') {
     next(action);
   }
-  // next(action);
   const url = 'http://postit-api-victor.herokuapp.com/api';
+  // const url = 'http://localhost:8002/api';
   switch (action.type) {
     // Signin a user
     case 'SIGN_IN':
@@ -198,6 +198,26 @@ const dataService = store => next => (action) => {
             type: 'GET_MESSAGES_SUCCESS',
             groupId: action.groupId,
             messagesDbSnapshot,
+          });
+        });
+      break;
+    case 'SEEN_BY':
+      request
+        .get(`${url}/group/${action.messageId}/message/seenby`)
+        .set('x-access-token', action.token)
+        .end((err, res) => {
+          if (err) {
+            // Ignore browser errors, which do not have a res object
+            if (res) {
+              return next({
+                type: 'SEEN_BY_ERROR'
+              });
+            }
+          }
+          const data = res.body.result;
+          return next({
+            type: 'SEEN_BY_SUCCESS',
+            data
           });
         });
       break;
