@@ -17,6 +17,11 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
+    seenBy: {
+      type: DataTypes.ARRAY(DataTypes.JSON),
+      allowNull: true,
+      defaultValue: []
+    },
     senderId: {
       type: DataTypes.UUID,
       allowNull: false
