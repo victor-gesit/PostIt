@@ -74,7 +74,7 @@ export default class SignInForm extends React.Component {
     });
   }
   /**
-   * @param {String} token Token returned from google
+   * @param {String} response Token returned from google
    * @returns {undefined} This method returns nothing
    */
   googleLogin(response) {
