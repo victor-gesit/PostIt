@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { signIn, resetErrorLog, resetRedirect, resetLoadingState, verifyToken } from '../../actions';
+import { signIn, resetErrorLog, resetRedirect, resetLoadingState, verifyToken, googleLogin } from '../../actions';
 import SignInForm from './partials/SignInForm.jsx';
 import Footer from './partials/Footer.jsx';
 
@@ -83,7 +83,7 @@ class Body extends React.Component {
     $('#goToSignin').click(() => {
       $('html, body').animate({
         scrollTop: $('#signinform').offset().top
-      }, 2000);
+      }, 500);
     });
   }
   /**
@@ -150,6 +150,7 @@ const mapStateToProps = state =>
 const mapDispatchToProps = dispatch =>
   ({
     signIn: (email, password) => dispatch(signIn(email, password)),
+    googleLogin: userDetails => dispatch(googleLogin(userDetails)),
     resetErrorLog: () => dispatch(resetErrorLog()),
     resetRedirect: () => dispatch(resetRedirect()),
     resetLoadingState: () => dispatch(resetLoadingState()),

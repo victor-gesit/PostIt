@@ -53,9 +53,13 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
+    googleId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     phone: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       unique: true,
       validate: {
         len: {
