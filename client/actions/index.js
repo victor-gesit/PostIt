@@ -180,3 +180,10 @@ export const notify = (newMessage, groupId) => {
     groupId
   };
 };
+
+export const googleLogin = (userDetails) => {
+  return {
+    type: 'GOOGLE_LOGIN',
+    userDetails
+  };
+};
