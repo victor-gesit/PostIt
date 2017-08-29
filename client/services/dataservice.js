@@ -373,6 +373,29 @@ const dataService = store => next => (action) => {
           });
         });
       break;
+    case 'GOOGLE_LOGIN':
+      request
+        .post(`${url}/user/google/login`)
+        .send(action.userDetails)
+        .end((err, res) => {
+          // Return the first error message when there are many
+          if (err) {
+            // Ignore browser errors which do not have a res object
+            if (res) {
+              return next({
+                type: 'SIGN_IN_ERROR',
+                message: res.body.message
+              });
+            }
+          }
+          const userDetails = res.body.user;
+          userDetails.token = res.body.token;
+          next({
+            type: 'SIGN_IN_SUCCESS',
+            userDetails
+          });
+        });
+      break;
     case 'LEAVE_GROUP':
       request
         .delete(`${url}/group/${action.groupId}/leave`)
