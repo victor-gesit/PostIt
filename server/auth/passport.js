@@ -79,3 +79,41 @@ passport.use('local.signin', new LocalStrategy(
     });
   })
 );
+
+passport.use('google.custom', new LocalStrategy(
+  {
+    usernameField: 'email',
+    passwordField: 'password',
+    passReqToCallback: true
+  }, (req, email, password, done) => {
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+    const googleId = req.body.googleId;
+    // try to find the user based on their google id
+    User.find({ where: { googleId } }).then((user) => {
+      if (user) {
+        return done(null, user);
+      } else {
+        // if the user is not in database, create a new user
+        const newUser = User.build({
+          googleId,
+          email,
+          firstName,
+          lastName,
+        });
+        newUser.password = password;
+        // save the user
+        newUser.save().then((savedUser) => {
+          done(null, savedUser);
+        }).catch((err) => {
+          done(err, false);
+        });
+      }
+    })
+    .catch((err) => {
+      if (err) {
+        return done(err);
+      }
+    });
+  })
+);
