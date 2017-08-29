@@ -2,11 +2,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware } from 'redux';
-import { HashRouter, Switch, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 // Styling
 import 'materialize-css/bin/materialize.css';
 import 'jquery/dist/jquery';
+import 'font-awesome/css/font-awesome.css';
+import 'material-design-icons/iconfont/material-icons.css';
 import './scss/style.scss'; // Custom styling
 import './js/customJS';
 import './js/materialize';
