@@ -1,6 +1,7 @@
 /* eslint-env browser */
 import React from 'react';
 import NotificationSystem from 'react-notification-system';
+import GoogleLogin from 'react-google-login';
 
 /**
  * React component to display the sign in form
@@ -13,6 +14,7 @@ export default class SignInForm extends React.Component {
   constructor(props) {
     super(props);
     this.signIn = this.signIn.bind(this);
+    this.googleLogin = this.googleLogin.bind(this);
     this.showNotification = this.showNotification.bind(this);
     this.notificationSystem = null;
   }
@@ -70,6 +72,26 @@ export default class SignInForm extends React.Component {
       message,
       level
     });
+  }
+  /**
+   * @param {String} token Token returned from google
+   * @returns {undefined} This method returns nothing
+   */
+  googleLogin(response) {
+    const profileObj = response.profileObj;
+    const firstName = profileObj.givenName;
+    const lastName = profileObj.familyName;
+    const email = profileObj.email;
+    const googleId = profileObj.googleId;
+    const password = response.accessToken;
+    const userDetails = {
+      firstName,
+      lastName,
+      email,
+      googleId,
+      password
+    };
+    this.props.store.googleLogin(userDetails);
   }
   /**
    * Component method called to render page
@@ -170,6 +192,16 @@ export default class SignInForm extends React.Component {
               </div>
               <div>
                 <p>Don't have an account? <a href="/#/signup">Sign up</a></p>
+              </div>
+              <div className="center">
+                <GoogleLogin
+                  clientId="856410977175-5n2ns6ad2p5ofrrtma3jgun5f7paif78.apps.googleusercontent.com"
+                  buttonText="Login"
+                  onSuccess={this.googleLogin}
+                  onFailure={this.googleLogin}
+                >
+                <i className="fa fa-google-plus"></i> Sign in with Google
+                </GoogleLogin>
               </div>
             </div>
           </div>
