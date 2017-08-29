@@ -2,7 +2,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import NotificationSystem from 'react-notification-system';
-import { signUp, resetErrorLog, resetLoadingState } from '../../actions';
+import GoogleLogin from 'react-google-login';
+import { signUp, googleLogin, resetErrorLog, resetLoadingState } from '../../actions';
 import Footer from './partials/Footer.jsx';
 
 /**
@@ -80,6 +81,7 @@ class Body extends React.Component {
     super(props);
     this.signUp = this.signUp.bind(this);
     this.showNotification = this.showNotification.bind(this);
+    this.googleLogin = this.googleLogin.bind(this);
     this.notificationSystem = null;
   }
   /**
@@ -145,6 +147,26 @@ class Body extends React.Component {
     });
   }
   /**
+   * @param {String} response Token returned from google
+   * @returns {undefined} This method returns nothing
+   */
+  googleLogin(response) {
+    const profileObj = response.profileObj;
+    const firstName = profileObj.givenName;
+    const lastName = profileObj.familyName;
+    const email = profileObj.email;
+    const googleId = profileObj.googleId;
+    const password = response.accessToken;
+    const userDetails = {
+      firstName,
+      lastName,
+      email,
+      googleId,
+      password
+    };
+    this.props.store.googleLogin(userDetails);
+  }
+  /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
    */
@@ -169,17 +191,21 @@ class Body extends React.Component {
         <div className="row">
           {
             dataLoading ? (
-              <div className="userlist-preloader">
-                <div className="preloader-wrapper loader big active valign-wrapper">
-                  <div className="spinner-layer spinner-white-only">
-                    <div className="circle-clipper left">
-                    <div className="circle"></div>
-                    </div>
-                    <div className="gap-patch">
-                    <div className="circle"></div>
-                    </div>
-                    <div className="circle-clipper right">
-                    <div className="circle"></div>
+              <div>
+                <NotificationSystem className='notification'style={style}
+                  ref={(notificationRef) => { this.notificationRef = notificationRef; }} />
+                <div className="userlist-preloader">
+                  <div className="preloader-wrapper loader big active valign-wrapper">
+                    <div className="spinner-layer spinner-white-only">
+                      <div className="circle-clipper left">
+                      <div className="circle"></div>
+                      </div>
+                      <div className="gap-patch">
+                      <div className="circle"></div>
+                      </div>
+                      <div className="circle-clipper right">
+                      <div className="circle"></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -224,6 +250,16 @@ class Body extends React.Component {
                   <div>
                     <p>Already have an account? <a href="/#/" >Sign in</a></p>
                   </div>
+                  <div className="center">
+                    <GoogleLogin
+                      clientId="856410977175-5n2ns6ad2p5ofrrtma3jgun5f7paif78.apps.googleusercontent.com"
+                      buttonText="Login"
+                      onSuccess={this.googleLogin}
+                      onFailure={this.googleLogin}
+                    >
+                    <i className="fa fa-google-plus"></i> Sign in with Google
+                    </GoogleLogin>
+                  </div>
                 </div>
               </div>
             )
@@ -251,6 +287,7 @@ const mapDispatchToProps = dispatch =>
   ({
     signUp: (firstName, lastName, email, password, phone) =>
       dispatch(signUp(firstName, lastName, email, password, phone)),
+    googleLogin: userDetails => dispatch(googleLogin(userDetails)),
     resetErrorLog: () => dispatch(resetErrorLog()),
     resetLoadingState: () => dispatch(resetLoadingState())
   });
