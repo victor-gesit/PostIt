@@ -9,6 +9,24 @@ const errorReducer = (state = {}, action) => {
         },
         errored: true
       };
+    case 'RECOVER_PASSWORD_ERROR':
+      return {
+        message: action.message,
+        redirect: {
+          yes: false,
+          to: null
+        },
+        errored: true
+      };
+    case 'RECOVER_PASSWORD_SUCCESS':
+      return {
+        message: action.message,
+        redirect: {
+          yes: false,
+          to: null
+        },
+        errored: false
+      };
     case 'SIGN_UP_ERROR':
       return {
         message: action.message,
