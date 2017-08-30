@@ -64,6 +64,12 @@ const loading = (state = false, action) => {
 
     case 'RESET_LOADING_STATE': return false;
 
+    case 'RECOVER_PASSWORD': return true;
+    case 'RECOVER_PASSWORD_ERROR': return false;
+    case 'RECOVER_PASSWORD_SUCCESS': return false;
+
+    case 'RESET_PASSWORD': return true;
+    
     default: return state;
   }
 };
