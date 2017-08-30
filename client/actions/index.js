@@ -187,3 +187,18 @@ export const googleLogin = (userDetails) => {
     userDetails
   };
 };
+
+export const recoverPassword = (email) => {
+  return {
+    type: 'RECOVER_PASSWORD',
+    email
+  };
+};
+
+export const resetPassword = (password, token) => {
+  return {
+    type: 'RESET_PASSWORD',
+    password,
+    token
+  };
+};
