@@ -396,6 +396,55 @@ const dataService = store => next => (action) => {
           });
         });
       break;
+    case 'RECOVER_PASSWORD':
+      request
+        .post(`${url}/password/recover`)
+        .send({
+          email: action.email
+        })
+        .end((err, res) => {
+          // Return the first error message when there are many
+          if (err) {
+            // Ignore browser errors which do not have a res object
+            if (res) {
+              return next({
+                type: 'RECOVER_PASSWORD_ERROR',
+                message: res.body.message
+              });
+            }
+          }
+          next({
+            type: 'RECOVER_PASSWORD_SUCCESS',
+            message: res.body.message
+          });
+        });
+      break;
+    case 'RESET_PASSWORD':
+      request
+        .post(`${url}/password/reset`)
+        .set('x-access-token', action.token)
+        .send({
+          newPassword: action.password
+        })
+        .end((err, res) => {
+          // Return the first error message when there are many
+          if (err) {
+            // Ignore browser errors which do not have a res object
+            if (res) {
+              return next({
+                type: 'SIGN_IN_ERROR',
+                message: res.body.message
+              });
+            }
+          }
+          const userDetails = res.body.user;
+          userDetails.token = res.body.token;
+          next({
+            type: 'SIGN_IN_SUCCESS',
+            userDetails
+          });
+        });
+      break;
     case 'LEAVE_GROUP':
       request
         .delete(`${url}/group/${action.groupId}/leave`)
