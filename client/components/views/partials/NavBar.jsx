@@ -155,6 +155,8 @@ export default class NavBar extends React.Component {
                 About PostIt</a></li>
               <li><a onClick={this.signOut}><i className="large material-icons red-text">exit_to_app</i>
                 Sign Out</a></li>
+              <li><Link to='/forgotpassword' ><i className="large material-icons red-text">vpn_key</i>
+                Recover Password</Link></li>
             </ul>
           </div>
           {/* Modal Structure for group delete dialog */}
