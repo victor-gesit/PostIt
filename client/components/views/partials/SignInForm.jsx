@@ -183,12 +183,12 @@ export default class SignInForm extends React.Component {
               </div>
               <div className="col s12 center">
                 <button id="signInButton" onClick={this.signIn} className="btn green darken-4"
-                  ref={(button) => { this.button = button; }} >Sign in</button>
+                  ref={(button) => { this.button = button; }} >Sign in</button><br />
               </div>
-              <br /><br />
-              <div className="col s12">
-                <input id="signedin" className="teal-text" type="checkbox" name="signedin" />
-                <label htmlFor="signedin">Keep me signed in</label>
+              <br />
+              <hr/>
+              <div className="center">
+                <p><a href="/#/forgotpassword">Forgotten Password?</a></p>
               </div>
               <div>
                 <p>Don't have an account? <a href="/#/signup">Sign up</a></p>

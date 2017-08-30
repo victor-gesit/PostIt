@@ -25,6 +25,9 @@ router.use('/groups', tokenValidator.validateToken, generalController.getAllGrou
 router.use('/token', tokenValidator.validateToken, (req, res) => {
   res.status(200).send({ success: true, message: 'Token is valid' });
 });
+// Password recovery
+router.post('/password/recover', generalController.receiveEmail);
+router.post('/password/reset', generalController.resetPassword);
 // Give sensible response for random routes
 router.use('/*', (req, res) => {
   res.status(404).send({ message: 'Api up and running. Check documentation for appropriate routes' });
