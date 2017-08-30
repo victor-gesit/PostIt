@@ -9,6 +9,8 @@ import PostMessage from './views/PostMessage.jsx';
 import SignUp from './views/SignUp.jsx';
 import NotFound from './views/NotFound.jsx';
 import PrivateRoute from './views/PrivateRoute.jsx';
+import ForgottenPassword from './views/ForgottenPassword.jsx';
+import NewPassword from './views/NewPassword.jsx';
 
 /**
  * React component to server the various routes in the app
@@ -30,6 +32,8 @@ class App extends React.Component {
               />
             <PrivateRoute exact path="/postmessage/:groupId" component={PostMessage}/>
             <Route exact path='/signup' component={SignUp}/>
+            <Route exact path='/forgotpassword' component={ForgottenPassword}/>
+            <Route exact path='/newpassword/:token' component={NewPassword}/>
             <PrivateRoute path="*" component={NotFound}/>
           </Switch>
         </div>
