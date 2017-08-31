@@ -214,7 +214,7 @@ const dataService = store => next => (action) => {
               });
             }
           }
-          const data = res.body.result;
+          const data = res.body;
           return next({
             type: 'SEEN_BY_SUCCESS',
             data

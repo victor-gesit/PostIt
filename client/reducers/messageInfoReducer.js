@@ -3,7 +3,9 @@ const messageInfoReducer = (state = {}, action) => {
   const data = action.data;
   switch (action.type) {
     case 'SEEN_BY_SUCCESS':
-      return data;
+      return {
+        seenBy: data.seenBy
+      };
     case 'SIGN_OUT':
       return {
         seenBy: []

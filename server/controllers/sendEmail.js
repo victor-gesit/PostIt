@@ -11,7 +11,7 @@ export default (groupInfo, groupMembers, message) => {
     return email;
   });
   const mailOptions = {
-    from: process.env.EMAIL_USERNAME,
+    from: 'PostIt Notifications',
     to: mailList,
     subject: `Unread message in ${groupInfo.title}`,
     html: `<p>You have a new message in <b>${groupInfo.title}</b><p/><br/><b>Sender:

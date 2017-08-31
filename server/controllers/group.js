@@ -127,6 +127,11 @@ export default {
           priority,
           senderId
         }).save().then((createdMessage) => {
+          const connectedUsers = req.app.connections[groupId] || [];
+          User.findAll({ where: { id: connectedUsers } }).then((foundUsers) => {
+            createdMessage.addUser(foundUsers);
+          })
+          .catch();
           foundGroup.addMessage(createdMessage).then(() => {
             if (priority !== 'normal') {
               foundGroup.getUsers({ attributes: ['email', 'phone'] }).then((groupMembers) => {
@@ -156,13 +161,15 @@ export default {
   // See the list of those who have seen a message
   seenBy: (req, res) => {
     const messageId = req.params.id;
-    Message.find({ where: { id: messageId }, attributes: ['seenBy', 'id', 'body', 'sentBy'] })
-    .then((result) => {
-      if (result) {
-        return res.send({ result });
-      } else {
+    Message.find({ where: { id: messageId } })
+    .then((foundMessage) => {
+      if (!foundMessage) {
         return res.status(404).send({ success: false, message: 'Message not found' });
       }
+      foundMessage.getUsers({ attributes: ['firstName', 'lastName', 'email'] })
+        .then((foundUsers) => {
+          return res.status(202).send({ success: true, seenBy: foundUsers });
+        });
     })
     .catch((err) => {
       // Check if it's a sequelize error or group doesn't exist
@@ -180,7 +187,6 @@ export default {
     const token = req.body.token || req.query.token || req.headers['x-access-token'];
     const decode = jwt.decode(token);
     const userId = decode.id;
-    
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
       if (foundGroup === null) {
         return res.status(404).send({ success: false, message: 'Group not found' });

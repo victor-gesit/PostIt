@@ -6,6 +6,29 @@ import jwtDecode from 'jwt-decode';
  */
 export default class Messages extends React.Component {
   /**
+   * Component method to emit socket event if a user opens a new group
+   * @param {Obejct} nextProps New properties received when a component updates
+   * @returns {undefined} This method returns nothing
+   */
+  componentWillReceiveProps(nextProps) {
+    const newGroupId = nextProps.store.match.params.groupId;
+    const oldGroupId = this.props.store.match.params.groupId;
+    if (newGroupId !== oldGroupId) {
+      const token = localStorage.getItem('token');
+      let decode;
+      try {
+        decode = jwtDecode(token);
+      } catch (err) {
+        this.props.store.signOut();
+      }
+      const userId = decode.id;
+      const socket = this.props.socket;
+      // socket.emit('open group', { groupId: newGroupId, userId });
+      socket.emit('open group', { groupId: newGroupId, userId });
+      socket.emit('close group', { groupId: oldGroupId, userId });
+    }
+  }
+  /**
    * component method called when component properties change
    * @return {undefined} this method returns nothing
    */

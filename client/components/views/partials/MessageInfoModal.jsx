@@ -35,7 +35,8 @@ export default class MessageInfoModal extends React.Component {
                 return (
                   <li key={index} className="collection-item">
                     <div>
-                    {user.name}<br/> <small className="red-text"> { user.email}</small>
+                    {user.firstName} {user.lastName}<br/>
+                    <small className="red-text"> { user.email}</small>
                     <a className="secondary-content"><i className="material-icons">done_all</i></a>
                     </div>
                   </li>

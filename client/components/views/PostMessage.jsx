@@ -31,8 +31,16 @@ const socket = io();
 class PostMessage extends React.Component {
   constructor(props){
     super(props);
+    const token = localStorage.getItem('token');
+    let decode;
+    try {
+      decode = jwtDecode(token);
+    } catch (err) {
+      this.props.store.signOut();
+    }
+    const userId = decode.id;
     const groupId = this.props.match.params.groupId;
-    socket.emit('open group', { groupId });
+    socket.emit('open group', { groupId, userId });
   }
   /**
    * Component method called when component loads to reset state of spinner
@@ -54,8 +62,16 @@ class PostMessage extends React.Component {
    * to notify the socket of the user leaving the conversation
    */
   componentWillUnmount() {
+    const token = localStorage.getItem('token');
+    let decode;
+    try {
+      decode = jwtDecode(token);
+    } catch (err) {
+      this.props.store.signOut();
+    }
+    const userId = decode.id;
     const groupId = this.props.match.params.groupId;
-    socket.emit('close group', { groupId });
+    socket.emit('close group', { groupId, userId });
   }
   /**
    * Render method of React component
@@ -152,6 +168,8 @@ class Body extends React.Component {
     const ownerId = decode.id;
     const idToDelete = this.memberIdToDelete;
     const groupId = this.props.store.match.params.groupId;
+    // Remove user socket from group sockets list
+    socket.emit('delete member', { groupId, userId: idToDelete });
     // Call the redux action to delete the member
     this.props.store.deleteMember(ownerId, idToDelete, groupId, token);
   }
@@ -164,6 +182,7 @@ class Body extends React.Component {
     const decode = jwtDecode(token);
     const ownerId = decode.id;
     const groupId = this.groupIdToDelete;
+    socket.emit('delete group', { groupId, userId: ownerId });
     // Call redux action to delete the group
     this.props.store.deleteGroup(ownerId, groupId, token);
   }
@@ -174,6 +193,10 @@ class Body extends React.Component {
   leaveGroup() {
     const token = localStorage.getItem('token');
     const groupId = this.groupIdToDelete;
+    const decode = jwtDecode(token);
+    const userId = decode.id;
+    // Remove user socket from group sockets list
+    socket.emit('close group', { groupId, userId });
     this.props.store.leaveGroup(token, groupId);
   }
   /**
@@ -226,7 +249,7 @@ class Body extends React.Component {
           <div className="row">
             <div className="col s12 m8 offset-m2 l8 offset-l2 messageboard">
               {/* Messages */}
-              <Messages store={this.props.store}/>
+              <Messages socket={socket} store={this.props.store}/>
             </div>
             {/* Side bar, visible by toggle */}
             <GroupList store={this.props.store}/>

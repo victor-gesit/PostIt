@@ -17,11 +17,6 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-    seenBy: {
-      type: DataTypes.ARRAY(DataTypes.JSON),
-      allowNull: true,
-      defaultValue: []
-    },
     senderId: {
       type: DataTypes.UUID,
       allowNull: false
@@ -54,6 +49,9 @@ module.exports = (sequelize, DataTypes) => {
     Message.belongsTo(models.Group, {
       onDelete: 'CASCADE',
       foreignKey: 'groupId'
+    });
+    Message.belongsToMany(models.User, {
+      through: 'MessageRead'
     });
   };
   return Message;
