@@ -4,9 +4,21 @@ const deleteGroup = (state, groupId) => {
   const userGroups = appState.userGroups;
   delete userGroups[groupId];
   appState.userGroups = userGroups;
+  appState.meta.count -= 1;
   return appState;
 };
 
+// Create a group
+const createGroup = (state, data) => {
+  const createdGroup = data.createdGroup;
+  const appState = Object.assign({}, state);
+  const userGroups = appState.userGroups;
+  userGroups[createdGroup.id] = {};
+  userGroups[createdGroup.id].info = createdGroup;
+  appState.userGroups = userGroups;
+  appState.meta.count += 1;
+  return appState;
+};
 
 // Load groups a user belongs to
 const getGroups = (state, dbSnapshot) => {
@@ -130,6 +142,8 @@ const userGroupsReducer = (state = {}, action) => {
       return loadMessages(appState, action.messagesDbSnapshot, action.groupId);
     case 'LEAVE_GROUP_SUCCESS':
       return deleteGroup(appState, action.groupId);
+    case 'CREATE_GROUP_SUCCESS':
+      return createGroup(appState, action.data);
     case 'SIGN_OUT':
       return { meta: { count: 0 }, userGroups: {} };
     default:
