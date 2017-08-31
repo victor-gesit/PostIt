@@ -77,6 +77,9 @@ module.exports = (sequelize, DataTypes) => {
     User.belongsToMany(models.Group, {
       through: 'UserGroup'
     });
+    User.belongsToMany(models.Message, {
+      through: 'MessageRead'
+    });
   };
   User.beforeCreate((user) => {
     user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(5), null);
