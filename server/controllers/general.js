@@ -43,7 +43,7 @@ export default {
           expiresIn: 600 // expires in 10 minutes
         });
         const mailOptions = {
-          from: process.env.EMAIL_USERNAME,
+          from: 'PostIt Notifications',
           to: email,
           subject: 'Password Reset',
           html: `<p>You have requested a password reset on your PostIt account<p/><br/><b>
