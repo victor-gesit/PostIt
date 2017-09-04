@@ -68,8 +68,12 @@ const loading = (state = false, action) => {
     case 'RECOVER_PASSWORD_ERROR': return false;
     case 'RECOVER_PASSWORD_SUCCESS': return false;
 
+    case 'SEEN_BY': return true;
+    case 'SEEN_BY_ERROR': return false;
+    case 'SEEN_BY_SUCCESS': return false;
+
     case 'RESET_PASSWORD': return true;
-    
+
     default: return state;
   }
 };
