@@ -1,6 +1,7 @@
 /* eslint-env browser */
 import React from 'react';
 import jwtDecode from 'jwt-decode';
+import _ from 'lodash';
 /**
  * A Component that displays a modal for adding a member
  */
@@ -70,6 +71,12 @@ export default class AddMemberModal extends React.Component {
    * @returns {Object} Returns the DOM object to be rendered
    */
   render() {
+    const groupId = this.props.store.match.params.groupId;
+    const groupMembers = this.props.store.groups.userGroups[groupId].members;
+
+    const filteredMembers = Object.keys(this.registeredMembers).filter((userId) => {
+      return !_.has(groupMembers, userId);
+    });
     return (
       <div id="addMemberModal" className="modal grey">
         <div className="modal-content">
@@ -79,7 +86,7 @@ export default class AddMemberModal extends React.Component {
                 <div className="registeredMembersList">
                   <ul className="collection">
                     {
-                    Object.keys(this.registeredMembers).map((userId, index) =>
+                    filteredMembers.map((userId, index) =>
                       <RegisteredMember addMember={this.addMember} key={index} id={userId}
                         userInfo={this.registeredMembers[userId]}/>)
                     }
