@@ -344,13 +344,16 @@ header, #messageInputBox, #main-postmessage, #footer {
     cursor: pointer;
 }
 .messageInfo {
-    display: none;
+    visibility: hidden;
 }
 
 .messageInfo:hover {
-    display: block;
+    visibility: visible;
 }
 
 .message:hover .messageInfo {
-    display: block;
+    visibility: visible;
+}
+#allGroups {
+    cursor: default;
 }
