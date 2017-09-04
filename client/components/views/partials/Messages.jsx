@@ -110,6 +110,7 @@ class Message extends React.Component {
     const priority = messageDetails.priority;
     const isComment = messageDetails.isComment;
     const messageId = messageDetails.id;
+    const messageInfoIcon = 'done';
     let className;
     if (userId === messageDetails.senderId) {
       className = 'ownmessage message card col s11 offset-s1';
@@ -128,7 +129,7 @@ class Message extends React.Component {
               <div className="message-body white-text">{messageDetails.body}</div>
               <div className="message-info"><small>{messageDetails.createdAt}
                 <a id={messageId} href="#messageInfoModal"className="secondary-content messageInfo white-text">
-                <i className="material-icons">expand_less</i></a>
+                <i className="material-icons green-text">{messageInfoIcon}</i></a>
                 </small></div>
             </li>
           ) : (
@@ -140,7 +141,7 @@ class Message extends React.Component {
               <div className="message-info"><small>{messageDetails.createdAt}
                   <a id={messageId} href="#messageInfoModal"
                     className="secondary-content messageInfo white-text">
-                <i className="material-icons">expand_less</i></a>
+                <i className="material-icons">{messageInfoIcon}</i></a>
                 </small></div>
             </li>
           )
@@ -154,7 +155,7 @@ class Message extends React.Component {
           <div className="message-info"><small>{messageDetails.createdAt}
             <a id={messageId} href="#messageInfoModal"
               className="secondary-content messageInfo white-text">
-            <i className="material-icons">expand_less</i></a>
+            <i className="material-icons">{messageInfoIcon}</i></a>
             </small></div>
         </li>
       );
@@ -167,7 +168,7 @@ class Message extends React.Component {
           <div className="message-info"><small>{messageDetails.createdAt}
             <a id={messageId} href="#messageInfoModal"
             className="secondary-content messageInfo white-text">
-            <i className="material-icons">expand_less</i></a>
+            <i className="material-icons">{messageInfoIcon}</i></a>
             </small></div>
         </li>
       );
@@ -180,7 +181,7 @@ class Message extends React.Component {
           <div className="message-info"><small>{messageDetails.createdAt}
             <a id={messageId} href="#messageInfoModal"
             className="secondary-content messageInfo white-text">
-            <i className="material-icons">expand_less</i></a>
+            <i className="material-icons">{messageInfoIcon}</i></a>
             </small></div>
         </li>
       );
