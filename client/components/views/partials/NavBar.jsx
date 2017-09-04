@@ -2,9 +2,10 @@
 import React from 'react';
 import jwtDecode from 'jwt-decode';
 import { Link } from 'react-router-dom';
+import ReactToolTip from 'react-tooltip';
 import Groups from './Groups.jsx';
 import GroupDeleteModal from './GroupDeleteModal.jsx';
-
+import AboutPostitModal from './AboutPostitModal.jsx';
 /**
  * React component to display the navbar
  */
@@ -55,6 +56,7 @@ export default class NavBar extends React.Component {
     }
     return (
       <div className="navbar-fixed">
+        <ReactToolTip/>
         <nav className="pink darken-4">
           <div className="nav-wrapper">
             <a id="brand" className="brand-logo left">PostIt</a>
@@ -70,14 +72,14 @@ export default class NavBar extends React.Component {
                 ) : (
                 <li>
                       <Link to="/messageboard">
-                        <i className="material-icons">view_module</i>
+                        <i data-tip="Message Board"className="material-icons">view_module</i>
                       </Link>
                 </li>
                 )
               }
               <li>
                     <Link to="/creategroup">
-                      <i className="material-icons">library_add</i>
+                      <i data-tip='Create group' className="material-icons">library_add</i>
                     </Link>
               </li>
             </ul>
@@ -139,7 +141,6 @@ export default class NavBar extends React.Component {
                 )
               }
               <hr />
-              <li><a><i className="large material-icons black-text">texture</i>All Groups</a></li>
               <div className="row searchbox valign-wrapper">
                 <div className="col s9">
                   <input type="search" placeholder="Find a group" className="white-text" />
@@ -148,19 +149,19 @@ export default class NavBar extends React.Component {
                   <span><i className="material-icons black-text">search</i></span>
                 </div>
               </div>
+              <li id="allGroups" className="pink darken-4"><a id="allGroups" className="white-text"><i className="large material-icons white-text">texture</i>All Groups</a></li>
               {/* Groups a user belongs to */}
               <Groups store={this.props.store} allUserGroups={allUserGroups}/>
               <hr />
-              <li><a><i className="large material-icons black-text">info</i>
+              <li><a href="#aboutPostitModal"><i className="large material-icons black-text">info</i>
                 About PostIt</a></li>
               <li><a onClick={this.signOut}><i className="large material-icons red-text">exit_to_app</i>
                 Sign Out</a></li>
-              <li><Link to='/forgotpassword' ><i className="large material-icons red-text">vpn_key</i>
-                Recover Password</Link></li>
             </ul>
           </div>
           {/* Modal Structure for group delete dialog */}
           <GroupDeleteModal deleteGroup={this.props.deleteGroup}/>
+          <AboutPostitModal/>
         </nav>
       </div>
     );
