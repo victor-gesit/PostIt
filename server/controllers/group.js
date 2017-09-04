@@ -199,6 +199,7 @@ export default {
         Message.findAndCountAll({
           where: { groupId },
           attributes: ['sentBy', 'id', 'senderId', 'body', 'createdAt', 'priority', 'isComment'],
+          order: [['createdAt', 'ASC']],
           offset,
           limit
         }).then(result =>
