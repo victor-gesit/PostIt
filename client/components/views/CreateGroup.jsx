@@ -139,7 +139,7 @@ class Body extends React.Component {
     try {
       decode = jwtDecode(token);
     } catch (err) {
-      console.log(err);
+      this.props.store.signOut();
     }
     const creatorId = decode.id;
     const selectedMembers = this.selectedMembers;
@@ -378,13 +378,31 @@ class RegisteredMember extends React.Component {
    * @returns {Object} Returns the DOM object to be rendered
    */
   render() {
+    const token = localStorage.getItem('token');
+    let decode;
+    try {
+      decode = jwtDecode(token);
+    } catch (err) {
+      this.props.store.signOut();
+    }
+    const userId = decode.id;
     const userInfo = this.props.userInfo;
     return (
       <li className="collection-item">
-        <input id={this.props.userInfo.email}
-          type="checkbox"
-          onClick={() => this.addOrRemove(this.props.userInfo.email)}
-          ref={this.props.userInfo.email} />
+        {
+          userId === userInfo.id ? (
+          <input id={this.props.userInfo.email}
+            type="checkbox"
+            checked
+            disabled
+            ref={this.props.userInfo.email} />
+          ) : (
+          <input id={this.props.userInfo.email}
+            type="checkbox"
+            onClick={() => this.addOrRemove(this.props.userInfo.email)}
+            ref={this.props.userInfo.email} />
+          )
+        }
         <label className="brown-text" htmlFor={this.props.userInfo.email}>
           {userInfo.firstName} {userInfo.lastName}
           <small className="red-text"> { this.props.userInfo.email }</small>
