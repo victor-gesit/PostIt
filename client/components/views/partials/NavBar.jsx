@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import ReactToolTip from 'react-tooltip';
 import Groups from './Groups.jsx';
 import GroupDeleteModal from './GroupDeleteModal.jsx';
-import AboutPostitModal from './AboutPostitModal.jsx';
 /**
  * React component to display the navbar
  */
@@ -165,15 +164,12 @@ export default class NavBar extends React.Component {
               {/* Groups a user belongs to */}
               <Groups store={this.props.store} allUserGroups={allUserGroups}/>
               <hr />
-              <li><a href="#aboutPostitModal"><i className="large material-icons black-text">info</i>
-                About PostIt</a></li>
               <li><a onClick={this.signOut}><i className="large material-icons red-text">exit_to_app</i>
                 Sign Out</a></li>
             </ul>
           </div>
           {/* Modal Structure for group delete dialog */}
           <GroupDeleteModal deleteGroup={this.props.deleteGroup}/>
-          <AboutPostitModal/>
         </nav>
       </div>
     );
