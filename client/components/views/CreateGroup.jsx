@@ -28,7 +28,8 @@ class CreateGroup extends React.Component {
   componentDidMount() {
     this.props.resetLoadingState();
     $('.button-collapse').sideNav({
-      closeOnClick: true
+      closeOnClick: true,
+      draggable: true
     });
     $('#sidenav-overlay').trigger('click');
   }
