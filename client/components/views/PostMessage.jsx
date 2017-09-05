@@ -51,7 +51,8 @@ class PostMessage extends React.Component {
     const matchQuery = window.matchMedia('(max-width: 992px)');
     if (matchQuery.matches) {
       $('.button-collapse').sideNav({
-        closeOnClick: true
+        closeOnClick: true,
+        draggable: true
       });
     }
     $('#sidenav-overlay').trigger('click');
@@ -125,7 +126,9 @@ class Body extends React.Component {
     this.props.store.getGroupMembers(groupId, token);
 
     // Initialize side nav
-    $('.button-collapse').sideNav();
+    $('.button-collapse').sideNav({
+      draggable: true
+    });
     /* Toggle group list*/
     $('#member-list-toggle').off().on('click', () => {
       $('#memberList').animate({ width: 'toggle' });
@@ -244,11 +247,6 @@ class Body extends React.Component {
         store={this.props.store}/>
       <div id="main" >
         <div id="main-postmessage">
-          <div className="memberListToggle">
-            <button id="member-list-toggle"
-            onClick={ () => this.props.store.getGroupMembers(groupId, token) }
-            className="btn s4">Group Info</button>
-          </div>
           <div className="row">
             <div className="col s12 m8 offset-m2 l8 offset-l2 messageboard">
               {/* Messages */}
