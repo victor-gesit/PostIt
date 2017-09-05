@@ -64,6 +64,18 @@ export default class NavBar extends React.Component {
               className="button-collapse show-on-large">
               <i id="sideNavIcon" className="material-icons">menu</i></a>
             <ul className="right">
+              {
+                path === '/postmessage/:groupId' ? (
+                  <li>
+                      <a
+                      onClick={ () => this.props.store.getGroupMembers(groupId, token) }
+                      ><i id="member-list-toggle" data-tip="Group info"
+                      className="material-icons">info_outline</i></a>
+                  </li>
+                ) : (
+                  <li></li>
+                )
+              }
               {/* Link to messageboard shouldn't be visible on messageboard page */}
               {
                 path === '/messageboard' ? (
@@ -110,7 +122,7 @@ export default class NavBar extends React.Component {
                 <li>
                   <div className="user-details">
                     <div className="background">
-                      <img src="images/fire2.png" />
+                      <img id="sideNavImage" src="images/fire2.png" />
                     </div>
                   </div>
                   <ul className="collection">
