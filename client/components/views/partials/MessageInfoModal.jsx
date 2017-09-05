@@ -7,24 +7,6 @@ export default class MessageInfoModal extends React.Component {
    */
   render() {
     const seenBy = this.props.messageInfo.seenBy;
-    const dummy = [
-      {
-        name: 'Victor Idongesit',
-        email: 'victor.idongesit@andela.com'
-      },
-      {
-        name: 'John Doe',
-        email: 'john.doe@andela.com'
-      },
-      {
-        name: 'Jane Doe',
-        email: 'jane.doe@andela.com'
-      },
-      {
-        name: 'Johnny Doe',
-        email: 'johnny.doe@andela.com'
-      }
-    ];
     return (
       <div id="messageInfoModal" className="modal grey">
         <div className="modal-content">
