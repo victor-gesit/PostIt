@@ -55,7 +55,6 @@ class NavBar extends React.Component {
                 </div>
               </li>
             </ul>
-            <AboutPostitModal/>
           </div>
         </nav>
       </div>
