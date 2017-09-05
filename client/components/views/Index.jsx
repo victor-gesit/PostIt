@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { signIn, resetErrorLog, resetRedirect, resetLoadingState, verifyToken, googleLogin } from '../../actions';
 import SignInForm from './partials/SignInForm.jsx';
 import Footer from './partials/Footer.jsx';
-import AboutPostitModal from './partials/AboutPostitModal.jsx';
 /**
  * React component to display landing page
  */
