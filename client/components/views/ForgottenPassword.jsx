@@ -48,7 +48,6 @@ class NavBar extends React.Component {
             <a href="#" data-activates="mobile-demo"
               className="button-collapse"><i className="material-icons">menu</i></a>
             <ul className="right hide-on-med-and-down">
-              <li><a href="#">About PostIt</a></li>
             </ul>
             <ul id="mobile-demo" className="side-nav">
               <li>
@@ -58,8 +57,6 @@ class NavBar extends React.Component {
                   </div>
                 </div>
               </li>
-              <li><a href="#"><i className="large material-icons black-text">info</i>
-                About PostIt</a></li>
             </ul>
           </div>
         </nav>
