@@ -88,7 +88,9 @@ PostIt is a simple application that allows friends and colleagues create groups 
 * A sample of the API is hosted [here](https://postit-api-victor.herokuapp.com/). However, you could create your own copy on `Heroku`, to connect your own team members. A guide to hosting an app on 
 `Heroku` is available [here](https://devcenter.heroku.com/articles/getting-started-with-nodejs#introduction)
 * `Routes`: Use the same routes as specified in the instructions for Postman above.
-
+# Testing
+To test the application codebase
+* Run `npm test`, to view test output, and `gulp coverage` to view the code coverage
 
 # Contributing to the Project
 Contributions are welcome and appreciated. To contribute

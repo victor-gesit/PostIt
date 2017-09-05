@@ -43,14 +43,19 @@ export default {
           expiresIn: 600 // expires in 10 minutes
         });
         const mailOptions = {
-          from: 'PostIt Notifications',
+          from: process.env.EMAIL_USERNAME,
           to: email,
           subject: 'Password Reset',
-          html: `<p>You have requested a password reset on your PostIt account<p/><br/><b>
-          <a href="http://postit-api-victor.herokuapp.com/#/newpassword/${token}">
-          Click here</a> to reset your password
-          <br/><br/>This link is valid for 10 minutes'
-          `
+          html: `<div style="text-align: center">
+            <img src="http://res.cloudinary.com/gesit/image/upload/v1503911318/logo_ietvz2.png"/>
+            </div>
+            <h2 style="color: #c51162;">You have requested  a password reset on your PostIt Account</h2>
+            <h2>
+            <a href="http://postit-api-victor.herokuapp.com/#/newpassword/${token}">
+            Click here</a> to reset your password</h2>
+            <br/><br/>This link is valid for 10 minutes
+            <p>If the password reset was not requested by you, ignore this mail and send a 
+            complaint to postitnotify@gmail.com</p>`
         };
         const transporter = nodemailer.createTransport({
           service: process.env.EMAIL_SERVICE,

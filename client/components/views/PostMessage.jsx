@@ -51,7 +51,8 @@ class PostMessage extends React.Component {
     const matchQuery = window.matchMedia('(max-width: 992px)');
     if (matchQuery.matches) {
       $('.button-collapse').sideNav({
-        closeOnClick: true
+        closeOnClick: true,
+        draggable: true
       });
     }
     $('#sidenav-overlay').trigger('click');
@@ -64,12 +65,13 @@ class PostMessage extends React.Component {
   componentWillUnmount() {
     const token = localStorage.getItem('token');
     let decode;
+    let userId;
     try {
       decode = jwtDecode(token);
+      userId = decode.id;
     } catch (err) {
-      this.props.store.signOut();
+      this.props.history.push('/');
     }
-    const userId = decode.id;
     const groupId = this.props.match.params.groupId;
     socket.emit('close group', { groupId, userId });
   }
@@ -124,7 +126,9 @@ class Body extends React.Component {
     this.props.store.getGroupMembers(groupId, token);
 
     // Initialize side nav
-    $('.button-collapse').sideNav();
+    $('.button-collapse').sideNav({
+      draggable: true
+    });
     /* Toggle group list*/
     $('#member-list-toggle').off().on('click', () => {
       $('#memberList').animate({ width: 'toggle' });
@@ -243,9 +247,6 @@ class Body extends React.Component {
         store={this.props.store}/>
       <div id="main" >
         <div id="main-postmessage">
-          <div className="memberListToggle">
-            <button id="member-list-toggle" className="btn s4">Group Info</button>
-          </div>
           <div className="row">
             <div className="col s12 m8 offset-m2 l8 offset-l2 messageboard">
               {/* Messages */}
@@ -263,7 +264,8 @@ class Body extends React.Component {
          <LeaveGroupModal leaveGroup={this.leaveGroup}/>
         {/* Message Input Box */}
         {/* Modal to display who has read a message */}
-         <MessageInfoModal messageInfo={this.props.store.messageInfo}/>
+         <MessageInfoModal dataLoading={this.props.store.dataLoading}
+          messageInfo={this.props.store.messageInfo}/>
       </div>
       <MessageInputBox notify={this.props.notify} socket={socket} store={this.props.store}/>
     </div>

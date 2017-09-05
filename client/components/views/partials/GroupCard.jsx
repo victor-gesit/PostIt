@@ -42,7 +42,7 @@ export default class GroupCard extends React.Component {
             <div>
               <Link to={`/postmessage/${groupDetails.id}`} id={groupDetails.id}
                 className="card-title grey-text groupLink text-darken-4">{groupDetails.title}
-                <span className="badge new pink" id={groupDetails.id}>4</span></Link>
+                <span className="badge new pink" id={groupDetails.id}></span></Link>
               <p className="blue-text">Created by {groupDetails.createdBy}</p>
             </div>
           </div>

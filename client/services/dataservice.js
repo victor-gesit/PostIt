@@ -5,7 +5,7 @@ const dataService = store => next => (action) => {
   if (action.type !== 'VERIFY_TOKEN') {
     next(action);
   }
-  const url = 'http://postit-api-victor.herokuapp.com/api';
+  const url = 'https://postit-api-victor.herokuapp.com/api';
   // const url = 'http://localhost:8002/api';
   switch (action.type) {
     // Signin a user

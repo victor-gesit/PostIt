@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { signIn, resetErrorLog, resetRedirect, resetLoadingState, verifyToken, googleLogin } from '../../actions';
 import SignInForm from './partials/SignInForm.jsx';
 import Footer from './partials/Footer.jsx';
-
 /**
  * React component to display landing page
  */
@@ -46,7 +45,6 @@ class NavBar extends React.Component {
             <a href="#" data-activates="mobile-demo"
               className="button-collapse"><i className="material-icons">menu</i></a>
             <ul className="right hide-on-med-and-down">
-              <li><a href="#">About PostIt</a></li>
             </ul>
             <ul id="mobile-demo" className="side-nav">
               <li>
@@ -56,9 +54,8 @@ class NavBar extends React.Component {
                   </div>
                 </div>
               </li>
-              <li><a href="#"><i className="large material-icons black-text">info</i>
-                About PostIt</a></li>
             </ul>
+            <AboutPostitModal/>
           </div>
         </nav>
       </div>
@@ -78,7 +75,8 @@ class Body extends React.Component {
    */
   componentDidMount() {
     $('.button-collapse').sideNav({
-      closeOnClick: true
+      closeOnClick: true,
+      draggable: true
     });
     $('#goToSignin').click(() => {
       $('html, body').animate({

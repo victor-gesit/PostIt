@@ -311,7 +311,7 @@ header, #messageInputBox, #main-postmessage, #footer {
 #comment[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:before, [type="radio"].with-gap:checked + label:after {
     border: 2px solid grey;
 }
-#deleteMemberModal, #addMemberModal {
+#deleteMemberModal, #addMemberModal, #aboutPostitModal {
     z-index: 0;
 }
 // Empty space to padd app Title
@@ -344,13 +344,16 @@ header, #messageInputBox, #main-postmessage, #footer {
     cursor: pointer;
 }
 .messageInfo {
-    display: none;
+    visibility: hidden;
 }
 
 .messageInfo:hover {
-    display: block;
+    visibility: visible;
 }
 
 .message:hover .messageInfo {
-    display: block;
+    visibility: visible;
+}
+#allGroups {
+    cursor: default;
 }

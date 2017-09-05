@@ -52,18 +52,19 @@ const getMembers = (state, dbSnapshot, groupId) => {
 };
 // Create time stamp for messages
 const getTimeStamp = (timeStamp, callback) => {
+  const date = new Date(timeStamp);
   const months = ['January', 'February', 'March', 'April',
     'May', 'June', 'July', 'August', 'September', 'October',
     'November', 'December'
   ];
-  const year = timeStamp.slice(0, 4);
-  const monthString = timeStamp.slice(5, 7);
-  const month = months[parseInt(monthString, 10) - 1];
-  const dayString = timeStamp.slice(8, 10);
-  const day = parseInt(dayString, 10);
-  const hour = timeStamp.slice(11, 13);
-  const minute = timeStamp.slice(14, 16);
-  const formattedTime = `${month} ${day}, ${year}, at ${hour}:${minute}`;
+  const year = date.getFullYear();
+  const month = months[date.getMonth()];
+  const day = date.getDate();
+  const hour = date.getHours();
+  const minutesUnformatted = date.getMinutes();
+  const minutes = minutesUnformatted < 10 ? `0${minutesUnformatted}` : minutesUnformatted;
+  // const minute = timeStamp.slice(14, 16);
+  const formattedTime = `${month} ${day}, ${year}, at ${hour}:${minutes}`;
   callback(formattedTime);
 };
 // Post a message to a group

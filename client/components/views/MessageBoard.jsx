@@ -25,7 +25,8 @@ class MessageBoard extends React.Component {
     this.props.resetRedirect();
     // Initialize navbar
     $('.button-collapse').sideNav({
-      closeOnClick: true
+      closeOnClick: true,
+      draggable: true
     });
     $('#sidenav-overlay').trigger('click');
   }
@@ -63,9 +64,6 @@ class Body extends React.Component {
    * @returns {undefined} This method returns nothing
    */
   componentDidMount() {
-    $('.button-collapse').sideNav({
-      closeOnClick: true
-    });
     const token = localStorage.getItem('token');
     let decode;
     try {

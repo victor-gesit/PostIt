@@ -25,7 +25,8 @@ class CreateGroup extends React.Component {
     this.props.resetLoadingState();
       // Initialize navbar
     $('.button-collapse').sideNav({
-      closeOnClick: true
+      closeOnClick: true,
+      draggable: true
     });
   }
   /**
@@ -45,16 +46,6 @@ class CreateGroup extends React.Component {
  * React component for displaying page body
  */
 class Body extends React.Component {
-  /**
-   * Component method called after a component renders
-   * @returns {undefined} This method returns nothing
-   */
-  componentDidMount() {
-    // Initialize side nav
-    $('.button-collapse').sideNav({
-      closeOnClick: true
-    });
-  }
   /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
