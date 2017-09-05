@@ -91,7 +91,8 @@ class Body extends React.Component {
   componentDidMount() {
     // Initialize the side nav
     $('.button-collapse').sideNav({
-      closeOnClick: true
+      closeOnClick: true,
+      draggable: true
     });
     // Initialize notification component
     this.notificationSystem = this.notificationRef;
