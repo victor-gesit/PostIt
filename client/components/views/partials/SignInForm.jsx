@@ -195,12 +195,12 @@ export default class SignInForm extends React.Component {
               </div>
               <div className="center">
                 <GoogleLogin
-                  clientId="856410977175-5n2ns6ad2p5ofrrtma3jgun5f7paif78.apps.googleusercontent.com"
+                  clientId='856410977175-5n2ns6ad2p5ofrrtma3jgun5f7paif78.apps.googleusercontent.com'
                   buttonText="Login"
                   onSuccess={this.googleLogin}
-                  onFailure={this.googleLogin}
-                >
-                <i className="fa fa-google-plus"></i> Sign in with Google
+                  onFailure={() => {}}
+                  >
+                  <i className="fa fa-google-plus"></i> Sign in with Google
                 </GoogleLogin>
               </div>
             </div>
