@@ -78,6 +78,7 @@ export default class MessageInputBox extends React.Component {
     }
     // Check for empty message body before sending
     if (body && body.trim()) {
+      const groupMembers = this.props.store.groups.userGroups[groupId].members;
       const socket = this.props.socket;
       socket.emit('postMessage', {
         senderId,
@@ -85,6 +86,7 @@ export default class MessageInputBox extends React.Component {
         body,
         priority,
         isComment: this.isComment,
+        groupMembers
       });
       this.props.store.postMessage(senderId, groupId, body, priority, this.isComment, token);
     }
