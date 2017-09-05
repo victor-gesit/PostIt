@@ -49,7 +49,6 @@ class NavBar extends React.Component {
             <a href="#" data-activates="mobile-demo"
               className="button-collapse"><i className="material-icons">menu</i></a>
             <ul className="right hide-on-med-and-down">
-              <li><a href="#">About PostIt</a></li>
             </ul>
             <ul id="mobile-demo" className="side-nav">
               <li>
@@ -59,8 +58,6 @@ class NavBar extends React.Component {
                   </div>
                 </div>
               </li>
-              <li><a href="#"><i className="large material-icons black-text">info</i>
-                About PostIt</a></li>
             </ul>
           </div>
         </nav>
@@ -92,7 +89,8 @@ class Body extends React.Component {
   componentDidMount() {
     // Initialize the side nav
     $('.button-collapse').sideNav({
-      closeOnClick: true
+      closeOnClick: true,
+      draggable: true
     });
     // Initialize notification component
     this.notificationSystem = this.notificationRef;
@@ -252,10 +250,10 @@ class Body extends React.Component {
                   </div>
                   <div className="center">
                     <GoogleLogin
-                      clientId="856410977175-5n2ns6ad2p5ofrrtma3jgun5f7paif78.apps.googleusercontent.com"
+                      clientId='856410977175-5n2ns6ad2p5ofrrtma3jgun5f7paif78.apps.googleusercontent.com'
                       buttonText="Login"
                       onSuccess={this.googleLogin}
-                      onFailure={this.googleLogin}
+                      onFailure={() => {}}
                     >
                     <i className="fa fa-google-plus"></i> Sign in with Google
                     </GoogleLogin>
