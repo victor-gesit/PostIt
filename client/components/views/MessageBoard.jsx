@@ -10,43 +10,11 @@ import { getGroupsForUser, getMessages, getGroupMembers, verifyToken,
 import NavBar from './partials/NavBar.jsx';
 import Footer from './partials/Footer.jsx';
 import GroupCard from './partials/GroupCard.jsx';
-import '../../js/materialize';
 
 /**
  * React component that displays content of the Message Board page
  */
-class MessageBoard extends React.Component {
-  /**
-   * Component method called when component loads to reset state of spinner, redirect
-   * @returns {undefined} This method returns nothing
-   */
-  componentDidMount() {
-    this.props.resetLoadingState();
-    this.props.resetRedirect();
-    // Initialize navbar
-    $('.button-collapse').sideNav({
-      closeOnClick: true,
-      draggable: true
-    });
-    $('#sidenav-overlay').trigger('click');
-  }
-  /**
-   * Render method of React component
-   * @returns {Object} Returns the DOM object to be rendered
-   */
-  render() {
-    return (
-      <div>
-        <Body store={this.props}/>
-      </div>
-    );
-  }
-}
-
-/**
- * React component that contains the page body
- */
-class Body extends React.Component {
+export class MessageBoard extends React.Component {
   /**
    * Constructor initializes component parameters
    * @param {Object} props Properties passed from parent component
@@ -64,18 +32,26 @@ class Body extends React.Component {
    * @returns {undefined} This method returns nothing
    */
   componentDidMount() {
+    this.props.resetLoadingState();
+    this.props.resetRedirect();
+    // Initialize navbar
+    $('.button-collapse').sideNav({
+      closeOnClick: true,
+      draggable: true
+    });
+    $('#sidenav-overlay').trigger('click');
     const token = localStorage.getItem('token');
     let decode;
     try {
       decode = jwtDecode(token);
     } catch (err) {
-      this.props.store.signOut();
+      this.props.signOut();
     }
     const userId = decode.id;
     const offset = 0;
     const limit = this.state.perPage;
-    this.props.store.getGroupsForUser(userId, offset, limit, token);
-    this.props.store.getAllGroupsForUser(userId, token);
+    this.props.getGroupsForUser(userId, offset, limit, token);
+    this.props.getAllGroupsForUser(userId, token);
   }
   /**
    * @param {Object} event Event fired when the pagination is clicked
@@ -90,7 +66,7 @@ class Body extends React.Component {
     const offset = Math.ceil(selected * this.state.perPage);
     const limit = this.state.perPage;
     this.setState({ offset }, () => {
-      this.props.store.getGroupsForUser(userId, offset, limit, token);
+      this.props.getGroupsForUser(userId, offset, limit, token);
     });
   }
   /**
@@ -98,16 +74,16 @@ class Body extends React.Component {
    * @returns {Object} Returns the DOM object to be rendered
    */
   render() {
-    const userGroups = this.props.store.groups.userGroups;
-    const dataLoading = this.props.store.dataLoading;
-    const totalNoOfGroups = this.props.store.groups.meta.count;
+    const userGroups = this.props.groups.userGroups;
+    const dataLoading = this.props.dataLoading;
+    const totalNoOfGroups = this.props.groups.meta.count;
     const limit = this.state.perPage;
     const pageCount = Math.ceil(totalNoOfGroups / limit);
-    const userDetails = this.props.store.appInfo.userDetails;
-    const allUserGroups = this.props.store.allUserGroups.userGroups;
+    const userDetails = this.props.appInfo.userDetails;
+    const allUserGroups = this.props.allUserGroups.userGroups;
     return (
       <div id="body">
-        <NavBar store={this.props.store} allUserGroups={allUserGroups} userDetails={userDetails}/>
+        <NavBar store={this.props} allUserGroups={allUserGroups} userDetails={userDetails}/>
         <div id="main">
           {/* Groups */}
           {
@@ -135,7 +111,7 @@ class Body extends React.Component {
                     <h3 className="board-title center black-text">Message Board</h3>
                     {
                       Object.keys(userGroups).map((groupId, index) =>
-                        <GroupCard store={this.props.store}
+                        <GroupCard store={this.props}
                         key={index} id={groupId} loading={dataLoading}
                         groupDetails={userGroups[groupId].info}/>
                       )

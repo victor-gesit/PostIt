@@ -3,41 +3,9 @@ import { connect } from 'react-redux';
 import { signIn, resetErrorLog, resetRedirect, resetLoadingState, verifyToken, googleLogin } from '../../actions';
 import SignInForm from './partials/SignInForm.jsx';
 import Footer from './partials/Footer.jsx';
-/**
- * React component to display landing page
- */
-class Index extends React.Component {
-  /**
-   * Component method called when component loads to reset state of spinner and hide side nav
-   * @returns {undefined} This method returns nothing
-   */
-  componentDidMount() {
-    this.props.resetLoadingState();
-    $('#sidenav-overlay').trigger('click');
-  }
-  /**
-   * Render method of React component
-   * @returns {Object} Returns the DOM object to be rendered
-   */
-  render() {
-    return (
-      <div>
-        <Body store={this.props}/>
-      </div>
-    );
-  }
-}
 
-/**
- * React component that displays Navigation Bar
- */
-class NavBar extends React.Component {
-  /**
-   * Render method of React component
-   * @returns {Object} Returns the DOM object to be rendered
-   */
-  render() {
-    return (
+const navBar = () =>
+   (
       <div className="navbar-fixed">
         <nav className="pink darken-4" role="navigation">
           <div className="nav-wrapper">
@@ -50,7 +18,7 @@ class NavBar extends React.Component {
               <li>
                 <div className="user-details">
                   <div className="background">
-                    <img src="images/fire2.png" />
+                    <img id="sideNavImage" src="images/fire2.png" />
                   </div>
                 </div>
               </li>
@@ -58,21 +26,26 @@ class NavBar extends React.Component {
           </div>
         </nav>
       </div>
-    );
-  }
-}
-
+  );
 
 /**
- * React component for displaying page body
+ * React component to display landing page
  */
-class Body extends React.Component {
+export class Index extends React.Component {
+  /**
+   * Component method called when component loads to reset state of spinner and hide side nav
+   * @returns {undefined} This method returns nothing
+   */
+  // componentDidMount() {
+  // }
   /**
    * Component method called after component renders to add
    * listener to floating action button and activate side nav
    * @returns {undefined} This method returns nothing
    */
   componentDidMount() {
+    this.props.resetLoadingState();
+    $('#sidenav-overlay').trigger('click');
     $('.button-collapse').sideNav({
       closeOnClick: true,
       draggable: true
@@ -90,7 +63,7 @@ class Body extends React.Component {
   render() {
     return (
       <div id="body">
-        <NavBar/>
+       { navBar() }
         <div id="main">
           <div className="fixed-action-btn hide-on-med-and-up">
             <a id="goToSignin" className="btn-floating btn-large red">
@@ -122,7 +95,7 @@ class Body extends React.Component {
                   </div>
                 </div>
               </div>
-              <SignInForm store={this.props.store}/>
+              <SignInForm store={this.props}/>
             </div>
           </div>
 

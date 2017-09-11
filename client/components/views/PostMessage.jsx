@@ -22,14 +22,12 @@ import DeleteMemberModal from './partials/DeleteMemberModal.jsx';
 import LeaveGroupModal from './partials/LeaveGroupModal.jsx';
 import MessageInfoModal from './partials/MessageInfoModal.jsx';
 
-import '../../js/materialize';
-
 const socket = io();
 /**
  * React component that displays the Post Message page
  */
-class PostMessage extends React.Component {
-  constructor(props){
+export class PostMessage extends React.Component {
+  constructor(props) {
     super(props);
     const token = localStorage.getItem('token');
     let decode;

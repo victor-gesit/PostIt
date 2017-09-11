@@ -1,32 +1,43 @@
 // Method to get registered postit members
 const getPostItMembers = (state, dbSnapshot) => {
-  const appState = Object.assign({}, state);
+  const newState = { members: { postItMembers: { }, meta: { count: 0 } } };
   const membersRows = dbSnapshot.rows;
   for (let i = 0; i < membersRows.length; i += 1) {
     const userId = membersRows[i].id;
-    appState.members.postItMembers[userId] = membersRows[i];
+    newState.members.postItMembers[userId] = membersRows[i];
   }
-  appState.members.meta.count = dbSnapshot.count;
-  return appState;
+
+  newState.members.meta.count = dbSnapshot.count;
+  return { ...state, ...newState };
 };
 
 // Get groups on PostIt
 const getAllPostItGroups = (state, dbSnapshot) => {
-  const appState = Object.assign({}, state);
+  const newState = { groups: { postItGroups: { }, meta: { count: 0 } } };
   const groupRows = dbSnapshot.rows;
   for (let i = 0; i < groupRows.length; i += 1) {
-    const groupId = groupRows[i].id;
-    appState.groups.postItMembers[groupId] = groupRows[i];
+    const userId = groupRows[i].id;
+    newState.groups.postItGroups[userId] = groupRows[i];
   }
-  appState.groups.meta.count = dbSnapshot.count;
-  return appState;
+
+  newState.groups.meta.count = dbSnapshot.count;
+  return { ...state, ...newState };
 };
 
-const postItInfoReducer = (state = {}, action) => {
-  const appState = Object.assign({}, state);
+const postItInfoReducer = (state = {
+  members: {
+    postItMembers: {
+    },
+    meta: { count: 0 }
+  },
+  groups: {
+    postItGroups: {},
+    meta: { count: 0 }
+  }
+}, action) => {
   switch (action.type) {
     case 'GET_POST_IT_MEMBERS_SUCCESS':
-      return getPostItMembers(appState, action.dbSnapShot);
+      return getPostItMembers(state, action.dbSnapShot);
     case 'GET_ALL_GROUPS_SUCCESS':
       return getAllPostItGroups(state, action.postItGroups);
     case 'SIGN_OUT':
@@ -41,7 +52,7 @@ const postItInfoReducer = (state = {}, action) => {
         }
       };
     default:
-      return appState;
+      return state;
   }
 };
 

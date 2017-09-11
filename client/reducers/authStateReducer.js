@@ -1,28 +1,21 @@
-const authStateReducer = (state = {}, action) => {
-  const authState = Object.assign({}, state);
+const authStateReducer = (state = { signedIn: false, message: null }, action) => {
   switch (action.type) {
     case 'SIGN_IN_SUCCESS':
-      return Object.assign({}, state,
-      { signedIn: true, message: action.message });
+      return { signedIn: true, message: action.message };
     case 'SIGN_UP_SUCCESS':
-      return Object.assign({}, state,
-      { signedIn: true, message: action.messsage });
+      return { signedIn: true, message: action.message };
     case 'VERIFY_TOKEN_SUCCESS':
-      return Object.assign({}, state,
-      { signedIn: true, message: action.message });
+      return { signedIn: true, message: action.message };
     case 'SIGN_IN_ERROR':
-      return Object.assign({}, state,
-      { signedIn: false, message: action.message });
+      return { signedIn: false, message: action.message };
     case 'SIGN_UP_ERROR':
-      return Object.assign({}, state,
-      { signedIn: false, message: action.message });
+      return { signedIn: false, message: action.message };
     case 'VERIFY_TOKEN_ERROR':
-      return Object.assign({}, state,
-      { signedIn: false, message: action.message });
+      return { signedIn: false, message: action.message };
     case 'SIGN_OUT':
       return { signedIn: false, message: null };
     default:
-      return authState;
+      return state;
   }
 };
 
