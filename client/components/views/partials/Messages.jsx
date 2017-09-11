@@ -56,10 +56,8 @@ export default class Messages extends React.Component {
     let messages;
     // Check that group data is loaded
     if (groupLoaded) {
-      console.log('ID', groupId, 'MESSAGES', messages);
       messages = this.props.store.groups.userGroups[groupId].messages;
     }
-    console.log(groupId, messages);
     return (
       <div>
         <ul id="messages" className="messages row">

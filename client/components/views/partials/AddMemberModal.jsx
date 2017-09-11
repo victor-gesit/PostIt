@@ -72,7 +72,8 @@ export default class AddMemberModal extends React.Component {
    */
   render() {
     const groupId = this.props.store.match.params.groupId;
-    const groupMembers = this.props.store.groups.userGroups[groupId].members;
+    const group = this.props.store.groups.userGroups[groupId] || {};
+    const groupMembers = group.members;
 
     const filteredMembers = Object.keys(this.registeredMembers).filter((userId) => {
       return !_.has(groupMembers, userId);
