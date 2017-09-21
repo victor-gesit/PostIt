@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import NotificationSystem from 'react-notification-system';
 import { signUp, googleLogin, resetErrorLog, resetLoadingState, recoverPassword } from '../../actions';
 import Footer from './partials/Footer.jsx';
-
+import Spinner from './partials/Spinner.jsx';
 /**
  * React component that displays the Sign Up page
  */
-class SignUp extends React.Component {
+export class ForgottenPassword extends React.Component {
   /**
    * Component method called when component loads to reset state of spinner
    * @returns {undefined} This method returns nothing
@@ -179,19 +179,7 @@ class Body extends React.Component {
               </div>
             </div>
             <div className="userlist-preloader">
-              <div className="preloader-wrapper loader big active valign-wrapper">
-                <div className="spinner-layer spinner-white-only">
-                  <div className="circle-clipper left">
-                  <div className="circle"></div>
-                  </div>
-                  <div className="gap-patch">
-                  <div className="circle"></div>
-                  </div>
-                  <div className="circle-clipper right">
-                  <div className="circle"></div>
-                  </div>
-                </div>
-              </div>
+              <Spinner/>
             </div>
           </div>
           ) : (
@@ -241,4 +229,4 @@ const mapDispatchToProps = dispatch =>
     recoverPassword: email => dispatch(recoverPassword(email))
   });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
+export default connect(mapStateToProps, mapDispatchToProps)(ForgottenPassword);

@@ -16,6 +16,7 @@ export default class DeleteMemberModal extends React.Component {
         </div>
         <div className="modal-footer">
           <button onClick={this.props.deleteMember}
+            id="deleteMemberButton"
             className="modal-action modal-close waves-effect waves-green btn-flat green-text">
             Delete</button>
           <button className="modal-action modal-close waves-effect waves-green btn-flat green-text">

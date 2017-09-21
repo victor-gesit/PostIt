@@ -1,7 +1,7 @@
 /* eslint-env browser */
 import React from 'react';
 import { Link } from 'react-router-dom';
-
+import Spinner from '../../../components/views/partials/Spinner.jsx';
 /**
  * A component that displays a card for each group a user belongs to
  */
@@ -14,19 +14,7 @@ export default class GroupCard extends React.Component {
     if (this.props.loading) {
       return (
         <div className="preloader-background">
-          <div className="preloader-wrapper big active valign-wrapper">
-            <div className="spinner-layer spinner-white-only">
-              <div className="circle-clipper left">
-                <div className="circle"></div>
-              </div>
-              <div className="gap-patch">
-                <div className="circle"></div>
-              </div>
-              <div className="circle-clipper right">
-                <div className="circle"></div>
-              </div>
-            </div>
-          </div>
+        <Spinner/>
         </div>
       );
     }

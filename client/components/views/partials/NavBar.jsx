@@ -8,9 +8,8 @@ import GroupDeleteModal from './GroupDeleteModal.jsx';
 /**
  * React component to display the navbar
  */
-export default class NavBar extends React.Component {
+export class NavBar extends React.Component {
   /**
-   * 
    * @param {Object} props component properties passed from parent component
    */
   constructor(props) {
@@ -175,3 +174,5 @@ export default class NavBar extends React.Component {
     );
   }
 }
+
+export default NavBar;

@@ -6,7 +6,7 @@ import GoogleLogin from 'react-google-login';
 /**
  * React component to display the sign in form
  */
-export default class SignInForm extends React.Component {
+export class SignInForm extends React.Component {
   /**
    * Constructor initializes component parameters
    * @param {Object} props Properties passed from parent component
@@ -211,3 +211,5 @@ export default class SignInForm extends React.Component {
     );
   }
 }
+
+export default SignInForm;

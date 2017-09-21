@@ -9,10 +9,10 @@ const verifyTokenError = { errored: true,
   redirect: { yes: true, to: '/' },
   message: 'You have been away for a while. Please sign in again' };
 const getGroupsError = { errored: true, redirect: { yes: true, to: '/' } };
-const errorWithRedirect = { errored: true, redirect: { yes: true, to: '/#/messageboard' }, message: 'Error Message' };
+const errorWithRedirect = { errored: true, redirect: { yes: true, to: '/messageboard' }, message: 'Error Message' };
 const errorWithoutRedirect = { errored: true, redirect: { yes: false, to: null }, message: 'Error Message' };
 const noErrorNoRedirect = { errored: false, redirect: { yes: false, to: null }, message: 'Success Message' };
-const noErrorWithRedirect = { errored: false, redirect: { yes: true, to: '/#/messageboard' }, message: 'Success Message' };
+const noErrorWithRedirect = { errored: false, redirect: { yes: true, to: '/messageboard' }, message: 'Success Message' };
 const noErrorRedirectToPostMessage = { errored: false,
   redirect: { yes: true, to: '/#/postmessage/12345' },
   message: 'Success Message' };

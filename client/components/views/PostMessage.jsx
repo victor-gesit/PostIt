@@ -27,19 +27,6 @@ const socket = io();
  * React component that displays the Post Message page
  */
 export class PostMessage extends React.Component {
-  constructor(props) {
-    super(props);
-    const token = localStorage.getItem('token');
-    let decode;
-    try {
-      decode = jwtDecode(token);
-    } catch (err) {
-      this.props.store.signOut();
-    }
-    const userId = decode.id;
-    const groupId = this.props.match.params.groupId;
-    socket.emit('open group', { groupId, userId });
-  }
   /**
    * Component method called when component loads to reset state of spinner
    * and hide navbar on small screens
@@ -74,23 +61,6 @@ export class PostMessage extends React.Component {
     socket.emit('close group', { groupId, userId });
   }
   /**
-   * Render method of React component
-   * @returns {Object} Returns the DOM object to be rendered
-   */
-  render() {
-    return (
-      <div>
-        <Body store={this.props}/>
-     </div>
-    );
-  }
-}
-
-/**
- * React component that displays the body of the page
- */
-class Body extends React.Component {
-  /**
    * Constructor initializes component parameters
    * @param {Object} props Properties passed from parent component
    */
@@ -101,6 +71,16 @@ class Body extends React.Component {
     this.leaveGroup = this.leaveGroup.bind(this);
     this.memberIdToDelete = '';
     this.groupIdToDelete = '';
+    const token = localStorage.getItem('token');
+    let decode;
+    try {
+      decode = jwtDecode(token);
+    } catch (err) {
+      this.props.signOut();
+    }
+    const userId = decode.id;
+    const groupId = this.props.match.params.groupId;
+    socket.emit('open group', { groupId, userId });
   }
   /**
    * Component method called after componetn renders to initialize modals
@@ -112,16 +92,16 @@ class Body extends React.Component {
     try {
       decode = jwtDecode(token);
     } catch (err) {
-      this.props.store.signOut();
+      this.props.signOut();
     }
     const userId = decode.id;
-    const groupId = this.props.store.match.params.groupId;
+    const groupId = this.props.match.params.groupId;
     // Load all messages for the group
-    this.props.store.getMessages(groupId, token);
+    this.props.getMessages(groupId, token);
     // // Load user groups
-    this.props.store.getAllGroupsForUser(userId, token);
+    this.props.getAllGroupsForUser(userId, token);
     // Load all members of the group
-    this.props.store.getGroupMembers(groupId, token);
+    this.props.getGroupMembers(groupId, token);
 
     // Initialize side nav
     $('.button-collapse').sideNav({
@@ -139,7 +119,7 @@ class Body extends React.Component {
           this.memberIdToDelete = trigger[0].id;
         } else if (modal[0].id === 'messageInfoModal') {
           const messageId = trigger[0].id;
-          this.props.store.seenBy(messageId, token);
+          this.props.seenBy(messageId, token);
         } else {
           this.groupIdToDelete = trigger[0].id;
         }
@@ -169,11 +149,11 @@ class Body extends React.Component {
     const decode = jwtDecode(token);
     const ownerId = decode.id;
     const idToDelete = this.memberIdToDelete;
-    const groupId = this.props.store.match.params.groupId;
+    const groupId = this.props.match.params.groupId;
     // Remove user socket from group sockets list
     socket.emit('delete member', { groupId, userId: idToDelete });
     // Call the redux action to delete the member
-    this.props.store.deleteMember(ownerId, idToDelete, groupId, token);
+    this.props.deleteMember(ownerId, idToDelete, groupId, token);
   }
   /**
    * Method to delete a group
@@ -186,7 +166,7 @@ class Body extends React.Component {
     const groupId = this.groupIdToDelete;
     socket.emit('delete group', { groupId, userId: ownerId });
     // Call redux action to delete the group
-    this.props.store.deleteGroup(ownerId, groupId, token);
+    this.props.deleteGroup(ownerId, groupId, token);
   }
   /**
    * Method for leaving a group
@@ -199,7 +179,7 @@ class Body extends React.Component {
     const userId = decode.id;
     // Remove user socket from group sockets list
     socket.emit('close group', { groupId, userId });
-    this.props.store.leaveGroup(token, groupId);
+    this.props.leaveGroup(token, groupId);
   }
   /**
    * Render method of React component
@@ -207,24 +187,24 @@ class Body extends React.Component {
    */
   render() {
     // Accessing a deleted group, or loading messages from a group you've been removed from
-    const redirect = this.props.store.apiError.redirect;
+    const redirect = this.props.apiError.redirect;
     if (redirect.yes) {
       if (redirect.to.indexOf('postmessage') !== -1){
         // No page reloading when opening a different group
-        this.props.store.resetRedirect();
+        this.props.resetRedirect();
       } else {
-        this.props.store.history.push(redirect.to);
+        this.props.history.push(redirect.to);
       }
     }
     let allUserGroups = {};
-    const groupId = this.props.store.match.params.groupId;
-    const groupLoaded = this.props.store.allUserGroups.userGroups[groupId];
+    const groupId = this.props.match.params.groupId;
+    const groupLoaded = this.props.allUserGroups.userGroups[groupId];
     const token = localStorage.getItem('token');
     let decode;
     try {
       decode = jwtDecode(token);
     } catch (err) {
-      this.props.store.history.push('/');
+      this.props.history.push('/');
     }
     const userEmail = decode.email;
     let groupTitle, creatorEmail, isCreator;
@@ -232,7 +212,7 @@ class Body extends React.Component {
       groupTitle = groupLoaded.info.title;
       creatorEmail = groupLoaded.info.creatorEmail;
       isCreator = creatorEmail === userEmail;
-      allUserGroups = this.props.store.allUserGroups.userGroups;
+      allUserGroups = this.props.allUserGroups.userGroups;
     } else {
       groupTitle = 'Loading...';
     }
@@ -242,30 +222,30 @@ class Body extends React.Component {
         isCreator={isCreator} creatorEmail={creatorEmail}
         allUserGroups={allUserGroups}
         leaveGroup={leaveGroup}
-        store={this.props.store}/>
+        store={this.props}/>
       <div id="main" >
         <div id="main-postmessage">
           <div className="row">
             <div className="col s12 m8 offset-m2 l8 offset-l2 messageboard">
               {/* Messages */}
-              <Messages socket={socket} store={this.props.store}/>
+              <Messages socket={socket} store={this.props}/>
             </div>
             {/* Side bar, visible by toggle */}
-            <GroupList store={this.props.store}/>
+            <GroupList store={this.props}/>
           </div>
         </div>
         {/* Modal to handle deleting a member from a group */}
          <DeleteMemberModal deleteMember={this.deleteMember}/>
         {/* Modal to handle adding a member to a group */}
-         <AddMemberModal store={this.props.store}/>
+         <AddMemberModal store={this.props}/>
         {/* Modal to handle leaving a gorup */}
          <LeaveGroupModal leaveGroup={this.leaveGroup}/>
         {/* Message Input Box */}
         {/* Modal to display who has read a message */}
-         <MessageInfoModal dataLoading={this.props.store.dataLoading}
-          messageInfo={this.props.store.messageInfo}/>
+         <MessageInfoModal dataLoading={this.props.dataLoading}
+          messageInfo={this.props.messageInfo}/>
       </div>
-      <MessageInputBox notify={this.props.notify} socket={socket} store={this.props.store}/>
+      <MessageInputBox notify={this.props.notify} socket={socket} store={this.props}/>
     </div>
     );
   }

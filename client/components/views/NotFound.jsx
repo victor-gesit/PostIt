@@ -16,7 +16,7 @@ import NavBar from './partials/NavBar.jsx';
 /**
  * React component that displays the page for creating a new group
  */
-class CreateGroup extends React.Component {
+export class NotFound extends React.Component {
   /**
    * Component method called when component loads to reset state of spinner
    * @returns {undefined} This method returns nothing
@@ -34,33 +34,17 @@ class CreateGroup extends React.Component {
    * @returns {Object} Returns the DOM object to be rendered
    */
   render() {
-    return (
-      <div>
-        <Body store={this.props}/>
-      </div>
-    );
-  }
-}
-
-/**
- * React component for displaying page body
- */
-class Body extends React.Component {
-  /**
-   * Render method of React component
-   * @returns {Object} Returns the DOM object to be rendered
-   */
-  render() {
-    const allUserGroups = this.props.store.allUserGroups.userGroups;
+    const allUserGroups = this.props.allUserGroups.userGroups;
     return (
       <div id="body">
-        <NavBar store={this.props.store} allUserGroups={allUserGroups}/>
+        <NavBar store={this.props} allUserGroups={allUserGroups}/>
           <h3 id="main" className="grey-text center">Page not found</h3>
         <Footer/>
       </div>
     );
   }
 }
+
 
 const mapStateToProps = state => (
   {
@@ -96,4 +80,4 @@ const mapDispatchToProps = dispatch =>
     signOut: () => dispatch(signOut())
   });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateGroup);
+export default connect(mapStateToProps, mapDispatchToProps)(NotFound);

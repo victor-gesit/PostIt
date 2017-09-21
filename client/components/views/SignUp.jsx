@@ -2,83 +2,23 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import NotificationSystem from 'react-notification-system';
-import GoogleLogin from 'react-google-login';
+import SignUpForm from './partials/SignUpForm.jsx';
+import Spinner from './partials/Spinner.jsx';
+import AuthNav from './partials/AuthNav.jsx';
 import { signUp, googleLogin, resetErrorLog, resetLoadingState } from '../../actions';
 import Footer from './partials/Footer.jsx';
 
 /**
  * React component that displays the Sign Up page
  */
-class SignUp extends React.Component {
-  /**
-   * Component method called when component loads to reset state of spinner
-   * @returns {undefined} This method returns nothing
-   */
-  componentDidMount() {
-    this.props.resetLoadingState();
-    $('#sidenav-overlay').trigger('click');
-  }
-  /**
-   * Render method of React component
-   * @returns {Object} Returns the DOM object to be rendered
-   */
-  render() {
-    return (
-      <div>
-        <Body store={this.props}/>
-      </div>
-    );
-  }
-}
-
-
-/**
- * React componet that displays Navigation Bar
- */
-class NavBar extends React.Component {
-  /**
-   * Render method of React component
-   * @returns {Object} Returns the DOM object to be rendered
-   */
-  render() {
-    return (
-      <div className="navbar-fixed">
-        <nav className="pink darken-4" role="navigation">
-          <div className="nav-wrapper">
-            <a href="#" id="brand" className="brand-logo">PostIt</a>
-            <a href="#" data-activates="mobile-demo"
-              className="button-collapse"><i className="material-icons">menu</i></a>
-            <ul className="right hide-on-med-and-down">
-            </ul>
-            <ul id="mobile-demo" className="side-nav">
-              <li>
-                <div className="user-details">
-                  <div className="background">
-                    <img src="images/fire2.png" />
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </nav>
-      </div>
-    );
-  }
-}
-
-/**
- * React component that loads page body
- */
-class Body extends React.Component {
+export class SignUp extends React.Component {
   /**
    * Constructor initializes component parameters
    * @param {Object} props Properties passed from parent component
    */
   constructor(props) {
     super(props);
-    this.signUp = this.signUp.bind(this);
     this.showNotification = this.showNotification.bind(this);
-    this.googleLogin = this.googleLogin.bind(this);
     this.notificationSystem = null;
   }
   /**
@@ -87,6 +27,8 @@ class Body extends React.Component {
    * @returns {undefined} This method returns nothing
    */
   componentDidMount() {
+    this.props.resetLoadingState();
+    $('#sidenav-overlay').trigger('click');
     // Initialize the side nav
     $('.button-collapse').sideNav({
       closeOnClick: true,
@@ -110,28 +52,16 @@ class Body extends React.Component {
    * @returns {undefined} This method returns nothing
    */
   componentDidUpdate() {
-    const isSignedIn = this.props.store.appInfo.authState.signedIn;
-    const errorMessage = this.props.store.apiError.message;
+    const isSignedIn = this.props.appInfo.authState.signedIn;
+    const errorMessage = this.props.apiError.message;
     if (isSignedIn) {
-      this.props.store.history.push('/messageboard');
+      this.props.history.push('/messageboard');
     } else {
       if (errorMessage) {
         this.showNotification('error', errorMessage);
-        this.props.store.resetErrorLog();
+        this.props.resetErrorLog();
       }
     }
-  }
-  /**
-   * Method called to sign up a user
-   * @returns {undefined} This method returns nothing
-   */
-  signUp() {
-    const firstName = this.firstName.value;
-    const lastName = this.lastName.value;
-    const email = this.email.value;
-    const phone = this.phone.value;
-    const password = this.password.value;
-    this.props.store.signUp(firstName, lastName, email, password, phone);
   }
   /**
    * @param {Sring} level The type of notification (success or failure)
@@ -143,26 +73,6 @@ class Body extends React.Component {
       message,
       level,
     });
-  }
-  /**
-   * @param {String} response Token returned from google
-   * @returns {undefined} This method returns nothing
-   */
-  googleLogin(response) {
-    const profileObj = response.profileObj;
-    const firstName = profileObj.givenName;
-    const lastName = profileObj.familyName;
-    const email = profileObj.email;
-    const googleId = profileObj.googleId;
-    const password = response.accessToken;
-    const userDetails = {
-      firstName,
-      lastName,
-      email,
-      googleId,
-      password
-    };
-    this.props.store.googleLogin(userDetails);
   }
   /**
    * Render method of React component
@@ -181,85 +91,23 @@ class Body extends React.Component {
         }
       }
     };
-    const dataLoading = this.props.store.dataLoading;
+    const dataLoading = this.props.dataLoading;
     return (
       <div id="body">
-      <NavBar/>
+      <AuthNav/>
       <div id="main">
         <div className="row">
+          <NotificationSystem className='notification'style={style}
+            ref={(notificationRef) => { this.notificationRef = notificationRef; }} />
           {
             dataLoading ? (
               <div>
-                <NotificationSystem className='notification'style={style}
-                  ref={(notificationRef) => { this.notificationRef = notificationRef; }} />
                 <div className="userlist-preloader">
-                  <div className="preloader-wrapper loader big active valign-wrapper">
-                    <div className="spinner-layer spinner-white-only">
-                      <div className="circle-clipper left">
-                      <div className="circle"></div>
-                      </div>
-                      <div className="gap-patch">
-                      <div className="circle"></div>
-                      </div>
-                      <div className="circle-clipper right">
-                      <div className="circle"></div>
-                      </div>
-                    </div>
-                  </div>
+                  <Spinner/>
                 </div>
               </div>
             ) : (
-              <div className="col s10 m6 l4 offset-s1 offset-m3 offset-l4 signup-form">
-                <NotificationSystem className='notification'style={style}
-                  ref={(notificationRef) => { this.notificationRef = notificationRef; }} />
-                <div id="signUpForm" className="row">
-                  <div>
-                    <h3 className="center">Sign Up</h3>
-                  </div>
-                  <div className="input-field col s12">
-                    <input id="firstName" ref={(firstName) => { this.firstName = firstName; }}
-                      type="text" name="fname" className="validate" />
-                    <label htmlFor="firstName">First Name</label>
-                  </div>
-                  <div className="input-field col s12">
-                    <input id="lastName" ref={(lastName) => { this.lastName = lastName; }}
-                      type="text" name="lastName" className="validate" />
-                    <label htmlFor="lastName">Last Name</label>
-                  </div>
-                  <div className="input-field col s12">
-                    <input type="text" ref={(phone) => { this.phone = phone; }} id="phone"
-                      name="number" className="validate" />
-                    <label htmlFor="phone">Phone</label>
-                  </div>
-                  <div className="input-field col s12">
-                    <input id="email" ref={(email) => { this.email = email; }}
-                      type="email" name="email" className="validate" />
-                    <label htmlFor="email" data-error="Enter valid email">Email</label>
-                  </div>
-                  <div className="input-field col s12">
-                    <input ref={(password) => { this.password = password; }}
-                      id="password" type="password" className="validate" />
-                    <label htmlFor="password">Password</label>
-                  </div>
-                  <div className="center">
-                    <button onClick={this.signUp} id="signUpButton"
-                      className="btn center green darken-4" autoFocus>Sign up</button>
-                  </div>
-                  <div>
-                    <p>Already have an account? <a href="/#/" >Sign in</a></p>
-                  </div>
-                  <div className="center">
-                    <GoogleLogin
-                      clientId='856410977175-5n2ns6ad2p5ofrrtma3jgun5f7paif78.apps.googleusercontent.com'
-                      buttonText="Login"
-                      onSuccess={this.googleLogin}
-                      onFailure={() => {}}
-                    >
-                    <i className="fa fa-google-plus"></i> Sign in with Google
-                    </GoogleLogin>
-                  </div>
-                </div>
-              </div>
+              <SignUpForm store={this.props}/>
             )
           }
         </div>

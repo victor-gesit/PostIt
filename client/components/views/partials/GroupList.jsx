@@ -1,6 +1,7 @@
 /* eslint-env browser */
 import React from 'react';
 import jwtDecode from 'jwt-decode';
+import Spinner from '../../../components/views/partials/Spinner.jsx';
 /**
  * A React component that displays the groups a user belongs to, as a list
  */
@@ -64,17 +65,7 @@ export default class GroupList extends React.Component {
             <GroupMembers userEmail={userDetails.email} creatorEmail={creatorEmail}
               groupMembers={groupMembers}/>
           ) : (
-          <div className="preloader-wrapper loader small active">
-            <div className="spinner-layer spinner-green-only">
-              <div className="circle-clipper left">
-                <div className="circle"></div>
-              </div><div className="gap-patch">
-                <div className="circle"></div>
-              </div><div className="circle-clipper right">
-                <div className="circle"></div>
-              </div>
-            </div>
-          </div>
+            <Spinner/>
           )
         }
       </div>
@@ -85,7 +76,7 @@ export default class GroupList extends React.Component {
 /**
  * A React component that displays all the membrs of a group
  */
-class GroupMembers extends React.Component {
+export class GroupMembers extends React.Component {
   /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
@@ -119,7 +110,7 @@ class GroupMembers extends React.Component {
 /**
  * React component that displays the details of each member of a group
  */
-class GroupMember extends React.Component {
+export class GroupMember extends React.Component {
   /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered

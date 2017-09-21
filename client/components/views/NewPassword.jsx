@@ -8,7 +8,7 @@ import Footer from './partials/Footer.jsx';
 /**
  * React component that displays the Sign Up page
  */
-class SignUp extends React.Component {
+export class NewPassword extends React.Component {
   /**
    * Component method called when component loads to reset state of spinner
    * @returns {undefined} This method returns nothing
@@ -210,4 +210,4 @@ const mapDispatchToProps = dispatch =>
     resetLoadingState: () => dispatch(resetLoadingState())
   });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
+export default connect(mapStateToProps, mapDispatchToProps)(NewPassword);

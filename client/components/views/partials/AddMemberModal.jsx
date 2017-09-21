@@ -98,6 +98,7 @@ export default class AddMemberModal extends React.Component {
         </div>
         <div className="modal-footer">
           <button onClick={this.addNewMembers}
+            id="addMembersButton"
             className="modal-action modal-close waves-effectwaves-green btn-flat green-text">
               Add</button>
           <button className="modal-action modal-close waves-effect waves-green btn-flat green-text">
@@ -112,7 +113,7 @@ export default class AddMemberModal extends React.Component {
 /**
  *  Component to contain a member loaded from the database
  */
-class RegisteredMember extends React.Component {
+export class RegisteredMember extends React.Component {
   /**
    * @param {Object} props Properties passed from parent component
    */
@@ -139,6 +140,7 @@ class RegisteredMember extends React.Component {
       <li className="collection-item">
         <input id={this.props.userInfo.email}
           type="checkbox"
+          id="addCheckbox"
           onClick={() => this.addOrRemove(this.props.userInfo.email)}
           ref={this.props.userInfo.email} />
         <label className="brown-text" htmlFor={this.props.userInfo.email}>

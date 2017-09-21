@@ -9,6 +9,7 @@ import { getGroupsForUser, getMessages, getGroupMembers, verifyToken,
 } from '../../actions';
 import NavBar from './partials/NavBar.jsx';
 import Footer from './partials/Footer.jsx';
+import Spinner from './partials/Spinner.jsx';
 import GroupCard from './partials/GroupCard.jsx';
 
 /**
@@ -88,17 +89,7 @@ export class MessageBoard extends React.Component {
           {/* Groups */}
           {
             dataLoading ? (
-            <div className="preloader-wrapper loader large active">
-              <div className="spinner-layer spinner-green-only">
-                <div className="circle-clipper left">
-                  <div className="circle"></div>
-                </div><div className="gap-patch">
-                  <div className="circle"></div>
-                </div><div className="circle-clipper right">
-                  <div className="circle"></div>
-                </div>
-              </div>
-            </div>
+              <Spinner/>
             ) : (
               <div>
                 { !dataLoading && totalNoOfGroups === 0 ? (

@@ -17,6 +17,7 @@ export default class LeaveGroupModal extends React.Component {
         </div>
         <div className="modal-footer">
           <button onClick={this.props.leaveGroup}
+            id="leaveGroupButton"
             className="modal-action modal-close waves-effect waves-green btn-flat green-text">
               Leave</button>
           <button className="modal-action modal-close waves-effect waves-green btn-flat green-text">

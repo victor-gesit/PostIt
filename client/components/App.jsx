@@ -15,7 +15,7 @@ import NewPassword from './views/NewPassword.jsx';
 /**
  * React component to server the various routes in the app
  */
-class App extends React.Component {
+export class App extends React.Component {
   /**
    * Component render method to display the DOM of the component
    * @returns {Object} This method returns the DOM object of the react component

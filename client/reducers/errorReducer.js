@@ -151,7 +151,7 @@ const errorReducer = (state = { errored: false,
         message: action.message,
         redirect: {
           yes: true,
-          to: '/#/messageboard'
+          to: '/messageboard'
         },
         errored: true
       };

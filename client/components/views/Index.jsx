@@ -3,41 +3,12 @@ import { connect } from 'react-redux';
 import { signIn, resetErrorLog, resetRedirect, resetLoadingState, verifyToken, googleLogin } from '../../actions';
 import SignInForm from './partials/SignInForm.jsx';
 import Footer from './partials/Footer.jsx';
-
-const navBar = () =>
-   (
-      <div className="navbar-fixed">
-        <nav className="pink darken-4" role="navigation">
-          <div className="nav-wrapper">
-            <a href="#" id="brand" className="brand-logo">PostIt</a>
-            <a href="#" data-activates="mobile-demo"
-              className="button-collapse"><i className="material-icons">menu</i></a>
-            <ul className="right hide-on-med-and-down">
-            </ul>
-            <ul id="mobile-demo" className="side-nav">
-              <li>
-                <div className="user-details">
-                  <div className="background">
-                    <img id="sideNavImage" src="images/fire2.png" />
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </nav>
-      </div>
-  );
+import AuthNav from './partials/AuthNav.jsx';
 
 /**
  * React component to display landing page
  */
 export class Index extends React.Component {
-  /**
-   * Component method called when component loads to reset state of spinner and hide side nav
-   * @returns {undefined} This method returns nothing
-   */
-  // componentDidMount() {
-  // }
   /**
    * Component method called after component renders to add
    * listener to floating action button and activate side nav
@@ -63,7 +34,7 @@ export class Index extends React.Component {
   render() {
     return (
       <div id="body">
-       { navBar() }
+        <AuthNav/>
         <div id="main">
           <div className="fixed-action-btn hide-on-med-and-up">
             <a id="goToSignin" className="btn-floating btn-large red">

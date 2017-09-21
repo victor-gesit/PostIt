@@ -14,12 +14,13 @@ import {
 // Partials
 import Footer from './partials/Footer.jsx';
 import NavBar from './partials/NavBar.jsx';
+import Spinner from './partials/Spinner.jsx';
 
 
 /**
  * React component that displays the page for creating a new group
  */
-class CreateGroup extends React.Component {
+export class CreateGroup extends React.Component {
   /**
    * Component method called when component loads to reset state of spinner
    * and hide sidenav
@@ -33,23 +34,6 @@ class CreateGroup extends React.Component {
     });
     $('#sidenav-overlay').trigger('click');
   }
-  /**
-   * Render method of React component
-   * @returns {Object} Returns the DOM object to be rendered
-   */
-  render() {
-    return (
-      <div>
-        <Body store={this.props}/>
-      </div>
-    );
-  }
-}
-
-/**
- * React component for displaying page body
- */
-class Body extends React.Component {
   /**
    * Constructor initializes component parameters
    * @param {Object} props Properties passed from parent component
@@ -70,11 +54,11 @@ class Body extends React.Component {
     try {
       decode = jwtDecode(token);
     } catch (err) {
-      this.props.store.history.push('/');
+      this.props.history.push('/');
     }
     const userId = decode.id;
-    this.props.store.getPostItMembers(token);
-    this.props.store.getAllGroupsForUser(userId, token);
+    this.props.getPostItMembers(token);
+    this.props.getAllGroupsForUser(userId, token);
   }
   /**
    * React component method called after component render
@@ -97,14 +81,14 @@ class Body extends React.Component {
    * @returns {undefined} this method returns nothing
    */
   componentDidUpdate() {
-    const allUsers = this.props.store.postItInfo.members.postItMembers;
-    const redirect = this.props.store.apiError.redirect;
-    const errorMessage = this.props.store.apiError.message;
+    const allUsers = this.props.postItInfo.members.postItMembers;
+    const redirect = this.props.apiError.redirect;
+    const errorMessage = this.props.apiError.message;
     this.registeredMembers = allUsers;
     if (redirect.yes) {
       // Reset state of redirect property
-      this.props.store.resetRedirect();
-      // this.props.store.history.push(redirect.to);
+      this.props.resetRedirect();
+      // this.props.history.push(redirect.to);
       window.location = redirect.to;
     } else {
       if (errorMessage) {
@@ -112,7 +96,7 @@ class Body extends React.Component {
         this.selectedMembers = [];
         this.showNotification('error', errorMessage);
         // Reset error log
-        this.props.store.resetErrorLog();
+        this.props.resetErrorLog();
       }
     }
   }
@@ -140,11 +124,11 @@ class Body extends React.Component {
     try {
       decode = jwtDecode(token);
     } catch (err) {
-      this.props.store.signOut();
+      this.props.signOut();
     }
     const creatorId = decode.id;
     const selectedMembers = this.selectedMembers;
-    this.props.store.createGroup(creatorId, title, description, selectedMembers, token);
+    this.props.createGroup(creatorId, title, description, selectedMembers, token);
   }
   /**
    * This method handles switching tabs in this react component
@@ -197,11 +181,11 @@ class Body extends React.Component {
         }
       }
     };
-    const dataLoading = this.props.store.dataLoading;
-    const allUserGroups = this.props.store.allUserGroups.userGroups;
+    const dataLoading = this.props.dataLoading;
+    const allUserGroups = this.props.allUserGroups.userGroups;
     return (
       <div id="body">
-        <NavBar store={this.props.store} allUserGroups={allUserGroups}/>
+        <NavBar store={this.props} allUserGroups={allUserGroups}/>
         <NotificationSystem className='notification' style={style}
           ref={(notificationRef) => { this.notificationRef = notificationRef; }} />
         <div id="main">
@@ -216,19 +200,7 @@ class Body extends React.Component {
                 <div className="row">
                   <div className="col s12 m8 offset-m2 offset-l3 l6">
                     <div>
-                      <div className="preloader-wrapper loader big active valign-wrapper">
-                        <div className="spinner-layer spinner-white-only">
-                          <div className="circle-clipper left">
-                          <div className="circle"></div>
-                          </div>
-                          <div className="gap-patch">
-                          <div className="circle"></div>
-                          </div>
-                          <div className="circle-clipper right">
-                          <div className="circle"></div>
-                          </div>
-                        </div>
-                      </div>
+                      <Spinner/>
                     </div>
                   </div>
                 </div>
@@ -300,19 +272,7 @@ class Body extends React.Component {
                 </div>
               </div>
               <div className="userlist-preloader">
-                <div className="preloader-wrapper big loader active valign-wrapper">
-                  <div className="spinner-layer spinner-white-only">
-                    <div className="circle-clipper left">
-                    <div className="circle"></div>
-                    </div>
-                    <div className="gap-patch">
-                    <div className="circle"></div>
-                    </div>
-                    <div className="circle-clipper right">
-                    <div className="circle"></div>
-                    </div>
-                  </div>
-                </div>
+                <Spinner/>
               </div>
           </div>
           ) : (

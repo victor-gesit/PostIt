@@ -99,7 +99,7 @@ export default class Messages extends React.Component {
 /**
  * React component to display each message
  */
-class Message extends React.Component {
+export class Message extends React.Component {
   /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
@@ -117,74 +117,25 @@ class Message extends React.Component {
     } else {
       className = 'message card col s11';
     }
+    let iconClassName = 'secondary-content green-text';
     switch (priority) {
-      case 'normal':
-        // Comments also have normal priority, but don't send notificatins
-        return (
-          isComment ? (
-            <li className={className}>
-              <small className="sender-name">{messageDetails.sentBy}
-                <a className="secondary-content grey-text">
-                  <i className="material-icons">lens</i></a></small>
-              <div className="message-body white-text">{messageDetails.body}</div>
-              <div className="message-info"><small>{messageDetails.createdAt}
-                <a id={messageId} href="#messageInfoModal"className="secondary-content messageInfo white-text">
-                <i className="material-icons green-text">{messageInfoIcon}</i></a>
-                </small></div>
-            </li>
-          ) : (
-            <li className={className}>
-              <small className="sender-name">{messageDetails.sentBy}
-                <a className="secondary-content green-text">
-                <i className="material-icons">lens</i></a></small>
-              <div className="message-body white-text">{messageDetails.body}</div>
-              <div className="message-info"><small>{messageDetails.createdAt}
-                  <a id={messageId} href="#messageInfoModal"
-                    className="secondary-content messageInfo white-text">
-                <i className="material-icons">{messageInfoIcon}</i></a>
-                </small></div>
-            </li>
-          )
-        );
-      case 'urgent': return (
+      case 'normal': if (isComment) { iconClassName = 'secondary-content grey-text'; } break;
+      case 'urgent': iconClassName = 'secondary-content orange-text'; break;
+      case 'critical': iconClassName = 'secondary-content red-text'; break;
+      default: break;
+    }
+    return (
         <li className={className}>
           <small className="sender-name">{messageDetails.sentBy}
-            <a className="secondary-content orange-text">
-            <i className="material-icons">lens</i></a></small>
+            <a className={iconClassName}>
+              <i className="material-icons">lens</i></a></small>
           <div className="message-body white-text">{messageDetails.body}</div>
           <div className="message-info"><small>{messageDetails.createdAt}
             <a id={messageId} href="#messageInfoModal"
               className="secondary-content messageInfo white-text">
-            <i className="material-icons">{messageInfoIcon}</i></a>
+            <i className="material-icons green-text">{messageInfoIcon}</i></a>
             </small></div>
         </li>
-      );
-      case 'critical': return (
-        <li className={className}>
-          <small className="sender-name">{messageDetails.sentBy}
-            <a className="secondary-content red-text">
-            <i className="material-icons">lens</i></a></small>
-          <div className="message-body white-text">{messageDetails.body}</div>
-          <div className="message-info"><small>{messageDetails.createdAt}
-            <a id={messageId} href="#messageInfoModal"
-            className="secondary-content messageInfo white-text">
-            <i className="material-icons">{messageInfoIcon}</i></a>
-            </small></div>
-        </li>
-      );
-      default: return (
-        <li className={className}>
-          <small className="sender-name">{messageDetails.sentBy}
-            <a className="secondary-content grey-text">
-            <i className="material-icons">lens</i></a></small>
-          <div className="message-body white-text">{messageDetails.body}</div>
-          <div className="message-info"><small>{messageDetails.createdAt}
-            <a id={messageId} href="#messageInfoModal"
-            className="secondary-content messageInfo white-text">
-            <i className="material-icons">{messageInfoIcon}</i></a>
-            </small></div>
-        </li>
-      );
-    }
+    );
   }
 }

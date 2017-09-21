@@ -1,6 +1,7 @@
 /* eslint-env browser */
 import React from 'react';
 import jwtDecode from 'jwt-decode';
+import 'jquery/dist/jquery';
 
 /**
  * React component to display the message input div
@@ -33,9 +34,6 @@ export default class MessageInputBox extends React.Component {
     $('.message-box').keypress((event) => {
       if ((event.which && event.which === 13) || (event.keyCode && event.keyCode === 13)) {
         $('#member-list-button').click();
-        return false;
-      } else {
-        return true;
       }
     });
   }

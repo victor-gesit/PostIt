@@ -26,8 +26,14 @@
   "jest": {
     "verbose": true,
     "setupTestFrameworkScriptFile": "./client/tests/localStorage.js",
+    "setupFiles": ["./test-env.js"],
     "collectCoverage": true,
-    "collectCoverageFrom" : ["client/**/*.{js,jsx}", "!**/node_modules/**", "!client/**/build/**", "!client/**/js/**"]
+    "collectCoverageFrom": [
+      "client/**/*.{js,jsx}",
+      "!**/node_modules/**",
+      "!client/**/build/**",
+      "!client/**/js/**"
+    ]
   },
   "homepage": "https://github.com/victor4l/PostIt#readme",
   "devDependencies": {
@@ -102,6 +108,7 @@
     "redux": "^3.7.2",
     "sass-loader": "^6.0.5",
     "sequelize": "^4.1.0",
+    "sinon": "^3.3.0",
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
     "style-loader": "^0.18.2",
