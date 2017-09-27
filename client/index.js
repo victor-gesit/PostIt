@@ -38,6 +38,6 @@ authState.authenticate();
 ReactDOM.render(
   <Provider store={store}>
       <App/>
-  </Provider>, document.getElementById('app')
+  </Provider>, document.getElementById('app') || document.createElement('div')
 );
 

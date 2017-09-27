@@ -1,6 +1,7 @@
 /* eslint-env browser */
 import React from 'react';
 import jwtDecode from 'jwt-decode';
+import Spinner from './Spinner.jsx';
 /**
  * A React ccomponent that displays all the messages for a group
  */
@@ -76,17 +77,7 @@ export default class Messages extends React.Component {
               </div>
             )
           ) : (
-          <div className="preloader-wrapper loader big active">
-            <div className="spinner-layer spinner-green-only">
-              <div className="circle-clipper left">
-                <div className="circle"></div>
-              </div><div className="gap-patch">
-                <div className="circle"></div>
-              </div><div className="circle-clipper right">
-                <div className="circle"></div>
-              </div>
-            </div>
-          </div>
+            <Spinner/>
           )
         }
         </ul>

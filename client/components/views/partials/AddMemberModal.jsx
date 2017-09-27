@@ -140,7 +140,7 @@ export class RegisteredMember extends React.Component {
       <li className="collection-item">
         <input id={this.props.userInfo.email}
           type="checkbox"
-          id="addCheckbox"
+          className="userCheckbox"
           onClick={() => this.addOrRemove(this.props.userInfo.email)}
           ref={this.props.userInfo.email} />
         <label className="brown-text" htmlFor={this.props.userInfo.email}>

@@ -247,8 +247,10 @@ export default {
   deleteMembers: (req, res) => {
     const groupId = req.params.id;
     const toBeDeleted = req.body.idToDelete;
-    const ownerId = req.body.ownerId;
-
+    // Extract userId from token
+    const token = req.body.token || req.query.token || req.headers['x-access-token'];
+    const decode = jwt.decode(token);
+    const ownerId = decode.id;
     let membersToDelete = [];
     if (toBeDeleted !== undefined && toBeDeleted !== null) {
       if (typeof (toBeDeleted) === 'string') {
@@ -297,8 +299,10 @@ export default {
   // Deleting a group
   deleteGroup: (req, res) => {
     const groupId = req.params.id;
-    const ownerId = req.body.ownerId;
-
+    // Extract userId from token
+    const token = req.body.token || req.query.token || req.headers['x-access-token'];
+    const decode = jwt.decode(token);
+    const ownerId = decode.id;
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
       foundGroup.getUsers({ where: { id: ownerId } }).then((foundUsers) => {
         // Check to see if the group remover owns the group

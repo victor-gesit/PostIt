@@ -1,24 +1,56 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { mount, shallow } from 'enzyme';
+import { Link } from 'react-router-dom';
 import sinon from 'sinon';
 import { StaticRouter } from 'react-router';
-import Groups from '../../../components/views/partials/Groups.jsx';
+import Groups, { UserGroup } from '../../../components/views/partials/Groups.jsx';
 import Spinner from '../../../components/views/partials/Spinner.jsx';
 
 describe('<Groups/>', () => {
-  it('should load a card after API call returns', () => {
+  it('should render the UserGroup component when a user belongs to a group', () => {
     const props = {
-      allUserGroups: {},
+      allUserGroups: {
+        12345: {},
+      },
       getMessages: sinon.spy(),
       getAllGroupsForUser: sinon.spy(),
       getGroupMembers: sinon.spy(),
       loadMessages: sinon.spy()
     };
-    const wrapper = mount(
-      <StaticRouter>
+    const wrapper = shallow(
         <Groups {...props} />
-      </StaticRouter>
     );
-    // expect(wrapper.find('.card').length).toEqual(1);
+    expect(wrapper.find(UserGroup).length).toEqual(1);
+  });
+});
+
+describe('<UserGroup/>', () => {
+  const props = {
+    groupDetails: {
+      id: '12345'
+    },
+    store: {
+      getMessages: sinon.spy(),
+      getAllGroupsForUser: sinon.spy(),
+      getGroupMembers: sinon.spy(),
+      loadMessages: sinon.spy()
+    }
+  };
+  it('calls component method to load messages and members of a group', () => {
+    const wrapper = shallow(
+        <UserGroup { ...props } />
+    );
+    const stub = sinon.stub(wrapper.instance(), 'loadMessagesAndMembers');
+    wrapper.instance().forceUpdate();
+    wrapper.update();
+    wrapper.find(Link).simulate('click');
+    expect(stub.called).toEqual(true);
+  });
+  it('calls method to dispatch a call to API to get all groups a user belongs to', () => {
+    const wrapper = shallow(
+        <UserGroup { ...props } />
+    );
+    wrapper.instance().loadMessagesAndMembers({ target: { id: '12345' } });
+    expect(props.store.getMessages.calledOnce).toEqual(true);
   });
 });

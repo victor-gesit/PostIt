@@ -4,6 +4,21 @@ import React from 'react';
  */
 export default class AuthNav extends React.Component {
   /**
+   * Component method called after component has rendered to make
+   * sign in button hold page focus
+   * @returns {undefined} This method returns nothing
+   */
+  componentDidMount() {
+    $('#sidenav-overlay').trigger('click');
+    // Initialize the side nav
+    if ($('.button-collapse').sideNav) {
+      $('.button-collapse').sideNav({
+        closeOnClick: true,
+        draggable: true
+      });
+    }
+  }
+  /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
    */

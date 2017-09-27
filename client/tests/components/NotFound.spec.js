@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
 import { StaticRouter } from 'react-router';
 import { NotFound } from '../../components/views/NotFound.jsx';
@@ -38,7 +38,7 @@ describe('<NotFound/>', () => {
     }
   };
   it('calls the leaveGroup method on button click', () => {
-    const wrapper = mount(
+    const wrapper = shallow(
       <StaticRouter>
         <NotFound {...props} />
       </StaticRouter>

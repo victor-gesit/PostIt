@@ -2,6 +2,7 @@
 import React from 'react';
 import NotificationSystem from 'react-notification-system';
 import GoogleLogin from 'react-google-login';
+import Spinner from './Spinner.jsx';
 
 /**
  * React component to display the sign in form
@@ -148,19 +149,7 @@ export class SignInForm extends React.Component {
                 </div>
               </div>
               <div className="userlist-preloader">
-                <div className="preloader-wrapper loader big active valign-wrapper">
-                  <div className="spinner-layer spinner-white-only">
-                    <div className="circle-clipper left">
-                    <div className="circle"></div>
-                    </div>
-                    <div className="gap-patch">
-                    <div className="circle"></div>
-                    </div>
-                    <div className="circle-clipper right">
-                    <div className="circle"></div>
-                    </div>
-                  </div>
-                </div>
+                <Spinner/>
               </div>
             </div>
           ) : (

@@ -31,7 +31,7 @@ describe('<AddMemberModal/>', () => {
     const wrapper = mount(<AddMemberModal {...props} />);
     expect(props.store.getPostItMembers.calledOnce).toEqual(true);
   });
-  it('calls a the addMembers method on button click', () => {
+  it('calls the addMembers method on button click', () => {
     const wrapper = mount(<AddMemberModal {...props} />);
     const stub = sinon.stub(wrapper.instance(), 'addNewMembers');
     wrapper.instance().forceUpdate();
@@ -69,7 +69,7 @@ describe('<RegisteredMember/>', () => {
     const stub = sinon.stub(wrapper.instance(), 'addOrRemove');
     wrapper.instance().forceUpdate();
     wrapper.update();
-    wrapper.find('#addCheckbox').simulate('click');
+    wrapper.find('.userCheckbox').simulate('click');
     expect(stub.called).toEqual(true);
   });
   it('calls the addMember method when the button that calls addOrRemove() is clicked', () => {

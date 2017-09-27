@@ -53,16 +53,7 @@ describe('<GroupMember/>', () => {
     creatorEmail: 'victorgesit@andela.com',
     userIsCreator: true
   };
-  it('makes calls the method for getting all the registered members on PostIt', () => {
+  it('renders the component', () => {
     const wrapper = mount(<GroupMember {...props} />);
-  });
-});
-
-describe('<GroupMembers/>', () => {
-  const props = {
-    userInfo: {}
-  };
-  it('makes calls the method for getting all the registered members on PostIt', () => {
-    const wrapper = mount(<GroupMembers {...props} />);
   });
 });

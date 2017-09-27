@@ -89,7 +89,9 @@ export class MessageBoard extends React.Component {
           {/* Groups */}
           {
             dataLoading ? (
-              <Spinner/>
+              <div className="preloader-wrapper loader large active">
+                <Spinner/>
+              </div>
             ) : (
               <div>
                 { !dataLoading && totalNoOfGroups === 0 ? (

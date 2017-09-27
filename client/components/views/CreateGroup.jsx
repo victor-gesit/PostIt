@@ -22,19 +22,6 @@ import Spinner from './partials/Spinner.jsx';
  */
 export class CreateGroup extends React.Component {
   /**
-   * Component method called when component loads to reset state of spinner
-   * and hide sidenav
-   * @returns {undefined} This method returns nothing
-   */
-  componentDidMount() {
-    this.props.resetLoadingState();
-    $('.button-collapse').sideNav({
-      closeOnClick: true,
-      draggable: true
-    });
-    $('#sidenav-overlay').trigger('click');
-  }
-  /**
    * Constructor initializes component parameters
    * @param {Object} props Properties passed from parent component
    */
@@ -66,9 +53,13 @@ export class CreateGroup extends React.Component {
    */
   componentDidMount() {
     // Initialize navbar
-    $('.button-collapse').sideNav({
-      closeOnClick: true
-    });
+    if ($('.button-collapse').sideNav) {
+      $('.button-collapse').sideNav({
+        closeOnClick: true,
+        draggable: true
+      });
+    }
+    $('#sidenav-overlay').trigger('click');
     // Load a default tab for the createGroup page
     try {
       $('#defaultTab')[0].click();
@@ -294,6 +285,7 @@ export class CreateGroup extends React.Component {
                     </button>
                     <div className="col s12 m2 s2"><br /></div>
                     <button onClick={this.createGroup}
+                      id="createGroupButton"
                       className="btn col s8 offset-s2 m5 l5 light-green darken-4">
                       Create group
                     </button>
@@ -316,7 +308,7 @@ export class CreateGroup extends React.Component {
 /**
  *  Component to contain a member loaded from the database
  */
-class RegisteredMember extends React.Component {
+export class RegisteredMember extends React.Component {
   /**
    * @param {Object} props component props passed from parent component
    */

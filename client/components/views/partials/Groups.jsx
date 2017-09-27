@@ -29,7 +29,7 @@ export default class Groups extends React.Component {
 /**
  * React component that holds details of each group a user belongs to
  */
-class UserGroup extends React.Component {
+export class UserGroup extends React.Component {
   /**
    * @param {Object} props Component properties passed from parent component
    */

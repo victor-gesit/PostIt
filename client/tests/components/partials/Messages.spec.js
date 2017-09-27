@@ -1,7 +1,7 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
-import Messages from '../../../components/views/partials/Messages.jsx';
+import Messages, { Message } from '../../../components/views/partials/Messages.jsx';
 
 describe('<Messages/>', () => {
   const props = {
@@ -18,7 +18,12 @@ describe('<Messages/>', () => {
       groups: {
         userGroups: {
           12345: {
-            members: {}
+            members: {},
+            messages: {
+              mnop: {
+
+              }
+            }
           }
         }
       },
@@ -36,43 +41,90 @@ describe('<Messages/>', () => {
       emit: () => {}
     },
   };
-  it('makes calls the method for getting all the registered members on PostIt', () => {
+  it('renders the component', () => {
     const wrapper = mount(<Messages {...props} />);
   });
-  it('calls the setPriority method on button click', () => {
-    const wrapper = mount(<Messages {...props} />);
-    const stub = sinon.stub(wrapper.instance(), 'setPriority');
+  it('calls componentWillReceiveProps to call socket method when message is posted', () => {
+    const wrapper = shallow(<Messages {...props} />);
+    wrapper.instance().bodyRef = {
+      scrollIntoView: () => {}
+    };
     wrapper.instance().forceUpdate();
     wrapper.update();
-    wrapper.find('#normal').simulate('click');
-    expect(stub.called).toEqual(true);
+    // Trigger componentWillReceiveProps
+    wrapper.setProps({ socket: {} });
   });
-  // it('calls a the sendMessage method on button click', () => {
-  //   const wrapper = mount(<Messages {...props} />);
-  //   const stub = sinon.stub(wrapper.instance(), 'sendMessage');
-  //   wrapper.instance().forceUpdate();
-  //   wrapper.update();
-  //   wrapper.find('.btn').simulate('click');
-  //   expect(stub.called).toEqual(true);
-  // });
-  // it('calls the method that makes the API call when the sendMessage button is clicked', () => {
-  //   const wrapper = mount(<Messages {...props} />);
-  //   wrapper.instance().postBody.value = 'Test Post';
-  //   wrapper.instance().sendMessage();
-  //   wrapper.instance().forceUpdate();
-  //   wrapper.update();
-  //   wrapper.find('.btn').simulate('click');
-  //   expect(props.store.postMessage.calledOnce).toEqual(true);
-  // });
-  // it('calls the method that makes the API call when the sendMessage button is clicked to send a comment', () => {
-  //   const wrapper = mount(<Messages {...props} />);
-  //   wrapper.instance().state.value = 'Test Post';
-  //   // Set the priority to comment
-  //   wrapper.instance().setPriority({ target: { id: 'comment' } });
-  //   wrapper.instance().forceUpdate();
-  //   wrapper.update();
-  //   wrapper.find('.btn').simulate('click');
-  //   expect(props.store.postMessage.calledOnce).toEqual(true);
-  // });
 });
 
+describe('<Message/>', () => {
+  it('renders a message with a priority of normal', () => {
+    const props = {
+      messageDetails: {
+        priority: 'normal',
+        isComment: true,
+        id: 'abcde',
+        senderId: '23456',
+        body: 'New Message',
+        createdAt: 'Thursday, 20th January'
+      },
+      userId: '12345'
+    };
+    const wrapper = mount(<Message {...props} />);
+  });
+  it('renders a message with a priority of urgent', () => {
+    const props = {
+      messageDetails: {
+        priority: 'urgent',
+        isComment: true,
+        id: 'abcde',
+        senderId: '23456',
+        body: 'New Message',
+        createdAt: 'Thursday, 20th January'
+      },
+      userId: '12345'
+    };
+    const wrapper = mount(<Message {...props} />);
+  });
+  it('renders a message with a priority of critical', () => {
+    const props = {
+      messageDetails: {
+        priority: 'critical',
+        isComment: true,
+        id: 'abcde',
+        senderId: '23456',
+        body: 'New Message',
+        createdAt: 'Thursday, 20th January'
+      },
+      userId: '12345'
+    };
+    const wrapper = mount(<Message {...props} />);
+  });
+  it('renders a default priority if one is not specified', () => {
+    const props = {
+      messageDetails: {
+        priority: 'unregistered',
+        isComment: true,
+        id: 'abcde',
+        senderId: '23456',
+        body: 'New Message',
+        createdAt: 'Thursday, 20th January'
+      },
+      userId: '12345'
+    };
+    const wrapper = mount(<Message {...props} />);
+  });
+  it('renders a message with different indentation if the user sent it', () => {
+    const props = {
+      messageDetails: {
+        priority: 'critical',
+        isComment: true,
+        id: 'abcde',
+        senderId: '12345',
+        body: 'New Message',
+        createdAt: 'Thursday, 20th January'
+      },
+      userId: '12345'
+    };
+    const wrapper = mount(<Message {...props} />);
+  });
+});

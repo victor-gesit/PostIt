@@ -5,70 +5,12 @@ import NotificationSystem from 'react-notification-system';
 import { signUp, googleLogin, resetErrorLog, resetLoadingState, recoverPassword } from '../../actions';
 import Footer from './partials/Footer.jsx';
 import Spinner from './partials/Spinner.jsx';
+import AuthNav from './partials/AuthNav.jsx';
+
 /**
  * React component that displays the Sign Up page
  */
 export class ForgottenPassword extends React.Component {
-  /**
-   * Component method called when component loads to reset state of spinner
-   * @returns {undefined} This method returns nothing
-   */
-  componentDidMount() {
-    this.props.resetLoadingState();
-    $('#sidenav-overlay').trigger('click');
-  }
-  /**
-   * Render method of React component
-   * @returns {Object} Returns the DOM object to be rendered
-   */
-  render() {
-    return (
-      <div>
-        <Body store={this.props}/>
-      </div>
-    );
-  }
-}
-
-
-/**
- * React componet that displays Navigation Bar
- */
-class NavBar extends React.Component {
-  /**
-   * Render method of React component
-   * @returns {Object} Returns the DOM object to be rendered
-   */
-  render() {
-    return (
-      <div className="navbar-fixed">
-        <nav className="pink darken-4" role="navigation">
-          <div className="nav-wrapper">
-            <a href="#" id="brand" className="brand-logo">PostIt</a>
-            <a href="#" data-activates="mobile-demo"
-              className="button-collapse"><i className="material-icons">menu</i></a>
-            <ul className="right hide-on-med-and-down">
-            </ul>
-            <ul id="mobile-demo" className="side-nav">
-              <li>
-                <div className="user-details">
-                  <div className="background">
-                    <img src="images/fire2.png" />
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </nav>
-      </div>
-    );
-  }
-}
-
-/**
- * React component that loads page body
- */
-class Body extends React.Component {
   /**
    * Constructor initializes component parameters
    * @param {Object} props Properties passed from parent component
@@ -85,22 +27,10 @@ class Body extends React.Component {
    * @returns {undefined} This method returns nothing
    */
   componentDidMount() {
-    // Initialize the side nav
-    $('.button-collapse').sideNav({
-      closeOnClick: true,
-      draggable: true
-    });
+    this.props.resetLoadingState();
+    $('#sidenav-overlay').trigger('click');
     // Initialize notification component
     this.notificationSystem = this.notificationRef;
-    // Set focus to SignUp button
-    $('#signUpForm').keypress((event) => {
-      if ((event.which && event.which === 13) || (event.keyCode && event.keyCode === 13)) {
-        $('#signUpButton').click();
-        return false;
-      } else {
-        return true;
-      }
-    });
   }
   /**
    * Component method called before component properties are updated,
@@ -108,14 +38,14 @@ class Body extends React.Component {
    * @returns {undefined} This method returns nothing
    */
   componentDidUpdate() {
-    const errored = this.props.store.apiError.errored;
-    const message = this.props.store.apiError.message;
+    const errored = this.props.apiError.errored;
+    const message = this.props.apiError.message;
     if (errored) {
       this.showNotification('error', message);
-      this.props.store.resetErrorLog();
+      this.props.resetErrorLog();
     } else if (message) {
       this.showNotification('success', message);
-      this.props.store.resetErrorLog();
+      this.props.resetErrorLog();
     }
   }
   /**
@@ -135,7 +65,7 @@ class Body extends React.Component {
    */
   recoverPassword() {
     const email = this.email.value;
-    this.props.store.recoverPassword(email);
+    this.props.recoverPassword(email);
   }
   /**
    * Render method of React component
@@ -154,10 +84,10 @@ class Body extends React.Component {
         }
       }
     };
-    const dataLoading = this.props.store.dataLoading;
+    const dataLoading = this.props.dataLoading;
     return (
       <div id="body">
-      <NavBar/>
+      <AuthNav/>
       <div id="main">
         {
           dataLoading ? (
@@ -195,7 +125,8 @@ class Body extends React.Component {
               <label htmlFor="email" data-error="Enter valid email">Enter email</label>
             </div>
             <div className="col s12 center">
-              <button id="signInButton" onClick={this.recoverPassword} className="btn green darken-4"
+              <button id="submitButton" onClick={this.recoverPassword}
+                className="btn green darken-4"
                 ref={(button) => { this.button = button; }} >Submit</button>
             </div>
           </div>
@@ -207,7 +138,6 @@ class Body extends React.Component {
     );
   }
 }
-
 
 const mapStateToProps = state =>
   ({
