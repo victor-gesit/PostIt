@@ -12,7 +12,8 @@ export default class Footer extends React.Component {
     return (
       <footer className="page-footer pink darken-4">
         <div className="shift-left ">
-          <span className="footer-copyright">Built by Victor Idongesit © Andela, 2017</span>
+          <span className="footer-copyright">
+            Built by Victor Idongesit © Andela, 2017</span>
         </div>
       </footer>
     );

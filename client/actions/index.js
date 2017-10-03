@@ -68,11 +68,16 @@ export const getGroupMembers = (groupId, token) =>
     token
   });
 
-export const getPostItMembers = token =>
-  ({
+export const getPostItMembers = (token, offset, limit) => {
+  offset = offset || 0;
+  limit = limit || 6;
+  return {
     type: 'GET_POST_IT_MEMBERS',
-    token
-  });
+    token,
+    offset,
+    limit
+  };
+};
 
 export const getAllGroups = (offset, limit, token) =>
   ({
@@ -178,3 +183,15 @@ export const resetPassword = (password, token) =>
     password,
     token
   });
+
+export const searchGroup = (token, groupId, searchQuery, offset, limit) => {
+  offset = offset || 0;
+  return {
+    type: 'SEARCH_GROUP_LIST',
+    groupId,
+    searchQuery,
+    offset,
+    limit,
+    token
+  };
+};

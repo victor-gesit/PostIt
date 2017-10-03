@@ -12,21 +12,54 @@ const Group = models.Group;
 export default {
   // Load everyone registered on PostIt
   getallusers: (req, res) => {
-    const offset = req.params.offset;
-    const limit = req.params.limit;
-
-    User.findAndCountAll({ attributes: ['id', 'firstName', 'lastName', 'email', 'phone'], order: [['firstName', 'ASC']], offset, limit })
+    let offset = req.query.offset || 0;
+    const limit = req.query.limit || 6;
+    User.findAndCountAll({ attributes:
+      ['id', 'firstName', 'lastName', 'email', 'phone'],
+      order: [['firstName', 'ASC']],
+      offset,
+      limit })
       .then((allUsers) => {
-        res.status(200).send(allUsers);
+        const allLoaded = Number(offset) + allUsers.rows.length;
+        offset = Number(offset);
+        res.status(200).send({ ...allUsers, allLoaded, offset });
       }).catch(() =>
         res.status(401).send({ success: false, message: 'Invalid query in url' }));
   },
+  // Load everyone registered on PostIt
+  searchForUsers: (req, res) => {
+    const offset = req.query.offset || 0;
+    const limit = req.query.limit || 6;
+    const searchQuery = req.query.searchQuery;
+    User.findAndCountAll({ where: {
+      $or: {
+        firstName: {
+          $iLike: `%${searchQuery}%`
+        },
+        lastName: {
+          $iLike: `%${searchQuery}%`
+        }
+      }
+    },
+      attributes: ['id', 'firstName', 'lastName', 'email', 'phone'],
+      order: [['firstName', 'ASC']],
+      offset,
+      limit })
+      .then((users) => {
+        res.status(200).send({ users, searchQuery });
+      }).catch(() =>
+        res.status(401).send({ success: false,
+          message: 'Invalid query in url' }));
+  },
   // Load all groups created
   getAllGroups: (req, res) => {
-    const offset = req.params.offset;
-    const limit = req.params.limit;
+    const offset = req.query.offset || 0;
+    const limit = req.query.limit || 6;
 
-    Group.findAndCountAll({ attributes: ['id', 'title', 'description', 'creatorEmail', 'createdBy', 'createdAt'], offset, limit })
+    Group.findAndCountAll({ attributes:
+      ['id', 'title', 'description', 'creatorEmail', 'createdBy', 'createdAt'],
+      offset,
+      limit })
       .then((allGroups) => {
         res.status(200).send(allGroups);
       }).catch(() =>
@@ -64,35 +97,37 @@ export default {
             pass: process.env.EMAIL_PASSWORD
           }
         });
-        transporter.sendMail(mailOptions, (error, info) => {
+        transporter.sendMail(mailOptions, (error) => {
           if (error) {
-            console.log(error);
             return res.status(500).send({
               success: false,
               message: 'Could not send email. Check your internet connection'
             });
-          } else {
-            console.log(`Email sent: ${info.response}`);
-            return res.status(202).send({ success: true, message: 'A password reset link has been sent to your email' });
           }
+          return res.status(202).send({ success: true,
+            message: 'A password reset link has been sent to your email' });
         });
       } else {
-        return res.status(404).send({ success: false, message: 'Email not associated with any account' });
+        return res.status(404).send({ success: false,
+          message: 'Email not associated with any account' });
       }
-    }).catch(() => {
-      return res.status(401).send({ success: false, message: 'Please specify an email' });
-    });
+    }).catch(() =>
+      res.status(401).send({ success: false,
+        message: 'Please specify an email' }));
   },
   resetPassword: (req, res) => {
-    const passwordToken = req.body.token || req.query.token || req.headers['x-access-token'];
+    const passwordToken = req.body.token ||
+      req.query.token || req.headers['x-access-token'];
     const newPassword = req.body.newPassword;
     if (!newPassword) {
-      return res.status(401).send({ success: false, message: 'Specify a new password' });
+      return res.status(401).send({ success: false,
+        message: 'Specify a new password' });
     }
     if (passwordToken) {
       jwt.verify(passwordToken, jwtSecret, (err, decoded) => {
         if (err) {
-          return res.status(401).send({ message: 'Expired or invalid token', error: err });
+          return res.status(401).send({ message: 'Expired or invalid token',
+            error: err });
         }
         const email = decoded.email;
         User.find({ where: { email } }).then((user) => {
@@ -108,12 +143,16 @@ export default {
             const token = jwt.sign(userDetails, jwtSecret, {
               expiresIn: '2 days' // expires in 48 hours
             });
-            return res.status(202).send({ success: true, user: userDetails, token, message: 'Password changed successfully' });
+            return res.status(202).send({ success: true,
+              user: userDetails,
+              token,
+              message: 'Password changed successfully' });
           });
         });
       });
     } else {
-      return res.status(401).send({ message: 'No token provided', success: false });
+      return res.status(401).send({ message: 'No token provided',
+        success: false });
     }
   }
 };

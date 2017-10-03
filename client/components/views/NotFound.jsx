@@ -10,7 +10,7 @@ import {
 
 // Partials
 import Footer from './partials/Footer.jsx';
-import NavBar from './partials/NavBar.jsx';
+import Navbar from './partials/NavBar.jsx';
 
 
 /**
@@ -37,7 +37,7 @@ export class NotFound extends React.Component {
     const allUserGroups = this.props.allUserGroups.userGroups;
     return (
       <div id="body">
-        <NavBar store={this.props} allUserGroups={allUserGroups}/>
+        <Navbar store={this.props} allUserGroups={allUserGroups}/>
           <h3 id="main" className="grey-text center">Page not found</h3>
         <Footer/>
       </div>
@@ -69,12 +69,15 @@ const mapDispatchToProps = dispatch =>
     resetLoadingState: () => dispatch(resetLoadingState()),
     verifyToken: token => dispatch(verifyToken(token)),
     getPostItMembers: token => dispatch(getPostItMembers(token)),
-    getAllGroupsForUser: (userId, token) => dispatch(getAllGroupsForUser(userId, token)),
-    getGroupMembers: (groupId, token) => dispatch(getGroupMembers(groupId, token)),
+    getAllGroupsForUser: (userId, token) =>
+      dispatch(getAllGroupsForUser(userId, token)),
+    getGroupMembers: (groupId, token) =>
+      dispatch(getGroupMembers(groupId, token)),
     getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
     loadMessages: groupId => dispatch(loadMessages(groupId)),
     createGroup: (creatorId, title, description, selectedMembers, token) =>
-      dispatch(createGroup(creatorId, title, description, selectedMembers, token)),
+      dispatch(createGroup(creatorId, title, description,
+        selectedMembers, token)),
     getGroupsForUser: (userId, offset, limit, token) =>
     dispatch(getGroupsForUser(userId, offset, limit, token)),
     signOut: () => dispatch(signOut())

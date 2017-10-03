@@ -1,12 +1,14 @@
+/* eslint-env browser */
 import request from 'superagent';
+import methods from './functions/storeMethods';
 
 const dataService = store => next => (action) => {
   // Pass all actions through by default
   if (action.type !== 'VERIFY_TOKEN') {
     next(action);
   }
-  // const url = 'https://postit-api-victor.herokuapp.com/api';
-  const url = 'http://localhost:8002/api';
+  const home = location.origin;
+  const url = `${home}/api`;
   switch (action.type) {
     // Signin a user
     case 'SIGN_IN':
@@ -162,9 +164,12 @@ const dataService = store => next => (action) => {
             }
           }
           const data = res.body;
-          next({
-            type: 'CREATE_GROUP_SUCCESS',
-            data
+          methods.createGroup(data, (err, newState, createdGroup) => {
+            next({
+              type: 'CREATE_GROUP_SUCCESS',
+              newState,
+              data: { createdGroup }
+            });
           });
         });
       break;
@@ -181,6 +186,12 @@ const dataService = store => next => (action) => {
               if (res.status === 404) {
                 return next({
                   type: 'GET_MESSAGES_ERROR',
+                  message: err.message
+                });
+              }
+              if (res.status === 422) {
+                return next({
+                  type: 'INVALID_GROUP_ID',
                   message: err.message
                 });
               }
@@ -247,7 +258,7 @@ const dataService = store => next => (action) => {
     // Get all users registered on PostIt
     case 'GET_POST_IT_MEMBERS':
       request
-        .get(`${url}/members`)
+        .get(`${url}/members?offset=${action.offset}`)
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
@@ -266,16 +277,18 @@ const dataService = store => next => (action) => {
             }
           }
           const dbSnapShot = res.body;
-          next({
-            type: 'GET_POST_IT_MEMBERS_SUCCESS',
-            dbSnapShot
+          methods.getPostItMembers(dbSnapShot, (err, newState) => {
+            next({
+              type: 'GET_POST_IT_MEMBERS_SUCCESS',
+              newState
+            });
           });
         });
       break;
     // Get all groups created on PostIt
     case 'GET_ALL_GROUPS':
       request
-        .get(`${url}/groups/${action.offset}/${action.limit}`)
+        .get(`${url}/groups?offset=${action.offset}&limit=${action.limit}`)
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
@@ -285,16 +298,18 @@ const dataService = store => next => (action) => {
             });
           }
           const postItGroups = res.body;
-          next({
-            type: 'GET_ALL_GROUPS_SUCCESS',
-            postItGroups
+          methods.getAllPostItGroups(postItGroups, (newState) => {
+            next({
+              type: 'GET_ALL_GROUPS_SUCCESS',
+              newState
+            });
           });
         });
       break;
     // Get all groups a user belongs to (paginated)
     case 'GET_ALL_GROUPS_FOR_A_USER':
       request
-        .get(`${url}/user/${action.userId}/groups/${action.offset}/${action.limit}`)
+        .get(`${url}/user/${action.userId}/groups?offset=${action.offset}&limit=${action.limit}`)
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
@@ -307,9 +322,11 @@ const dataService = store => next => (action) => {
             }
           }
           const data = res.body;
-          next({
-            type: 'GET_ALL_GROUPS_FOR_A_USER_SUCCESS',
-            data
+          methods.getGroups(data, (err, newState) => {
+            next({
+              type: 'GET_ALL_GROUPS_FOR_A_USER_SUCCESS',
+              newState
+            });
           });
         });
       break;
@@ -326,10 +343,16 @@ const dataService = store => next => (action) => {
             });
           }
           const data = res.body;
-          next({
-            type: 'GET_ALL_GROUPS_FOR_A_USER_AT_ONCE_SUCCESS',
-            data
+          methods.getAllGroups(data, (err, newState) => {
+            next({
+              type: 'GET_ALL_GROUPS_FOR_A_USER_AT_ONCE_SUCCESS',
+              newState
+            });
           });
+          // next({
+          //   type: 'GET_ALL_GROUPS_FOR_A_USER_AT_ONCE_SUCCESS',
+          //   data
+          // });
         });
       break;
     // Delete a user from a group
@@ -465,7 +488,25 @@ const dataService = store => next => (action) => {
           });
         });
       break;
-
+    case 'SEARCH_GROUP_LIST':
+      request
+        .get(`${url}/group/${action.groupId}/search?searchQuery=${action.searchQuery}`)
+        .set('x-access-token', action.token)
+        .end((err, res) => {
+          if (err) {
+            return next({
+              type: 'SEARCH_GROUP_LIST_ERROR',
+              message: err.message
+            });
+          }
+          const searchResult = res.body;
+          next({
+            type: 'SEARCH_GROUP_LIST_SUCCESS',
+            searchResult,
+            groupId: action.groupId
+          });
+        });
+      break;
     default:
       break;
   }

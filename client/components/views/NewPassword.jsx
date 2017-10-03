@@ -2,73 +2,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import NotificationSystem from 'react-notification-system';
-import { signUp, googleLogin, resetErrorLog, resetLoadingState, resetPassword } from '../../actions';
+import { signUp, googleLogin,
+  resetErrorLog, resetLoadingState,
+  resetPassword } from '../../actions';
 import Footer from './partials/Footer.jsx';
-
+import AuthNav from './partials/AuthNav.jsx';
 /**
  * React component that displays the Sign Up page
  */
 export class NewPassword extends React.Component {
-  /**
-   * Component method called when component loads to reset state of spinner
-   * @returns {undefined} This method returns nothing
-   */
-  componentDidMount() {
-    this.props.resetLoadingState();
-    $('#sidenav-overlay').trigger('click');
-  }
-  /**
-   * Render method of React component
-   * @returns {Object} Returns the DOM object to be rendered
-   */
-  render() {
-    return (
-      <div>
-        <Body store={this.props}/>
-      </div>
-    );
-  }
-}
-
-
-/**
- * React componet that displays Navigation Bar
- */
-class NavBar extends React.Component {
-  /**
-   * Render method of React component
-   * @returns {Object} Returns the DOM object to be rendered
-   */
-  render() {
-    return (
-      <div className="navbar-fixed">
-        <nav className="pink darken-4" role="navigation">
-          <div className="nav-wrapper">
-            <a href="#" id="brand" className="brand-logo">PostIt</a>
-            <a href="#" data-activates="mobile-demo"
-              className="button-collapse"><i className="material-icons">menu</i></a>
-            <ul className="right hide-on-med-and-down">
-            </ul>
-            <ul id="mobile-demo" className="side-nav">
-              <li>
-                <div className="user-details">
-                  <div className="background">
-                    <img src="images/fire2.png" />
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </nav>
-      </div>
-    );
-  }
-}
-
-/**
- * React component that loads page body
- */
-class Body extends React.Component {
   /**
    * Constructor initializes component parameters
    * @param {Object} props Properties passed from parent component
@@ -78,6 +20,10 @@ class Body extends React.Component {
     this.showNotification = this.showNotification.bind(this);
     this.resetPassword = this.resetPassword.bind(this);
     this.notificationSystem = null;
+    this.enterText = this.enterText.bind(this);
+    this.state = {
+      enableButton: false
+    };
   }
   /**
    * Component method called after component has rendered to make
@@ -85,41 +31,43 @@ class Body extends React.Component {
    * @returns {undefined} This method returns nothing
    */
   componentDidMount() {
+    this.props.resetLoadingState();
     // Initialize the side nav
     $('.button-collapse').sideNav({
       closeOnClick: true,
       draggable: true
     });
+    $('#sidenav-overlay').trigger('click');
     // Initialize notification component
     this.notificationSystem = this.notificationRef;
     // Set focus to SignUp button
     $('#signUpForm').keypress((event) => {
-      if ((event.which && event.which === 13) || (event.keyCode && event.keyCode === 13)) {
+      if ((event.which && event.which === 13)
+        || (event.keyCode && event.keyCode === 13)) {
         $('#signUpButton').click();
         return false;
-      } else {
-        return true;
       }
     });
   }
   /**
    * Component method called before component properties are updated,
-   * to save user token to local storage, or flash an error message if sign up failed
+   * to reset error log
+   * or flash an error message if sign up failed
    * @returns {undefined} This method returns nothing
    */
   componentDidUpdate() {
-    const isSignedIn = this.props.store.appInfo.authState.signedIn;
-    const errorMessage = this.props.store.apiError.message;
+    const isSignedIn = this.props.appInfo.authState.signedIn;
+    const errorMessage = this.props.apiError.message;
     if (isSignedIn) {
-      this.props.store.history.push('/messageboard');
-    } else {
-      if (errorMessage) {
-        this.showNotification('error', errorMessage);
-        this.props.store.resetErrorLog();
-      }
+      this.props.history.push('/messageboard');
+    }
+    if (!isSignedIn && errorMessage) {
+      this.showNotification('error', errorMessage);
+      this.props.resetErrorLog();
     }
   }
   /**
+   * Method called to display notifications after API calls
    * @param {Sring} level The type of notification (success or failure)
    * @param {String} message The message in the notification
    * @returns {undefined} This method returns nothing
@@ -136,8 +84,18 @@ class Body extends React.Component {
    */
   resetPassword() {
     const password = this.password.value;
-    const token = this.props.store.match.params.token;
-    this.props.store.resetPassword(password, token);
+    const token = this.props.match.params.token;
+    this.props.resetPassword(password, token);
+  }
+  /**
+   * Handle when a user types input
+   * @returns {undefined} This method returns nothing
+   */
+  enterText() {
+    const enableButton =
+      this.password.value.length > 7 &&
+      this.password.value === this.confirmPassword.value;
+    this.setState({ enableButton });
   }
   /**
    * Render method of React component
@@ -156,29 +114,43 @@ class Body extends React.Component {
         }
       }
     };
-    const dataLoading = this.props.store.dataLoading;
     return (
       <div id="body">
-      <NavBar/>
+      <AuthNav/>
       <div id="main">
         <NotificationSystem className='notification'style={style}
-          ref={(notificationRef) => { this.notificationRef = notificationRef; }} />
+          ref={
+            (notificationRef) => { this.notificationRef = notificationRef; }
+            } />
         <div className="row">
           <div className="col s12 m6 l6 offset-m3 offset-l3 center">
             <h5>Select a new password</h5>
           </div>
           <div className="input-field col s12 m6 offset-m3 offset-l3 l6">
-            <input id="password" ref={(password) => { this.password = password; }} type="password"
+            <input id="password"
+              onKeyUp={this.enterText}
+              ref={(password) => { this.password = password; }}
+              type="password"
               className="validate" ></input>
-            <label htmlFor="password" data-error="Enter valid email">Enter Password</label>
+            <label htmlFor="password"
+              data-error="Enter valid email">
+              Enter Password (8 or more characters)</label>
           </div>
           <div className="input-field col s12 m6 offset-m3 offset-l3 l6">
-            <input id="password2" ref={(password2) => { this.password2 = password2; }} type="password"
-              className="validate" ></input>
-            <label htmlFor="password2" data-error="Enter valid email">Confirm Password</label>
+            <input id="password2"
+              onKeyUp={this.enterText}
+              ref={
+                (confirmPassword) => { this.confirmPassword = confirmPassword; }
+                }
+              type="password"
+              className="validate"></input>
+            <label htmlFor="password2" data-error="Enter valid email">
+              Confirm Password</label>
           </div>
           <div className="col s12 center">
-            <button id="signInButton" onClick={this.resetPassword} className="btn green darken-4"
+            <button id="signInButton" onClick={this.resetPassword}
+              className="btn green darken-4"
+              disabled={!this.state.enableButton}
               ref={(button) => { this.button = button; }} >Reset</button>
           </div>
         </div>
@@ -206,7 +178,8 @@ const mapDispatchToProps = dispatch =>
       dispatch(signUp(firstName, lastName, email, password, phone)),
     googleLogin: userDetails => dispatch(googleLogin(userDetails)),
     resetErrorLog: () => dispatch(resetErrorLog()),
-    resetPassword: (password, token) => dispatch(resetPassword(password, token)),
+    resetPassword: (password, token) =>
+      dispatch(resetPassword(password, token)),
     resetLoadingState: () => dispatch(resetLoadingState())
   });
 

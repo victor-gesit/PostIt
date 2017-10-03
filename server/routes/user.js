@@ -17,7 +17,8 @@ router.use(passport.initialize());
 router.post('/signin', (req, res, next) => {
   passport.authenticate('local.signin', (err, user, info) => {
     if (!user) {
-      return res.status(401).send({ success: false, message: info.message });
+      return res.status(401).send({ success: false,
+        message: info.message });
     }
     // Successful signin
     // if user is found and password is right
@@ -33,25 +34,30 @@ router.post('/signin', (req, res, next) => {
       const token = jwt.sign(newUser, jwtSecret, {
         expiresIn: '2 days' // expires in 48 hours
       });
-      return res.status(202).send({ success: true, user: newUser, token, message: 'Successful Signin' });
+      return res.status(202).send({ success: true,
+        user: newUser,
+        token,
+        message: 'Successful Signin' });
     }
   })(req, res, next);
 }, (err, req, res, next) =>
     // Handle server errors
-    res.status(500).send({ success: false, message: 'Internal Server Error' })
+    res.status(500).send({ success: false,
+      message: 'Internal Server Error' })
 );
 
 router.post('/signup', (req, res, next) => {
   passport.authenticate('local.signup', (err, user, info) => {
     if (err) {
       const errorMessages = err.errors.map(error => error.message);
-      return res.status(500).send({ success: false,
+      return res.status(422).send({ success: false,
         message: 'Incomplete Fields',
         messages: errorMessages
       });
     }
     if (!user) {
-      return res.status(401).send({ success: false, message: info.message });
+      return res.status(401).send({ success: false,
+        message: info.message });
     }
     if (user) {
       const newUser = {
@@ -64,7 +70,10 @@ router.post('/signup', (req, res, next) => {
       const token = jwt.sign(newUser, jwtSecret, {
         expiresIn: '2 days' // expires in 48 hours
       });
-      return res.status(202).send({ success: true, user: newUser, token, message: 'Successful Sign up' });
+      return res.status(202).send({ success: true,
+        user: newUser,
+        token,
+        message: 'Successful Sign up' });
     }
   })(req, res, next);
 }, (err, req, res, next) =>
@@ -81,7 +90,8 @@ router.post('/google/login', (req, res, next) => {
       });
     }
     if (!user) {
-      return res.status(401).send({ success: false, message: info.message });
+      return res.status(401).send({ success: false,
+        message: info.message });
     }
     if (user) {
       const newUser = {
@@ -94,7 +104,10 @@ router.post('/google/login', (req, res, next) => {
       const token = jwt.sign(newUser, jwtSecret, {
         expiresIn: '2 days' // expires in 48 hours
       });
-      return res.status(202).send({ success: true, user: newUser, token, message: 'Successful Sign In' });
+      return res.status(202).send({ success: true,
+        user: newUser,
+        token,
+        message: 'Successful Sign In' });
     }
   })(req, res, next);
 });
@@ -103,13 +116,11 @@ router.post('/google/login', (req, res, next) => {
 router.use(tokenValidator.validateToken);
 
 // Loading all groups a user belongs to (paginated)
-router.get('/:userId/groups/:offset/:limit', userController.messageboard);
-
-// Loading all groups a user belongs to (at once)
-router.get('/:userId/groups', userController.messageboard);
+router.get('/:userId/groups', userController.userGroups);
 
 // Give sensible response for random routes
 router.use('/*', (req, res) => {
-  res.status(404).send({ message: 'Api up and running. Check documentation for appropriate routes' });
+  res.status(404).send({
+    message: 'Api up and running. Check documentation for appropriate routes' });
 });
 export default router;

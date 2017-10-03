@@ -8,6 +8,7 @@ import 'jquery/dist/jquery';
  */
 export default class MessageInputBox extends React.Component {
   /**
+   * Object constructor called to initialize object properties
    * @param {Object} props Component properties passed from parent component
    */
   constructor(props) {
@@ -21,7 +22,8 @@ export default class MessageInputBox extends React.Component {
     };
   }
   /**
-   * Method called after a component is rendered, to attach event listeners to send message button
+   * Method called after a component is rendered
+   * to attach event listeners to send message button
    * @return {undefined} This method returns nothing
    */
   componentDidMount() {
@@ -32,7 +34,8 @@ export default class MessageInputBox extends React.Component {
     });
     // Set focus to 'send' button
     $('.message-box').keypress((event) => {
-      if ((event.which && event.which === 13) || (event.keyCode && event.keyCode === 13)) {
+      if ((event.which && event.which === 13)
+        || (event.keyCode && event.keyCode === 13)) {
         $('#member-list-button').click();
       }
     });
@@ -76,7 +79,8 @@ export default class MessageInputBox extends React.Component {
     }
     // Check for empty message body before sending
     if (body && body.trim()) {
-      const groupMembers = this.props.store.groups.userGroups[groupId].members;
+      const groupMembers =
+        this.props.store.groups.userGroups[groupId].members;
       const socket = this.props.socket;
       socket.emit('postMessage', {
         senderId,
@@ -86,7 +90,8 @@ export default class MessageInputBox extends React.Component {
         isComment: this.isComment,
         groupMembers
       });
-      this.props.store.postMessage(senderId, groupId, body, priority, this.isComment, token);
+      this.props.store.postMessage(senderId,
+        groupId, body, priority, this.isComment, token);
     }
   }
   /**
@@ -102,43 +107,55 @@ export default class MessageInputBox extends React.Component {
               <input name="priority" onClick={this.setPriority}
                 ref={(normal) => { this.normal = normal; }} type="radio"
                 id="normal" defaultChecked />
-              <label htmlFor="normal">Normal</label>
+              <label className="radioButtonLabel" htmlFor="normal">
+                Normal</label>
               <input name="priority" onClick={this.setPriority}
-                ref={(urgent) => { this.urgent = urgent; }} type="radio" id="urgent" />
-              <label htmlFor="urgent">Urgent</label>
+                ref={(urgent) => { this.urgent = urgent; }}
+                type="radio" id="urgent" />
+              <label className="radioButtonLabel" htmlFor="urgent">
+                Urgent</label>
               <input name="priority" onClick={this.setPriority}
-                ref={(critical) => { this.critical = critical; }} type="radio" id="critical" />
-              <label htmlFor="critical">Critical</label>
+                ref={(critical) => { this.critical = critical; }}
+                type="radio" id="critical" />
+              <label className="radioButtonLabel" htmlFor="critical">
+                Critical</label>
               <input name="priority" onClick={this.setPriority}
-                ref={(comment) => { this.comment = comment; }} type="radio" id="comment" />
-              <label htmlFor="comment">Comment</label>
+                ref={(comment) => { this.comment = comment; }}
+                type="radio" id="comment" />
+              <label className="radioButtonLabel" htmlFor="comment">
+                Comment</label>
             </div>
             <div className="col s12 m8 offset-m2 l8 offset-l2">
-              {/* Adjust the text input window to accept smaller text quantity for comments */}
               {
                 this.state.priority === 'comment' ?
                 (
                   <div className="message-box">
                     <div className="text-input-field">
                       <input className="black-text materialize-textarea"
-                        ref={(commentBody) => { this.commentBody = commentBody; }}
+                        ref={
+                          (commentBody) => { this.commentBody = commentBody; }}
                         type="text" name="mymessage" defaultValue={''} />
                     </div>
                     <div className="send-comment-button">
-                      <button autoFocus id="member-list-button" onClick={this.sendMessage}
-                        className="btn"><i className="material-icons">send</i></button>
+                      <button autoFocus id="member-list-button"
+                        onClick={this.sendMessage}
+                        className="btn"><i className="material-icons">send</i>
+                      </button>
                     </div>
                   </div>
                 ) : (
                   <div className="message-box">
                     <div className="text-input-field">
                       <textarea className="black-text materialize-textarea"
-                        ref={(postBody) => { this.postBody = postBody; }} type="text"
+                        ref={(postBody) => { this.postBody = postBody; }}
+                        type="text"
                         name="mymessage" defaultValue={''} />
                     </div>
                     <div className="send-button">
-                      <button autoFocus id="member-list-button" onClick={this.sendMessage}
-                      className="btn"><i className="material-icons">send</i></button>
+                      <button autoFocus id="member-list-button"
+                        onClick={this.sendMessage}
+                        className="btn"><i className="material-icons">send</i>
+                      </button>
                     </div>
                   </div>
                 )

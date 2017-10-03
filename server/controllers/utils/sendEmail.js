@@ -4,12 +4,10 @@ import nodemailer from 'nodemailer';
 dotenv.config();
 
 export default (groupInfo, groupMembers, message) => {
-  const mailListUnfiltered = groupMembers.map((groupMember) => {
-    return groupMember.email;
-  });
-  const mailList = mailListUnfiltered.filter((email) => {
-    return email;
-  });
+  const mailListUnfiltered = groupMembers.map(groupMember =>
+    groupMember.email);
+  const mailList = mailListUnfiltered.filter(email =>
+    email);
   const mailOptions = {
     from: 'PostIt Notifications',
     to: mailList,

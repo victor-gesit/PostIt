@@ -13,24 +13,43 @@ export default class SignUpForm extends React.Component {
     super(props);
     this.signUp = this.signUp.bind(this);
     this.showNotification = this.showNotification.bind(this);
+    this.enterText = this.enterText.bind(this);
     this.googleLogin = this.googleLogin.bind(this);
     this.notificationSystem = null;
+    this.state = {
+      validInput: true,
+      enableButton: false
+    };
+  }
+  /**
+   * Component method called after component has rendered to make
+   * sign in button hold page focus
+   * @returns {undefined} This method returns nothing
+   */
+  componentDidMount() {
+    // Initialize notification component
+    this.notificationSystem = this.notificationRef;
   }
   /**
    * Component method called before component properties are updated,
-   * to save user token to local storage, or flash an error message if sign up failed
+   * to save user token to local storage, or
+   * flash an error message if sign up failed
    * @returns {undefined} This method returns nothing
    */
   componentDidUpdate() {
     const isSignedIn = this.props.store.appInfo.authState.signedIn;
     const errorMessage = this.props.store.apiError.message;
+    const { from } = this.props.store.location.state || { from: null };
     if (isSignedIn) {
-      this.props.store.history.push('/messageboard');
-    } else {
-      if (errorMessage) {
-        this.showNotification('error', errorMessage);
-        this.props.store.resetErrorLog();
+      if (from) {
+        this.props.store.history.push(from);
+      } else {
+        this.props.store.history.push('/messageboard');
       }
+    }
+    if (!isSignedIn && errorMessage) {
+      this.showNotification('error', errorMessage);
+      this.props.store.resetErrorLog();
     }
   }
   /**
@@ -46,6 +65,7 @@ export default class SignUpForm extends React.Component {
     this.props.store.signUp(firstName, lastName, email, password, phone);
   }
   /**
+   * Method called to display notifications after API calls
    * @param {Sring} level The type of notification (success or failure)
    * @param {String} message The message in the notification
    * @returns {undefined} This method returns nothing
@@ -57,6 +77,7 @@ export default class SignUpForm extends React.Component {
     });
   }
   /**
+   * Method called so log a user in with Google
    * @param {String} response Token returned from google
    * @returns {undefined} This method returns nothing
    */
@@ -77,6 +98,19 @@ export default class SignUpForm extends React.Component {
     this.props.store.googleLogin(userDetails);
   }
   /**
+   * Handle when a user types input
+   * @returns {undefined} This method returns nothing
+   */
+  enterText() {
+    const enableButton =
+      this.email.value.length > 0 &&
+      this.password.value.length > 0 &&
+      this.firstName.value.length > 0 &&
+      this.lastName.value.length > 0 &&
+      this.phone.value.length > 0;
+    this.setState({ enableButton });
+  }
+  /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
    */
@@ -93,42 +127,51 @@ export default class SignUpForm extends React.Component {
         }
       }
     };
-    const dataLoading = this.props.store.dataLoading;
     return (
       <div className="col s10 m6 l4 offset-s1 offset-m3 offset-l4 signup-form">
         <NotificationSystem className='notification'style={style}
-          ref={(notificationRef) => { this.notificationRef = notificationRef; }} />
+          ref={
+            (notificationRef) => { this.notificationRef = notificationRef; }} />
         <div id="signUpForm" className="row">
           <div>
             <h3 className="center">Sign Up</h3>
           </div>
           <div className="input-field col s12">
-            <input id="firstName" ref={(firstName) => { this.firstName = firstName; }}
+            <input id="firstName"
+              ref={(firstName) => { this.firstName = firstName; }}
+              onKeyUp={this.enterText}
               type="text" name="fname" className="validate" />
             <label htmlFor="firstName">First Name</label>
           </div>
           <div className="input-field col s12">
-            <input id="lastName" ref={(lastName) => { this.lastName = lastName; }}
+            <input id="lastName"
+              ref={(lastName) => { this.lastName = lastName; }}
+              onKeyUp={this.enterText}
               type="text" name="lastName" className="validate" />
             <label htmlFor="lastName">Last Name</label>
           </div>
           <div className="input-field col s12">
-            <input type="text" ref={(phone) => { this.phone = phone; }} id="phone"
+            <input type="text"
+              ref={(phone) => { this.phone = phone; }} id="phone"
+              onKeyUp={this.enterText}
               name="number" className="validate" />
             <label htmlFor="phone">Phone</label>
           </div>
           <div className="input-field col s12">
             <input id="email" ref={(email) => { this.email = email; }}
+              onKeyUp={this.enterText}
               type="email" name="email" className="validate" />
             <label htmlFor="email" data-error="Enter valid email">Email</label>
           </div>
           <div className="input-field col s12">
             <input ref={(password) => { this.password = password; }}
+              onKeyUp={this.enterText}
               id="password" type="password" className="validate" />
             <label htmlFor="password">Password</label>
           </div>
           <div className="center">
             <button onClick={this.signUp} id="signUpButton"
+              disabled={!this.state.enableButton}
               className="btn center green darken-4" autoFocus>Sign up</button>
           </div>
           <div>

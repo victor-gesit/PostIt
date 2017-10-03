@@ -3,14 +3,14 @@ import { Switch, Route, HashRouter } from 'react-router-dom';
 
 // Routes
 import Home from './views/Index.jsx';
-import CreateGroup from './views/CreateGroup.jsx';
-import MessageBoard from './views/MessageBoard.jsx';
-import PostMessage from './views/PostMessage.jsx';
-import SignUp from './views/SignUp.jsx';
-import NotFound from './views/NotFound.jsx';
-import PrivateRoute from './views/PrivateRoute.jsx';
-import ForgottenPassword from './views/ForgottenPassword.jsx';
-import NewPassword from './views/NewPassword.jsx';
+import CreateGroupComponent from './views/CreateGroup.jsx';
+import MessageBoardComponent from './views/MessageBoard.jsx';
+import PostMessageComponent from './views/PostMessage.jsx';
+import SignUpComponent from './views/SignUp.jsx';
+import NotFoundComponent from './views/NotFound.jsx';
+import PrivateRouteComponent from './views/PrivateRoute.jsx';
+import ForgottenPasswordComponent from './views/ForgottenPassword.jsx';
+import NewPasswordComponent from './views/NewPassword.jsx';
 
 /**
  * React component to server the various routes in the app
@@ -26,15 +26,19 @@ export class App extends React.Component {
         <div>
           <Switch>
             <Route exact path='/' component={Home}/>
-            <PrivateRoute exact path='/creategroup' component={CreateGroup}/>
-            <PrivateRoute exact path='/messageboard'
-              component={MessageBoard}
+            <PrivateRouteComponent exact path='/creategroup'
+              component={CreateGroupComponent}/>
+            <PrivateRouteComponent exact path='/messageboard'
+              component={MessageBoardComponent}
               />
-            <PrivateRoute exact path="/postmessage/:groupId" component={PostMessage}/>
-            <Route exact path='/signup' component={SignUp}/>
-            <Route exact path='/forgotpassword' component={ForgottenPassword}/>
-            <Route exact path='/newpassword/:token' component={NewPassword}/>
-            <PrivateRoute path="*" component={NotFound}/>
+            <PrivateRouteComponent exact path="/postmessage/:groupId"
+              component={PostMessageComponent}/>
+            <Route exact path='/signup' component={SignUpComponent}/>
+            <Route exact path='/forgotpassword'
+              component={ForgottenPasswordComponent}/>
+            <Route exact path='/newpassword/:token'
+              component={NewPasswordComponent}/>
+            <PrivateRouteComponent path="*" component={NotFoundComponent}/>
           </Switch>
         </div>
       </HashRouter>

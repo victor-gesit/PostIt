@@ -2,7 +2,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import NotificationSystem from 'react-notification-system';
-import { signUp, googleLogin, resetErrorLog, resetLoadingState, recoverPassword } from '../../actions';
+import { signUp, googleLogin,
+  resetErrorLog, resetLoadingState,
+  recoverPassword } from '../../actions';
 import Footer from './partials/Footer.jsx';
 import Spinner from './partials/Spinner.jsx';
 import AuthNav from './partials/AuthNav.jsx';
@@ -34,7 +36,8 @@ export class ForgottenPassword extends React.Component {
   }
   /**
    * Component method called before component properties are updated,
-   * to save user token to local storage, or flash an error message if sign up failed
+   * to save user token to local storage,
+   * or flash an error message if sign up failed
    * @returns {undefined} This method returns nothing
    */
   componentDidUpdate() {
@@ -60,6 +63,7 @@ export class ForgottenPassword extends React.Component {
     });
   }
   /**
+   * Method called when to make API call for password recovery
    * @param {String} response Token returned from google
    * @returns {undefined} This method returns nothing
    */
@@ -99,12 +103,16 @@ export class ForgottenPassword extends React.Component {
                 <h5>Enter your email to get a password recovery link</h5>
               </div>
               <div className="input-field col s12 m6 offset-m3 offset-l3 l6">
-                <input id="email" ref={(email) => { this.email = email; }} type="email"
-                  className="validate" ></input>
-                <label htmlFor="email" data-error="Enter valid email">Enter email</label>
+                <input id="email"
+                  ref={(email) => { this.email = email; }} type="email"
+                  className="validate" >
+                </input>
+                <label htmlFor="email"
+                  data-error="Enter valid email">Enter email</label>
               </div>
               <div className="col s12 center">
-                <button id="signInButton" onClick={this.signIn} className="btn green darken-4"
+                <button id="signInButton"
+                  onClick={this.signIn} className="btn green darken-4"
                   ref={(button) => { this.button = button; }} >Submit</button>
               </div>
             </div>
@@ -122,7 +130,8 @@ export class ForgottenPassword extends React.Component {
             <div className="input-field col s12 m6 offset-m3 offset-l3 l6">
               <input id="email" ref={(email) => { this.email = email; }} type="email"
                 className="validate" ></input>
-              <label htmlFor="email" data-error="Enter valid email">Enter email</label>
+              <label htmlFor="email"
+                data-error="Enter valid email">Enter email</label>
             </div>
             <div className="col s12 center">
               <button id="submitButton" onClick={this.recoverPassword}

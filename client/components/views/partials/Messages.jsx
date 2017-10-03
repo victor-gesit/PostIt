@@ -24,7 +24,6 @@ export default class Messages extends React.Component {
       }
       const userId = decode.id;
       const socket = this.props.socket;
-      // socket.emit('open group', { groupId: newGroupId, userId });
       socket.emit('open group', { groupId: newGroupId, userId });
       socket.emit('close group', { groupId: oldGroupId, userId });
     }
@@ -72,7 +71,8 @@ export default class Messages extends React.Component {
               <div>
                 {
                   Object.keys(messages).map((messageId, index) =>
-                    <Message userId={userId} key={index} messageDetails={messages[messageId]}/>)
+                    <Message userId={userId}
+                    key={index} messageDetails={messages[messageId]}/>)
                 }
               </div>
             )
@@ -110,7 +110,9 @@ export class Message extends React.Component {
     }
     let iconClassName = 'secondary-content green-text';
     switch (priority) {
-      case 'normal': if (isComment) { iconClassName = 'secondary-content grey-text'; } break;
+      case 'normal':
+        if (isComment) { iconClassName = 'secondary-content grey-text'; }
+        break;
       case 'urgent': iconClassName = 'secondary-content orange-text'; break;
       case 'critical': iconClassName = 'secondary-content red-text'; break;
       default: break;

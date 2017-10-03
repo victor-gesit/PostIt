@@ -31,6 +31,7 @@ export default class Groups extends React.Component {
  */
 export class UserGroup extends React.Component {
   /**
+   * Object constructor to initialize object properties and methods
    * @param {Object} props Component properties passed from parent component
    */
   constructor(props) {
@@ -38,7 +39,10 @@ export class UserGroup extends React.Component {
     this.loadMessagesAndMembers = this.loadMessagesAndMembers.bind(this);
   }
   /**
-   * @param {Object} event fired when the link to load details of a group is clicked
+   * Method called to prepare the store by getting the
+   * members of a group and messages in the group
+   * @param {Object} event fired when the link
+   * to load details of a group is clicked
    * @returns {undefined} This method returns nothing
    */
   loadMessagesAndMembers(event) {
@@ -67,8 +71,10 @@ export class UserGroup extends React.Component {
   render() {
     const groupDetails = this.props.groupDetails;
     return (
-     <li><Link onClick={this.loadMessagesAndMembers} to={`/postmessage/${groupDetails.id}`} id={groupDetails.id} >
-         <i className="material-icons teal-text">people_outline</i>{groupDetails.title}</Link></li>
+     <li><Link onClick={this.loadMessagesAndMembers}
+      to={`/postmessage/${groupDetails.id}`} id={groupDetails.id} >
+         <i className="material-icons teal-text">people_outline</i>
+         {groupDetails.title}</Link></li>
     );
   }
 }

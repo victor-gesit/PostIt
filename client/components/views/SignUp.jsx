@@ -38,17 +38,17 @@ export class SignUp extends React.Component {
     this.notificationSystem = this.notificationRef;
     // Set focus to SignUp button
     $('#signUpForm').keypress((event) => {
-      if ((event.which && event.which === 13) || (event.keyCode && event.keyCode === 13)) {
+      if ((event.which && event.which === 13) ||
+        (event.keyCode && event.keyCode === 13)) {
         $('#signUpButton').click();
         return false;
-      } else {
-        return true;
       }
     });
   }
   /**
    * Component method called before component properties are updated,
-   * to save user token to local storage, or flash an error message if sign up failed
+   * to save user token to local storage, or
+   * flash an error message if sign up failed
    * @returns {undefined} This method returns nothing
    */
   componentDidUpdate() {
@@ -56,11 +56,10 @@ export class SignUp extends React.Component {
     const errorMessage = this.props.apiError.message;
     if (isSignedIn) {
       this.props.history.push('/messageboard');
-    } else {
-      if (errorMessage) {
-        this.showNotification('error', errorMessage);
-        this.props.resetErrorLog();
-      }
+    }
+    if (!isSignedIn && errorMessage) {
+      this.showNotification('error', errorMessage);
+      this.props.resetErrorLog();
     }
   }
   /**
@@ -98,7 +97,10 @@ export class SignUp extends React.Component {
       <div id="main">
         <div className="row">
           <NotificationSystem className='notification'style={style}
-            ref={(notificationRef) => { this.notificationRef = notificationRef; }} />
+            ref={
+              (notificationRef) => { this.notificationRef = notificationRef; }
+              } />
+          <SignUpForm store={this.props}/>
           {
             dataLoading ? (
               <div>
@@ -107,7 +109,7 @@ export class SignUp extends React.Component {
                 </div>
               </div>
             ) : (
-              <SignUpForm store={this.props}/>
+              <div/>
             )
           }
         </div>

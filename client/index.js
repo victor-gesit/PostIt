@@ -6,10 +6,11 @@ import { Provider } from 'react-redux';
 // Styling
 import 'materialize-css/bin/materialize.css';
 import 'jquery/dist/jquery';
+import 'jquery-validation';
 import 'font-awesome/css/font-awesome.css';
 import 'material-design-icons/iconfont/material-icons.css';
-import './scss/style.scss'; // Custom styling
-import './js/customJS';
+ // Custom styling
+import './scss/style.scss';
 import './js/materialize';
 import postItApp from './reducers';
 

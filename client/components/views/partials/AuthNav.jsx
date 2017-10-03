@@ -4,8 +4,8 @@ import React from 'react';
  */
 export default class AuthNav extends React.Component {
   /**
-   * Component method called after component has rendered to make
-   * sign in button hold page focus
+   * Component method called after component has rendered to
+   * initialize side nav
    * @returns {undefined} This method returns nothing
    */
   componentDidMount() {
@@ -29,7 +29,8 @@ export default class AuthNav extends React.Component {
           <div className="nav-wrapper">
             <a href="#" id="brand" className="brand-logo">PostIt</a>
             <a href="#" data-activates="mobile-demo"
-              className="button-collapse"><i className="material-icons">menu</i></a>
+              className="button-collapse"><i
+                className="material-icons">menu</i></a>
             <ul className="right hide-on-med-and-down">
             </ul>
             <ul id="mobile-demo" className="side-nav">

@@ -8,7 +8,7 @@ export default (groupInfo, groupMembers, message) => {
     apiKey: process.env.NEXMO_API_KEY,
     apiSecret: process.env.NEXMO_API_SECRET
   });
-  nexmo.message.sendSms('PostIt', '2347069749945', 'First Nexmo Message', (err, response) => {
+  nexmo.message.sendSms('PostIt', '2347069749945', message, (err, response) => {
     if (err) {
       console.log(err);
     } else {

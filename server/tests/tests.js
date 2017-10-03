@@ -288,7 +288,6 @@ describe('PostIt Tests', () => {
                   phone: createdUser.phone,
                   id: createdUser.id
                 };
-                console.log(jwtSecret);
                 newToken = jwt.sign(newUser, jwtSecret, {
                   expiresIn: '2 days' // expires in 48 hours
                 });

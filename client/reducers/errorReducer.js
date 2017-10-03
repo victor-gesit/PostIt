@@ -155,6 +155,15 @@ const errorReducer = (state = { errored: false,
         },
         errored: true
       };
+    case 'INVALID_GROUP_ID':
+      return {
+        message: action.message,
+        redirect: {
+          yes: true,
+          to: '/notfound'
+        },
+        errored: true
+      };
     case 'INVALID_AUTH':
       return {
         message: action.message,

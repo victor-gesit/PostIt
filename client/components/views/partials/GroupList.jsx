@@ -7,6 +7,24 @@ import Spinner from '../../../components/views/partials/Spinner.jsx';
  */
 export default class GroupList extends React.Component {
   /**
+   * Constructor initializes component parameters
+   * @param {Object} props Properties passed from parent component
+   */
+  constructor(props) {
+    super(props);
+    this.searchGroup = this.searchGroup.bind(this);
+  }
+  /**
+   * Method called to search for members of a group
+   * @returns {undefined} This method returns nothing
+   */
+  searchGroup() {
+    const searchQuery = this.searchTerm.value;
+    const groupId = this.props.store.match.params.groupId;
+    const token = localStorage.getItem('token');
+    this.props.store.searchGroup(token, groupId, searchQuery);
+  }
+  /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
    */
@@ -41,7 +59,10 @@ export default class GroupList extends React.Component {
       <div id="memberList" className="members-list-container m4 l3">
         <div className="row searchbox valign-wrapper">
           <div className="col s9">
-            <input type="search" className="black-text" />
+            <input placeholder="Search group"
+              onKeyUp={this.searchGroup}
+              ref={(searchTerm) => { this.searchTerm = searchTerm; }}
+              type="search" className="black-text" />
           </div>
           <div className="col s3">
             <span><i className="material-icons black-text">search</i></span>
@@ -62,7 +83,8 @@ export default class GroupList extends React.Component {
         {
           groupLoaded ?
           (
-            <GroupMembers userEmail={userDetails.email} creatorEmail={creatorEmail}
+            <GroupMembers userEmail={userDetails.email}
+              creatorEmail={creatorEmail}
               groupMembers={groupMembers}/>
           ) : (
             <Spinner/>
@@ -86,20 +108,27 @@ export class GroupMembers extends React.Component {
     const creatorEmail = this.props.creatorEmail;
     const userEmail = this.props.userEmail;
     const userIsCreator = userEmail === creatorEmail;
+    let membersList = [];
+
+    if (groupMembers) {
+      membersList = Object.keys(groupMembers).map(memberId =>
+        groupMembers[memberId]
+      );
+    }
     return (
       <ul className="collection members-list">
         {
-          groupMembers ? (
-            Object.keys(groupMembers).map((memberId, index) =>
+          membersList.length > 0 ? (
+            membersList.map((member, index) =>
               (
-                <GroupMember userIsCreator={userIsCreator} key={index}
-                  creatorEmail={creatorEmail} memberDetails={groupMembers[memberId]}/>
+              <GroupMember userIsCreator={userIsCreator} key={index}
+                creatorEmail={creatorEmail} memberDetails={member}/>
               )
             )
           ) : (
-            <div className="progress center pink-text">
-                <div className="indeterminate"></div>
-            </div>
+            <li className="center red-text">
+              No member with that name
+            </li>
           )
         }
 
@@ -128,18 +157,21 @@ export class GroupMember extends React.Component {
     return (
           memberDetails.email === creatorEmail ?
           (
-            <li className="collection-item">{memberDetails.firstName} {memberDetails.lastName}<br />
+            <li className="collection-item">
+              {memberDetails.firstName} {memberDetails.lastName}<br />
               <small className="grey-text">{memberDetails.email}</small>
               <a id={memberDetails.id} value={memberDetails.name}
                 className="secondary-content modal-trigger pink-text text-darken-4">
               <i className="material-icons">person</i></a>
             </li>
           ) : (
-            <li className="collection-item">{memberDetails.firstName} {memberDetails.lastName}<br />
+            <li className="collection-item">
+              {memberDetails.firstName} {memberDetails.lastName}<br />
               <small className="grey-text">{memberDetails.email}</small>
               {
                 userIsCreator ? (
-              <a href='#deleteMemberModal' id={memberDetails.id} value={memberDetails.name}
+              <a href='#deleteMemberModal' id={memberDetails.id}
+              value={memberDetails.name}
                 className={styleClassName}>
               <i className="material-icons">{icon}</i></a>
                 ) : (

@@ -17,7 +17,11 @@ export class SignInForm extends React.Component {
     this.signIn = this.signIn.bind(this);
     this.googleLogin = this.googleLogin.bind(this);
     this.showNotification = this.showNotification.bind(this);
+    this.enterText = this.enterText.bind(this);
     this.notificationSystem = null;
+    this.state = {
+      enableButton: false
+    };
   }
   /**
    * Component method called after component renders, to set page focus
@@ -29,11 +33,10 @@ export class SignInForm extends React.Component {
     this.notificationSystem = this.notificationRef;
     // Set focus to Sign in button
     $('.signin-form').keypress((event) => {
-      if ((event.which && event.which === 13) || (event.keyCode && event.keyCode === 13)) {
+      if ((event.which && event.which === 13)
+        || (event.keyCode && event.keyCode === 13)) {
         $('#signInButton').click();
         return false;
-      } else {
-        return true;
       }
     });
   }
@@ -45,13 +48,17 @@ export class SignInForm extends React.Component {
     this.button.focus();
     const isSignedIn = this.props.store.appInfo.authState.signedIn;
     const errorMessage = this.props.store.apiError.message;
+    const { from } = this.props.store.location.state || { from: null };
     if (isSignedIn) {
-      this.props.store.history.push('/messageboard');
-    } else {
-      if (errorMessage) {
-        this.showNotification('error', errorMessage);
-        this.props.store.resetErrorLog();
+      if (from) {
+        this.props.store.history.push(from);
+      } else {
+        this.props.store.history.push('/messageboard');
       }
+    }
+    if (!isSignedIn && errorMessage) {
+      this.showNotification('error', errorMessage);
+      this.props.store.resetErrorLog();
     }
   }
   /**
@@ -64,6 +71,7 @@ export class SignInForm extends React.Component {
     this.props.store.signIn(email, password);
   }
   /**
+   * Method called to display API notifications
    * @param {String} level The severity of the notification
    * @param {String} message The message to be displayed by the notification
    * @returns {undefined} This method returns nothing
@@ -75,6 +83,7 @@ export class SignInForm extends React.Component {
     });
   }
   /**
+   * Method called when user signs in with Google
    * @param {String} response Token returned from google
    * @returns {undefined} This method returns nothing
    */
@@ -93,6 +102,16 @@ export class SignInForm extends React.Component {
       password
     };
     this.props.store.googleLogin(userDetails);
+  }
+  /**
+   * Handle when a user types input
+   * @returns {undefined} This method returns nothing
+   */
+  enterText() {
+    const enableButton =
+      this.email.value.length > 0 &&
+      this.password.value.length > 0;
+    this.setState({ enableButton });
   }
   /**
    * Component method called to render page
@@ -126,22 +145,26 @@ export class SignInForm extends React.Component {
                 </div>
                 <div className="input-field col s12">
                   <input id="email" ref={(email) => { this.email = email; }}
-                  type="email" className="validate" ></input>
-                  <label htmlFor="email" data-error="Enter valid email">Email</label>
+                    type="email" className="validate" ></input>
+                  <label htmlFor="email"
+                    data-error="Enter valid email">Email</label>
                 </div>
                 <div className="input-field col s12">
-                  <input id="password" ref={(password) => { this.password = password; }}
+                  <input id="password"
+                    ref={(password) => { this.password = password; }}
                     type="password" className="validate" />
                   <label htmlFor="password">Password</label>
                 </div>
                 <div className="col s12 center">
                   <button id="signInButton" onClick={this.signIn}
                     className="btn green darken-4"
-                    ref={(button) => { this.button = button; }} >Sign in</button>
+                    ref={(button) => { this.button = button; }} >
+                      Sign in</button>
                 </div>
                 <br /><br />
                 <div className="col s12">
-                  <input id="signedin" className="teal-text" type="checkbox" name="signedin" />
+                  <input id="signedin"
+                    className="teal-text" type="checkbox" name="signedin" />
                   <label htmlFor="signedin">Keep me signed in</label>
                 </div>
                 <div>
@@ -161,18 +184,27 @@ export class SignInForm extends React.Component {
                 <h3 className="center">Sign In</h3>
               </div>
               <div className="input-field col s12">
-                <input id="email" ref={(email) => { this.email = email; }} type="email"
+                <input id="email"
+                ref={(email) => { this.email = email; }} type="email"
+                  onKeyUp={this.enterText}
                   className="validate" ></input>
-                <label htmlFor="email" data-error="Enter valid email">Email</label>
+                <label htmlFor="email"
+                data-error="Enter valid email">Email</label>
               </div>
               <div className="input-field col s12">
-                <input id="password" ref={(password) => { this.password = password; }}
+                <input id="password"
+                  ref={(password) => { this.password = password; }}
+                  onKeyUp={this.enterText}
                   type="password" className="validate" />
                 <label htmlFor="password">Password</label>
               </div>
               <div className="col s12 center">
-                <button id="signInButton" onClick={this.signIn} className="btn green darken-4"
-                  ref={(button) => { this.button = button; }} >Sign in</button><br />
+                <button id="signInButton"
+                  onClick={this.signIn} className="btn green darken-4"
+                  disabled={!this.state.enableButton}
+                  ref={(button) => { this.button = button; }} >
+                    Sign in
+                </button><br />
               </div>
               <br />
               <hr/>
@@ -184,7 +216,7 @@ export class SignInForm extends React.Component {
               </div>
               <div className="center">
                 <GoogleLogin
-                  clientId='856410977175-5n2ns6ad2p5ofrrtma3jgun5f7paif78.apps.googleusercontent.com'
+                clientId='856410977175-5n2ns6ad2p5ofrrtma3jgun5f7paif78.apps.googleusercontent.com'
                   buttonText="Login"
                   onSuccess={this.googleLogin}
                   onFailure={() => {}}

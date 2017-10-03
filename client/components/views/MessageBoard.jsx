@@ -5,9 +5,10 @@ import { connect } from 'react-redux';
 import jwtDecode from 'jwt-decode';
 import 'jquery/dist/jquery';
 import { getGroupsForUser, getMessages, getGroupMembers, verifyToken,
-  loadMessages, resetRedirect, resetLoadingState, getAllGroupsForUser, signOut
+  loadMessages, resetRedirect,
+  resetLoadingState, getAllGroupsForUser, signOut
 } from '../../actions';
-import NavBar from './partials/NavBar.jsx';
+import Navbar from './partials/NavBar.jsx';
 import Footer from './partials/Footer.jsx';
 import Spinner from './partials/Spinner.jsx';
 import GroupCard from './partials/GroupCard.jsx';
@@ -84,7 +85,8 @@ export class MessageBoard extends React.Component {
     const allUserGroups = this.props.allUserGroups.userGroups;
     return (
       <div id="body">
-        <NavBar store={this.props} allUserGroups={allUserGroups} userDetails={userDetails}/>
+        <Navbar store={this.props} allUserGroups={allUserGroups}
+          userDetails={userDetails}/>
         <div id="main">
           {/* Groups */}
           {
@@ -96,12 +98,14 @@ export class MessageBoard extends React.Component {
               <div>
                 { !dataLoading && totalNoOfGroups === 0 ? (
                   <div className="row center">
-                    <h4 className="grey-text">You don't belong to any group</h4>
+                    <h4 className="grey-text">
+                      You don't belong to any group</h4>
                     <a href="/#/creategroup" className="btn">Create One</a>
                   </div>
                   ) : (
                   <div className="row">
-                    <h3 className="board-title center black-text">Message Board</h3>
+                    <h3 className="board-title center black-text">
+                      Message Board</h3>
                     {
                       Object.keys(userGroups).map((groupId, index) =>
                         <GroupCard store={this.props}
@@ -156,8 +160,10 @@ const mapDispatchToProps = dispatch =>
       dispatch(getGroupsForUser(userId, offset, limit, token)),
     loadMessages: groupId => dispatch(loadMessages(groupId)),
     resetRedirect: () => dispatch(resetRedirect()),
-    getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
-    getGroupMembers: (groupId, token) => dispatch(getGroupMembers(groupId, token)),
+    getMessages: (groupId, token) =>
+      dispatch(getMessages(groupId, token)),
+    getGroupMembers: (groupId, token) =>
+      dispatch(getGroupMembers(groupId, token)),
     getAllGroupsForUser: (userId, token) =>
       dispatch(getAllGroupsForUser(userId, token)),
     resetLoadingState: () => dispatch(resetLoadingState()),
