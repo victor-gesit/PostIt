@@ -85,7 +85,9 @@ export class MessageBoard extends React.Component {
     const allUserGroups = this.props.allUserGroups.userGroups;
     return (
       <div id="body">
-        <Navbar store={this.props} allUserGroups={allUserGroups}
+        <Navbar
+          store={this.props}
+          allUserGroups={allUserGroups}
           userDetails={userDetails}/>
         <div id="main">
           {/* Groups */}
@@ -108,9 +110,12 @@ export class MessageBoard extends React.Component {
                       Message Board</h3>
                     {
                       Object.keys(userGroups).map((groupId, index) =>
-                        <GroupCard store={this.props}
-                        key={index} id={groupId} loading={dataLoading}
-                        groupDetails={userGroups[groupId].info}/>
+                        <GroupCard
+                          store={this.props}
+                          key={index} id={groupId}
+                          loading={dataLoading}
+                          groupDetails={userGroups[groupId].info}
+                        />
                       )
                     }
                   </div>
@@ -164,8 +169,8 @@ const mapDispatchToProps = dispatch =>
       dispatch(getMessages(groupId, token)),
     getGroupMembers: (groupId, token) =>
       dispatch(getGroupMembers(groupId, token)),
-    getAllGroupsForUser: (userId, token) =>
-      dispatch(getAllGroupsForUser(userId, token)),
+    getAllGroupsForUser: (userId, token, offset) =>
+      dispatch(getAllGroupsForUser(userId, token, offset)),
     resetLoadingState: () => dispatch(resetLoadingState()),
     verifyToken: token => dispatch(verifyToken(token)),
     signOut: () => dispatch(signOut())

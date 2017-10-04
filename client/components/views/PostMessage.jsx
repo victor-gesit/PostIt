@@ -193,7 +193,7 @@ export class PostMessage extends React.Component {
         this.props.history.push(redirect.to);
       }
     }
-    let allUserGroups = {};
+    const allUserGroups = this.props.allUserGroups.userGroups;
     const groupId = this.props.match.params.groupId;
     const groupLoaded = this.props.allUserGroups.userGroups[groupId];
     const token = localStorage.getItem('token');
@@ -208,7 +208,6 @@ export class PostMessage extends React.Component {
     if (groupLoaded) {
       creatorEmail = groupLoaded.info.creatorEmail;
       isCreator = creatorEmail === userEmail;
-      allUserGroups = this.props.allUserGroups.userGroups;
     }
     return (
     <div id="body" >
@@ -216,7 +215,8 @@ export class PostMessage extends React.Component {
         isCreator={isCreator} creatorEmail={creatorEmail}
         allUserGroups={allUserGroups}
         leaveGroup={leaveGroup}
-        store={this.props}/>
+        store={this.props}
+      />
       <div id="main" >
         <div id="main-postmessage">
           <div className="row">
@@ -236,11 +236,16 @@ export class PostMessage extends React.Component {
          <LeaveGroupModal leaveGroup={this.leaveGroup}/>
         {/* Message Input Box */}
         {/* Modal to display who has read a message */}
-         <MessageInfoModal dataLoading={this.props.dataLoading}
-          messageInfo={this.props.messageInfo}/>
+        <MessageInfoModal
+          dataLoading={this.props.dataLoading}
+          messageInfo={this.props.messageInfo}
+        />
       </div>
       <MessageInputBox
-        notify={this.props.notify} socket={socket} store={this.props}/>
+        notify={this.props.notify}
+        socket={socket}
+        store={this.props}
+      />
     </div>
     );
   }
@@ -263,8 +268,8 @@ const mapStateToProps = state =>
 
 const mapDispatchToProps = dispatch =>
   ({
-    getAllGroupsForUser: (userId, token) =>
-      dispatch(getAllGroupsForUser(userId, token)),
+    getAllGroupsForUser: (userId, token, offset) =>
+      dispatch(getAllGroupsForUser(userId, token, offset)),
     getGroupMembers: (groupId, token) =>
       dispatch(getGroupMembers(groupId, token)),
     resetRedirect: () => dispatch(resetRedirect()),

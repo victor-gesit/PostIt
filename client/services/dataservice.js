@@ -56,12 +56,11 @@ const dataService = store => next => (action) => {
                   type: 'SIGN_UP_ERROR',
                   message: res.body.messages[0]
                 });
-              } else {
-                return next({
-                  type: 'SIGN_UP_ERROR',
-                  message: res.body.message
-                });
               }
+              return next({
+                type: 'SIGN_UP_ERROR',
+                message: res.body.message
+              });
             }
           }
           const userDetails = res.body.user;
@@ -128,7 +127,7 @@ const dataService = store => next => (action) => {
         .send({
           ownerId: action.ownerId
         })
-        .end((err, res) => {
+        .end((err) => {
           if (err) {
             return next({
               type: 'DELETE_A_GROUP_ERROR',
@@ -268,12 +267,11 @@ const dataService = store => next => (action) => {
                 return next({
                   type: 'INVALID_AUTH'
                 });
-              } else {
-                return next({
-                  type: 'GET_POST_IT_MEMBERS_ERROR',
-                  message: err.message
-                });
               }
+              return next({
+                type: 'GET_POST_IT_MEMBERS_ERROR',
+                message: err.message
+              });
             }
           }
           const dbSnapShot = res.body;
@@ -333,7 +331,7 @@ const dataService = store => next => (action) => {
     // Get all groups a user belongs to (non paginated)
     case 'GET_ALL_GROUPS_FOR_A_USER_AT_ONCE':
       request
-        .get(`${url}/user/${action.userId}/groups/`)
+        .get(`${url}/user/${action.userId}/groups?offset=${action.offset}`)
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
@@ -343,16 +341,12 @@ const dataService = store => next => (action) => {
             });
           }
           const data = res.body;
-          methods.getAllGroups(data, (err, newState) => {
+          methods.getGroups(data, (err, newState) => {
             next({
               type: 'GET_ALL_GROUPS_FOR_A_USER_AT_ONCE_SUCCESS',
               newState
             });
           });
-          // next({
-          //   type: 'GET_ALL_GROUPS_FOR_A_USER_AT_ONCE_SUCCESS',
-          //   data
-          // });
         });
       break;
     // Delete a user from a group
@@ -364,7 +358,7 @@ const dataService = store => next => (action) => {
           ownerId: action.ownerId,
           idToDelete: action.idToDelete,
         })
-        .end((err, res) => {
+        .end((err) => {
           if (err) {
             return next({
               type: 'DELETE_GROUP_MEMBER_ERROR',
@@ -385,7 +379,7 @@ const dataService = store => next => (action) => {
       request
         .get(`${url}/token`)
         .set('x-access-token', action.token)
-        .end((err, res) => {
+        .end((err) => {
           if (err) {
             return next({
               type: 'VERIFY_TOKEN_ERROR',
@@ -472,7 +466,7 @@ const dataService = store => next => (action) => {
       request
         .delete(`${url}/group/${action.groupId}/leave`)
         .set('x-access-token', action.token)
-        .end((err, res) => {
+        .end((err) => {
           if (err) {
             return next({
               type: 'LEAVE_GROUP_ERROR',

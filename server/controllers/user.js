@@ -18,12 +18,14 @@ export default {
           limit,
           offset })
           .then((groupsBelongedTo) => {
-            res.status(200).send({
+            const allLoaded = Number(offset) + groupsBelongedTo.length;
+            res.status(200).send({ count,
+              allLoaded,
               success: true,
-              count,
+              type: 'Groups',
               rows: groupsBelongedTo
             });
-          }).catch(() => res.status(401).send({ success: false,
+          }).catch(() => res.status(422).send({ success: false,
             message: 'Invalid query in url' }));
       });
     }).catch((err) => {
@@ -33,7 +35,7 @@ export default {
           message: 'User not found',
           error: err });
       }
-      return res.status(400).send({ success: false,
+      return res.status(422).send({ success: false,
         message: 'Invalid User Id',
         error: err });
     });

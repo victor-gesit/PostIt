@@ -96,10 +96,12 @@ export class SignUp extends React.Component {
       <AuthNav/>
       <div id="main">
         <div className="row">
-          <NotificationSystem className='notification'style={style}
+          <NotificationSystem
+            className='notification'style={style}
             ref={
               (notificationRef) => { this.notificationRef = notificationRef; }
-              } />
+              }
+          />
           <SignUpForm store={this.props}/>
           {
             dataLoading ? (

@@ -111,7 +111,7 @@ export default class AddMemberModal extends React.Component {
                           </button>
                           </div>
                         ) : (
-                          <li/>
+                          <div/>
                         )
                       }
                     </div>

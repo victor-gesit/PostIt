@@ -12503,9 +12503,9 @@ var getGroupMembers = exports.getGroupMembers = function getGroupMembers(groupId
   };
 };
 
-var getPostItMembers = exports.getPostItMembers = function getPostItMembers(token, offset, limit) {
-  offset = offset || 0;
-  limit = limit || 6;
+var getPostItMembers = exports.getPostItMembers = function getPostItMembers(token) {
+  var offset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+  var limit = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 6;
   return {
     type: 'GET_POST_IT_MEMBERS',
     token: token,
@@ -12534,13 +12534,14 @@ var getGroupsForUser = exports.getGroupsForUser = function getGroupsForUser(user
 };
 
 var getAllGroupsForUser = exports.getAllGroupsForUser = function getAllGroupsForUser(userId, token) {
+  var offset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
   return {
     type: 'GET_ALL_GROUPS_FOR_A_USER_AT_ONCE',
     userId: userId,
-    token: token
+    token: token,
+    offset: offset
   };
 };
-
 var deleteMember = exports.deleteMember = function deleteMember(ownerId, idToDelete, groupId, token) {
   return {
     type: 'DELETE_GROUP_MEMBER',
@@ -12635,8 +12636,8 @@ var resetPassword = exports.resetPassword = function resetPassword(password, tok
   };
 };
 
-var searchGroup = exports.searchGroup = function searchGroup(token, groupId, searchQuery, offset, limit) {
-  offset = offset || 0;
+var searchGroup = exports.searchGroup = function searchGroup(token, groupId, searchQuery, limit) {
+  var offset = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
   return {
     type: 'SEARCH_GROUP_LIST',
     groupId: groupId,
@@ -17618,15 +17619,17 @@ var methods = {
     var formattedTime = month + ' ' + day + ', ' + year + ', at ' + hour + ':' + minutes;
     callback(formattedTime);
   },
-  // Get all groups a user belongs to
-  getAllGroups: function getAllGroups(dbSnapshot, done) {
+  // Load groups a user belongs to
+  getGroups: function getGroups(dbSnapshot, done) {
     var groups = dbSnapshot.rows;
-    var result = { userGroups: {}, meta: { count: dbSnapshot.count } };
+    var newState = { meta: {}, userGroups: {} };
     groups.forEach(function (group) {
-      result.userGroups[group.id] = {};
-      result.userGroups[group.id].info = group;
+      newState.userGroups[group.id] = newState.userGroups[group.id] || {};
+      newState.userGroups[group.id].info = group;
     });
-    done(null, result);
+    newState.meta.count = dbSnapshot.count;
+    newState.meta.allLoaded = dbSnapshot.allLoaded;
+    done(null, newState);
   },
   // Method to get registered postit members
   getPostItMembers: function getPostItMembers(dbSnapshot, done) {
@@ -17664,22 +17667,11 @@ var methods = {
     newState.meta.count += 1;
     done(null, newState, createdGroup);
   },
-  // Load groups a user belongs to
-  getGroups: function getGroups(dbSnapshot, done) {
-    // Clear the state, to hold new groups for new page
-    var appState = { meta: {}, userGroups: {} };
-    var groups = dbSnapshot.rows;
-    groups.forEach(function (group) {
-      appState.userGroups[group.id] = appState.userGroups[group.id] || {};
-      appState.userGroups[group.id].info = group;
-    });
-    appState.meta.count = dbSnapshot.count;
-    done(null, appState);
-  },
   // Load members for a group
   getMembers: function getMembers(state, dbSnapshot, groupId) {
     var groupMembers = dbSnapshot.rows;
-    // Initialize state with empty object if group data hasn't been loaded in the past
+    // Initialize state with empty object if
+    // group data hasn't been loaded in the past
     var appState = { meta: { count: dbSnapshot.count }, userGroups: {} };
     appState.userGroups[groupId] = appState.userGroups[groupId] || {};
     appState.userGroups[groupId].members = appState.userGroups[groupId].members || {};
@@ -17697,7 +17689,8 @@ var methods = {
   // Post a message to a group
   postMessage: function postMessage(state, newMessage, groupId) {
     var newState = { meta: { count: 0 }, userGroups: {} };
-    // Initialize the fields with empty objects and array if they had no previous content
+    // Initialize the fields with empty objects
+    // and array if they had no previous content
     var group = state.userGroups[groupId] || {};
     newState.userGroups[groupId] = group;
     var groupInfo = group.info || {};
@@ -17719,9 +17712,8 @@ var methods = {
     var newState = { meta: { count: 0 }, userGroups: {} };
     var group = state.userGroups[groupId] || {};
     var groupMembers = group.members || {};
-    newMembers.map(function (newMember) {
-      var userId = newMember.id;
-      groupMembers[userId] = newMember;
+    newMembers.forEach(function (newMember) {
+      groupMembers[newMember.id] = newMember;
     });
     newState.userGroups[groupId] = group;
     newState.userGroups[groupId].info = group.info || {};
@@ -17773,7 +17765,8 @@ var methods = {
   searchGroup: function searchGroup(state, searchResult, groupId) {
     var groupMembers = searchResult.rows;
     var appState = { meta: { count: searchResult.count }, userGroups: {} };
-    // Initialize state with empty object if group data hasn't been loaded in the past
+    // Initialize state with empty object if
+    // group data hasn't been loaded in the past
     appState.userGroups[groupId] = appState.userGroups[groupId] || {};
     appState.userGroups[groupId].members = appState.userGroups[groupId].members || {};
     groupMembers.forEach(function (member) {
@@ -48733,11 +48726,17 @@ var CreateGroup = exports.CreateGroup = function (_React$Component) {
       return _react2.default.createElement(
         'div',
         { id: 'body' },
-        _react2.default.createElement(_NavBar2.default, { store: this.props, allUserGroups: allUserGroups }),
-        _react2.default.createElement(_reactNotificationSystem2.default, { className: 'notification', style: style,
+        _react2.default.createElement(_NavBar2.default, {
+          store: this.props,
+          allUserGroups: allUserGroups
+        }),
+        _react2.default.createElement(_reactNotificationSystem2.default, {
+          className: 'notification',
+          style: style,
           ref: function ref(notificationRef) {
             _this2.notificationRef = notificationRef;
-          } }),
+          }
+        }),
         _react2.default.createElement(
           'div',
           { id: 'main' },
@@ -48850,8 +48849,12 @@ var CreateGroup = exports.CreateGroup = function (_React$Component) {
                           )
                         ),
                         Object.keys(postItMembers).map(function (userId, index) {
-                          return _react2.default.createElement(RegisteredMember, { addMember: _this2.addMember, key: index,
-                            id: userId, userInfo: postItMembers[userId] });
+                          return _react2.default.createElement(RegisteredMember, {
+                            addMember: _this2.addMember,
+                            key: index,
+                            id: userId,
+                            userInfo: postItMembers[userId]
+                          });
                         }),
                         allLoaded < membersCount ? _react2.default.createElement(
                           'div',
@@ -49023,8 +49026,8 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     getPostItMembers: function getPostItMembers(token, offset, limit) {
       return dispatch((0, _actions.getPostItMembers)(token, offset, limit));
     },
-    getAllGroupsForUser: function getAllGroupsForUser(userId, token) {
-      return dispatch((0, _actions.getAllGroupsForUser)(userId, token));
+    getAllGroupsForUser: function getAllGroupsForUser(userId, token, offset) {
+      return dispatch((0, _actions.getAllGroupsForUser)(userId, token, offset));
     },
     getMessages: function getMessages(groupId, token) {
       return dispatch((0, _actions.getMessages)(groupId, token));
@@ -49211,10 +49214,12 @@ var ForgottenPassword = exports.ForgottenPassword = function (_React$Component) 
           dataLoading ? _react2.default.createElement(
             'div',
             null,
-            _react2.default.createElement(_reactNotificationSystem2.default, { className: 'notification', style: style,
+            _react2.default.createElement(_reactNotificationSystem2.default, {
+              className: 'notification', style: style,
               ref: function ref(notificationRef) {
                 _this2.notificationRef = notificationRef;
-              } }),
+              }
+            }),
             _react2.default.createElement(
               'div',
               { className: 'row' },
@@ -49264,10 +49269,12 @@ var ForgottenPassword = exports.ForgottenPassword = function (_React$Component) 
           ) : _react2.default.createElement(
             'div',
             { className: 'row' },
-            _react2.default.createElement(_reactNotificationSystem2.default, { className: 'notification', style: style,
+            _react2.default.createElement(_reactNotificationSystem2.default, {
+              className: 'notification', style: style,
               ref: function ref(notificationRef) {
                 _this2.notificationRef = notificationRef;
-              } }),
+              }
+            }),
             _react2.default.createElement(
               'div',
               { className: 'col s12 m6 l6 offset-m3 offset-l3 center' },
@@ -49280,7 +49287,8 @@ var ForgottenPassword = exports.ForgottenPassword = function (_React$Component) 
             _react2.default.createElement(
               'div',
               { className: 'input-field col s12 m6 offset-m3 offset-l3 l6' },
-              _react2.default.createElement('input', { id: 'email', ref: function ref(email) {
+              _react2.default.createElement('input', { id: 'email',
+                ref: function ref(email) {
                   _this2.email = email;
                 }, type: 'email',
                 className: 'validate' }),
@@ -49730,7 +49738,9 @@ var MessageBoard = exports.MessageBoard = function (_React$Component) {
       return _react2.default.createElement(
         'div',
         { id: 'body' },
-        _react2.default.createElement(_NavBar2.default, { store: this.props, allUserGroups: allUserGroups,
+        _react2.default.createElement(_NavBar2.default, {
+          store: this.props,
+          allUserGroups: allUserGroups,
           userDetails: userDetails }),
         _react2.default.createElement(
           'div',
@@ -49764,9 +49774,12 @@ var MessageBoard = exports.MessageBoard = function (_React$Component) {
                 'Message Board'
               ),
               Object.keys(userGroups).map(function (groupId, index) {
-                return _react2.default.createElement(_GroupCard2.default, { store: _this3.props,
-                  key: index, id: groupId, loading: dataLoading,
-                  groupDetails: userGroups[groupId].info });
+                return _react2.default.createElement(_GroupCard2.default, {
+                  store: _this3.props,
+                  key: index, id: groupId,
+                  loading: dataLoading,
+                  groupDetails: userGroups[groupId].info
+                });
               })
             )
           )
@@ -49828,8 +49841,8 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     getGroupMembers: function getGroupMembers(groupId, token) {
       return dispatch((0, _actions.getGroupMembers)(groupId, token));
     },
-    getAllGroupsForUser: function getAllGroupsForUser(userId, token) {
-      return dispatch((0, _actions.getAllGroupsForUser)(userId, token));
+    getAllGroupsForUser: function getAllGroupsForUser(userId, token, offset) {
+      return dispatch((0, _actions.getAllGroupsForUser)(userId, token, offset));
     },
     resetLoadingState: function resetLoadingState() {
       return dispatch((0, _actions.resetLoadingState)());
@@ -50026,10 +50039,12 @@ var NewPassword = exports.NewPassword = function (_React$Component) {
         _react2.default.createElement(
           'div',
           { id: 'main' },
-          _react2.default.createElement(_reactNotificationSystem2.default, { className: 'notification', style: style,
+          _react2.default.createElement(_reactNotificationSystem2.default, {
+            className: 'notification', style: style,
             ref: function ref(notificationRef) {
               _this2.notificationRef = notificationRef;
-            } }),
+            }
+          }),
           _react2.default.createElement(
             'div',
             { className: 'row' },
@@ -50261,8 +50276,8 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     getPostItMembers: function getPostItMembers(token) {
       return dispatch((0, _actions.getPostItMembers)(token));
     },
-    getAllGroupsForUser: function getAllGroupsForUser(userId, token) {
-      return dispatch((0, _actions.getAllGroupsForUser)(userId, token));
+    getAllGroupsForUser: function getAllGroupsForUser(userId, token, offset) {
+      return dispatch((0, _actions.getAllGroupsForUser)(userId, token, offset));
     },
     getGroupMembers: function getGroupMembers(groupId, token) {
       return dispatch((0, _actions.getGroupMembers)(groupId, token));
@@ -50567,7 +50582,7 @@ var PostMessage = exports.PostMessage = function (_React$Component) {
           this.props.history.push(redirect.to);
         }
       }
-      var allUserGroups = {};
+      var allUserGroups = this.props.allUserGroups.userGroups;
       var groupId = this.props.match.params.groupId;
       var groupLoaded = this.props.allUserGroups.userGroups[groupId];
       var token = localStorage.getItem('token');
@@ -50583,7 +50598,6 @@ var PostMessage = exports.PostMessage = function (_React$Component) {
       if (groupLoaded) {
         creatorEmail = groupLoaded.info.creatorEmail;
         isCreator = creatorEmail === userEmail;
-        allUserGroups = this.props.allUserGroups.userGroups;
       }
       return _react2.default.createElement(
         'div',
@@ -50592,7 +50606,8 @@ var PostMessage = exports.PostMessage = function (_React$Component) {
           isCreator: isCreator, creatorEmail: creatorEmail,
           allUserGroups: allUserGroups,
           leaveGroup: _actions.leaveGroup,
-          store: this.props }),
+          store: this.props
+        }),
         _react2.default.createElement(
           'div',
           { id: 'main' },
@@ -50613,11 +50628,16 @@ var PostMessage = exports.PostMessage = function (_React$Component) {
           _react2.default.createElement(_DeleteMemberModal2.default, { deleteMember: this.deleteMember }),
           _react2.default.createElement(_AddMemberModal2.default, { store: this.props }),
           _react2.default.createElement(_LeaveGroupModal2.default, { leaveGroup: this.leaveGroup }),
-          _react2.default.createElement(_MessageInfoModal2.default, { dataLoading: this.props.dataLoading,
-            messageInfo: this.props.messageInfo })
+          _react2.default.createElement(_MessageInfoModal2.default, {
+            dataLoading: this.props.dataLoading,
+            messageInfo: this.props.messageInfo
+          })
         ),
         _react2.default.createElement(_MessageInputBox2.default, {
-          notify: this.props.notify, socket: socket, store: this.props })
+          notify: this.props.notify,
+          socket: socket,
+          store: this.props
+        })
       );
     }
   }]);
@@ -50643,8 +50663,8 @@ var mapStateToProps = function mapStateToProps(state) {
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
-    getAllGroupsForUser: function getAllGroupsForUser(userId, token) {
-      return dispatch((0, _actions.getAllGroupsForUser)(userId, token));
+    getAllGroupsForUser: function getAllGroupsForUser(userId, token, offset) {
+      return dispatch((0, _actions.getAllGroupsForUser)(userId, token, offset));
     },
     getGroupMembers: function getGroupMembers(groupId, token) {
       return dispatch((0, _actions.getGroupMembers)(groupId, token));
@@ -50912,10 +50932,12 @@ var SignUp = exports.SignUp = function (_React$Component) {
           _react2.default.createElement(
             'div',
             { className: 'row' },
-            _react2.default.createElement(_reactNotificationSystem2.default, { className: 'notification', style: style,
+            _react2.default.createElement(_reactNotificationSystem2.default, {
+              className: 'notification', style: style,
               ref: function ref(notificationRef) {
                 _this2.notificationRef = notificationRef;
-              } }),
+              }
+            }),
             _react2.default.createElement(_SignUpForm2.default, { store: this.props }),
             dataLoading ? _react2.default.createElement(
               'div',
@@ -51152,7 +51174,7 @@ var AddMemberModal = function (_React$Component) {
                         } },
                       '...Load More'
                     )
-                  ) : _react2.default.createElement('li', null)
+                  ) : _react2.default.createElement('div', null)
                 ) : _react2.default.createElement(
                   'h4',
                   { className: 'center grey-text' },
@@ -51934,30 +51956,72 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Groups = function (_React$Component) {
   _inherits(Groups, _React$Component);
 
-  function Groups() {
+  /**
+   * Constructor initializes component parameters
+   * @param {Object} props Properties passed from parent component
+   */
+  function Groups(props) {
     _classCallCheck(this, Groups);
 
-    return _possibleConstructorReturn(this, (Groups.__proto__ || Object.getPrototypeOf(Groups)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (Groups.__proto__ || Object.getPrototypeOf(Groups)).call(this, props));
+
+    _this.loadMore = _this.loadMore.bind(_this);
+    return _this;
   }
+  /**
+   * Method to load more groups from the DB
+   * @returns {undefined} This method returns nothing
+   */
+
 
   _createClass(Groups, [{
-    key: 'render',
-
+    key: 'loadMore',
+    value: function loadMore() {
+      // Load all registered members
+      var token = localStorage.getItem('token');
+      var decode = void 0;
+      try {
+        decode = (0, _jwtDecode2.default)(token);
+      } catch (err) {
+        this.props.signOut();
+      }
+      var userId = decode.id;
+      var allLoaded = this.props.store.allUserGroups.meta.allLoaded;
+      this.props.store.getAllGroupsForUser(userId, token, allLoaded);
+    }
     /**
      * Render method of React component
      * @returns {undefined} This function returns nothing
      */
+
+  }, {
+    key: 'render',
     value: function render() {
       var _this2 = this;
 
-      var allUserGroups = this.props.allUserGroups;
+      var groupState = this.props.store.allUserGroups;
+      var allUserGroups = groupState.userGroups;
+      var allLoaded = Object.keys(allUserGroups).length;
+      var groupCount = groupState.meta.count;
       return _react2.default.createElement(
         'ul',
         { className: 'list-side-nav' },
         Object.keys(allUserGroups).map(function (groupId, index) {
           return _react2.default.createElement(UserGroup, { store: _this2.props.store, key: index,
             groupDetails: allUserGroups[groupId].info });
-        })
+        }),
+        allLoaded < groupCount ? _react2.default.createElement(
+          'div',
+          { className: 'center' },
+          _react2.default.createElement(
+            'button',
+            { className: 'btn',
+              onClick: function onClick() {
+                return _this2.loadMore();
+              } },
+            '...Load More'
+          )
+        ) : _react2.default.createElement('div', null)
       );
     }
   }]);
@@ -62384,12 +62448,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // Handle all the groups a user belongs to
 var allUserGroupsReducer = function allUserGroupsReducer() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { meta: { count: 0 }, userGroups: {} };
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { meta: { count: 0, allLoaded: 0 },
+    userGroups: {} };
   var action = arguments[1];
 
   switch (action.type) {
+    case 'GET_ALL_GROUPS_FOR_A_USER_SUCCESS':
     case 'GET_ALL_GROUPS_FOR_A_USER_AT_ONCE_SUCCESS':
-      return _extends({}, state, action.newState);
+      return _extends({}, state, {
+        meta: action.newState.meta,
+        userGroups: _extends({}, state.userGroups, action.newState.userGroups) });
     case 'DELETE_A_GROUP_SUCCESS':
       return _storeMethods2.default.deleteGroup(state, action.groupId);
     case 'LEAVE_GROUP_SUCCESS':
@@ -62449,6 +62517,7 @@ exports.default = authStateReducer;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+/* eslint-env browser */
 var errorReducer = function errorReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { errored: false,
     message: null,
@@ -62682,6 +62751,7 @@ var errorReducer = function errorReducer() {
         errored: false
       };
     case 'VERIFY_TOKEN_ERROR':
+      localStorage.removeItem('token');
       return {
         errored: true,
         message: 'You have been away for a while. Please sign in again',
@@ -63081,7 +63151,8 @@ var _storeMethods2 = _interopRequireDefault(_storeMethods);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var userGroupsReducer = function userGroupsReducer() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { meta: { count: 0 }, userGroups: {} };
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { meta: { count: 0, allLoaded: 0 },
+    userGroups: {} };
   var action = arguments[1];
 
   switch (action.type) {
@@ -63236,12 +63307,11 @@ var dataService = function dataService(store) {
                     type: 'SIGN_UP_ERROR',
                     message: res.body.messages[0]
                   });
-                } else {
-                  return next({
-                    type: 'SIGN_UP_ERROR',
-                    message: res.body.message
-                  });
                 }
+                return next({
+                  type: 'SIGN_UP_ERROR',
+                  message: res.body.message
+                });
               }
             }
             var userDetails = res.body.user;
@@ -63298,7 +63368,7 @@ var dataService = function dataService(store) {
         case 'DELETE_A_GROUP':
           _superagent2.default.delete(url + '/group/' + action.groupId + '/delete').set('x-access-token', action.token).send({
             ownerId: action.ownerId
-          }).end(function (err, res) {
+          }).end(function (err) {
             if (err) {
               return next({
                 type: 'DELETE_A_GROUP_ERROR',
@@ -63423,12 +63493,11 @@ var dataService = function dataService(store) {
                   return next({
                     type: 'INVALID_AUTH'
                   });
-                } else {
-                  return next({
-                    type: 'GET_POST_IT_MEMBERS_ERROR',
-                    message: err.message
-                  });
                 }
+                return next({
+                  type: 'GET_POST_IT_MEMBERS_ERROR',
+                  message: err.message
+                });
               }
             }
             var dbSnapShot = res.body;
@@ -63481,7 +63550,7 @@ var dataService = function dataService(store) {
           break;
         // Get all groups a user belongs to (non paginated)
         case 'GET_ALL_GROUPS_FOR_A_USER_AT_ONCE':
-          _superagent2.default.get(url + '/user/' + action.userId + '/groups/').set('x-access-token', action.token).end(function (err, res) {
+          _superagent2.default.get(url + '/user/' + action.userId + '/groups?offset=' + action.offset).set('x-access-token', action.token).end(function (err, res) {
             if (err) {
               return next({
                 type: 'GET_ALL_GROUPS_FOR_A_USER_AT_ONCE_ERROR',
@@ -63489,16 +63558,12 @@ var dataService = function dataService(store) {
               });
             }
             var data = res.body;
-            _storeMethods2.default.getAllGroups(data, function (err, newState) {
+            _storeMethods2.default.getGroups(data, function (err, newState) {
               next({
                 type: 'GET_ALL_GROUPS_FOR_A_USER_AT_ONCE_SUCCESS',
                 newState: newState
               });
             });
-            // next({
-            //   type: 'GET_ALL_GROUPS_FOR_A_USER_AT_ONCE_SUCCESS',
-            //   data
-            // });
           });
           break;
         // Delete a user from a group
@@ -63506,7 +63571,7 @@ var dataService = function dataService(store) {
           _superagent2.default.delete(url + '/group/' + action.groupId + '/members').set('x-access-token', action.token).send({
             ownerId: action.ownerId,
             idToDelete: action.idToDelete
-          }).end(function (err, res) {
+          }).end(function (err) {
             if (err) {
               return next({
                 type: 'DELETE_GROUP_MEMBER_ERROR',
@@ -63524,7 +63589,7 @@ var dataService = function dataService(store) {
           break;
         // Verify token
         case 'VERIFY_TOKEN':
-          _superagent2.default.get(url + '/token').set('x-access-token', action.token).end(function (err, res) {
+          _superagent2.default.get(url + '/token').set('x-access-token', action.token).end(function (err) {
             if (err) {
               return next({
                 type: 'VERIFY_TOKEN_ERROR'
@@ -63598,7 +63663,7 @@ var dataService = function dataService(store) {
           });
           break;
         case 'LEAVE_GROUP':
-          _superagent2.default.delete(url + '/group/' + action.groupId + '/leave').set('x-access-token', action.token).end(function (err, res) {
+          _superagent2.default.delete(url + '/group/' + action.groupId + '/leave').set('x-access-token', action.token).end(function (err) {
             if (err) {
               return next({
                 type: 'LEAVE_GROUP_ERROR',

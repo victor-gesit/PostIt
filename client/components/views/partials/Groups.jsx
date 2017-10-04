@@ -8,17 +8,55 @@ import jwtDecode from 'jwt-decode';
  */
 export default class Groups extends React.Component {
   /**
+   * Constructor initializes component parameters
+   * @param {Object} props Properties passed from parent component
+   */
+  constructor(props) {
+    super(props);
+    this.loadMore = this.loadMore.bind(this);
+  }
+  /**
+   * Method to load more groups from the DB
+   * @returns {undefined} This method returns nothing
+   */
+  loadMore() {
+    // Load all registered members
+    const token = localStorage.getItem('token');
+    let decode;
+    try {
+      decode = jwtDecode(token);
+    } catch (err) {
+      this.props.signOut();
+    }
+    const userId = decode.id;
+    const allLoaded = this.props.store.allUserGroups.meta.allLoaded;
+    this.props.store.getAllGroupsForUser(userId, token, allLoaded);
+  }
+  /**
    * Render method of React component
    * @returns {undefined} This function returns nothing
    */
   render() {
-    const allUserGroups = this.props.allUserGroups;
+    const groupState = this.props.store.allUserGroups;
+    const allUserGroups = groupState.userGroups;
+    const allLoaded = Object.keys(allUserGroups).length;
+    const groupCount = groupState.meta.count;
     return (
       <ul className="list-side-nav">
         {
           Object.keys(allUserGroups).map((groupId, index) =>
             <UserGroup store={this.props.store} key={index}
               groupDetails={allUserGroups[groupId].info} />
+          )
+        }
+        {
+          allLoaded < groupCount ? (
+            <div className="center">
+            <button className="btn"
+              onClick={ () => this.loadMore()}>...Load More</button>
+            </div>
+          ) : (
+            <div/>
           )
         }
       </ul>

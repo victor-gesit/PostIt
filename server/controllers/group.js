@@ -33,9 +33,9 @@ export default {
       }
       let newMembers = [];
       Group.build({
-        createdBy: nameOfCreator,
         title,
         description,
+        createdBy: nameOfCreator,
         creatorEmail: creator.email
       }).save().then((createdGroup) => {
         newMembers.push(creator.email);
@@ -138,12 +138,12 @@ export default {
             message: 'User does not belong to this group' });
         }
         Message.build({
-          isComment,
-          sentBy: `${users[0].firstName} ${users[0].lastName}`,
-          body: messageBody,
           groupId,
           priority,
-          senderId
+          senderId,
+          isComment,
+          sentBy: `${users[0].firstName} ${users[0].lastName}`,
+          body: messageBody
         }).save().then((createdMessage) => {
           const connectedUsers = req.app.connections[groupId] || [];
           User.findAll({ where: { id: connectedUsers } })
@@ -215,7 +215,6 @@ export default {
     const token = req.body.token || req.query.token || req.headers['x-access-token'];
     const decode = jwt.decode(token);
     const userId = decode.id;
-    console.log('GOT HEREERQEWRQERQER');
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
       if (foundGroup === null) {
         return res.status(404).send({ success: false, message: 'Group not found' });
@@ -227,11 +226,11 @@ export default {
             message: 'User does not belong to this group' });
         }
         Message.findAndCountAll({
+          offset,
+          limit,
           where: { groupId },
           attributes: ['sentBy', 'id', 'senderId', 'body', 'createdAt', 'priority', 'isComment'],
-          order: [['createdAt', 'ASC']],
-          offset,
-          limit
+          order: [['createdAt', 'ASC']]
         }).then(result =>
           res.send(result)
         ).catch(() =>
@@ -267,9 +266,10 @@ export default {
               limit,
               offset })
               .then(groupMembers =>
-                res.status(200).send({ success: true,
-                  type: 'Users',
+                res.status(200).send({
                   count,
+                  success: true,
+                  type: 'Users',
                   rows: groupMembers }))
               .catch(() =>
                 res.status(422).send({ success: false,
@@ -469,19 +469,21 @@ export default {
           }
           foundGroup.getUsers({ where: query }).then((allMembers) => {
             const count = allMembers.length;
-            foundGroup.getUsers({ where: query,
-              attributes: ['firstName', 'lastName', 'email', 'id', 'phone'],
-              order: [['firstName', 'ASC']],
+            foundGroup.getUsers({
+              offset,
               limit,
-              offset })
+              where: query,
+              attributes: ['firstName', 'lastName', 'email', 'id', 'phone'],
+              order: [['firstName', 'ASC']]
+            })
               .then((groupMembers) => {
                 const totalLoaded = groupMembers.length + Number(offset);
                 return res.status(200)
                   .send({ searchQuery,
-                    success: true,
-                    type: 'Users',
                     count,
                     totalLoaded,
+                    success: true,
+                    type: 'Users',
                     rows: groupMembers });
               })
               .catch(() =>

@@ -1,9 +1,11 @@
 import methods from '../services/functions/storeMethods';
 
-const userGroupsReducer = (state = { meta: { count: 0 }, userGroups: {} }, action) => {
+const userGroupsReducer = (state = { meta: { count: 0, allLoaded: 0 },
+  userGroups: {} }, action) => {
   switch (action.type) {
     case 'GET_GROUP_MEMBERS_SUCCESS':
-      return methods.getMembers(state, action.membersDBSnapshot, action.groupId);
+      return methods.getMembers(state, action.membersDBSnapshot,
+      action.groupId);
     case 'SEARCH_GROUP_LIST_SUCCESS':
       return methods.searchGroup(state, action.searchResult, action.groupId);
     case 'GET_ALL_GROUPS_FOR_A_USER_SUCCESS':
@@ -19,7 +21,8 @@ const userGroupsReducer = (state = { meta: { count: 0 }, userGroups: {} }, actio
     case 'DELETE_GROUP_MEMBER_SUCCESS':
       return methods.deleteMember(state, action.deletedId, action.groupId);
     case 'GET_MESSAGES_SUCCESS':
-      return methods.loadMessages(state, action.messagesDbSnapshot, action.groupId);
+      return methods.loadMessages(state, action.messagesDbSnapshot,
+        action.groupId);
     case 'LEAVE_GROUP_SUCCESS':
       return methods.deleteGroup(state, action.groupId);
     case 'CREATE_GROUP_SUCCESS':

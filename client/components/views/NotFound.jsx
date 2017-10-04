@@ -69,8 +69,8 @@ const mapDispatchToProps = dispatch =>
     resetLoadingState: () => dispatch(resetLoadingState()),
     verifyToken: token => dispatch(verifyToken(token)),
     getPostItMembers: token => dispatch(getPostItMembers(token)),
-    getAllGroupsForUser: (userId, token) =>
-      dispatch(getAllGroupsForUser(userId, token)),
+    getAllGroupsForUser: (userId, token, offset) =>
+      dispatch(getAllGroupsForUser(userId, token, offset)),
     getGroupMembers: (groupId, token) =>
       dispatch(getGroupMembers(groupId, token)),
     getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),

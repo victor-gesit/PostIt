@@ -211,10 +211,16 @@ export class CreateGroup extends React.Component {
     const allUserGroups = this.props.allUserGroups.userGroups;
     return (
       <div id="body">
-        <Navbar store={this.props} allUserGroups={allUserGroups}/>
-        <NotificationSystem className='notification' style={style}
+        <Navbar
+          store={this.props}
+          allUserGroups={allUserGroups}
+        />
+        <NotificationSystem
+          className='notification'
+          style={style}
           ref={
-            (notificationRef) => { this.notificationRef = notificationRef; }} />
+            (notificationRef) => { this.notificationRef = notificationRef; }}
+        />
         <div id="main">
           <div className="tab">
             <button className="tablinks" id="defaultTab" ref="defaultTab"
@@ -271,8 +277,12 @@ export class CreateGroup extends React.Component {
                       Add members</h4></li>
                     {
                       Object.keys(postItMembers).map((userId, index) =>
-                        <RegisteredMember addMember={this.addMember} key={index}
-                        id={userId} userInfo={postItMembers[userId]}/>
+                        <RegisteredMember
+                          addMember={this.addMember}
+                          key={index}
+                          id={userId}
+                          userInfo={postItMembers[userId]}
+                        />
                       )
                     }
                     {
@@ -397,8 +407,8 @@ const mapDispatchToProps = dispatch =>
     verifyToken: token => dispatch(verifyToken(token)),
     getPostItMembers: (token, offset, limit) =>
       dispatch(getPostItMembers(token, offset, limit)),
-    getAllGroupsForUser: (userId, token) =>
-      dispatch(getAllGroupsForUser(userId, token)),
+    getAllGroupsForUser: (userId, token, offset) =>
+      dispatch(getAllGroupsForUser(userId, token, offset)),
     getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
     loadMessages: groupId => dispatch(loadMessages(groupId)),
     getGroupMembers: (groupId, token) =>

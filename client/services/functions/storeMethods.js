@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const methods =  {
+const methods = {
   // Delete a group from State
   deleteGroup: (appState, groupId) => {
     const { userGroups } = appState;
@@ -29,15 +29,17 @@ const methods =  {
     const formattedTime = `${month} ${day}, ${year}, at ${hour}:${minutes}`;
     callback(formattedTime);
   },
-  // Get all groups a user belongs to
-  getAllGroups: (dbSnapshot, done) => {
+  // Load groups a user belongs to
+  getGroups: (dbSnapshot, done) => {
     const groups = dbSnapshot.rows;
-    const result = { userGroups: {}, meta: { count: dbSnapshot.count } };
+    const newState = { meta: {}, userGroups: {} };
     groups.forEach((group) => {
-      result.userGroups[group.id] = {};
-      result.userGroups[group.id].info = group;
+      newState.userGroups[group.id] = newState.userGroups[group.id] || {};
+      newState.userGroups[group.id].info = group;
     });
-    done(null, result);
+    newState.meta.count = dbSnapshot.count;
+    newState.meta.allLoaded = dbSnapshot.allLoaded;
+    done(null, newState);
   },
   // Method to get registered postit members
   getPostItMembers: (dbSnapshot, done) => {
@@ -75,22 +77,11 @@ const methods =  {
     newState.meta.count += 1;
     done(null, newState, createdGroup);
   },
-  // Load groups a user belongs to
-  getGroups: (dbSnapshot, done) => {
-    // Clear the state, to hold new groups for new page
-    const appState = { meta: {}, userGroups: {} };
-    const groups = dbSnapshot.rows;
-    groups.forEach((group) => {
-      appState.userGroups[group.id] = appState.userGroups[group.id] || {};
-      appState.userGroups[group.id].info = group;
-    });
-    appState.meta.count = dbSnapshot.count;
-    done(null, appState);
-  },
   // Load members for a group
   getMembers: (state, dbSnapshot, groupId) => {
     const groupMembers = dbSnapshot.rows;
-    // Initialize state with empty object if group data hasn't been loaded in the past
+    // Initialize state with empty object if
+    // group data hasn't been loaded in the past
     const appState = { meta: { count: dbSnapshot.count }, userGroups: {} };
     appState.userGroups[groupId] = appState.userGroups[groupId] || {};
     appState.userGroups[groupId].members =
@@ -109,7 +100,8 @@ const methods =  {
   // Post a message to a group
   postMessage: (state, newMessage, groupId) => {
     const newState = { meta: { count: 0 }, userGroups: {} };
-    // Initialize the fields with empty objects and array if they had no previous content
+    // Initialize the fields with empty objects
+    // and array if they had no previous content
     const group = state.userGroups[groupId] || {};
     newState.userGroups[groupId] = group;
     const groupInfo = group.info || {};
@@ -131,9 +123,8 @@ const methods =  {
     const newState = { meta: { count: 0 }, userGroups: {} };
     const group = state.userGroups[groupId] || {};
     const groupMembers = group.members || {};
-    newMembers.map((newMember) => {
-      const userId = newMember.id;
-      groupMembers[userId] = newMember;
+    newMembers.forEach((newMember) => {
+      groupMembers[newMember.id] = newMember;
     });
     newState.userGroups[groupId] = group;
     newState.userGroups[groupId].info = group.info || {};
@@ -183,9 +174,11 @@ const methods =  {
   searchGroup: (state, searchResult, groupId) => {
     const groupMembers = searchResult.rows;
     const appState = { meta: { count: searchResult.count }, userGroups: {} };
-    // Initialize state with empty object if group data hasn't been loaded in the past
+    // Initialize state with empty object if
+    // group data hasn't been loaded in the past
     appState.userGroups[groupId] = appState.userGroups[groupId] || {};
-    appState.userGroups[groupId].members = appState.userGroups[groupId].members || {};
+    appState.userGroups[groupId].members =
+      appState.userGroups[groupId].members || {};
     groupMembers.forEach((member) => {
       appState.userGroups[groupId].members[member.id] = member;
     });

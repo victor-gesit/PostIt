@@ -118,10 +118,12 @@ export class NewPassword extends React.Component {
       <div id="body">
       <AuthNav/>
       <div id="main">
-        <NotificationSystem className='notification'style={style}
+        <NotificationSystem
+          className='notification'style={style}
           ref={
             (notificationRef) => { this.notificationRef = notificationRef; }
-            } />
+            }
+        />
         <div className="row">
           <div className="col s12 m6 l6 offset-m3 offset-l3 center">
             <h5>Select a new password</h5>

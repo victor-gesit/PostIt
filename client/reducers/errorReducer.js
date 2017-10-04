@@ -1,3 +1,4 @@
+/* eslint-env browser */
 const errorReducer = (state = { errored: false,
   message: null,
   redirect: { yes: false, to: null } }, action) => {
@@ -228,6 +229,7 @@ const errorReducer = (state = { errored: false,
         errored: false
       };
     case 'VERIFY_TOKEN_ERROR':
+      localStorage.removeItem('token');
       return {
         errored: true,
         message: 'You have been away for a while. Please sign in again',

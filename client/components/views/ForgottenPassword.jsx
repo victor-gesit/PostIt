@@ -96,8 +96,10 @@ export class ForgottenPassword extends React.Component {
         {
           dataLoading ? (
           <div>
-            <NotificationSystem className='notification'style={style}
-              ref={(notificationRef) => { this.notificationRef = notificationRef; }} />
+            <NotificationSystem
+              className='notification'style={style}
+              ref={(notificationRef) => { this.notificationRef = notificationRef; }}
+            />
             <div className="row">
               <div className="col s12 m6 l6 offset-m3 offset-l3 center">
                 <h5>Enter your email to get a password recovery link</h5>
@@ -122,13 +124,16 @@ export class ForgottenPassword extends React.Component {
           </div>
           ) : (
           <div className="row">
-            <NotificationSystem className='notification'style={style}
-              ref={(notificationRef) => { this.notificationRef = notificationRef; }} />
+            <NotificationSystem
+              className='notification'style={style}
+              ref={(notificationRef) => { this.notificationRef = notificationRef; }}
+            />
             <div className="col s12 m6 l6 offset-m3 offset-l3 center">
               <h5>Enter your email to get a password recovery link</h5>
             </div>
             <div className="input-field col s12 m6 offset-m3 offset-l3 l6">
-              <input id="email" ref={(email) => { this.email = email; }} type="email"
+              <input id="email"
+                ref={(email) => { this.email = email; }} type="email"
                 className="validate" ></input>
               <label htmlFor="email"
                 data-error="Enter valid email">Enter email</label>

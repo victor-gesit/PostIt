@@ -56,10 +56,12 @@ export default {
     const offset = req.query.offset || 0;
     const limit = req.query.limit || 6;
 
-    Group.findAndCountAll({ attributes:
-      ['id', 'title', 'description', 'creatorEmail', 'createdBy', 'createdAt'],
+    Group.findAndCountAll({
       offset,
-      limit })
+      limit,
+      attributes:
+        ['id', 'title', 'description', 'creatorEmail', 'createdBy', 'createdAt']
+    })
       .then((allGroups) => {
         res.status(200).send(allGroups);
       }).catch(() =>
@@ -79,16 +81,41 @@ export default {
           from: process.env.EMAIL_USERNAME,
           to: email,
           subject: 'Password Reset',
-          html: `<div style="text-align: center">
-            <img src="http://res.cloudinary.com/gesit/image/upload/v1503911318/logo_ietvz2.png"/>
+          html:
+          `<html>
+            <head>
+            <style>
+            .button {
+                background-color: #c51162;
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+                border-radius: 5px;
+            }
+            </style>
+            </head>
+            <body>
+
+            <b style="color: #c51162;">Hi ${foundUser.firstName},</b>
+            <p>You have requested  a password reset on your PostIt Account. Click below to reset your password</p>
+            <div style="text-align: center">
+            <a href="http://postit-api-victor.herokuapp.com/#/newpassword/${token}" class="button">Reset Password</a>
             </div>
-            <h2 style="color: #c51162;">You have requested  a password reset on your PostIt Account</h2>
-            <h2>
-            <a href="http://postit-api-victor.herokuapp.com/#/newpassword/${token}">
-            Click here</a> to reset your password</h2>
-            <br/><br/>This link is valid for 10 minutes
-            <p>If the password reset was not requested by you, ignore this mail and send a 
-            complaint to postitnotify@gmail.com</p>`
+            <br/>
+            This email is valid for 10 minutes. <br/><br/>
+            Thanks,<br/>
+            Your friends at PostIt
+            <hr/>
+            If you did not request a password reset, please ignore this email, or send a compaint to postitnotify@gmail.com
+            </body>
+            </html>
+            `
         };
         const transporter = nodemailer.createTransport({
           service: process.env.EMAIL_SERVICE,
@@ -143,9 +170,9 @@ export default {
             const token = jwt.sign(userDetails, jwtSecret, {
               expiresIn: '2 days' // expires in 48 hours
             });
-            return res.status(202).send({ success: true,
+            return res.status(202).send({ token,
+              success: true,
               user: userDetails,
-              token,
               message: 'Password changed successfully' });
           });
         });
