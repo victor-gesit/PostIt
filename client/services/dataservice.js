@@ -111,7 +111,7 @@ const dataService = store => next => (action) => {
               message: err.message
             });
           }
-          const addedMembers = res.body;
+          const addedMembers = res.body.addedMembers;
           next({
             type: 'ADD_MEMBER_SUCCESS',
             addedMembers,

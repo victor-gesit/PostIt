@@ -8,10 +8,10 @@ const router = express.Router();
 // Validate token before accessing these routes;
 
 // Load all registered members with offset and limit;
-router.use('/members', tokenValidator.validateToken, generalController.getallusers);
+router.get('/members', tokenValidator.validateToken, generalController.getallusers);
 
 // Load all created groups with offset and limit
-router.use('/groups', tokenValidator.validateToken, generalController.getAllGroups);
+router.get('/groups', tokenValidator.validateToken, generalController.getAllGroups);
 // Verify token, useful for react components that
 // require authentication before they can be accessed
 router.use('/token', tokenValidator.validateToken, (req, res) => {

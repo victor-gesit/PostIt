@@ -63356,7 +63356,7 @@ var dataService = function dataService(store) {
                 message: err.message
               });
             }
-            var addedMembers = res.body;
+            var addedMembers = res.body.addedMembers;
             next({
               type: 'ADD_MEMBER_SUCCESS',
               addedMembers: addedMembers,

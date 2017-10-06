@@ -24,7 +24,7 @@ export default {
         offset = Number(offset);
         res.status(200).send({ ...allUsers, allLoaded, offset });
       }).catch(() =>
-        res.status(401).send({ success: false, message: 'Invalid query in url' }));
+        res.status(422).send({ success: false, message: 'Invalid query in url' }));
   },
   // Load everyone registered on PostIt
   searchForUsers: (req, res) => {
@@ -48,7 +48,7 @@ export default {
       .then((users) => {
         res.status(200).send({ users, searchQuery });
       }).catch(() =>
-        res.status(401).send({ success: false,
+        res.status(422).send({ success: false,
           message: 'Invalid query in url' }));
   },
   // Load all groups created
@@ -65,7 +65,7 @@ export default {
       .then((allGroups) => {
         res.status(200).send(allGroups);
       }).catch(() =>
-        res.status(401).send({ success: false, message: 'Invalid query in url' }));
+        res.status(422).send({ success: false, message: 'Invalid query in url' }));
   },
   receiveEmail: (req, res) => {
     const email = req.body.email || '';
@@ -131,7 +131,7 @@ export default {
               message: 'Could not send email. Check your internet connection'
             });
           }
-          return res.status(202).send({ success: true,
+          return res.status(200).send({ success: true,
             message: 'A password reset link has been sent to your email' });
         });
       } else {
@@ -153,7 +153,7 @@ export default {
     if (passwordToken) {
       jwt.verify(passwordToken, jwtSecret, (err, decoded) => {
         if (err) {
-          return res.status(401).send({ message: 'Expired or invalid token',
+          return res.status(401).send({ message: 'The password recovery link has expired.',
             error: err });
         }
         const email = decoded.email;

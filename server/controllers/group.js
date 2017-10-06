@@ -99,7 +99,10 @@ export default {
           .then((foundMembers) => {
             if (foundMembers !== null && foundMembers.length !== 0) {
               foundGroup.addUser(foundMembers)
-                .then(() => res.send(foundMembers));
+                .then(() => res.status(200).send({
+                  success: true,
+                  addedMembers: foundMembers
+                }));
             } else {
               return res.status(404).send({ success: false,
                 message: 'User not found' });
@@ -232,9 +235,9 @@ export default {
           attributes: ['sentBy', 'id', 'senderId', 'body', 'createdAt', 'priority', 'isComment'],
           order: [['createdAt', 'ASC']]
         }).then(result =>
-          res.send(result)
+          res.status(200).send(result)
         ).catch(() =>
-          res.status(401).send({ success: false, message: 'Invalid query in url' }));
+          res.status(422).send({ success: false, message: 'Invalid query in url' }));
       });
     }).catch(() => res.status(422).send({ success: false, message: 'Invalid Group Id' }));
   },

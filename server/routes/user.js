@@ -17,25 +17,25 @@ router.use(passport.initialize());
 router.post('/signin', (req, res, next) => {
   passport.authenticate('local.signin', (err, user, info) => {
     if (!user) {
-      return res.status(401).send({ success: false,
+      return res.status(422).send({ success: false,
         message: info.message });
     }
     // Successful signin
     // if user is found and password is right
     // create a token
     if (user) {
-      const newUser = {
+      const userInfo = {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
         phone: user.phone,
         id: user.id
       };
-      const token = jwt.sign(newUser, jwtSecret, {
+      const token = jwt.sign(userInfo, jwtSecret, {
         expiresIn: '2 days' // expires in 48 hours
       });
-      return res.status(202).send({ success: true,
-        user: newUser,
+      return res.status(200).send({ success: true,
+        user: userInfo,
         token,
         message: 'Successful Signin' });
     }
@@ -50,13 +50,13 @@ router.post('/signup', (req, res, next) => {
   passport.authenticate('local.signup', (err, user, info) => {
     if (err) {
       const errorMessages = err.errors.map(error => error.message);
-      return res.status(422).send({ success: false,
+      return res.status(400).send({ success: false,
         message: 'Incomplete Fields',
         messages: errorMessages
       });
     }
     if (!user) {
-      return res.status(401).send({ success: false,
+      return res.status(409).send({ success: false,
         message: info.message });
     }
     if (user) {

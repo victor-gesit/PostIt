@@ -18,12 +18,10 @@ router.get('/:id/members', groupController.getMembers);
 
 // Search a group
 router.get('/:id/search', groupController.searchGroup);
+
 // See who has read a message
 router.get('/:id/message/seenby', groupController.seenBy);
-// Get group members (all)
-router.get('/:id/members', groupController.getMembers);
-
-// Delete group members
+// Delete group member
 router.delete('/:id/members', groupController.deleteMembers);
 
 // Delete a group
