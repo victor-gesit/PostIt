@@ -17639,7 +17639,6 @@ var methods = {
       newState.members.postItMembers[member.id] = member;
     });
     newState.members.meta.count = dbSnapshot.count;
-    newState.members.meta.previousOffset = dbSnapshot.offset;
     newState.members.meta.allLoaded = dbSnapshot.allLoaded;
     done(null, newState);
   },
@@ -17665,6 +17664,7 @@ var methods = {
     userGroups[createdGroup.id].members = {};
     newState.userGroups = userGroups;
     newState.meta.count += 1;
+
     done(null, newState, createdGroup);
   },
   // Load members for a group
@@ -17688,7 +17688,7 @@ var methods = {
   },
   // Post a message to a group
   postMessage: function postMessage(state, newMessage, groupId) {
-    var newState = { meta: { count: 0 }, userGroups: {} };
+    var newState = { meta: { count: 0, allLoaded: 0 }, userGroups: {} };
     // Initialize the fields with empty objects
     // and array if they had no previous content
     var group = state.userGroups[groupId] || {};
@@ -17709,7 +17709,7 @@ var methods = {
   },
   // Add a member to a group
   addMembers: function addMembers(state, newMembers, groupId) {
-    var newState = { meta: { count: 0 }, userGroups: {} };
+    var newState = { userGroups: {} };
     var group = state.userGroups[groupId] || {};
     var groupMembers = group.members || {};
     newMembers.forEach(function (newMember) {
@@ -17746,7 +17746,7 @@ var methods = {
   // Load message into a group
   loadMessages: function loadMessages(state, messagesDbSnapshot, groupId) {
     var messages = messagesDbSnapshot.rows;
-    var newState = { meta: { count: 0 }, userGroups: {} };
+    var newState = { userGroups: {} };
     var messagesObject = {};
     messages.map(function (message, index) {
       methods.getTimeStamp(message.createdAt, function (formattedTime) {
@@ -51127,7 +51127,7 @@ var AddMemberModal = function (_React$Component) {
       var groupMembers = group.members;
       var postItMembers = this.props.store.postItInfo.members.postItMembers;
       var membersCount = this.props.store.postItInfo.members.meta.count;
-      var allLoaded = Object.keys(postItMembers).length;
+      var allLoaded = this.props.store.postItInfo.members.meta.allLoaded;
       var filteredMembers = Object.keys(postItMembers).filter(function (userId) {
         return !_lodash2.default.has(groupMembers, userId);
       });
@@ -62463,7 +62463,7 @@ var allUserGroupsReducer = function allUserGroupsReducer() {
     case 'LEAVE_GROUP_SUCCESS':
       return _storeMethods2.default.deleteGroup(state, action.groupId);
     case 'SIGN_OUT':
-      return { meta: { count: 0 }, userGroups: {} };
+      return { meta: { count: 0, allLoaded: 0 }, userGroups: {} };
     default:
       return state;
   }
@@ -63096,11 +63096,11 @@ var postItInfoReducer = function postItInfoReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
     members: {
       postItMembers: {},
-      meta: { count: 0, allLoaded: 0, previousOffset: 0 }
+      meta: { count: 0, allLoaded: 0 }
     },
     groups: {
       postItGroups: {},
-      meta: { count: 0 }
+      meta: { count: 0, allLoaded: 0 }
     }
   };
   var action = arguments[1];
@@ -63117,11 +63117,11 @@ var postItInfoReducer = function postItInfoReducer() {
       return {
         members: {
           postItMembers: {},
-          meta: { count: 0 }
+          meta: { count: 0, allLoaded: 0 }
         },
         groups: {
           postItGroups: {},
-          meta: { count: 0 }
+          meta: { count: 0, allLoaded: 0 }
         }
       };
     default:
@@ -63179,7 +63179,7 @@ var userGroupsReducer = function userGroupsReducer() {
     case 'CREATE_GROUP_SUCCESS':
       return _extends({}, state, action.newState);
     case 'SIGN_OUT':
-      return { meta: { count: 0 }, userGroups: {} };
+      return { meta: { count: 0, allLoaded: 0 }, userGroups: {} };
     default:
       return state;
   }

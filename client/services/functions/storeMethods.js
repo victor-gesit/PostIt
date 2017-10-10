@@ -49,7 +49,6 @@ const methods = {
       newState.members.postItMembers[member.id] = member;
     });
     newState.members.meta.count = dbSnapshot.count;
-    newState.members.meta.previousOffset = dbSnapshot.offset;
     newState.members.meta.allLoaded = dbSnapshot.allLoaded;
     done(null, newState);
   },
@@ -75,6 +74,7 @@ const methods = {
     userGroups[createdGroup.id].members = {};
     newState.userGroups = userGroups;
     newState.meta.count += 1;
+
     done(null, newState, createdGroup);
   },
   // Load members for a group
@@ -99,7 +99,7 @@ const methods = {
   },
   // Post a message to a group
   postMessage: (state, newMessage, groupId) => {
-    const newState = { meta: { count: 0 }, userGroups: {} };
+    const newState = { meta: { count: 0, allLoaded: 0 }, userGroups: {} };
     // Initialize the fields with empty objects
     // and array if they had no previous content
     const group = state.userGroups[groupId] || {};
@@ -120,7 +120,7 @@ const methods = {
   },
   // Add a member to a group
   addMembers: (state, newMembers, groupId) => {
-    const newState = { meta: { count: 0 }, userGroups: {} };
+    const newState = { userGroups: {} };
     const group = state.userGroups[groupId] || {};
     const groupMembers = group.members || {};
     newMembers.forEach((newMember) => {
@@ -155,7 +155,7 @@ const methods = {
   // Load message into a group
   loadMessages: (state, messagesDbSnapshot, groupId) => {
     const messages = messagesDbSnapshot.rows;
-    const newState = { meta: { count: 0 }, userGroups: {} };
+    const newState = { userGroups: {} };
     const messagesObject = {};
     messages.map((message, index) => {
       methods.getTimeStamp(message.createdAt, (formattedTime) => {

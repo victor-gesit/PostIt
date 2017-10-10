@@ -1,38 +1,35 @@
 import { Reducer } from 'redux-testkit';
 import loadedMessagesReducer from '../../reducers/loadedMessagesReducer';
-
-const initialState = { groupId: null };
-const messagesLoaded = { groupId: '12345' };
-const groupCreated = { groupId: '12345' };
-
-const actionLoadMessages = { type: 'LOAD_MESSAGES', groupId: '12345' };
-const actionCreateGroup = { type: 'CREATE_GROUP_SUCCESS', data: { createdGroup: { id: '12345' } } };
-const actionDeleteGroup = { type: 'DELETE_GROUP_SUCCESS' };
-const actionLeaveGroup = { type: 'LEAVE_GROUP_SUCCESS' };
-const actionSignOut = { type: 'SIGN_OUT' };
+import { loadedMessagesReducerMock as mock } from '../mockData';
 
 describe('authStateReducer', () => {
   it('should have an initial state', () => {
     expect(loadedMessagesReducer(undefined, {
       type: 'UNREGISTERED'
-    })).toEqual(initialState);
+    })).toEqual(mock.initialState);
   });
   it('should not affect state', () => {
-    Reducer(loadedMessagesReducer).expect({ type: 'NOT_EXISTING' }).toReturnState(initialState);
+    Reducer(loadedMessagesReducer).expect({ type: 'NOT_EXISTING' })
+      .toReturnState(mock.initialState);
   });
   it('should load messages into the store', () => {
-    Reducer(loadedMessagesReducer).expect(actionLoadMessages).toReturnState(messagesLoaded);
+    Reducer(loadedMessagesReducer).expect(mock.actionLoadMessages)
+      .toReturnState(mock.messagesLoaded);
   });
   it('should set store with id of created group after a group is created', () => {
-    Reducer(loadedMessagesReducer).expect(actionCreateGroup).toReturnState(groupCreated);
+    Reducer(loadedMessagesReducer).expect(mock.actionCreateGroup)
+      .toReturnState(mock.groupCreated);
   });
   it('should reset state after group is deleted', () => {
-    Reducer(loadedMessagesReducer).expect(actionDeleteGroup).toReturnState(initialState);
+    Reducer(loadedMessagesReducer).expect(mock.actionDeleteGroup)
+      .toReturnState(mock.initialState);
   });
   it('should reset state after a user leaves a group', () => {
-    Reducer(loadedMessagesReducer).expect(actionLeaveGroup).toReturnState(initialState);
+    Reducer(loadedMessagesReducer).expect(mock.actionLeaveGroup)
+      .toReturnState(mock.initialState);
   });
   it('should reset state after a user signs out', () => {
-    Reducer(loadedMessagesReducer).expect(actionSignOut).toReturnState(initialState);
+    Reducer(loadedMessagesReducer).expect(mock.actionSignOut)
+      .toReturnState(mock.initialState);
   });
 });

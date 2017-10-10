@@ -14,7 +14,7 @@ const allUserGroupsReducer = (state = { meta: { count: 0, allLoaded: 0 },
     case 'LEAVE_GROUP_SUCCESS':
       return methods.deleteGroup(state, action.groupId);
     case 'SIGN_OUT':
-      return { meta: { count: 0 }, userGroups: {} };
+      return { meta: { count: 0, allLoaded: 0 }, userGroups: {} };
     default:
       return state;
   }

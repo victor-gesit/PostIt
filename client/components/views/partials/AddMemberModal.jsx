@@ -81,7 +81,7 @@ export default class AddMemberModal extends React.Component {
     const groupMembers = group.members;
     const postItMembers = this.props.store.postItInfo.members.postItMembers;
     const membersCount = this.props.store.postItInfo.members.meta.count;
-    const allLoaded = Object.keys(postItMembers).length;
+    const allLoaded = this.props.store.postItInfo.members.meta.allLoaded;
     const filteredMembers = Object.keys(postItMembers).filter(userId =>
       !_.has(groupMembers, userId)
     );

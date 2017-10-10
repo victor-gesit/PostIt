@@ -1,11 +1,7 @@
-import React from 'react';
-import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
-import { StaticRouter } from 'react-router';
-import { NotFound } from '../../components/views/NotFound.jsx';
 
-describe('<NotFound/>', () => {
-  const props = {
+export default {
+  props: {
     allUserGroups: {
 
     },
@@ -36,12 +32,5 @@ describe('<NotFound/>', () => {
         }
       }
     }
-  };
-  it('calls the leaveGroup method on button click', () => {
-    const wrapper = shallow(
-      <StaticRouter>
-        <NotFound {...props} />
-      </StaticRouter>
-    );
-  });
-});
+  }
+};

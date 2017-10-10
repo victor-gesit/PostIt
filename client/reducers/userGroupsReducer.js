@@ -28,7 +28,7 @@ const userGroupsReducer = (state = { meta: { count: 0, allLoaded: 0 },
     case 'CREATE_GROUP_SUCCESS':
       return { ...state, ...action.newState };
     case 'SIGN_OUT':
-      return { meta: { count: 0 }, userGroups: {} };
+      return { meta: { count: 0, allLoaded: 0 }, userGroups: {} };
     default:
       return state;
   }

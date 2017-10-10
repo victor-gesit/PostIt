@@ -2,37 +2,15 @@ import React from 'react';
 import { mount } from 'enzyme';
 import sinon from 'sinon';
 import AddMemberModal, { RegisteredMember } from '../../../components/views/partials/AddMemberModal.jsx';
+import { addMemberModalMock as mock } from '../../mockData';
 
 describe('<AddMemberModal/>', () => {
-  const props = {
-    store: {
-      getPostItMembers: sinon.spy(),
-      // method that makes API call to add members
-      addUser: sinon.spy(),
-      match: {
-        params: {
-          groupId: '12345'
-        }
-      },
-      groups: {
-        userGroups: {}
-      },
-      history: [],
-      postItInfo: {
-        members: {
-          postItMembers: {
-
-          }
-        }
-      }
-    }
-  };
   it('makes calls the method for getting all the registered members on PostIt', () => {
-    const wrapper = mount(<AddMemberModal {...props} />);
-    expect(props.store.getPostItMembers.calledOnce).toEqual(true);
+    const wrapper = mount(<AddMemberModal {...mock.props} />);
+    expect(mock.props.store.getPostItMembers.calledOnce).toEqual(true);
   });
   it('calls the addMembers method on button click', () => {
-    const wrapper = mount(<AddMemberModal {...props} />);
+    const wrapper = mount(<AddMemberModal {...mock.props} />);
     const stub = sinon.stub(wrapper.instance(), 'addNewMembers');
     wrapper.instance().forceUpdate();
     wrapper.update();
@@ -40,21 +18,21 @@ describe('<AddMemberModal/>', () => {
     expect(stub.called).toEqual(true);
   });
   it('has it\'s addMember method add an email to the array of the emails to be added to group', () => {
-    const wrapper = mount(<AddMemberModal {...props} />);
+    const wrapper = mount(<AddMemberModal {...mock.props} />);
     wrapper.instance().addMember(true, 'victorgesit@andela.com');
     expect(wrapper.instance().selectedMembers[0]).toEqual('victorgesit@andela.com');
   });
   it('has it\'s addMember method remove an email to the array of the emails to be added to group', () => {
-    const wrapper = mount(<AddMemberModal {...props} />);
+    const wrapper = mount(<AddMemberModal {...mock.props} />);
     wrapper.instance().selectedMembers.push('victorgesit@andela.com');
     wrapper.instance().addMember(false, 'victorgesit@andela.com');
     expect(wrapper.instance().selectedMembers.indexOf('victorgesit@andela.com')).toEqual(-1);
   });
   it('has it\'s addNewMembers method call the action that makes an API call to add new members', () => {
-    const wrapper = mount(<AddMemberModal {...props} />);
+    const wrapper = mount(<AddMemberModal {...mock.props} />);
     wrapper.instance().selectedMembers.push('victorgesit@andela.com');
     wrapper.instance().addNewMembers();
-    expect(props.store.addUser.calledOnce).toEqual(true);
+    expect(mock.props.store.addUser.calledOnce).toEqual(true);
   });
 });
 

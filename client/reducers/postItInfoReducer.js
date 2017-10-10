@@ -2,11 +2,11 @@ const postItInfoReducer = (state = {
   members: {
     postItMembers: {
     },
-    meta: { count: 0, allLoaded: 0, previousOffset: 0 }
+    meta: { count: 0, allLoaded: 0 }
   },
   groups: {
     postItGroups: {},
-    meta: { count: 0 }
+    meta: { count: 0, allLoaded: 0 }
   }
 }, action) => {
   switch (action.type) {
@@ -22,11 +22,11 @@ const postItInfoReducer = (state = {
       return {
         members: {
           postItMembers: {},
-          meta: { count: 0 }
+          meta: { count: 0, allLoaded: 0 }
         },
         groups: {
           postItGroups: {},
-          meta: { count: 0 }
+          meta: { count: 0, allLoaded: 0 }
         }
       };
     default:

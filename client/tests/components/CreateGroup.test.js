@@ -4,48 +4,19 @@ import sinon from 'sinon';
 import { StaticRouter } from 'react-router';
 import { CreateGroup, RegisteredMember } from '../../components/views/CreateGroup.jsx';
 import Spinner from '../../components/views/partials/Spinner.jsx';
+import { createGroupMock as mock, registeredMemberMock as memberMock } from '../mockData';
 
 describe('<CreateGroup/>', () => {
-  const props = {
-    allUserGroups: {
-      userGroups: {
-
-      }
-    },
-    apiError: {
-      redirect: {
-
-      }
-    },
-    match: {
-      params: {
-        groupId: '12345'
-      }
-    },
-    postItInfo: {
-      members: {
-        postItMembers: {
-          mnopq: {
-            id: 'mnopq'
-          }
-        }
-      }
-    },
-    resetRedirect: sinon.spy(),
-    createGroup: sinon.spy(),
-    getPostItMembers: sinon.spy(),
-    getAllGroupsForUser: sinon.spy(),
-  };
   it('renders the component', () => {
     const wrapper = mount(
       <StaticRouter>
-        <CreateGroup {...props} />
+        <CreateGroup {...mock.props} />
       </StaticRouter>
     );
   });
   it('calls createGroup method on button click', () => {
     const wrapper = shallow(
-      <CreateGroup { ...props }/>
+      <CreateGroup { ...mock.props }/>
     );
     const stub = sinon.stub(wrapper.instance(), 'createGroup');
     wrapper.instance().forceUpdate();
@@ -53,23 +24,18 @@ describe('<CreateGroup/>', () => {
     wrapper.find('#createGroupButton').simulate('click');
     expect(stub.called).toEqual(true);
   });
-  it('renders spinners when data is being loaded from API', () => {
-    props.dataLoading = true;
-    const wrapper = shallow(<CreateGroup { ...props }/>);
-    expect(wrapper.find(Spinner).length).toEqual(2);
-  });
   it('redirects to the group messages page when the store is set to redirect', () => {
-    props.apiError.redirect.yes = true;
-    const wrapper = shallow(<CreateGroup { ...props }/>);
+    mock.props.apiError.redirect.yes = true;
+    const wrapper = shallow(<CreateGroup { ...mock.props }/>);
     // Force a call to componentWillUpdate
     wrapper.setProps({ });
     wrapper.instance().forceUpdate();
     wrapper.update();
-    expect(props.resetRedirect.calledOnce).toEqual(true);
+    expect(mock.props.resetRedirect.calledOnce).toEqual(true);
   });
   it('calls switchTab method on button click', () => {
     const wrapper = shallow(
-      <CreateGroup { ...props }/>
+      <CreateGroup { ...mock.props }/>
     );
     const stub = sinon.stub(wrapper.instance(), 'switchTab');
     wrapper.instance().forceUpdate();
@@ -79,14 +45,14 @@ describe('<CreateGroup/>', () => {
   });
   it('adds an email to the list of users to be added to the new group on method call', () => {
     const wrapper = shallow(
-      <CreateGroup { ...props }/>
+      <CreateGroup { ...mock.props }/>
     );
     wrapper.instance().addMember(true, 'victorgesit@andela.com');
     expect(wrapper.instance().selectedMembers[0]).toEqual('victorgesit@andela.com');
   });
   it('removes an email to the list of users to be added when checkbox is unchecked', () => {
     const wrapper = shallow(
-      <CreateGroup { ...props }/>
+      <CreateGroup { ...mock.props }/>
     );
     wrapper.instance().selectedMembers.push('victorgesit@andela.com');
     wrapper.instance().forceUpdate();
@@ -96,7 +62,7 @@ describe('<CreateGroup/>', () => {
   });
   it('can call switchTab method', () => {
     const wrapper = shallow(
-      <CreateGroup { ...props }/>
+      <CreateGroup { ...mock.props }/>
     );
     wrapper.instance().refs = {
       members: {
@@ -117,7 +83,7 @@ describe('<CreateGroup/>', () => {
   });
   it('can call createGroup method that makes API call to create the group', () => {
     const wrapper = shallow(
-      <CreateGroup { ...props }/>
+      <CreateGroup { ...mock.props }/>
     );
     wrapper.instance().title = {
       value: 'Group Title',
@@ -128,38 +94,8 @@ describe('<CreateGroup/>', () => {
     wrapper.instance().createGroup();
   });
   it('calls the method to display a notification when one exists', () => {
-    const propsWithError = {
-      allUserGroups: {
-        userGroups: {
-
-        }
-      },
-      apiError: {
-        message: 'An Error Occured',
-        redirect: {
-          yes: false
-        }
-      },
-      match: {
-        params: {
-          groupId: '12345'
-        }
-      },
-      postItInfo: {
-        members: {
-          postItMembers: {
-            mnopq: {
-              id: 'mnopq'
-            }
-          }
-        }
-      },
-      resetErrorLog: sinon.spy(),
-      getPostItMembers: sinon.spy(),
-      getAllGroupsForUser: sinon.spy(),
-    };
     const wrapper = shallow(
-      <CreateGroup { ...propsWithError }/>
+      <CreateGroup { ...mock.propsWithError }/>
     );
     const stub = sinon.stub(wrapper.instance(), 'showNotification');
     wrapper.instance().notificationSystem = {
@@ -174,36 +110,15 @@ describe('<CreateGroup/>', () => {
   });
 });
 
-
-
-
 describe('<RegisteredMember/>', () => {
   it('renders the component', () => {
-    const props = {
-      userInfo: {
-        email: 'victorgesit@andela.com',
-        id: '12345'
-      },
-      store: {
-        signOut: sinon.spy()
-      }
-    };
     const wrapper = mount(
-      <RegisteredMember { ...props }/>
+      <RegisteredMember { ...memberMock.props }/>
     );
   });
   it('calls method to add a user to the new group on button click', () => {
-    const props = {
-      userInfo: {
-        email: 'victorgesit@andela.com',
-        id: '12345'
-      },
-      store: {
-        signOut: sinon.spy()
-      }
-    };
     const wrapper = mount(
-      <RegisteredMember { ...props }/>
+      <RegisteredMember { ...memberMock.props }/>
     );
     const stub = sinon.stub(wrapper.instance(), 'addOrRemove');
     wrapper.instance().forceUpdate();

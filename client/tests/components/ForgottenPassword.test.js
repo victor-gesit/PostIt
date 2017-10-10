@@ -3,22 +3,14 @@ import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
 import { ForgottenPassword } from '../../components/views/ForgottenPassword.jsx';
 import Spinner from '../../components/views/partials/Spinner.jsx';
+import { forgottenPasswordMock as mock } from '../mockData';
 
 describe('<ForgottenPassword/>', () => {
-  const props = {
-    leaveGroup: sinon.spy(),
-    resetErrorLog: sinon.spy(),
-    resetLoadingState: sinon.spy(),
-    apiError: {
-      errored: false,
-      message: 'No message'
-    }
-  };
   it('renders the component', () => {
-    const wrapper = mount(<ForgottenPassword {...props} />);
+    const wrapper = mount(<ForgottenPassword {...mock.props} />);
   });
   it('it calls the recoverPassword component method when a button is clicked', () => {
-    const wrapper = shallow(<ForgottenPassword {...props} />);
+    const wrapper = shallow(<ForgottenPassword {...mock.props} />);
     const stub = sinon.stub(wrapper.instance(), 'recoverPassword');
     wrapper.instance().notificationSystem = {
       addNotification: () => {}
@@ -29,16 +21,7 @@ describe('<ForgottenPassword/>', () => {
     expect(stub.called).toEqual(true);
   });
   it('it calls the showNotification component method when an error occurs', () => {
-    const propsWithError = {
-      leaveGroup: sinon.spy(),
-      resetErrorLog: sinon.spy(),
-      recoverPassword: sinon.spy(),
-      apiError: {
-        errored: true,
-        message: 'Error message'
-      }
-    };
-    const wrapper = shallow(<ForgottenPassword {...propsWithError} />);
+    const wrapper = shallow(<ForgottenPassword {...mock.propsWithError} />);
     const stub = sinon.stub(wrapper.instance(), 'showNotification');
     wrapper.instance().notificationSystem = {
       addNotification: () => {}
@@ -52,17 +35,9 @@ describe('<ForgottenPassword/>', () => {
     expect(stub.called).toEqual(true);
   });
   it('renders a <Spinner /> component when data is loading from API call', () => {
-    const propsWithDataLoading = {
-      dataLoading: true,
-      leaveGroup: sinon.spy(),
-      resetErrorLog: sinon.spy(),
-      resetLoadingState: sinon.spy(),
-      apiError: {
-        errored: false,
-        message: 'No message'
-      }
-    };
-    const wrapper = shallow(<ForgottenPassword {...propsWithDataLoading} />);
+    const wrapper = shallow(<ForgottenPassword
+      {...mock.propsWithDataLoading}
+      />);
     expect(wrapper.find(Spinner).length).toEqual(1);
   });
 });
