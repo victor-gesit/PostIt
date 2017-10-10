@@ -9,7 +9,7 @@
 PostIt is a simple application that allows friends and colleagues create groups for communications. 
 ## Dependencies
 
-### Key Dependencies
+### System Dependencies
  This app's functionality depends on multiple NodeJS packages
 * [NodeJS](https://nodejs.org/) This is a JavaScript runtime built on Chrome's V8 JavaScript engine. It is used for installing and managing the dependencies.
 * [Express](https://expressjs.com/) This is used to create the web routes/endpoints.
@@ -43,6 +43,19 @@ A comprehensive swagger documentation is available [here](https://app.swaggerhub
 # Testing
 To test the application codebase
 * Run `npm test`, to view test output, and `gulp coverage` to view the code coverage
+
+## License
+This project is available for use and modification under the MIT License. See [here](https://github.com/victor4l/PostIt/blob/add-license-1/LICENSE) for the licence.
+
+
+## FAQs
+Check in the Wiki for the FAQs
+
+## Limitations
+This app, though awesome still has some shortcomings.
+* Real time notifications are not set up.
+* It is not an effective app for real time messaging. The socket.io implementation hasn't factor in a lot of the edge cases that come into play in realtime messaging applications.
+
 
 # Contributing to the Project
 Contributions are welcome and appreciated. To contribute
