@@ -7,19 +7,13 @@
 
 ## Introduction 
 PostIt is a simple application that allows friends and colleagues create groups for communications. 
-## Dependencies
 
-### System Dependencies
- This app's functionality depends on multiple NodeJS packages
+### Technologies used
 * [NodeJS](https://nodejs.org/) This is a JavaScript runtime built on Chrome's V8 JavaScript engine. It is used for installing and managing the dependencies.
-* [Express](https://expressjs.com/) This is used to create the web routes/endpoints.
-* [Body-Parser](https://www.npmjs.com/package/body-parser) This is used for parsing the content of forms sent to the web app.
-* [dotenv](https://www.npmjs.com/package/dotenv) This handles the management and dynamic assignment of environmental variables
-* [body-parser](https://www.npmjs.com/package/body-parser) This parses the request into a body that can be accessed.
-* [passportjs](passportjs.org) This handles user signin and signup, and user creation to the database
-* [pg](https://www.npmjs.com/package/pg) PostgreSQL client for accessing PostgreSQL db with javascript
-* [sequelize](https://www.npmjs.com/package/sequelize) Sequelize is a promise-based Node.js ORM for Postgres, MySQL, SQLite and Microsoft SQL Server.
-* [pg-hstore](https://www.npmjs.com/package/pg-hstore) This serializes and deserializes json data to and from pg 
+* [ReactJS](https://reactjs.org) The front end is developed using the ReactJS library
+* [Redux](https://redux.org) State is contained on the client side using Redux
+* [socket.io](https://socket.io) This is a JavaScript library for realtime web applications. It enables realtime, bi-directional communication between web clients and servers. It has two parts: a client-side library that runs in the browser, and a server-side library for Node.js. It was used for real time communication among members of groups
+* [nodemailer](https://nodemailer.com) This is an e-mail sending Nodejs module created by Andris Reinman. It is used in parts of the app that involve sending emails (password reset, group notifications);
 
 ## Installation Guide
 * Clone the repository [here](www.github.com/victor4l/postit)
@@ -45,7 +39,7 @@ To test the application codebase
 * Run `npm test`, to view test output, and `gulp coverage` to view the code coverage
 
 ## License
-This project is available for use and modification under the MIT License. See [here](https://github.com/victor4l/PostIt/blob/add-license-1/LICENSE) for the licence.
+This project is available for use and modification under the MIT License. See [here](https://github.com/victor4l/PostIt/blob/add-license-1/LICENSE) for the licence file.
 
 
 ## FAQs
@@ -55,7 +49,8 @@ Check in the Wiki for the FAQs
 This app, though awesome still has some shortcomings.
 * Real time notifications are not set up.
 * It is not an effective app for real time messaging. The socket.io implementation hasn't factor in a lot of the edge cases that come into play in realtime messaging applications.
-
+* A user's profile cannot be updated. Passwords can be reset though.
+* Images cannot be uploaded onto the application
 
 # Contributing to the Project
 Contributions are welcome and appreciated. To contribute
