@@ -16,40 +16,36 @@ export const signUp = (firstName, lastName, email, password, phone) =>
     phone
   });
 
-export const postMessage = (senderId, groupId, body,
+export const postMessage = (groupId, body,
   priority, isComment, token) =>
   ({
     type: 'POST_MESSAGE',
     body,
     priority,
     isComment,
-    senderId,
     groupId,
     token
   });
 
-export const addUser = (email, groupId, adderId, token) =>
+export const addUser = (email, groupId, token) =>
   ({
     type: 'ADD_MEMBER',
     email,
     groupId,
-    adderId,
     token
   });
 
-export const deleteGroup = (ownerId, groupId, token) =>
+export const deleteGroup = (groupId, token) =>
   ({
     type: 'DELETE_A_GROUP',
-    ownerId,
     groupId,
     token
   });
 
-export const createGroup = (creatorId, title,
+export const createGroup = (title,
   description, initialMembers, token) =>
   ({
     type: 'CREATE_GROUP',
-    creatorId,
     title,
     description,
     initialMembers,
@@ -86,26 +82,23 @@ export const getAllGroups = (offset, limit, token) =>
     token
   });
 
-export const getGroupsForUser = (userId, offset, limit, token) =>
+export const getGroupsForUser = (offset, limit, token) =>
   ({
     type: 'GET_ALL_GROUPS_FOR_A_USER',
-    userId,
     offset,
     limit,
     token
   });
 
-export const getAllGroupsForUser = (userId, token, offset = 0) =>
+export const getAllGroupsForUser = (token, offset = 0) =>
   ({
     type: 'GET_ALL_GROUPS_FOR_A_USER_AT_ONCE',
-    userId,
     token,
     offset
   });
-export const deleteMember = (ownerId, idToDelete, groupId, token) =>
+export const deleteMember = (idToDelete, groupId, token) =>
   ({
     type: 'DELETE_GROUP_MEMBER',
-    ownerId,
     idToDelete,
     groupId,
     token

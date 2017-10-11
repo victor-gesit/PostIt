@@ -1,6 +1,5 @@
 /* eslint-env browser */
 import React from 'react';
-import jwtDecode from 'jwt-decode';
 import _ from 'lodash';
 /**
  * A Component that displays a modal for adding a member
@@ -59,16 +58,9 @@ export default class AddMemberModal extends React.Component {
   addNewMembers() {
     const groupId = this.props.store.match.params.groupId;
     const token = localStorage.getItem('token');
-    let decode;
-    try {
-      decode = jwtDecode(token);
-    } catch (err) {
-      this.props.store.history.push('/');
-    }
-    const adderId = decode.id;
     const emails = this.selectedMembers;
     if (emails.length > 0) {
-      this.props.store.addUser(emails, groupId, adderId, token);
+      this.props.store.addUser(emails, groupId, token);
     }
   }
   /**

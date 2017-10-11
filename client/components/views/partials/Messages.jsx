@@ -1,6 +1,5 @@
 /* eslint-env browser */
 import React from 'react';
-import jwtDecode from 'jwt-decode';
 import Spinner from './Spinner.jsx';
 /**
  * A React ccomponent that displays all the messages for a group
@@ -16,16 +15,9 @@ export default class Messages extends React.Component {
     const oldGroupId = this.props.store.match.params.groupId;
     if (newGroupId !== oldGroupId) {
       const token = localStorage.getItem('token');
-      let decode;
-      try {
-        decode = jwtDecode(token);
-      } catch (err) {
-        this.props.store.signOut();
-      }
-      const userId = decode.id;
       const socket = this.props.socket;
-      socket.emit('open group', { groupId: newGroupId, userId });
-      socket.emit('close group', { groupId: oldGroupId, userId });
+      socket.emit('open group', { groupId: newGroupId, token });
+      socket.emit('close group', { groupId: oldGroupId, token });
     }
   }
   /**
@@ -45,14 +37,7 @@ export default class Messages extends React.Component {
   render() {
     const groupId = this.props.store.match.params.groupId;
     const groupLoaded = this.props.store.groups.userGroups[groupId];
-    const token = localStorage.getItem('token');
-    let decode;
-    try {
-      decode = jwtDecode(token);
-    } catch (err) {
-      this.props.store.history.push('/');
-    }
-    const userId = decode.id;
+    const userId = this.props.store.appInfo.userDetails.id;
     let messages;
     // Check that group data is loaded
     if (groupLoaded) {

@@ -79,7 +79,6 @@ const dataService = store => next => (action) => {
           body: action.body,
           priority: action.priority,
           isComment: action.isComment,
-          senderId: action.senderId,
         })
         .end((err, res) => {
           if (err) {
@@ -102,7 +101,6 @@ const dataService = store => next => (action) => {
         .set('x-access-token', action.token)
         .send({
           email: action.email,
-          adderId: action.adderId,
         })
         .end((err, res) => {
           if (err) {
@@ -124,9 +122,7 @@ const dataService = store => next => (action) => {
       request
         .delete(`${url}/group/${action.groupId}/delete`)
         .set('x-access-token', action.token)
-        .send({
-          ownerId: action.ownerId
-        })
+        .send()
         .end((err) => {
           if (err) {
             return next({
@@ -146,7 +142,6 @@ const dataService = store => next => (action) => {
       request.post(`${url}/group`)
         .set('x-access-token', action.token)
         .send({
-          creatorId: action.creatorId,
           title: action.title,
           description: action.description,
           initialMembers: action.initialMembers
@@ -307,7 +302,7 @@ const dataService = store => next => (action) => {
     // Get all groups a user belongs to (paginated)
     case 'GET_ALL_GROUPS_FOR_A_USER':
       request
-        .get(`${url}/user/${action.userId}/groups?offset=${action.offset}&limit=${action.limit}`)
+        .get(`${url}/user/groups?offset=${action.offset}&limit=${action.limit}`)
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
@@ -331,7 +326,7 @@ const dataService = store => next => (action) => {
     // Get all groups a user belongs to (non paginated)
     case 'GET_ALL_GROUPS_FOR_A_USER_AT_ONCE':
       request
-        .get(`${url}/user/${action.userId}/groups?offset=${action.offset}`)
+        .get(`${url}/user/groups?offset=${action.offset}`)
         .set('x-access-token', action.token)
         .end((err, res) => {
           if (err) {
@@ -355,7 +350,6 @@ const dataService = store => next => (action) => {
         .delete(`${url}/group/${action.groupId}/members`)
         .set('x-access-token', action.token)
         .send({
-          ownerId: action.ownerId,
           idToDelete: action.idToDelete,
         })
         .end((err) => {
@@ -379,14 +373,16 @@ const dataService = store => next => (action) => {
       request
         .get(`${url}/token`)
         .set('x-access-token', action.token)
-        .end((err) => {
+        .end((err, res) => {
           if (err) {
             return next({
               type: 'VERIFY_TOKEN_ERROR',
             });
           }
+          const userDetails = res.body.user;
           next({
             type: 'VERIFY_TOKEN_SUCCESS',
+            userDetails
           });
         });
       break;

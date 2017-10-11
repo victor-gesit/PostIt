@@ -45,7 +45,6 @@ export class SignInForm extends React.Component {
    * @returns {undefined} This method returns nothing
    */
   componentDidUpdate() {
-    this.button.focus();
     const isSignedIn = this.props.store.appInfo.authState.signedIn;
     const errorMessage = this.props.store.apiError.message;
     const { from } = this.props.store.location.state || { from: null };

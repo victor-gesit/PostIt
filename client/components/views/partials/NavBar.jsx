@@ -1,6 +1,5 @@
 /* eslint-env browser */
 import React from 'react';
-import jwtDecode from 'jwt-decode';
 import { Link } from 'react-router-dom';
 import ReactToolTip from 'react-tooltip';
 import Groups from './Groups.jsx';
@@ -34,13 +33,7 @@ export class NavBar extends React.Component {
     const groupId = this.props.store.match.params.groupId;
     const isCreator = this.props.isCreator;
     const token = localStorage.getItem('token');
-    let decode;
-    try {
-      decode = jwtDecode(token);
-    } catch (err) {
-      this.props.store.history.push('/');
-    }
-    const userDetails = decode;
+    const userDetails = this.props.store.appInfo.userDetails;
     const allUserGroups = this.props.allUserGroups;
     const path = this.props.store.match.path;
     let modalText = 'Leave Group';

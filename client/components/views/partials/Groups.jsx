@@ -1,7 +1,6 @@
 /* eslint-env browser */
 import React from 'react';
 import { Link } from 'react-router-dom';
-import jwtDecode from 'jwt-decode';
 
 /**
  * React component to hold the groups a user belongs to
@@ -22,15 +21,8 @@ export default class Groups extends React.Component {
   loadMore() {
     // Load all registered members
     const token = localStorage.getItem('token');
-    let decode;
-    try {
-      decode = jwtDecode(token);
-    } catch (err) {
-      this.props.signOut();
-    }
-    const userId = decode.id;
     const allLoaded = this.props.store.allUserGroups.meta.allLoaded;
-    this.props.store.getAllGroupsForUser(userId, token, allLoaded);
+    this.props.store.getAllGroupsForUser(token, allLoaded);
   }
   /**
    * Render method of React component
@@ -86,17 +78,10 @@ export class UserGroup extends React.Component {
   loadMessagesAndMembers(event) {
     const groupId = event.target.id;
     const token = localStorage.getItem('token');
-    let decode;
-    try {
-      decode = jwtDecode(token);
-    } catch (err) {
-      this.props.store.history.push('/');
-    }
-    const userId = decode.id;
     this.props.store.getMessages(groupId, token);
 
     // Load user groups
-    this.props.store.getAllGroupsForUser(userId, token);
+    this.props.store.getAllGroupsForUser(token);
     // Load all members of the group
     this.props.store.getGroupMembers(groupId, token);
     // Load messages into the conversation page

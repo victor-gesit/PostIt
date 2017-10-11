@@ -71,8 +71,8 @@ const mapDispatchToProps = dispatch =>
     resetLoadingState: () => dispatch(resetLoadingState()),
     verifyToken: token => dispatch(verifyToken(token)),
     getPostItMembers: token => dispatch(getPostItMembers(token)),
-    getAllGroupsForUser: (userId, token, offset) =>
-      dispatch(getAllGroupsForUser(userId, token, offset)),
+    getAllGroupsForUser: (token, offset) =>
+      dispatch(getAllGroupsForUser(token, offset)),
     getGroupMembers: (groupId, token) =>
       dispatch(getGroupMembers(groupId, token)),
     getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
@@ -80,8 +80,8 @@ const mapDispatchToProps = dispatch =>
     createGroup: (creatorId, title, description, selectedMembers, token) =>
       dispatch(createGroup(creatorId, title, description,
         selectedMembers, token)),
-    getGroupsForUser: (userId, offset, limit, token) =>
-    dispatch(getGroupsForUser(userId, offset, limit, token)),
+    getGroupsForUser: (offset, limit, token) =>
+    dispatch(getGroupsForUser(offset, limit, token)),
     signOut: () => dispatch(signOut())
   });
 

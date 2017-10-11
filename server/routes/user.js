@@ -25,10 +25,6 @@ router.post('/signin', (req, res, next) => {
     // create a token
     if (user) {
       const userInfo = {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phone,
         id: user.id
       };
       const token = jwt.sign(userInfo, jwtSecret, {
@@ -61,10 +57,6 @@ router.post('/signup', (req, res, next) => {
     }
     if (user) {
       const newUser = {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phone,
         id: user.id
       };
       const token = jwt.sign(newUser, jwtSecret, {
@@ -95,10 +87,6 @@ router.post('/google/login', (req, res, next) => {
     }
     if (user) {
       const newUser = {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phone,
         id: user.id
       };
       const token = jwt.sign(newUser, jwtSecret, {
@@ -116,7 +104,7 @@ router.post('/google/login', (req, res, next) => {
 router.use(tokenValidator.validateToken);
 
 // Loading all groups a user belongs to (paginated)
-router.get('/:userId/groups', userController.userGroups);
+router.get('/groups', userController.userGroups);
 
 // Give sensible response for random routes
 router.use('/*', (req, res) => {

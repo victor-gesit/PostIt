@@ -1,6 +1,5 @@
 /* eslint-env browser */
 import React from 'react';
-import jwtDecode from 'jwt-decode';
 import Spinner from '../../../components/views/partials/Spinner.jsx';
 /**
  * A React component that displays the groups a user belongs to, as a list
@@ -32,13 +31,7 @@ export default class GroupList extends React.Component {
     const groupId = this.props.store.match.params.groupId;
     const groupLoaded = this.props.store.groups.userGroups[groupId];
     const titleLoaded = this.props.store.allUserGroups.userGroups[groupId];
-    const token = localStorage.getItem('token');
-    let userDetails;
-    try {
-      userDetails = jwtDecode(token);
-    } catch (err) {
-      this.props.store.history.push('/');
-    }
+    const userDetails = this.props.store.appInfo.userDetails;
     let groupCount = '...';
     let groupTitle = '...';
     let groupMembers;
