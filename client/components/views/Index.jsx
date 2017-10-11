@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { signIn, resetErrorLog, resetRedirect, resetLoadingState, verifyToken, googleLogin } from '../../actions';
-import SignInForm from './partials/SignInForm.jsx';
+import { signIn, resetErrorLog, resetRedirect,
+  resetLoadingState, verifyToken, googleLogin } from '../../actions';
+import SigninForm from './partials/SignInForm.jsx';
 import Footer from './partials/Footer.jsx';
 import AuthNav from './partials/AuthNav.jsx';
 
@@ -49,24 +50,37 @@ export class Index extends React.Component {
                   Why meet when you can PostIt?</h3>
                 <div className="row">
                   <div className="col s12 m12 l6">
-                    <i className="large green-text text-darken-4 material-icons">people</i>
-                    <h6 className="brown-text accent-4">Create teams of all sizes</h6>
+                    <i
+                      className="large green-text text-darken-4 material-icons">
+                      people</i>
+                    <h6
+                      className="brown-text accent-4">
+                        Create teams of all sizes</h6>
                   </div>
                   <div className="col s12 m12 l6">
-                    <i className="large green-text text-darken-4 material-icons">perm_scan_wifi</i>
-                    <h6 className="brown-text accent-4">Send broadcast messages to team members</h6>
+                    <i
+                      className="large green-text text-darken-4 material-icons">
+                      perm_scan_wifi</i>
+                    <h6 className="brown-text accent-4">
+                      Send broadcast messages to team members</h6>
                   </div>
                   <div className="col s12 m12 l6">
-                    <i className="large green-text text-darken-4 material-icons">done_all</i>
-                    <h6 className="brown-text accent-4">Get receipt notifications</h6>
+                    <i
+                      className="large green-text text-darken-4 material-icons">
+                      done_all</i>
+                    <h6 className="brown-text accent-4">
+                      Get receipt notifications</h6>
                   </div>
                   <div className="col s12 m12 l6">
-                    <i className="large green-text text-darken-4 material-icons">trending_up</i>
-                    <h6 className="brown-text accent-4">Achieve more in less time</h6>
+                    <i
+                      className="large green-text text-darken-4 material-icons">
+                      trending_up</i>
+                    <h6 className="brown-text accent-4">
+                      Achieve more in less time</h6>
                   </div>
                 </div>
               </div>
-              <SignInForm store={this.props}/>
+              <SigninForm store={this.props}/>
             </div>
           </div>
 

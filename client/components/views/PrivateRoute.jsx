@@ -2,7 +2,8 @@ import { Redirect, Route } from 'react-router-dom';
 import React from 'react';
 import { connect } from 'react-redux';
 
-export const PrivateRoute = ({ component: Component, path: destinationPath, appInfo }) => {
+export const PrivateRoute = ({ component: Component,
+  path: destinationPath, appInfo }) => {
   const authState = appInfo.authState;
   return (
       <Route path={destinationPath} render={
@@ -30,7 +31,4 @@ const mapStateToProps = state =>
     dataLoading: state.dataLoading
   });
 
-const mapDispatchToProps = dispatch =>
-  ({
-  });
-export default connect(mapStateToProps, mapDispatchToProps)(PrivateRoute);
+export default connect(mapStateToProps)(PrivateRoute);

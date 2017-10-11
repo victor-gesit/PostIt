@@ -9,11 +9,11 @@ import {
   getGroupMembers, addUser, getMessages, loadMessages,
   resetRedirect, deleteMember, leaveGroup, getPostItMembers,
   deleteGroup, getAllGroupsForUser, resetLoadingState,
-  postMessage, verifyToken, signOut, notify, seenBy
+  postMessage, verifyToken, signOut, notify, seenBy, searchGroup
 } from '../../actions';
 
 // Partials
-import NavBar from './partials/NavBar.jsx';
+import Navbar from './partials/NavBar.jsx';
 import GroupList from './partials/GroupList.jsx';
 import Messages from './partials/Messages.jsx';
 import AddMemberModal from './partials/AddMemberModal.jsx';
@@ -28,24 +28,9 @@ const socket = io();
  */
 export class PostMessage extends React.Component {
   /**
-   * Component method called when component loads to reset state of spinner
-   * and hide navbar on small screens
-   * @returns {undefined} This method returns nothing
-   */
-  componentDidMount() {
-    const matchQuery = window.matchMedia('(max-width: 992px)');
-    if (matchQuery.matches) {
-      $('.button-collapse').sideNav({
-        closeOnClick: true,
-        draggable: true
-      });
-    }
-    $('#sidenav-overlay').trigger('click');
-    this.props.resetLoadingState();
-  }
-  /**
    * Component method called when a user leaves the Post Message page
    * to notify the socket of the user leaving the conversation
+   * @returns {undefined} This method returns nothing
    */
   componentWillUnmount() {
     const token = localStorage.getItem('token');
@@ -83,10 +68,23 @@ export class PostMessage extends React.Component {
     socket.emit('open group', { groupId, userId });
   }
   /**
-   * Component method called after componetn renders to initialize modals
+   * Component method called after component renders to initialize modals
+   * and initialize side nav
    * @returns {undefined} This method returns nothing
    */
   componentDidMount() {
+    let matchQuery = {};
+    if (window.matchMedia) {
+      matchQuery = window.matchMedia('(max-width: 992px)');
+    }
+    if (matchQuery.matches && $('.button-collapse').sideNav) {
+      $('.button-collapse').sideNav({
+        closeOnClick: true,
+        draggable: true
+      });
+    }
+    $('#sidenav-overlay').trigger('click');
+    this.props.resetLoadingState();
     const token = localStorage.getItem('token');
     let decode;
     try {
@@ -102,33 +100,31 @@ export class PostMessage extends React.Component {
     this.props.getAllGroupsForUser(userId, token);
     // Load all members of the group
     this.props.getGroupMembers(groupId, token);
-
-    // Initialize side nav
-    $('.button-collapse').sideNav({
-      draggable: true
-    });
     /* Toggle group list*/
     $('#member-list-toggle').off().on('click', () => {
       $('#memberList').animate({ width: 'toggle' });
     });
-    $('.modal').modal({
-      // Handle modal dialog box
-      ready: (modal, trigger) => {
-        // Check if modal is for deleting group member or entire group
-        if (modal[0].id === 'deleteMemberModal') {
-          this.memberIdToDelete = trigger[0].id;
-        } else if (modal[0].id === 'messageInfoModal') {
-          const messageId = trigger[0].id;
-          this.props.seenBy(messageId, token);
-        } else {
-          this.groupIdToDelete = trigger[0].id;
-        }
-      },
-    });
+    if ($('.modal').modal) {
+      $('.modal').modal({
+        // Handle modal dialog box
+        ready: (modal, trigger) => {
+          // Check if modal is for deleting group member or entire group
+          if (modal[0].id === 'deleteMemberModal') {
+            this.memberIdToDelete = trigger[0].id;
+          } else if (modal[0].id === 'messageInfoModal') {
+            const messageId = trigger[0].id;
+            this.props.seenBy(messageId, token);
+          } else {
+            this.groupIdToDelete = trigger[0].id;
+          }
+        },
+      });
+    }
     // Toggle memberList
     $(document).on('click', (e) => {
       const target = $(e.target);
-      // Hide member list when a click is made outside of memberlist window or deleteMemberModal
+      // Hide member list when a click is made outside
+      // of memberlist window or deleteMemberModal
       if (!(target.is('#member-list-toggle'))) {
         if (!target.parents('#memberList').length) {
           if (!target.parents('#deleteMemberModal').length) {
@@ -186,17 +182,18 @@ export class PostMessage extends React.Component {
    * @returns {Object} Returns the DOM object to be rendered
    */
   render() {
-    // Accessing a deleted group, or loading messages from a group you've been removed from
+    // Accessing a deleted group, or
+    // loading messages from a group you've been removed from
     const redirect = this.props.apiError.redirect;
     if (redirect.yes) {
-      if (redirect.to.indexOf('postmessage') !== -1){
+      if (redirect.to.indexOf('postmessage') !== -1) {
         // No page reloading when opening a different group
         this.props.resetRedirect();
       } else {
         this.props.history.push(redirect.to);
       }
     }
-    let allUserGroups = {};
+    const allUserGroups = this.props.allUserGroups.userGroups;
     const groupId = this.props.match.params.groupId;
     const groupLoaded = this.props.allUserGroups.userGroups[groupId];
     const token = localStorage.getItem('token');
@@ -207,22 +204,19 @@ export class PostMessage extends React.Component {
       this.props.history.push('/');
     }
     const userEmail = decode.email;
-    let groupTitle, creatorEmail, isCreator;
+    let creatorEmail, isCreator;
     if (groupLoaded) {
-      groupTitle = groupLoaded.info.title;
       creatorEmail = groupLoaded.info.creatorEmail;
       isCreator = creatorEmail === userEmail;
-      allUserGroups = this.props.allUserGroups.userGroups;
-    } else {
-      groupTitle = 'Loading...';
     }
     return (
     <div id="body" >
-      <NavBar deleteGroup={this.deleteGroup}
+      <Navbar deleteGroup={this.deleteGroup}
         isCreator={isCreator} creatorEmail={creatorEmail}
         allUserGroups={allUserGroups}
         leaveGroup={leaveGroup}
-        store={this.props}/>
+        store={this.props}
+      />
       <div id="main" >
         <div id="main-postmessage">
           <div className="row">
@@ -242,10 +236,16 @@ export class PostMessage extends React.Component {
          <LeaveGroupModal leaveGroup={this.leaveGroup}/>
         {/* Message Input Box */}
         {/* Modal to display who has read a message */}
-         <MessageInfoModal dataLoading={this.props.dataLoading}
-          messageInfo={this.props.messageInfo}/>
+        <MessageInfoModal
+          dataLoading={this.props.dataLoading}
+          messageInfo={this.props.messageInfo}
+        />
       </div>
-      <MessageInputBox notify={this.props.notify} socket={socket} store={this.props}/>
+      <MessageInputBox
+        notify={this.props.notify}
+        socket={socket}
+        store={this.props}
+      />
     </div>
     );
   }
@@ -268,20 +268,28 @@ const mapStateToProps = state =>
 
 const mapDispatchToProps = dispatch =>
   ({
-    getAllGroupsForUser: (userId, token) => dispatch(getAllGroupsForUser(userId, token)),
-    getGroupMembers: (groupId, token) => dispatch(getGroupMembers(groupId, token)),
+    getAllGroupsForUser: (userId, token, offset) =>
+      dispatch(getAllGroupsForUser(userId, token, offset)),
+    getGroupMembers: (groupId, token) =>
+      dispatch(getGroupMembers(groupId, token)),
     resetRedirect: () => dispatch(resetRedirect()),
     verifyToken: token => dispatch(verifyToken(token)),
     deleteMember: (ownerId, idToDelete, groupId, token) =>
       dispatch(deleteMember(ownerId, idToDelete, groupId, token)),
     leaveGroup: (token, groupId) => dispatch(leaveGroup(token, groupId)),
-    deleteGroup: (ownerId, groupId, token) => dispatch(deleteGroup(ownerId, groupId, token)),
+    deleteGroup: (ownerId, groupId, token) =>
+      dispatch(deleteGroup(ownerId, groupId, token)),
     getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
     loadMessages: groupId => dispatch(loadMessages(groupId)),
-    getPostItMembers: token => dispatch(getPostItMembers(token)),
-    addUser: (email, groupId, adderId, token) => dispatch(addUser(email, groupId, adderId, token)),
+    getPostItMembers: (token, offset) =>
+      dispatch(getPostItMembers(token, offset)),
+    searchGroup: (token, groupId, searchQuery, offset, limit) =>
+      dispatch(searchGroup(token, groupId, searchQuery, offset, limit)),
+    addUser: (email, groupId, adderId, token) =>
+      dispatch(addUser(email, groupId, adderId, token)),
     postMessage: (senderId, groupId, body, priority, isComment, token) =>
-      dispatch(postMessage(senderId, groupId, body, priority, isComment, token)),
+      dispatch(postMessage(senderId, groupId, body,
+        priority, isComment, token)),
     resetLoadingState: () => dispatch(resetLoadingState()),
     notify: (newMessage, groupId) => dispatch(notify(newMessage, groupId)),
     seenBy: (messageId, token) => dispatch(seenBy(messageId, token)),

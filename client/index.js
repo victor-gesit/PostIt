@@ -6,20 +6,21 @@ import { Provider } from 'react-redux';
 // Styling
 import 'materialize-css/bin/materialize.css';
 import 'jquery/dist/jquery';
+import 'jquery-validation';
 import 'font-awesome/css/font-awesome.css';
 import 'material-design-icons/iconfont/material-icons.css';
-import './scss/style.scss'; // Custom styling
-import './js/customJS';
+ // Custom styling
+import './scss/style.scss';
 import './js/materialize';
-import postItApp from './reducers';
+import reducers from './reducers';
 
 // API Query middlweare
 import dataService from './services/dataservice';
 
 // Routes
-import App from './components/App.jsx';
+import PostItApp from './components/App.jsx';
 
-const store = createStore(postItApp, {}, applyMiddleware(dataService));
+const store = createStore(reducers, {}, applyMiddleware(dataService));
 
 const authState = {
   authenticate() {
@@ -37,7 +38,7 @@ authState.authenticate();
 
 ReactDOM.render(
   <Provider store={store}>
-      <App/>
+      <PostItApp/>
   </Provider>, document.getElementById('app') || document.createElement('div')
 );
 

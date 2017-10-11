@@ -13,12 +13,13 @@ export default class AddMemberModal extends React.Component {
   constructor(props) {
     super(props);
     this.selectedMembers = [];
-    this.registeredMembers = {};
     this.addMember = this.addMember.bind(this);
     this.addNewMembers = this.addNewMembers.bind(this);
+    this.loadMore = this.loadMore.bind(this);
   }
   /**
-   * This functions is called before the component is rendered to load the members on PostIt
+   * This functions is called before the component
+   * is rendered to load the members on PostIt
    * @returns {undefined} This function returns nothing
    */
   componentWillMount() {
@@ -26,10 +27,14 @@ export default class AddMemberModal extends React.Component {
     this.props.store.getPostItMembers(token);
   }
   /**
-   * @returns {undefined} This function returns nothing
+   * Method to load more users from the DB, to be added to a newly created group
+   * @returns {undefined} This method returns nothing
    */
-  componentWillUpdate() {
-    this.registeredMembers = this.props.store.postItInfo.members.postItMembers;
+  loadMore() {
+    // Load all registered members
+    const token = localStorage.getItem('token');
+    const allLoaded = this.props.store.postItInfo.members.meta.allLoaded;
+    this.props.store.getPostItMembers(token, allLoaded);
   }
   /**
    * Method to add members to the group
@@ -48,7 +53,7 @@ export default class AddMemberModal extends React.Component {
     }
   }
   /**
-   * A function to add new members to a group
+   * A method to add new members to a group
    * @returns {undefined} This function returns nothing
    */
   addNewMembers() {
@@ -74,10 +79,12 @@ export default class AddMemberModal extends React.Component {
     const groupId = this.props.store.match.params.groupId;
     const group = this.props.store.groups.userGroups[groupId] || {};
     const groupMembers = group.members;
-
-    const filteredMembers = Object.keys(this.registeredMembers).filter((userId) => {
-      return !_.has(groupMembers, userId);
-    });
+    const postItMembers = this.props.store.postItInfo.members.postItMembers;
+    const membersCount = this.props.store.postItInfo.members.meta.count;
+    const allLoaded = this.props.store.postItInfo.members.meta.allLoaded;
+    const filteredMembers = Object.keys(postItMembers).filter(userId =>
+      !_.has(groupMembers, userId)
+    );
     return (
       <div id="addMemberModal" className="modal grey">
         <div className="modal-content">
@@ -85,13 +92,33 @@ export default class AddMemberModal extends React.Component {
               <form>
                 <h3 className="center">Add members</h3>
                 <div className="registeredMembersList">
-                  <ul className="collection">
-                    {
-                    filteredMembers.map((userId, index) =>
-                      <RegisteredMember addMember={this.addMember} key={index} id={userId}
-                        userInfo={this.registeredMembers[userId]}/>)
-                    }
-                  </ul>
+                  {
+                    filteredMembers.length > 0 ? (
+                      <div>
+                    <ul className="collection">
+                      {
+                      filteredMembers.map((userId, index) =>
+                        <RegisteredMember
+                          addMember={this.addMember} key={index} id={userId}
+                          userInfo={postItMembers[userId]}/>)
+                      }
+                    </ul>
+                      {
+                        allLoaded < membersCount ? (
+                          <div className="center">
+                          <button className="btn"
+                            onClick={ () => this.loadMore()}>...Load More
+                          </button>
+                          </div>
+                        ) : (
+                          <div/>
+                        )
+                      }
+                    </div>
+                    ) : (
+                      <h4 className="center grey-text">No members to add</h4>
+                    )
+                  }
                 </div>
               </form>
             </div>
@@ -101,7 +128,8 @@ export default class AddMemberModal extends React.Component {
             id="addMembersButton"
             className="modal-action modal-close waves-effectwaves-green btn-flat green-text">
               Add</button>
-          <button className="modal-action modal-close waves-effect waves-green btn-flat green-text">
+          <button
+            className="modal-action modal-close waves-effect waves-green btn-flat green-text">
               Cancel</button>
         </div>
       </div>
@@ -123,6 +151,7 @@ export class RegisteredMember extends React.Component {
     this.addOrRemove = this.addOrRemove.bind(this);
   }
   /**
+   * Method to add or remove members from a group
    * @param {String} email email of the member to be added to the group
    * @returns {undefined} This method returns nothing
    */

@@ -9,7 +9,7 @@ export default class Spinner extends React.Component {
    */
   render() {
     return (
-        <div className="preloader-wrapper big active valign-wrapper">
+        <div className="preloader-wrapper loader big active valign-wrapper">
           <div className="spinner-layer spinner-white-only">
             <div className="circle-clipper left">
               <div className="circle"></div>

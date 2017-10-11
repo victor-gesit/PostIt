@@ -7,19 +7,13 @@
 
 ## Introduction 
 PostIt is a simple application that allows friends and colleagues create groups for communications. 
-## Dependencies
 
-### Key Dependencies
- This app's functionality depends on multiple NodeJS packages
+### Technologies used
 * [NodeJS](https://nodejs.org/) This is a JavaScript runtime built on Chrome's V8 JavaScript engine. It is used for installing and managing the dependencies.
-* [Express](https://expressjs.com/) This is used to create the web routes/endpoints.
-* [Body-Parser](https://www.npmjs.com/package/body-parser) This is used for parsing the content of forms sent to the web app.
-* [dotenv](https://www.npmjs.com/package/dotenv) This handles the management and dynamic assignment of environmental variables
-* [body-parser](https://www.npmjs.com/package/body-parser) This parses the request into a body that can be accessed.
-* [passportjs](passportjs.org) This handles user signin and signup, and user creation to the database
-* [pg](https://www.npmjs.com/package/pg) PostgreSQL client for accessing PostgreSQL db with javascript
-* [sequelize](https://www.npmjs.com/package/sequelize) Sequelize is a promise-based Node.js ORM for Postgres, MySQL, SQLite and Microsoft SQL Server.
-* [pg-hstore](https://www.npmjs.com/package/pg-hstore) This serializes and deserializes json data to and from pg 
+* [ReactJS](https://reactjs.org) The front end is developed using the ReactJS library
+* [Redux](https://redux.org) State is contained on the client side using Redux
+* [socket.io](https://socket.io) This is a JavaScript library for realtime web applications. It enables realtime, bi-directional communication between web clients and servers. It has two parts: a client-side library that runs in the browser, and a server-side library for Node.js. It was used for real time communication among members of groups
+* [nodemailer](https://nodemailer.com) This is an e-mail sending Nodejs module created by Andris Reinman. It is used in parts of the app that involve sending emails (password reset, group notifications);
 
 ## Installation Guide
 * Clone the repository [here](www.github.com/victor4l/postit)
@@ -32,65 +26,31 @@ PostIt is a simple application that allows friends and colleagues create groups 
 ### On local computer 
 * Run `npm start` to run the app.
 * Connect to the app on `Postman`, using port `8002`
-#### Routes
-* POST `/api/user/signup` Use this route to create an account. The following fields are required:
-  * `firstName` The first name of the new user
-  * `lastName`  The last name of the new user
-  * `email`     Email address of the new user
-  *  `phone`  The phone number of the new user
-  * `password` A secure password
 
-* POST `/api/user/signin` Use this route to sign in to the application. The following fields are required:
-  * `email`     Email address of a registered user
-  * `password` The password for the account
-
-* POST `/api/group` Use this route to create a new group. The following fields are required:
-  * `userId` The id of a registered user who is considered the creator of the group
-  * `title`  The title of the group
-  * `description`     A description of the purpose of the group
-  * `initialMembers` (_Optional Field_) An email address, or array of email addresses of registered members, to be added to the newly created group. `Note`: The creator is automatically added to the group
-  
-  * Send a token in the header, with variable name `x-access-token`
-
-* POST `/api/group/<groupId>/user` Use this route to add a user to a pre-existing group
-  * `email` The email address of a user registered on the application
-  * `groupId` The `id` of a group into which the user is to be added 
-  * `adderId` The `id` of the person adding someone to the group. `NB`: The adder must be a member of the group
-
-  * Send a token in the header, with variable name `x-access-token`
-
-* POST `/api/group/<groupId>/message` Use this route to post a message to a group
-  * `message` The body of the message to be posted to the group
-  * `senderId` The id of the sender of the message. The sender must be a member of the group
-  * `isComment` A string indicating whether the message is a comment or a post. The options are `true` and `false`. It is case insensitive.
-  * `priority` A string indicating the priority of the group. It could be `normal`, `urgent` or `critical`. It is case insensitive
-
-* GET `/api/group/<groupId>/messages` Use this route to load messages made to a group
-  * Send a token in the header, with variable name `x-access-token`
-* GET `/api/group/<groupId>/members` Use this route to load all the members of a particular group
-  * Send a token in the header, with variable name `x-access-token`
-* GET `/api/members` Use this route to load all registered members
-  * Send a token in the header, with variable name `x-access-token`
-* GET `/api/groups` Use this route to load all groups created on PostIt
-  * Send a token in the header, with variable name `x-access-token`
-
-* DELETE  `/api/group/<groupId>/members` Use this route to delete members from a group
-  * `ownerId` The id of the creator of the group (Only group creator can delete members)
-  * `email` The email, or array of emails, of the members to be deleted
-    * Send a token in the header, with the variable name `x-access-token`
-    * The creator of the group cannot be deleted. Delete the entire group instead.
-
-* DELETE `/api/group/<groupId>/delete` Use this route to delete a group
-  * `ownerId` The id of the creator of the group (Only the group creator can delete the group)
-    * Send a token in the header, with the variable name `x-access-token`
-    
 ### On Heroku
-* A sample of the API is hosted [here](https://postit-api-victor.herokuapp.com/). However, you could create your own copy on `Heroku`, to connect your own team members. A guide to hosting an app on 
+* A sample of the API is hosted [here](https://postit-api-victor.herokuapp.com/api). However, you could create your own copy on `Heroku`, to connect your own team members. A guide to hosting an app on 
 `Heroku` is available [here](https://devcenter.heroku.com/articles/getting-started-with-nodejs#introduction)
 * `Routes`: Use the same routes as specified in the instructions for Postman above.
+
+## Documentation
+A comprehensive swagger documentation is available [here](https://app.swaggerhub.com/apis/victor4l/post-it_application/1.0.0)
 # Testing
 To test the application codebase
 * Run `npm test`, to view test output, and `gulp coverage` to view the code coverage
+
+## License
+This project is available for use and modification under the MIT License. See [here](https://github.com/victor4l/PostIt/blob/add-license-1/LICENSE) for the licence file.
+
+
+## FAQs
+Check in the Wiki for the FAQs
+
+## Limitations
+This app, though awesome still has some shortcomings.
+* Real time notifications are not set up.
+* It is not an effective app for real time messaging. The socket.io implementation hasn't factor in a lot of the edge cases that come into play in realtime messaging applications.
+* A user's profile cannot be updated. Passwords can be reset though.
+* Images cannot be uploaded onto the application
 
 # Contributing to the Project
 Contributions are welcome and appreciated. To contribute

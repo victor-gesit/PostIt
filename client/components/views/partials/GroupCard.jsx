@@ -23,20 +23,24 @@ export default class GroupCard extends React.Component {
       <div className="col s12 m6 l4">
         <div className="card">
           <div className="card-image waves-effect waves-block waves-light">
-            <img className="activator tooltipped" data-position="top" data-delay={1000}
+            <img className="activator tooltipped"
+              data-position="top" data-delay={1000}
               data-tooltip="Click for group info" src="images/fire2.png" />
           </div>
           <div className="card-content">
             <div>
               <Link to={`/postmessage/${groupDetails.id}`} id={groupDetails.id}
-                className="card-title grey-text groupLink text-darken-4">{groupDetails.title}
-                <span className="badge new pink" id={groupDetails.id}></span></Link>
+                className="card-title grey-text groupLink text-darken-4">
+                  {groupDetails.title}
+                <span className="badge new pink" id={groupDetails.id}></span>
+              </Link>
               <p className="blue-text">Created by {groupDetails.createdBy}</p>
             </div>
           </div>
           <div className="card-reveal">
             <div>
-              <span className="card-title purple-text text-darken-4">{groupDetails.title}
+              <span className="card-title purple-text text-darken-4">
+                {groupDetails.title}
                 <i className="material-icons right">close</i>
               </span>
               <hr />

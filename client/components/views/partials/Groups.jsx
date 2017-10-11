@@ -8,17 +8,55 @@ import jwtDecode from 'jwt-decode';
  */
 export default class Groups extends React.Component {
   /**
+   * Constructor initializes component parameters
+   * @param {Object} props Properties passed from parent component
+   */
+  constructor(props) {
+    super(props);
+    this.loadMore = this.loadMore.bind(this);
+  }
+  /**
+   * Method to load more groups from the DB
+   * @returns {undefined} This method returns nothing
+   */
+  loadMore() {
+    // Load all registered members
+    const token = localStorage.getItem('token');
+    let decode;
+    try {
+      decode = jwtDecode(token);
+    } catch (err) {
+      this.props.signOut();
+    }
+    const userId = decode.id;
+    const allLoaded = this.props.store.allUserGroups.meta.allLoaded;
+    this.props.store.getAllGroupsForUser(userId, token, allLoaded);
+  }
+  /**
    * Render method of React component
    * @returns {undefined} This function returns nothing
    */
   render() {
-    const allUserGroups = this.props.allUserGroups;
+    const groupState = this.props.store.allUserGroups;
+    const allUserGroups = groupState.userGroups;
+    const allLoaded = Object.keys(allUserGroups).length;
+    const groupCount = groupState.meta.count;
     return (
       <ul className="list-side-nav">
         {
           Object.keys(allUserGroups).map((groupId, index) =>
             <UserGroup store={this.props.store} key={index}
               groupDetails={allUserGroups[groupId].info} />
+          )
+        }
+        {
+          allLoaded < groupCount ? (
+            <div className="center">
+            <button className="btn"
+              onClick={ () => this.loadMore()}>...Load More</button>
+            </div>
+          ) : (
+            <div/>
           )
         }
       </ul>
@@ -31,6 +69,7 @@ export default class Groups extends React.Component {
  */
 export class UserGroup extends React.Component {
   /**
+   * Object constructor to initialize object properties and methods
    * @param {Object} props Component properties passed from parent component
    */
   constructor(props) {
@@ -38,7 +77,10 @@ export class UserGroup extends React.Component {
     this.loadMessagesAndMembers = this.loadMessagesAndMembers.bind(this);
   }
   /**
-   * @param {Object} event fired when the link to load details of a group is clicked
+   * Method called to prepare the store by getting the
+   * members of a group and messages in the group
+   * @param {Object} event fired when the link
+   * to load details of a group is clicked
    * @returns {undefined} This method returns nothing
    */
   loadMessagesAndMembers(event) {
@@ -67,8 +109,10 @@ export class UserGroup extends React.Component {
   render() {
     const groupDetails = this.props.groupDetails;
     return (
-     <li><Link onClick={this.loadMessagesAndMembers} to={`/postmessage/${groupDetails.id}`} id={groupDetails.id} >
-         <i className="material-icons teal-text">people_outline</i>{groupDetails.title}</Link></li>
+     <li><Link onClick={this.loadMessagesAndMembers}
+      to={`/postmessage/${groupDetails.id}`} id={groupDetails.id} >
+         <i className="material-icons teal-text">people_outline</i>
+         {groupDetails.title}</Link></li>
     );
   }
 }

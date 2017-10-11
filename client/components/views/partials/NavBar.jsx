@@ -10,6 +10,7 @@ import GroupDeleteModal from './GroupDeleteModal.jsx';
  */
 export class NavBar extends React.Component {
   /**
+   * Object constructor called to initialize object properties
    * @param {Object} props component properties passed from parent component
    */
   constructor(props) {
@@ -66,7 +67,8 @@ export class NavBar extends React.Component {
                 path === '/postmessage/:groupId' ? (
                   <li>
                       <a
-                      onClick={ () => this.props.store.getGroupMembers(groupId, token) }
+                      onClick={ () =>
+                        this.props.store.getGroupMembers(groupId, token) }
                       ><i id="member-list-toggle" data-tip="Group info"
                       className="material-icons">info_outline</i></a>
                   </li>
@@ -74,7 +76,6 @@ export class NavBar extends React.Component {
                   <li></li>
                 )
               }
-              {/* Link to messageboard shouldn't be visible on messageboard page */}
               {
                 path === '/messageboard' ? (
               <li>
@@ -82,14 +83,16 @@ export class NavBar extends React.Component {
                 ) : (
                 <li>
                       <Link to="/messageboard">
-                        <i data-tip="Message Board"className="material-icons">view_module</i>
+                        <i data-tip="Message Board"
+                          className="material-icons">view_module</i>
                       </Link>
                 </li>
                 )
               }
               <li>
                     <Link to="/creategroup">
-                      <i data-tip='Create group' className="material-icons">library_add</i>
+                      <i data-tip='Create group'
+                        className="material-icons">library_add</i>
                     </Link>
               </li>
             </ul>
@@ -141,11 +144,13 @@ export class NavBar extends React.Component {
                     texture</i>{modalText}</a></li>
                 ) : (
                   path === '/#/creategroup' ? (
-                    <li><a><i className="large material-icons green-text">library_add</i>
+                    <li><a><i className="large material-icons green-text">
+                      library_add</i>
                     Create New Group</a></li>
                   ) : (
                     <li><Link to='/creategroup'>
-                    <i className="large material-icons green-text">library_add</i>
+                    <i className="large material-icons green-text">
+                      library_add</i>
                     Create New Group</Link></li>
                   )
                 )
@@ -153,18 +158,27 @@ export class NavBar extends React.Component {
               <hr />
               <div className="row searchbox valign-wrapper">
                 <div className="col s9">
-                  <input type="search" placeholder="Find a group" className="white-text" />
+                  <input type="search" placeholder="Find a group"
+                  className="white-text" />
                 </div>
                 <div className="col s3">
-                  <span><i className="material-icons black-text">search</i></span>
+                  <span><i className="material-icons black-text">
+                    search</i></span>
                 </div>
               </div>
-              <li id="allGroups" className="pink darken-4"><a id="allGroups" className="white-text"><i className="large material-icons white-text">texture</i>All Groups</a></li>
+              <li id="allGroups" className="pink darken-4">
+                <a id="allGroups"
+                className="white-text">
+                <i className="large material-icons white-text">
+                  texture</i>All Groups</a>
+              </li>
               {/* Groups a user belongs to */}
               <Groups store={this.props.store} allUserGroups={allUserGroups}/>
               <hr />
-              <li><a onClick={this.signOut}><i className="large material-icons red-text">exit_to_app</i>
-                Sign Out</a></li>
+              <li><a onClick={this.signOut}>
+                <i className="large material-icons red-text">exit_to_app</i>
+                Sign Out</a>
+              </li>
             </ul>
           </div>
           {/* Modal Structure for group delete dialog */}

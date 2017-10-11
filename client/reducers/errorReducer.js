@@ -1,3 +1,4 @@
+/* eslint-env browser */
 const errorReducer = (state = { errored: false,
   message: null,
   redirect: { yes: false, to: null } }, action) => {
@@ -155,6 +156,15 @@ const errorReducer = (state = { errored: false,
         },
         errored: true
       };
+    case 'INVALID_GROUP_ID':
+      return {
+        message: action.message,
+        redirect: {
+          yes: true,
+          to: '/notfound'
+        },
+        errored: true
+      };
     case 'INVALID_AUTH':
       return {
         message: action.message,
@@ -219,6 +229,7 @@ const errorReducer = (state = { errored: false,
         errored: false
       };
     case 'VERIFY_TOKEN_ERROR':
+      localStorage.removeItem('token');
       return {
         errored: true,
         message: 'You have been away for a while. Please sign in again',

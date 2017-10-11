@@ -1,12 +1,9 @@
 import passport from 'passport';
 import passportLocal from 'passport-local';
 import bcrypt from 'bcrypt-nodejs';
-import dotenv from 'dotenv';
 import models from '../models';
 
 const User = models.User;
-
-dotenv.config();
 
 const LocalStrategy = passportLocal.Strategy;
 
@@ -26,10 +23,12 @@ passport.use('local.signup', new LocalStrategy(
     } }).then((user) => {
       if (user) {
         if (user.email === email) {
-          return done(null, false, { message: 'Email is already linked to another account' });
+          return done(null, false, {
+            message: 'Email is already linked to another account' });
         }
         if (user.phone === req.body.phone) {
-          return done(null, false, { message: 'Phone number is linked to another account' });
+          return done(null, false, {
+            message: 'Phone number is linked to another account' });
         }
       }
       let firstName = req.body.firstName || '';
@@ -67,7 +66,8 @@ passport.use('local.signin', new LocalStrategy(
   (req, email, password, done) => {
     User.find({ where: { email } }).then((user) => {
       if (!user) {
-        return done(null, false, { message: 'Email not associated with any account' });
+        return done(null, false,
+          { message: 'Email not associated with any account' });
       }
       const validPassword = bcrypt.compareSync(password, user.password);
       if (!validPassword) {
