@@ -1,7 +1,7 @@
 /* eslint-env browser */
 import React from 'react';
 import { Link } from 'react-router-dom';
-
+import Spinner from '../../../components/views/partials/Spinner.jsx';
 /**
  * A component that displays a card for each group a user belongs to
  */
@@ -14,19 +14,7 @@ export default class GroupCard extends React.Component {
     if (this.props.loading) {
       return (
         <div className="preloader-background">
-          <div className="preloader-wrapper big active valign-wrapper">
-            <div className="spinner-layer spinner-white-only">
-              <div className="circle-clipper left">
-                <div className="circle"></div>
-              </div>
-              <div className="gap-patch">
-                <div className="circle"></div>
-              </div>
-              <div className="circle-clipper right">
-                <div className="circle"></div>
-              </div>
-            </div>
-          </div>
+        <Spinner/>
         </div>
       );
     }
@@ -35,20 +23,24 @@ export default class GroupCard extends React.Component {
       <div className="col s12 m6 l4">
         <div className="card">
           <div className="card-image waves-effect waves-block waves-light">
-            <img className="activator tooltipped" data-position="top" data-delay={1000}
+            <img className="activator tooltipped"
+              data-position="top" data-delay={1000}
               data-tooltip="Click for group info" src="images/fire2.png" />
           </div>
           <div className="card-content">
             <div>
               <Link to={`/postmessage/${groupDetails.id}`} id={groupDetails.id}
-                className="card-title grey-text groupLink text-darken-4">{groupDetails.title}
-                <span className="badge new pink" id={groupDetails.id}></span></Link>
+                className="card-title grey-text groupLink text-darken-4">
+                  {groupDetails.title}
+                <span className="badge new pink" id={groupDetails.id}></span>
+              </Link>
               <p className="blue-text">Created by {groupDetails.createdBy}</p>
             </div>
           </div>
           <div className="card-reveal">
             <div>
-              <span className="card-title purple-text text-darken-4">{groupDetails.title}
+              <span className="card-title purple-text text-darken-4">
+                {groupDetails.title}
                 <i className="material-icons right">close</i>
               </span>
               <hr />

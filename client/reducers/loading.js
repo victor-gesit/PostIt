@@ -12,13 +12,9 @@ const loading = (state = false, action) => {
     case 'POST_MESSAGE_ERROR': return false;
     case 'POST_MESSAGE_SUCCESS': return false;
 
-    case 'ADD_USER': return true;
-    case 'ADD_USER_ERROR': return false;
-    case 'ADD_USER_SUCCESS': return false;
-
-    case 'DELETE_GROUP': return true;
-    case 'ADD_GROUP_ERROR': return false;
-    case 'ADD_GROUP_SUCCESS': return false;
+    case 'ADD_MEMBER': return true;
+    case 'ADD_MEMBER_ERROR': return false;
+    case 'ADD_MEMBER_SUCCESS': return false;
 
     case 'CREATE_GROUP': return true;
     case 'CREATE_GROUP_ERROR': return false;
@@ -48,15 +44,15 @@ const loading = (state = false, action) => {
     case 'GET_ALL_GROUPS_ERROR': return false;
     case 'GET_ALL_GROUPS_SUCCESS': return false;
 
-    case 'DELETE_MEMBER': return true;
-    case 'DELETE_MEMBER_ERROR': return false;
-    case 'DELETE_MEMBER_SUCCESS': return false;
+    case 'DELETE_GROUP_MEMBER': return true;
+    case 'DELETE_GROUP_MEMBER_ERROR': return false;
+    case 'DELETE_GROUP_MEMBER_SUCCESS': return false;
 
     case 'LEAVE_GROUP': return true;
     case 'LEAVE_GROUP_ERROR': return false;
     case 'LEAVE_GROUP_SUCCESS': return false;
 
-    // case 'VERIFY_TOKEN': return true;
+    case 'VERIFY_TOKEN': return true;
     case 'VERIFY_TOKEN_ERROR': return false;
     case 'VERIFY_TOKEN_SUCCESS': return false;
 

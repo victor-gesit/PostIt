@@ -1,5 +1,8 @@
 import React from 'react';
 
+/**
+ * A component that displays the message info in a modal
+ */
 export default class MessageInfoModal extends React.Component {
   /**
    * Render method of React component
@@ -13,17 +16,18 @@ export default class MessageInfoModal extends React.Component {
           <h5 className="orange-text">Read By</h5>
           <ul className="collection">
             {
-              seenBy.map((user, index) => {
-                return (
+              seenBy.map((user, index) =>
+                 (
                   <li key={index} className="collection-item">
                     <div>
                     {user.firstName} {user.lastName}<br/>
                     <small className="red-text"> { user.email}</small>
-                    <a className="secondary-content"><i className="material-icons">done_all</i></a>
+                    <a className="secondary-content"><i
+                      className="material-icons">done_all</i></a>
                     </div>
                   </li>
-                );
-              })
+                )
+              )
             }
           </ul>
         </div>

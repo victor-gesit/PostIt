@@ -13,43 +13,13 @@ import {
 
 // Partials
 import Footer from './partials/Footer.jsx';
-import NavBar from './partials/NavBar.jsx';
+import Navbar from './partials/NavBar.jsx';
 
 
 /**
  * React component that displays the page for creating a new group
  */
-class CreateGroup extends React.Component {
-  /**
-   * Component method called when component loads to reset state of spinner
-   * and hide sidenav
-   * @returns {undefined} This method returns nothing
-   */
-  componentDidMount() {
-    this.props.resetLoadingState();
-    $('.button-collapse').sideNav({
-      closeOnClick: true,
-      draggable: true
-    });
-    $('#sidenav-overlay').trigger('click');
-  }
-  /**
-   * Render method of React component
-   * @returns {Object} Returns the DOM object to be rendered
-   */
-  render() {
-    return (
-      <div>
-        <Body store={this.props}/>
-      </div>
-    );
-  }
-}
-
-/**
- * React component for displaying page body
- */
-class Body extends React.Component {
+export class CreateGroup extends React.Component {
   /**
    * Constructor initializes component parameters
    * @param {Object} props Properties passed from parent component
@@ -60,9 +30,20 @@ class Body extends React.Component {
     this.addMember = this.addMember.bind(this);
     this.createGroup = this.createGroup.bind(this);
     this.showNotification = this.showNotification.bind(this);
+    this.loadMore = this.loadMore.bind(this);
+    this.enterText = this.enterText.bind(this);
     this.selectedMembers = [];
     this.registeredMembers = {};
+    this.membersCount = 0;
+    this.state = {
+      enableButton: false
+    };
   }
+  /**
+   * Component method called before component mounts
+   * to make API calls that update state
+   * @returns {undefined} This method returns nothing
+   */
   componentWillMount() {
     // Load all registered members
     const token = localStorage.getItem('token');
@@ -70,11 +51,11 @@ class Body extends React.Component {
     try {
       decode = jwtDecode(token);
     } catch (err) {
-      this.props.store.history.push('/');
+      this.props.history.push('/');
     }
     const userId = decode.id;
-    this.props.store.getPostItMembers(token);
-    this.props.store.getAllGroupsForUser(userId, token);
+    this.props.getPostItMembers(token);
+    this.props.getAllGroupsForUser(userId, token);
   }
   /**
    * React component method called after component render
@@ -82,9 +63,13 @@ class Body extends React.Component {
    */
   componentDidMount() {
     // Initialize navbar
-    $('.button-collapse').sideNav({
-      closeOnClick: true
-    });
+    if ($('.button-collapse').sideNav) {
+      $('.button-collapse').sideNav({
+        closeOnClick: true,
+        draggable: true
+      });
+    }
+    $('#sidenav-overlay').trigger('click');
     // Load a default tab for the createGroup page
     try {
       $('#defaultTab')[0].click();
@@ -97,23 +82,25 @@ class Body extends React.Component {
    * @returns {undefined} this method returns nothing
    */
   componentDidUpdate() {
-    const allUsers = this.props.store.postItInfo.members.postItMembers;
-    const redirect = this.props.store.apiError.redirect;
-    const errorMessage = this.props.store.apiError.message;
+    const allUsers = this.props.postItInfo.members.postItMembers;
+    this.membersCount = this.props.postItInfo.members.meta.count;
+    this.allLoaded = this.props.postItInfo.members.meta.allLoaded;
+    this.previousOffset = this.props.postItInfo.members.meta.previousOffset;
+    const redirect = this.props.apiError.redirect;
+    const errorMessage = this.props.apiError.message;
     this.registeredMembers = allUsers;
     if (redirect.yes) {
       // Reset state of redirect property
-      this.props.store.resetRedirect();
-      // this.props.store.history.push(redirect.to);
+      this.props.resetRedirect();
+      // this.props.history.push(redirect.to);
       window.location = redirect.to;
-    } else {
-      if (errorMessage) {
-        // Empty the array of selected members
-        this.selectedMembers = [];
-        this.showNotification('error', errorMessage);
-        // Reset error log
-        this.props.store.resetErrorLog();
-      }
+    }
+    if (!redirect.yes && errorMessage) {
+      // Empty the array of selected members
+      this.selectedMembers = [];
+      this.showNotification('error', errorMessage);
+      // Reset error log
+      this.props.resetErrorLog();
     }
   }
   /**
@@ -140,11 +127,12 @@ class Body extends React.Component {
     try {
       decode = jwtDecode(token);
     } catch (err) {
-      this.props.store.signOut();
+      this.props.signOut();
     }
     const creatorId = decode.id;
     const selectedMembers = this.selectedMembers;
-    this.props.store.createGroup(creatorId, title, description, selectedMembers, token);
+    this.props.createGroup(creatorId, title, description,
+      selectedMembers, token);
   }
   /**
    * This method handles switching tabs in this react component
@@ -181,6 +169,26 @@ class Body extends React.Component {
     }
   }
   /**
+   * Method to load more users from the DB, to be added to a newly created group
+   * @returns {undefined} This method returns nothing
+   */
+  loadMore() {
+    // Load all registered members
+    const token = localStorage.getItem('token');
+    const allLoaded = this.props.postItInfo.members.meta.allLoaded;
+    this.props.getPostItMembers(token, allLoaded);
+  }
+  /**
+   * Handle when a user types input
+   * @returns {undefined} This method returns nothing
+   */
+  enterText() {
+    const enableButton =
+      this.title.value.length > 0 &&
+      this.description.value.length > 3;
+    this.setState({ enableButton });
+  }
+  /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
    */
@@ -197,43 +205,35 @@ class Body extends React.Component {
         }
       }
     };
-    const dataLoading = this.props.store.dataLoading;
-    const allUserGroups = this.props.store.allUserGroups.userGroups;
+    const postItMembers = this.props.postItInfo.members.postItMembers;
+    const membersCount = this.props.postItInfo.members.meta.count;
+    const allLoaded = Object.keys(postItMembers).length;
+    const allUserGroups = this.props.allUserGroups.userGroups;
     return (
       <div id="body">
-        <NavBar store={this.props.store} allUserGroups={allUserGroups}/>
-        <NotificationSystem className='notification' style={style}
-          ref={(notificationRef) => { this.notificationRef = notificationRef; }} />
+        <Navbar
+          store={this.props}
+          allUserGroups={allUserGroups}
+        />
+        <NotificationSystem
+          className='notification'
+          style={style}
+          ref={
+            (notificationRef) => { this.notificationRef = notificationRef; }}
+        />
         <div id="main">
           <div className="tab">
             <button className="tablinks" id="defaultTab" ref="defaultTab"
-              onClick={() => this.switchTab('defaultTab', 'info')}>Group info</button>
+              onClick={() => this.switchTab('defaultTab', 'info')}>
+              Group info
+            </button>
             <button className="tablinks" id="add-members" ref="add-members"
-              onClick={() => this.switchTab('add-members', 'members')}>Add members</button>
+              disabled={!this.state.enableButton}
+              onClick={() => this.switchTab('add-members', 'members')}>
+                Add members
+              </button>
           </div>
-          { dataLoading ? (
-              <div id="info" ref="info" className="tabcontent">
-                <div className="row">
-                  <div className="col s12 m8 offset-m2 offset-l3 l6">
-                    <div>
-                      <div className="preloader-wrapper loader big active valign-wrapper">
-                        <div className="spinner-layer spinner-white-only">
-                          <div className="circle-clipper left">
-                          <div className="circle"></div>
-                          </div>
-                          <div className="gap-patch">
-                          <div className="circle"></div>
-                          </div>
-                          <div className="circle-clipper right">
-                          <div className="circle"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
+
               <div id="info" ref="info" className="tabcontent">
                 <div className="row">
                   <div className="col s12 m8 offset-m2 offset-l3 l6">
@@ -241,107 +241,77 @@ class Body extends React.Component {
                       <h4 className="center">Enter group details</h4>
                       <div>
                         <div>
-                          <input type="text" ref={(title) => { this.title = title; }}
+                          <input type="text"
+                            ref={(title) => { this.title = title; }}
+                            onKeyUp={this.enterText}
                             name="group-title" placeholder="Group Title" />
                         </div>
                         <div>
                           <textarea id="groupDescription"
                             ref={(description) => { this.description = description; }}
-                            type="text" className="materialize-textarea" placeholder="Description"
+                            onKeyUp={this.enterText}
+                            type="text"
+                            className="materialize-textarea"
+                            placeholder="Description"
                             name="group-desc" defaultValue={''} />
                         </div>
                       </div>
                       <button className="btn light-green darken-4"
-                        onClick={() => this.switchTab('add-members', 'members')}>Next &gt;&gt;</button>
+                        disabled={!this.state.enableButton}
+                        onClick={() => this.switchTab('add-members', 'members')}>
+                          Next &gt;&gt;
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
-            )
-          }
+
           <div id="members" ref="members" className="tabcontent">
             <div className="row">
               <div className="col s12 m8 offset-m2 l6 offset-l3">
-          { /* Load spinner while contacting server */ }
-          {dataLoading ? (
-          <div>
-              <div>
-                <div className="classListHolder">
-                  <ul className="collection with-header registeredMembersList">
-                    <li className="collection-header"><h4 className="center">Add members</h4></li>
-                    <li className="collection-item">
-                      <input id="cb1" type="checkbox" disabled />
-                      <label htmlFor="cb1" className="black-text">
-                        <small className="grey-text"></small></label>
-                    </li>
-                    <li className="collection-item">
-                      <input id="cb2" type="checkbox" disabled />
-                      <label htmlFor="cb2" className="black-text">
-                        <small className="grey-text"></small></label>
-                    </li>
-                    <li className="collection-item">
-                      <input id="cb3" type="checkbox" disabled />
-                      <label htmlFor="cb3" className="black-text">
-                        <small className="grey-text"></small></label>
-                    </li>
-                    <li className="collection-item">
-                      <input id="cb4" type="checkbox" disabled />
-                      <label htmlFor="cb4" className="black-text">
-                        <small className="grey-text"></small></label>
-                    </li>
-                  </ul>
-                  <div className="row">
-                    <button className="btn col s8 offset-s2 m5 l5 light-green darken-4"
-                      onClick={() => this.switchTab('defaultTab', 'info')}>&lt;&lt; Group info</button>
-                    <div className="col s12 m2 s2"><br /></div>
-                    <button disabled className="btn col s8 offset-s2 m5 l5 light-green darken-4">
-                      Create group</button>
-                  </div>
-                </div>
-              </div>
-              <div className="userlist-preloader">
-                <div className="preloader-wrapper big loader active valign-wrapper">
-                  <div className="spinner-layer spinner-white-only">
-                    <div className="circle-clipper left">
-                    <div className="circle"></div>
-                    </div>
-                    <div className="gap-patch">
-                    <div className="circle"></div>
-                    </div>
-                    <div className="circle-clipper right">
-                    <div className="circle"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-          </div>
-          ) : (
             <div>
               <div>
                 <div className="classListHolder">
                   <ul className="collection with-header registeredMembersList">
-                    <li className="collection-header"><h4 className="center">Add members</h4></li>
+                    <li className="collection-header"><h4 className="center">
+                      Add members</h4></li>
                     {
-                      Object.keys(this.registeredMembers).map((userId, index) =>
-                        <RegisteredMember addMember={this.addMember} key={index}
-                        id={userId} userInfo={this.registeredMembers[userId]}/>
+                      Object.keys(postItMembers).map((userId, index) =>
+                        <RegisteredMember
+                          addMember={this.addMember}
+                          key={index}
+                          id={userId}
+                          userInfo={postItMembers[userId]}
+                        />
+                      )
+                    }
+                    {
+                      allLoaded < membersCount ? (
+                        <div className="center">
+                        <button className="btn"
+                          onClick={ () => this.loadMore()}>...Load More</button>
+                        </div>
+                      ) : (
+                        <div/>
                       )
                     }
                   </ul>
-                  <div className="row">
-                    <button className="btn col s8 offset-s2 m5 l5 light-green darken-4"
-                      onClick={() => this.switchTab('defaultTab', 'info')}>&lt;&lt; Group info
-                    </button>
-                    <div className="col s12 m2 s2"><br /></div>
-                    <button onClick={this.createGroup}
-                      className="btn col s8 offset-s2 m5 l5 light-green darken-4">
-                      Create group
-                    </button>
-                  </div>
+                <div className="row">
+                  <button
+                    className="btn col s8 offset-s2 m5 l5 light-green darken-4"
+                    onClick={() => this.switchTab('defaultTab', 'info')}>
+                    &lt;&lt; Group info
+                  </button>
+                  <div className="col s12 m2 s2"><br /></div>
+                  <button onClick={this.createGroup}
+                    id="createGroupButton"
+                    className="btn col s8 offset-s2 m5 l5 light-green darken-4">
+                    Create group
+                  </button>
+                </div>
                 </div>
               </div>
             </div>
-          )}
               </div>
             </div>
           </div>
@@ -356,7 +326,7 @@ class Body extends React.Component {
 /**
  *  Component to contain a member loaded from the database
  */
-class RegisteredMember extends React.Component {
+export class RegisteredMember extends React.Component {
   /**
    * @param {Object} props component props passed from parent component
    */
@@ -435,13 +405,17 @@ const mapDispatchToProps = dispatch =>
     resetRedirect: () => dispatch(resetRedirect()),
     resetLoadingState: () => dispatch(resetLoadingState()),
     verifyToken: token => dispatch(verifyToken(token)),
-    getPostItMembers: token => dispatch(getPostItMembers(token)),
-    getAllGroupsForUser: (userId, token) => dispatch(getAllGroupsForUser(userId, token)),
+    getPostItMembers: (token, offset, limit) =>
+      dispatch(getPostItMembers(token, offset, limit)),
+    getAllGroupsForUser: (userId, token, offset) =>
+      dispatch(getAllGroupsForUser(userId, token, offset)),
     getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
     loadMessages: groupId => dispatch(loadMessages(groupId)),
-    getGroupMembers: (groupId, token) => dispatch(getGroupMembers(groupId, token)),
+    getGroupMembers: (groupId, token) =>
+      dispatch(getGroupMembers(groupId, token)),
     createGroup: (creatorId, title, description, selectedMembers, token) =>
-      dispatch(createGroup(creatorId, title, description, selectedMembers, token)),
+      dispatch(createGroup(creatorId, title,
+        description, selectedMembers, token)),
     getGroupsForUser: (userId, offset, limit, token) =>
       dispatch(getGroupsForUser(userId, offset, limit, token)),
     signOut: () => dispatch(signOut())

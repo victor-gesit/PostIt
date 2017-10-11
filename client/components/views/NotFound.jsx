@@ -10,13 +10,13 @@ import {
 
 // Partials
 import Footer from './partials/Footer.jsx';
-import NavBar from './partials/NavBar.jsx';
+import Navbar from './partials/NavBar.jsx';
 
 
 /**
  * React component that displays the page for creating a new group
  */
-class CreateGroup extends React.Component {
+export class NotFound extends React.Component {
   /**
    * Component method called when component loads to reset state of spinner
    * @returns {undefined} This method returns nothing
@@ -24,43 +24,29 @@ class CreateGroup extends React.Component {
   componentDidMount() {
     this.props.resetLoadingState();
       // Initialize navbar
-    $('.button-collapse').sideNav({
-      closeOnClick: true,
-      draggable: true
-    });
+    if ($('.button-collapse').sideNav) {
+      $('.button-collapse').sideNav({
+        closeOnClick: true,
+        draggable: true
+      });
+    }
   }
   /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
    */
   render() {
-    return (
-      <div>
-        <Body store={this.props}/>
-      </div>
-    );
-  }
-}
-
-/**
- * React component for displaying page body
- */
-class Body extends React.Component {
-  /**
-   * Render method of React component
-   * @returns {Object} Returns the DOM object to be rendered
-   */
-  render() {
-    const allUserGroups = this.props.store.allUserGroups.userGroups;
+    const allUserGroups = this.props.allUserGroups.userGroups;
     return (
       <div id="body">
-        <NavBar store={this.props.store} allUserGroups={allUserGroups}/>
+        <Navbar store={this.props} allUserGroups={allUserGroups}/>
           <h3 id="main" className="grey-text center">Page not found</h3>
         <Footer/>
       </div>
     );
   }
 }
+
 
 const mapStateToProps = state => (
   {
@@ -85,15 +71,18 @@ const mapDispatchToProps = dispatch =>
     resetLoadingState: () => dispatch(resetLoadingState()),
     verifyToken: token => dispatch(verifyToken(token)),
     getPostItMembers: token => dispatch(getPostItMembers(token)),
-    getAllGroupsForUser: (userId, token) => dispatch(getAllGroupsForUser(userId, token)),
-    getGroupMembers: (groupId, token) => dispatch(getGroupMembers(groupId, token)),
+    getAllGroupsForUser: (userId, token, offset) =>
+      dispatch(getAllGroupsForUser(userId, token, offset)),
+    getGroupMembers: (groupId, token) =>
+      dispatch(getGroupMembers(groupId, token)),
     getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
     loadMessages: groupId => dispatch(loadMessages(groupId)),
     createGroup: (creatorId, title, description, selectedMembers, token) =>
-      dispatch(createGroup(creatorId, title, description, selectedMembers, token)),
+      dispatch(createGroup(creatorId, title, description,
+        selectedMembers, token)),
     getGroupsForUser: (userId, offset, limit, token) =>
     dispatch(getGroupsForUser(userId, offset, limit, token)),
     signOut: () => dispatch(signOut())
   });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateGroup);
+export default connect(mapStateToProps, mapDispatchToProps)(NotFound);

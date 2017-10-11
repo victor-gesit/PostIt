@@ -17,9 +17,11 @@ export default class GroupDeleteModal extends React.Component {
         </div>
         <div className="modal-footer">
           <button onClick={this.props.deleteGroup}
+            id="deleteGroupButton"
             className="modal-action modal-close waves-effect waves-green btn-flat green-text">
               Delete</button>
-          <button className="modal-action modal-close waves-effect waves-green btn-flat green-text">
+          <button
+            className="modal-action modal-close waves-effect waves-green btn-flat green-text">
               Cancel</button>
         </div>
       </div>

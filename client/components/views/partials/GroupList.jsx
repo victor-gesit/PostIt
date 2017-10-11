@@ -1,10 +1,29 @@
 /* eslint-env browser */
 import React from 'react';
 import jwtDecode from 'jwt-decode';
+import Spinner from '../../../components/views/partials/Spinner.jsx';
 /**
  * A React component that displays the groups a user belongs to, as a list
  */
 export default class GroupList extends React.Component {
+  /**
+   * Constructor initializes component parameters
+   * @param {Object} props Properties passed from parent component
+   */
+  constructor(props) {
+    super(props);
+    this.searchGroup = this.searchGroup.bind(this);
+  }
+  /**
+   * Method called to search for members of a group
+   * @returns {undefined} This method returns nothing
+   */
+  searchGroup() {
+    const searchQuery = this.searchTerm.value;
+    const groupId = this.props.store.match.params.groupId;
+    const token = localStorage.getItem('token');
+    this.props.store.searchGroup(token, groupId, searchQuery);
+  }
   /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
@@ -40,7 +59,10 @@ export default class GroupList extends React.Component {
       <div id="memberList" className="members-list-container m4 l3">
         <div className="row searchbox valign-wrapper">
           <div className="col s9">
-            <input type="search" className="black-text" />
+            <input placeholder="Search group"
+              onKeyUp={this.searchGroup}
+              ref={(searchTerm) => { this.searchTerm = searchTerm; }}
+              type="search" className="black-text" />
           </div>
           <div className="col s3">
             <span><i className="material-icons black-text">search</i></span>
@@ -61,20 +83,11 @@ export default class GroupList extends React.Component {
         {
           groupLoaded ?
           (
-            <GroupMembers userEmail={userDetails.email} creatorEmail={creatorEmail}
+            <GroupMembers userEmail={userDetails.email}
+              creatorEmail={creatorEmail}
               groupMembers={groupMembers}/>
           ) : (
-          <div className="preloader-wrapper loader small active">
-            <div className="spinner-layer spinner-green-only">
-              <div className="circle-clipper left">
-                <div className="circle"></div>
-              </div><div className="gap-patch">
-                <div className="circle"></div>
-              </div><div className="circle-clipper right">
-                <div className="circle"></div>
-              </div>
-            </div>
-          </div>
+            <Spinner/>
           )
         }
       </div>
@@ -85,7 +98,7 @@ export default class GroupList extends React.Component {
 /**
  * A React component that displays all the membrs of a group
  */
-class GroupMembers extends React.Component {
+export class GroupMembers extends React.Component {
   /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
@@ -95,20 +108,27 @@ class GroupMembers extends React.Component {
     const creatorEmail = this.props.creatorEmail;
     const userEmail = this.props.userEmail;
     const userIsCreator = userEmail === creatorEmail;
+    let membersList = [];
+
+    if (groupMembers) {
+      membersList = Object.keys(groupMembers).map(memberId =>
+        groupMembers[memberId]
+      );
+    }
     return (
       <ul className="collection members-list">
         {
-          groupMembers ? (
-            Object.keys(groupMembers).map((memberId, index) =>
+          membersList.length > 0 ? (
+            membersList.map((member, index) =>
               (
-                <GroupMember userIsCreator={userIsCreator} key={index}
-                  creatorEmail={creatorEmail} memberDetails={groupMembers[memberId]}/>
+              <GroupMember userIsCreator={userIsCreator} key={index}
+                creatorEmail={creatorEmail} memberDetails={member}/>
               )
             )
           ) : (
-            <div className="progress center pink-text">
-                <div className="indeterminate"></div>
-            </div>
+            <li className="center red-text">
+              No member with that name
+            </li>
           )
         }
 
@@ -119,7 +139,7 @@ class GroupMembers extends React.Component {
 /**
  * React component that displays the details of each member of a group
  */
-class GroupMember extends React.Component {
+export class GroupMember extends React.Component {
   /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
@@ -137,18 +157,21 @@ class GroupMember extends React.Component {
     return (
           memberDetails.email === creatorEmail ?
           (
-            <li className="collection-item">{memberDetails.firstName} {memberDetails.lastName}<br />
+            <li className="collection-item">
+              {memberDetails.firstName} {memberDetails.lastName}<br />
               <small className="grey-text">{memberDetails.email}</small>
               <a id={memberDetails.id} value={memberDetails.name}
                 className="secondary-content modal-trigger pink-text text-darken-4">
               <i className="material-icons">person</i></a>
             </li>
           ) : (
-            <li className="collection-item">{memberDetails.firstName} {memberDetails.lastName}<br />
+            <li className="collection-item">
+              {memberDetails.firstName} {memberDetails.lastName}<br />
               <small className="grey-text">{memberDetails.email}</small>
               {
                 userIsCreator ? (
-              <a href='#deleteMemberModal' id={memberDetails.id} value={memberDetails.name}
+              <a href='#deleteMemberModal' id={memberDetails.id}
+              value={memberDetails.name}
                 className={styleClassName}>
               <i className="material-icons">{icon}</i></a>
                 ) : (

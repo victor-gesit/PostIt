@@ -1,78 +1,23 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { signIn, resetErrorLog, resetRedirect, resetLoadingState, verifyToken, googleLogin } from '../../actions';
-import SignInForm from './partials/SignInForm.jsx';
+import { signIn, resetErrorLog, resetRedirect,
+  resetLoadingState, verifyToken, googleLogin } from '../../actions';
+import SigninForm from './partials/SignInForm.jsx';
 import Footer from './partials/Footer.jsx';
+import AuthNav from './partials/AuthNav.jsx';
+
 /**
  * React component to display landing page
  */
-class Index extends React.Component {
-  /**
-   * Component method called when component loads to reset state of spinner and hide side nav
-   * @returns {undefined} This method returns nothing
-   */
-  componentDidMount() {
-    this.props.resetLoadingState();
-    $('#sidenav-overlay').trigger('click');
-  }
-  /**
-   * Render method of React component
-   * @returns {Object} Returns the DOM object to be rendered
-   */
-  render() {
-    return (
-      <div>
-        <Body store={this.props}/>
-      </div>
-    );
-  }
-}
-
-/**
- * React component that displays Navigation Bar
- */
-class NavBar extends React.Component {
-  /**
-   * Render method of React component
-   * @returns {Object} Returns the DOM object to be rendered
-   */
-  render() {
-    return (
-      <div className="navbar-fixed">
-        <nav className="pink darken-4" role="navigation">
-          <div className="nav-wrapper">
-            <a href="#" id="brand" className="brand-logo">PostIt</a>
-            <a href="#" data-activates="mobile-demo"
-              className="button-collapse"><i className="material-icons">menu</i></a>
-            <ul className="right hide-on-med-and-down">
-            </ul>
-            <ul id="mobile-demo" className="side-nav">
-              <li>
-                <div className="user-details">
-                  <div className="background">
-                    <img src="images/fire2.png" />
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </nav>
-      </div>
-    );
-  }
-}
-
-
-/**
- * React component for displaying page body
- */
-class Body extends React.Component {
+export class Index extends React.Component {
   /**
    * Component method called after component renders to add
    * listener to floating action button and activate side nav
    * @returns {undefined} This method returns nothing
    */
   componentDidMount() {
+    this.props.resetLoadingState();
+    $('#sidenav-overlay').trigger('click');
     $('.button-collapse').sideNav({
       closeOnClick: true,
       draggable: true
@@ -90,7 +35,7 @@ class Body extends React.Component {
   render() {
     return (
       <div id="body">
-        <NavBar/>
+        <AuthNav/>
         <div id="main">
           <div className="fixed-action-btn hide-on-med-and-up">
             <a id="goToSignin" className="btn-floating btn-large red">
@@ -105,24 +50,37 @@ class Body extends React.Component {
                   Why meet when you can PostIt?</h3>
                 <div className="row">
                   <div className="col s12 m12 l6">
-                    <i className="large green-text text-darken-4 material-icons">people</i>
-                    <h6 className="brown-text accent-4">Create teams of all sizes</h6>
+                    <i
+                      className="large green-text text-darken-4 material-icons">
+                      people</i>
+                    <h6
+                      className="brown-text accent-4">
+                        Create teams of all sizes</h6>
                   </div>
                   <div className="col s12 m12 l6">
-                    <i className="large green-text text-darken-4 material-icons">perm_scan_wifi</i>
-                    <h6 className="brown-text accent-4">Send broadcast messages to team members</h6>
+                    <i
+                      className="large green-text text-darken-4 material-icons">
+                      perm_scan_wifi</i>
+                    <h6 className="brown-text accent-4">
+                      Send broadcast messages to team members</h6>
                   </div>
                   <div className="col s12 m12 l6">
-                    <i className="large green-text text-darken-4 material-icons">done_all</i>
-                    <h6 className="brown-text accent-4">Get receipt notifications</h6>
+                    <i
+                      className="large green-text text-darken-4 material-icons">
+                      done_all</i>
+                    <h6 className="brown-text accent-4">
+                      Get receipt notifications</h6>
                   </div>
                   <div className="col s12 m12 l6">
-                    <i className="large green-text text-darken-4 material-icons">trending_up</i>
-                    <h6 className="brown-text accent-4">Achieve more in less time</h6>
+                    <i
+                      className="large green-text text-darken-4 material-icons">
+                      trending_up</i>
+                    <h6 className="brown-text accent-4">
+                      Achieve more in less time</h6>
                   </div>
                 </div>
               </div>
-              <SignInForm store={this.props.store}/>
+              <SigninForm store={this.props}/>
             </div>
           </div>
 

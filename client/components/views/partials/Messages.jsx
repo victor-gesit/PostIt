@@ -1,6 +1,7 @@
 /* eslint-env browser */
 import React from 'react';
 import jwtDecode from 'jwt-decode';
+import Spinner from './Spinner.jsx';
 /**
  * A React ccomponent that displays all the messages for a group
  */
@@ -23,7 +24,6 @@ export default class Messages extends React.Component {
       }
       const userId = decode.id;
       const socket = this.props.socket;
-      // socket.emit('open group', { groupId: newGroupId, userId });
       socket.emit('open group', { groupId: newGroupId, userId });
       socket.emit('close group', { groupId: oldGroupId, userId });
     }
@@ -71,22 +71,13 @@ export default class Messages extends React.Component {
               <div>
                 {
                   Object.keys(messages).map((messageId, index) =>
-                    <Message userId={userId} key={index} messageDetails={messages[messageId]}/>)
+                    <Message userId={userId}
+                    key={index} messageDetails={messages[messageId]}/>)
                 }
               </div>
             )
           ) : (
-          <div className="preloader-wrapper loader big active">
-            <div className="spinner-layer spinner-green-only">
-              <div className="circle-clipper left">
-                <div className="circle"></div>
-              </div><div className="gap-patch">
-                <div className="circle"></div>
-              </div><div className="circle-clipper right">
-                <div className="circle"></div>
-              </div>
-            </div>
-          </div>
+            <Spinner/>
           )
         }
         </ul>
@@ -99,7 +90,7 @@ export default class Messages extends React.Component {
 /**
  * React component to display each message
  */
-class Message extends React.Component {
+export class Message extends React.Component {
   /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
@@ -117,74 +108,27 @@ class Message extends React.Component {
     } else {
       className = 'message card col s11';
     }
+    let iconClassName = 'secondary-content green-text';
     switch (priority) {
       case 'normal':
-        // Comments also have normal priority, but don't send notificatins
-        return (
-          isComment ? (
-            <li className={className}>
-              <small className="sender-name">{messageDetails.sentBy}
-                <a className="secondary-content grey-text">
-                  <i className="material-icons">lens</i></a></small>
-              <div className="message-body white-text">{messageDetails.body}</div>
-              <div className="message-info"><small>{messageDetails.createdAt}
-                <a id={messageId} href="#messageInfoModal"className="secondary-content messageInfo white-text">
-                <i className="material-icons green-text">{messageInfoIcon}</i></a>
-                </small></div>
-            </li>
-          ) : (
-            <li className={className}>
-              <small className="sender-name">{messageDetails.sentBy}
-                <a className="secondary-content green-text">
-                <i className="material-icons">lens</i></a></small>
-              <div className="message-body white-text">{messageDetails.body}</div>
-              <div className="message-info"><small>{messageDetails.createdAt}
-                  <a id={messageId} href="#messageInfoModal"
-                    className="secondary-content messageInfo white-text">
-                <i className="material-icons">{messageInfoIcon}</i></a>
-                </small></div>
-            </li>
-          )
-        );
-      case 'urgent': return (
+        if (isComment) { iconClassName = 'secondary-content grey-text'; }
+        break;
+      case 'urgent': iconClassName = 'secondary-content orange-text'; break;
+      case 'critical': iconClassName = 'secondary-content red-text'; break;
+      default: break;
+    }
+    return (
         <li className={className}>
           <small className="sender-name">{messageDetails.sentBy}
-            <a className="secondary-content orange-text">
-            <i className="material-icons">lens</i></a></small>
+            <a className={iconClassName}>
+              <i className="material-icons">lens</i></a></small>
           <div className="message-body white-text">{messageDetails.body}</div>
           <div className="message-info"><small>{messageDetails.createdAt}
             <a id={messageId} href="#messageInfoModal"
               className="secondary-content messageInfo white-text">
-            <i className="material-icons">{messageInfoIcon}</i></a>
+            <i className="material-icons green-text">{messageInfoIcon}</i></a>
             </small></div>
         </li>
-      );
-      case 'critical': return (
-        <li className={className}>
-          <small className="sender-name">{messageDetails.sentBy}
-            <a className="secondary-content red-text">
-            <i className="material-icons">lens</i></a></small>
-          <div className="message-body white-text">{messageDetails.body}</div>
-          <div className="message-info"><small>{messageDetails.createdAt}
-            <a id={messageId} href="#messageInfoModal"
-            className="secondary-content messageInfo white-text">
-            <i className="material-icons">{messageInfoIcon}</i></a>
-            </small></div>
-        </li>
-      );
-      default: return (
-        <li className={className}>
-          <small className="sender-name">{messageDetails.sentBy}
-            <a className="secondary-content grey-text">
-            <i className="material-icons">lens</i></a></small>
-          <div className="message-body white-text">{messageDetails.body}</div>
-          <div className="message-info"><small>{messageDetails.createdAt}
-            <a id={messageId} href="#messageInfoModal"
-            className="secondary-content messageInfo white-text">
-            <i className="material-icons">{messageInfoIcon}</i></a>
-            </small></div>
-        </li>
-      );
-    }
+    );
   }
 }
