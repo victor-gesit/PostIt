@@ -1,6 +1,6 @@
 /* eslint-env browser */
 import request from 'superagent';
-import methods from './functions/storeMethods';
+import methods from './utils';
 
 const dataService = store => next => (action) => {
   // Pass all actions through by default

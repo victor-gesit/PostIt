@@ -73,8 +73,11 @@ export class PostMessage extends React.Component {
    * @returns {undefined} This method returns nothing
    */
   componentDidMount() {
-    const matchQuery = window.matchMedia('(max-width: 992px)');
-    if (matchQuery.matches) {
+    let matchQuery = {};
+    if (window.matchMedia) {
+      matchQuery = window.matchMedia('(max-width: 992px)');
+    }
+    if (matchQuery.matches && $('.button-collapse').sideNav) {
       $('.button-collapse').sideNav({
         closeOnClick: true,
         draggable: true
@@ -97,29 +100,26 @@ export class PostMessage extends React.Component {
     this.props.getAllGroupsForUser(userId, token);
     // Load all members of the group
     this.props.getGroupMembers(groupId, token);
-
-    // Initialize side nav
-    $('.button-collapse').sideNav({
-      draggable: true
-    });
     /* Toggle group list*/
     $('#member-list-toggle').off().on('click', () => {
       $('#memberList').animate({ width: 'toggle' });
     });
-    $('.modal').modal({
-      // Handle modal dialog box
-      ready: (modal, trigger) => {
-        // Check if modal is for deleting group member or entire group
-        if (modal[0].id === 'deleteMemberModal') {
-          this.memberIdToDelete = trigger[0].id;
-        } else if (modal[0].id === 'messageInfoModal') {
-          const messageId = trigger[0].id;
-          this.props.seenBy(messageId, token);
-        } else {
-          this.groupIdToDelete = trigger[0].id;
-        }
-      },
-    });
+    if ($('.modal').modal) {
+      $('.modal').modal({
+        // Handle modal dialog box
+        ready: (modal, trigger) => {
+          // Check if modal is for deleting group member or entire group
+          if (modal[0].id === 'deleteMemberModal') {
+            this.memberIdToDelete = trigger[0].id;
+          } else if (modal[0].id === 'messageInfoModal') {
+            const messageId = trigger[0].id;
+            this.props.seenBy(messageId, token);
+          } else {
+            this.groupIdToDelete = trigger[0].id;
+          }
+        },
+      });
+    }
     // Toggle memberList
     $(document).on('click', (e) => {
       const target = $(e.target);

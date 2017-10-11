@@ -17,6 +17,7 @@ export { default as messageInputBoxMock } from './messageInputBoxMock';
 export { default as messageMock } from './messageMock';
 export { default as messagesMock } from './messagesMock';
 export { default as navBarMock } from './navBarMock';
+export { default as newPasswordMock } from './newPasswordMock';
 export { default as notFoundMock } from './notFoundMock';
 export { default as postItInfoReducerMock } from './postItInfoReducerMock';
 export { default as postMessageMock } from './postMessageMock';

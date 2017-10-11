@@ -1,5 +1,6 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
+import { StaticRouter } from 'react-router';
 import { MessageBoard } from '../../components/views/MessageBoard.jsx';
 import Footer from '../../components/views/partials/Footer.jsx';
 import Navbar from '../../components/views/partials/NavBar.jsx';
@@ -11,6 +12,23 @@ describe('<MessageBoard />', () => {
     groups={mock.groups}
     allUserGroups={mock.allUserGroups}
     />);
+  it('renders the component successfully', () => {
+    const mountedWrapper = mount(
+      <StaticRouter>
+        <MessageBoard
+          { ...mock }
+          getGroupsForUser = { () => {} }
+        />
+      </StaticRouter>
+    );
+  });
+  it('calls the method to load the next page when a page number is clicked', () => {
+    const wrapper = shallow(<MessageBoard
+        { ...mock }
+      />);
+    wrapper.instance().handlePageNumberClick({ event: { selected: 2 } });
+    expect(mock.getGroupsForUser.calledOnce).toEqual(true);
+  });
   it('renders a <Footer /> component', () => {
     expect(wrapper.find(Footer).length).toEqual(1);
   });

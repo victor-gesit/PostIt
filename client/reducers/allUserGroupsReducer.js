@@ -1,4 +1,4 @@
-import methods from '../services/functions/storeMethods';
+import methods from '../services/utils';
 
 // Handle all the groups a user belongs to
 const allUserGroupsReducer = (state = { meta: { count: 0, allLoaded: 0 },

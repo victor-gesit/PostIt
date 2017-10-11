@@ -24,10 +24,12 @@ export class NotFound extends React.Component {
   componentDidMount() {
     this.props.resetLoadingState();
       // Initialize navbar
-    $('.button-collapse').sideNav({
-      closeOnClick: true,
-      draggable: true
-    });
+    if ($('.button-collapse').sideNav) {
+      $('.button-collapse').sideNav({
+        closeOnClick: true,
+        draggable: true
+      });
+    }
   }
   /**
    * Render method of React component

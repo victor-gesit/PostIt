@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+
 export default {
   appInfo: {
     userDetails: {
@@ -13,6 +15,15 @@ export default {
       groupId: null
     }
   },
+  match: {
+    params: {
+      groupId: 'abcde'
+    }
+  },
   groups: { meta: { count: 0 }, userGroups: {} },
-  allUserGroups: { meta: { count: 0 }, userGroups: {} }
+  allUserGroups: { meta: { count: 0 }, userGroups: {} },
+  resetLoadingState: sinon.spy(),
+  resetRedirect: sinon.spy(),
+  getGroupsForUser: sinon.spy(),
+  getAllGroupsForUser: sinon.spy(),
 };

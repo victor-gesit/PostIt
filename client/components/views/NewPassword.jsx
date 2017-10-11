@@ -33,21 +33,16 @@ export class NewPassword extends React.Component {
   componentDidMount() {
     this.props.resetLoadingState();
     // Initialize the side nav
-    $('.button-collapse').sideNav({
-      closeOnClick: true,
-      draggable: true
-    });
+    if ($('.button-collapse').sideNav) {
+      $('.button-collapse').sideNav({
+        closeOnClick: true,
+        draggable: true
+      });
+    }
+
     $('#sidenav-overlay').trigger('click');
     // Initialize notification component
     this.notificationSystem = this.notificationRef;
-    // Set focus to SignUp button
-    $('#signUpForm').keypress((event) => {
-      if ((event.which && event.which === 13)
-        || (event.keyCode && event.keyCode === 13)) {
-        $('#signUpButton').click();
-        return false;
-      }
-    });
   }
   /**
    * Component method called before component properties are updated,
@@ -150,7 +145,7 @@ export class NewPassword extends React.Component {
               Confirm Password</label>
           </div>
           <div className="col s12 center">
-            <button id="signInButton" onClick={this.resetPassword}
+            <button id="submitButton" onClick={this.resetPassword}
               className="btn green darken-4"
               disabled={!this.state.enableButton}
               ref={(button) => { this.button = button; }} >Reset</button>

@@ -37,10 +37,12 @@ export class MessageBoard extends React.Component {
     this.props.resetLoadingState();
     this.props.resetRedirect();
     // Initialize navbar
-    $('.button-collapse').sideNav({
-      closeOnClick: true,
-      draggable: true
-    });
+    if ($('.button-collapse').sideNav) {
+      $('.button-collapse').sideNav({
+        closeOnClick: true,
+        draggable: true
+      });
+    }
     $('#sidenav-overlay').trigger('click');
     const token = localStorage.getItem('token');
     let decode;

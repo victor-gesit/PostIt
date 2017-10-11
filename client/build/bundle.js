@@ -17570,222 +17570,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 55 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _lodash = __webpack_require__(103);
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var methods = {
-  // Delete a group from State
-  deleteGroup: function deleteGroup(appState, groupId) {
-    var userGroups = appState.userGroups;
-
-    var keys = _lodash2.default.filter(Object.keys(userGroups), function (key) {
-      return key !== groupId;
-    });
-    var newState = {
-      userGroups: _lodash2.default.pick(userGroups, keys),
-      meta: {
-        count: appState.meta.count - 1
-      }
-    };
-    return newState;
-  },
-  // Create time stamp for messages
-  getTimeStamp: function getTimeStamp(timeStamp, callback) {
-    var date = new Date(timeStamp);
-    var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    var year = date.getFullYear();
-    var month = months[date.getMonth()];
-    var day = date.getDate();
-    var hour = date.getHours();
-    var minutesUnformatted = date.getMinutes();
-    var minutes = minutesUnformatted < 10 ? '0' + minutesUnformatted : minutesUnformatted;
-    var formattedTime = month + ' ' + day + ', ' + year + ', at ' + hour + ':' + minutes;
-    callback(formattedTime);
-  },
-  // Load groups a user belongs to
-  getGroups: function getGroups(dbSnapshot, done) {
-    var groups = dbSnapshot.rows;
-    var newState = { meta: {}, userGroups: {} };
-    groups.forEach(function (group) {
-      newState.userGroups[group.id] = newState.userGroups[group.id] || {};
-      newState.userGroups[group.id].info = group;
-    });
-    newState.meta.count = dbSnapshot.count;
-    newState.meta.allLoaded = dbSnapshot.allLoaded;
-    done(null, newState);
-  },
-  // Method to get registered postit members
-  getPostItMembers: function getPostItMembers(dbSnapshot, done) {
-    var newState = { members: { postItMembers: {}, meta: { count: 0 } } };
-    var membersRows = dbSnapshot.rows;
-    membersRows.forEach(function (member) {
-      newState.members.postItMembers[member.id] = member;
-    });
-    newState.members.meta.count = dbSnapshot.count;
-    newState.members.meta.allLoaded = dbSnapshot.allLoaded;
-    done(null, newState);
-  },
-  // Get groups on PostIt
-  getAllPostItGroups: function getAllPostItGroups(dbSnapshot, done) {
-    var newState = { groups: { postItGroups: {}, meta: { count: 0 } } };
-    var groupRows = dbSnapshot.rows;
-    groupRows.forEach(function (group) {
-      newState.groups.postItGroups[group.id] = group;
-    });
-
-    newState.groups.meta.count = dbSnapshot.count;
-    done(null, newState);
-  },
-  // Create a group
-  createGroup: function createGroup(apiCallResult, done) {
-    var createdGroup = apiCallResult.createdGroup;
-    var newState = { meta: { count: 0 }, userGroups: {} };
-    var userGroups = newState.userGroups;
-    userGroups[createdGroup.id] = {};
-    userGroups[createdGroup.id].info = createdGroup;
-    userGroups[createdGroup.id].messages = {};
-    userGroups[createdGroup.id].members = {};
-    newState.userGroups = userGroups;
-    newState.meta.count += 1;
-
-    done(null, newState, createdGroup);
-  },
-  // Load members for a group
-  getMembers: function getMembers(state, dbSnapshot, groupId) {
-    var groupMembers = dbSnapshot.rows;
-    // Initialize state with empty object if
-    // group data hasn't been loaded in the past
-    var appState = { meta: { count: dbSnapshot.count }, userGroups: {} };
-    appState.userGroups[groupId] = appState.userGroups[groupId] || {};
-    appState.userGroups[groupId].members = appState.userGroups[groupId].members || {};
-    groupMembers.forEach(function (member) {
-      appState.userGroups[groupId].members[member.id] = member;
-    });
-    var group = state.userGroups[groupId] || {};
-    var groupMessages = group.messages || {};
-    var groupInfo = group.info || {};
-    appState.userGroups[groupId].messages = groupMessages;
-    appState.userGroups[groupId].info = groupInfo || {};
-    var result = _extends({}, state, appState);
-    return result;
-  },
-  // Post a message to a group
-  postMessage: function postMessage(state, newMessage, groupId) {
-    var newState = { meta: { count: 0, allLoaded: 0 }, userGroups: {} };
-    // Initialize the fields with empty objects
-    // and array if they had no previous content
-    var group = state.userGroups[groupId] || {};
-    newState.userGroups[groupId] = group;
-    var groupInfo = group.info || {};
-    var groupMembers = group.members || {};
-    newState.userGroups[groupId].messages = group.messages || {};
-    newState.userGroups[groupId].members = groupMembers;
-    newState.userGroups[groupId].info = groupInfo;
-    var groupMessages = newState.userGroups[groupId].messages;
-    // Format the time stamp of new message
-    methods.getTimeStamp(newMessage.createdAt, function (formattedTime) {
-      newMessage.createdAt = 'Sent ' + formattedTime;
-      groupMessages[newMessage.id] = newMessage;
-      newState.userGroups[groupId].messages = groupMessages;
-    });
-    return _extends({}, state, newState);
-  },
-  // Add a member to a group
-  addMembers: function addMembers(state, newMembers, groupId) {
-    var newState = { userGroups: {} };
-    var group = state.userGroups[groupId] || {};
-    var groupMembers = group.members || {};
-    newMembers.forEach(function (newMember) {
-      groupMembers[newMember.id] = newMember;
-    });
-    newState.userGroups[groupId] = group;
-    newState.userGroups[groupId].info = group.info || {};
-    newState.userGroups[groupId].messages = group.messages || {};
-    newState.userGroups[groupId].members = groupMembers;
-    return _extends({}, state, newState);
-  },
-  // Delete a group member
-  deleteMember: function deleteMember(state, deletedId, groupId) {
-    var _ref = state.userGroups[groupId] || {},
-        members = _ref.members;
-
-    var group = state.userGroups[groupId] || {};
-    var groupInfo = group.info || {};
-    var groupMessages = group.messages || {};
-
-    var keys = _lodash2.default.filter(Object.keys(members), function (key) {
-      return key !== deletedId;
-    });
-    var remainingMembers = _lodash2.default.pick(members, keys);
-    var newState = {
-      userGroups: _defineProperty({}, groupId, {
-        info: groupInfo,
-        messages: groupMessages,
-        members: remainingMembers
-      })
-    };
-    return _extends({}, state, newState);
-  },
-  // Load message into a group
-  loadMessages: function loadMessages(state, messagesDbSnapshot, groupId) {
-    var messages = messagesDbSnapshot.rows;
-    var newState = { userGroups: {} };
-    var messagesObject = {};
-    messages.map(function (message, index) {
-      methods.getTimeStamp(message.createdAt, function (formattedTime) {
-        messages[index].createdAt = 'Sent ' + formattedTime;
-      });
-    });
-    messages.forEach(function (message) {
-      messagesObject[message.id] = message;
-    });
-    // Load the group with empty data if it has no data in store
-    newState.userGroups[groupId] = state.userGroups[groupId] || {};
-    newState.userGroups[groupId].messages = messagesObject;
-    return _extends({}, state, newState);
-  },
-  // Search a group
-  searchGroup: function searchGroup(state, searchResult, groupId) {
-    var groupMembers = searchResult.rows;
-    var appState = { meta: { count: searchResult.count }, userGroups: {} };
-    // Initialize state with empty object if
-    // group data hasn't been loaded in the past
-    appState.userGroups[groupId] = appState.userGroups[groupId] || {};
-    appState.userGroups[groupId].members = appState.userGroups[groupId].members || {};
-    groupMembers.forEach(function (member) {
-      appState.userGroups[groupId].members[member.id] = member;
-    });
-    var group = state.userGroups[groupId] || {};
-    var groupMessages = group.messages || {};
-    var groupInfo = group.info || {};
-    appState.userGroups[groupId] = appState.userGroups[groupId] || {};
-    appState.userGroups[groupId].messages = groupMessages;
-    appState.userGroups[groupId].info = groupInfo || {};
-    var result = _extends({}, state, appState);
-    return result;
-  }
-};
-
-exports.default = methods;
-
-/***/ }),
+/* 55 */,
 /* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -49679,10 +49464,12 @@ var MessageBoard = exports.MessageBoard = function (_React$Component) {
       this.props.resetLoadingState();
       this.props.resetRedirect();
       // Initialize navbar
-      $('.button-collapse').sideNav({
-        closeOnClick: true,
-        draggable: true
-      });
+      if ($('.button-collapse').sideNav) {
+        $('.button-collapse').sideNav({
+          closeOnClick: true,
+          draggable: true
+        });
+      }
       $('#sidenav-overlay').trigger('click');
       var token = localStorage.getItem('token');
       var decode = void 0;
@@ -49937,20 +49724,16 @@ var NewPassword = exports.NewPassword = function (_React$Component) {
     value: function componentDidMount() {
       this.props.resetLoadingState();
       // Initialize the side nav
-      $('.button-collapse').sideNav({
-        closeOnClick: true,
-        draggable: true
-      });
+      if ($('.button-collapse').sideNav) {
+        $('.button-collapse').sideNav({
+          closeOnClick: true,
+          draggable: true
+        });
+      }
+
       $('#sidenav-overlay').trigger('click');
       // Initialize notification component
       this.notificationSystem = this.notificationRef;
-      // Set focus to SignUp button
-      $('#signUpForm').keypress(function (event) {
-        if (event.which && event.which === 13 || event.keyCode && event.keyCode === 13) {
-          $('#signUpButton').click();
-          return false;
-        }
-      });
     }
     /**
      * Component method called before component properties are updated,
@@ -50095,7 +49878,7 @@ var NewPassword = exports.NewPassword = function (_React$Component) {
               { className: 'col s12 center' },
               _react2.default.createElement(
                 'button',
-                { id: 'signInButton', onClick: this.resetPassword,
+                { id: 'submitButton', onClick: this.resetPassword,
                   className: 'btn green darken-4',
                   disabled: !this.state.enableButton,
                   ref: function ref(button) {
@@ -50213,10 +49996,12 @@ var NotFound = exports.NotFound = function (_React$Component) {
     value: function componentDidMount() {
       this.props.resetLoadingState();
       // Initialize navbar
-      $('.button-collapse').sideNav({
-        closeOnClick: true,
-        draggable: true
-      });
+      if ($('.button-collapse').sideNav) {
+        $('.button-collapse').sideNav({
+          closeOnClick: true,
+          draggable: true
+        });
+      }
     }
     /**
      * Render method of React component
@@ -50450,8 +50235,11 @@ var PostMessage = exports.PostMessage = function (_React$Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      var matchQuery = window.matchMedia('(max-width: 992px)');
-      if (matchQuery.matches) {
+      var matchQuery = {};
+      if (window.matchMedia) {
+        matchQuery = window.matchMedia('(max-width: 992px)');
+      }
+      if (matchQuery.matches && $('.button-collapse').sideNav) {
         $('.button-collapse').sideNav({
           closeOnClick: true,
           draggable: true
@@ -50474,29 +50262,26 @@ var PostMessage = exports.PostMessage = function (_React$Component) {
       this.props.getAllGroupsForUser(userId, token);
       // Load all members of the group
       this.props.getGroupMembers(groupId, token);
-
-      // Initialize side nav
-      $('.button-collapse').sideNav({
-        draggable: true
-      });
       /* Toggle group list*/
       $('#member-list-toggle').off().on('click', function () {
         $('#memberList').animate({ width: 'toggle' });
       });
-      $('.modal').modal({
-        // Handle modal dialog box
-        ready: function ready(modal, trigger) {
-          // Check if modal is for deleting group member or entire group
-          if (modal[0].id === 'deleteMemberModal') {
-            _this2.memberIdToDelete = trigger[0].id;
-          } else if (modal[0].id === 'messageInfoModal') {
-            var messageId = trigger[0].id;
-            _this2.props.seenBy(messageId, token);
-          } else {
-            _this2.groupIdToDelete = trigger[0].id;
+      if ($('.modal').modal) {
+        $('.modal').modal({
+          // Handle modal dialog box
+          ready: function ready(modal, trigger) {
+            // Check if modal is for deleting group member or entire group
+            if (modal[0].id === 'deleteMemberModal') {
+              _this2.memberIdToDelete = trigger[0].id;
+            } else if (modal[0].id === 'messageInfoModal') {
+              var messageId = trigger[0].id;
+              _this2.props.seenBy(messageId, token);
+            } else {
+              _this2.groupIdToDelete = trigger[0].id;
+            }
           }
-        }
-      });
+        });
+      }
       // Toggle memberList
       $(document).on('click', function (e) {
         var target = $(e.target);
@@ -62440,9 +62225,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _storeMethods = __webpack_require__(55);
+var _utils = __webpack_require__(420);
 
-var _storeMethods2 = _interopRequireDefault(_storeMethods);
+var _utils2 = _interopRequireDefault(_utils);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -62459,9 +62244,9 @@ var allUserGroupsReducer = function allUserGroupsReducer() {
         meta: action.newState.meta,
         userGroups: _extends({}, state.userGroups, action.newState.userGroups) });
     case 'DELETE_A_GROUP_SUCCESS':
-      return _storeMethods2.default.deleteGroup(state, action.groupId);
+      return _utils2.default.deleteGroup(state, action.groupId);
     case 'LEAVE_GROUP_SUCCESS':
-      return _storeMethods2.default.deleteGroup(state, action.groupId);
+      return _utils2.default.deleteGroup(state, action.groupId);
     case 'SIGN_OUT':
       return { meta: { count: 0, allLoaded: 0 }, userGroups: {} };
     default:
@@ -63144,9 +62929,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _storeMethods = __webpack_require__(55);
+var _utils = __webpack_require__(420);
 
-var _storeMethods2 = _interopRequireDefault(_storeMethods);
+var _utils2 = _interopRequireDefault(_utils);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -63157,25 +62942,25 @@ var userGroupsReducer = function userGroupsReducer() {
 
   switch (action.type) {
     case 'GET_GROUP_MEMBERS_SUCCESS':
-      return _storeMethods2.default.getMembers(state, action.membersDBSnapshot, action.groupId);
+      return _utils2.default.getMembers(state, action.membersDBSnapshot, action.groupId);
     case 'SEARCH_GROUP_LIST_SUCCESS':
-      return _storeMethods2.default.searchGroup(state, action.searchResult, action.groupId);
+      return _utils2.default.searchGroup(state, action.searchResult, action.groupId);
     case 'GET_ALL_GROUPS_FOR_A_USER_SUCCESS':
       return _extends({}, state, action.newState);
     case 'DELETE_A_GROUP_SUCCESS':
-      return _storeMethods2.default.deleteGroup(state, action.groupId);
+      return _utils2.default.deleteGroup(state, action.groupId);
     case 'POST_MESSAGE_SUCCESS':
-      return _storeMethods2.default.postMessage(state, action.message, action.groupId);
+      return _utils2.default.postMessage(state, action.message, action.groupId);
     case 'NOTIFY':
-      return _storeMethods2.default.postMessage(state, action.newMessage, action.groupId);
+      return _utils2.default.postMessage(state, action.newMessage, action.groupId);
     case 'ADD_MEMBER_SUCCESS':
-      return _storeMethods2.default.addMembers(state, action.addedMembers, action.groupId);
+      return _utils2.default.addMembers(state, action.addedMembers, action.groupId);
     case 'DELETE_GROUP_MEMBER_SUCCESS':
-      return _storeMethods2.default.deleteMember(state, action.deletedId, action.groupId);
+      return _utils2.default.deleteMember(state, action.deletedId, action.groupId);
     case 'GET_MESSAGES_SUCCESS':
-      return _storeMethods2.default.loadMessages(state, action.messagesDbSnapshot, action.groupId);
+      return _utils2.default.loadMessages(state, action.messagesDbSnapshot, action.groupId);
     case 'LEAVE_GROUP_SUCCESS':
-      return _storeMethods2.default.deleteGroup(state, action.groupId);
+      return _utils2.default.deleteGroup(state, action.groupId);
     case 'CREATE_GROUP_SUCCESS':
       return _extends({}, state, action.newState);
     case 'SIGN_OUT':
@@ -63248,9 +63033,9 @@ var _superagent = __webpack_require__(380);
 
 var _superagent2 = _interopRequireDefault(_superagent);
 
-var _storeMethods = __webpack_require__(55);
+var _utils = __webpack_require__(420);
 
-var _storeMethods2 = _interopRequireDefault(_storeMethods);
+var _utils2 = _interopRequireDefault(_utils);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -63401,7 +63186,7 @@ var dataService = function dataService(store) {
               }
             }
             var data = res.body;
-            _storeMethods2.default.createGroup(data, function (err, newState, createdGroup) {
+            _utils2.default.createGroup(data, function (err, newState, createdGroup) {
               next({
                 type: 'CREATE_GROUP_SUCCESS',
                 newState: newState,
@@ -63501,7 +63286,7 @@ var dataService = function dataService(store) {
               }
             }
             var dbSnapShot = res.body;
-            _storeMethods2.default.getPostItMembers(dbSnapShot, function (err, newState) {
+            _utils2.default.getPostItMembers(dbSnapShot, function (err, newState) {
               next({
                 type: 'GET_POST_IT_MEMBERS_SUCCESS',
                 newState: newState
@@ -63519,7 +63304,7 @@ var dataService = function dataService(store) {
               });
             }
             var postItGroups = res.body;
-            _storeMethods2.default.getAllPostItGroups(postItGroups, function (newState) {
+            _utils2.default.getAllPostItGroups(postItGroups, function (newState) {
               next({
                 type: 'GET_ALL_GROUPS_SUCCESS',
                 newState: newState
@@ -63540,7 +63325,7 @@ var dataService = function dataService(store) {
               }
             }
             var data = res.body;
-            _storeMethods2.default.getGroups(data, function (err, newState) {
+            _utils2.default.getGroups(data, function (err, newState) {
               next({
                 type: 'GET_ALL_GROUPS_FOR_A_USER_SUCCESS',
                 newState: newState
@@ -63558,7 +63343,7 @@ var dataService = function dataService(store) {
               });
             }
             var data = res.body;
-            _storeMethods2.default.getGroups(data, function (err, newState) {
+            _utils2.default.getGroups(data, function (err, newState) {
               next({
                 type: 'GET_ALL_GROUPS_FOR_A_USER_AT_ONCE_SUCCESS',
                 newState: newState
@@ -87881,6 +87666,247 @@ module.exports = __webpack_amd_options__;
 
 module.exports = __webpack_require__(151);
 
+
+/***/ }),
+/* 395 */,
+/* 396 */,
+/* 397 */,
+/* 398 */,
+/* 399 */,
+/* 400 */,
+/* 401 */,
+/* 402 */,
+/* 403 */,
+/* 404 */,
+/* 405 */,
+/* 406 */,
+/* 407 */,
+/* 408 */,
+/* 409 */,
+/* 410 */,
+/* 411 */,
+/* 412 */,
+/* 413 */,
+/* 414 */,
+/* 415 */,
+/* 416 */,
+/* 417 */,
+/* 418 */,
+/* 419 */,
+/* 420 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _lodash = __webpack_require__(103);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var methods = {
+  // Delete a group from State
+  deleteGroup: function deleteGroup(appState, groupId) {
+    var userGroups = appState.userGroups;
+
+    var keys = _lodash2.default.filter(Object.keys(userGroups), function (key) {
+      return key !== groupId;
+    });
+    var newState = {
+      userGroups: _lodash2.default.pick(userGroups, keys),
+      meta: {
+        count: appState.meta.count - 1
+      }
+    };
+    return newState;
+  },
+  // Create time stamp for messages
+  getTimeStamp: function getTimeStamp(timeStamp, callback) {
+    var date = new Date(timeStamp);
+    var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    var year = date.getFullYear();
+    var month = months[date.getMonth()];
+    var day = date.getDate();
+    var hour = date.getHours();
+    var minutesUnformatted = date.getMinutes();
+    var minutes = minutesUnformatted < 10 ? '0' + minutesUnformatted : minutesUnformatted;
+    var formattedTime = month + ' ' + day + ', ' + year + ', at ' + hour + ':' + minutes;
+    callback(formattedTime);
+  },
+  // Load groups a user belongs to
+  getGroups: function getGroups(dbSnapshot, done) {
+    var groups = dbSnapshot.rows;
+    var newState = { meta: {}, userGroups: {} };
+    groups.forEach(function (group) {
+      newState.userGroups[group.id] = newState.userGroups[group.id] || {};
+      newState.userGroups[group.id].info = group;
+    });
+    newState.meta.count = dbSnapshot.count;
+    newState.meta.allLoaded = dbSnapshot.allLoaded;
+    done(null, newState);
+  },
+  // Method to get registered postit members
+  getPostItMembers: function getPostItMembers(dbSnapshot, done) {
+    var newState = { members: { postItMembers: {}, meta: { count: 0 } } };
+    var membersRows = dbSnapshot.rows;
+    membersRows.forEach(function (member) {
+      newState.members.postItMembers[member.id] = member;
+    });
+    newState.members.meta.count = dbSnapshot.count;
+    newState.members.meta.allLoaded = dbSnapshot.allLoaded;
+    done(null, newState);
+  },
+  // Get groups on PostIt
+  getAllPostItGroups: function getAllPostItGroups(dbSnapshot, done) {
+    var newState = { groups: { postItGroups: {}, meta: { count: 0 } } };
+    var groupRows = dbSnapshot.rows;
+    groupRows.forEach(function (group) {
+      newState.groups.postItGroups[group.id] = group;
+    });
+
+    newState.groups.meta.count = dbSnapshot.count;
+    done(null, newState);
+  },
+  // Create a group
+  createGroup: function createGroup(apiCallResult, done) {
+    var createdGroup = apiCallResult.createdGroup;
+    var newState = { meta: { count: 0 }, userGroups: {} };
+    var userGroups = newState.userGroups;
+    userGroups[createdGroup.id] = {};
+    userGroups[createdGroup.id].info = createdGroup;
+    userGroups[createdGroup.id].messages = {};
+    userGroups[createdGroup.id].members = {};
+    newState.userGroups = userGroups;
+    newState.meta.count += 1;
+
+    done(null, newState, createdGroup);
+  },
+  // Load members for a group
+  getMembers: function getMembers(state, dbSnapshot, groupId) {
+    var groupMembers = dbSnapshot.rows;
+    // Initialize state with empty object if
+    // group data hasn't been loaded in the past
+    var appState = { meta: { count: dbSnapshot.count }, userGroups: {} };
+    appState.userGroups[groupId] = appState.userGroups[groupId] || {};
+    appState.userGroups[groupId].members = appState.userGroups[groupId].members || {};
+    groupMembers.forEach(function (member) {
+      appState.userGroups[groupId].members[member.id] = member;
+    });
+    var group = state.userGroups[groupId] || {};
+    var groupMessages = group.messages || {};
+    var groupInfo = group.info || {};
+    appState.userGroups[groupId].messages = groupMessages;
+    appState.userGroups[groupId].info = groupInfo || {};
+    var result = _extends({}, state, appState);
+    return result;
+  },
+  // Post a message to a group
+  postMessage: function postMessage(state, newMessage, groupId) {
+    var newState = { meta: { count: 0, allLoaded: 0 }, userGroups: {} };
+    // Initialize the fields with empty objects
+    // and array if they had no previous content
+    var group = state.userGroups[groupId] || {};
+    newState.userGroups[groupId] = group;
+    var groupInfo = group.info || {};
+    var groupMembers = group.members || {};
+    newState.userGroups[groupId].messages = group.messages || {};
+    newState.userGroups[groupId].members = groupMembers;
+    newState.userGroups[groupId].info = groupInfo;
+    var groupMessages = newState.userGroups[groupId].messages;
+    // Format the time stamp of new message
+    methods.getTimeStamp(newMessage.createdAt, function (formattedTime) {
+      newMessage.createdAt = 'Sent ' + formattedTime;
+      groupMessages[newMessage.id] = newMessage;
+      newState.userGroups[groupId].messages = groupMessages;
+    });
+    return _extends({}, state, newState);
+  },
+  // Add a member to a group
+  addMembers: function addMembers(state, newMembers, groupId) {
+    var newState = { userGroups: {} };
+    var group = state.userGroups[groupId] || {};
+    var groupMembers = group.members || {};
+    newMembers.forEach(function (newMember) {
+      groupMembers[newMember.id] = newMember;
+    });
+    newState.userGroups[groupId] = group;
+    newState.userGroups[groupId].info = group.info || {};
+    newState.userGroups[groupId].messages = group.messages || {};
+    newState.userGroups[groupId].members = groupMembers;
+    return _extends({}, state, newState);
+  },
+  // Delete a group member
+  deleteMember: function deleteMember(state, deletedId, groupId) {
+    var _ref = state.userGroups[groupId] || {},
+        members = _ref.members;
+
+    var group = state.userGroups[groupId] || {};
+    var groupInfo = group.info || {};
+    var groupMessages = group.messages || {};
+
+    var keys = _lodash2.default.filter(Object.keys(members), function (key) {
+      return key !== deletedId;
+    });
+    var remainingMembers = _lodash2.default.pick(members, keys);
+    var newState = {
+      userGroups: _defineProperty({}, groupId, {
+        info: groupInfo,
+        messages: groupMessages,
+        members: remainingMembers
+      })
+    };
+    return _extends({}, state, newState);
+  },
+  // Load message into a group
+  loadMessages: function loadMessages(state, messagesDbSnapshot, groupId) {
+    var messages = messagesDbSnapshot.rows;
+    var newState = { userGroups: {} };
+    var messagesObject = {};
+    messages.map(function (message, index) {
+      methods.getTimeStamp(message.createdAt, function (formattedTime) {
+        messages[index].createdAt = 'Sent ' + formattedTime;
+      });
+    });
+    messages.forEach(function (message) {
+      messagesObject[message.id] = message;
+    });
+    // Load the group with empty data if it has no data in store
+    newState.userGroups[groupId] = state.userGroups[groupId] || {};
+    newState.userGroups[groupId].messages = messagesObject;
+    return _extends({}, state, newState);
+  },
+  // Search a group
+  searchGroup: function searchGroup(state, searchResult, groupId) {
+    var groupMembers = searchResult.rows;
+    var appState = { meta: { count: searchResult.count }, userGroups: {} };
+    // Initialize state with empty object if
+    // group data hasn't been loaded in the past
+    appState.userGroups[groupId] = appState.userGroups[groupId] || {};
+    appState.userGroups[groupId].members = appState.userGroups[groupId].members || {};
+    groupMembers.forEach(function (member) {
+      appState.userGroups[groupId].members[member.id] = member;
+    });
+    var group = state.userGroups[groupId] || {};
+    var groupMessages = group.messages || {};
+    var groupInfo = group.info || {};
+    appState.userGroups[groupId] = appState.userGroups[groupId] || {};
+    appState.userGroups[groupId].messages = groupMessages;
+    appState.userGroups[groupId].info = groupInfo || {};
+    var result = _extends({}, state, appState);
+    return result;
+  }
+};
+
+exports.default = methods;
 
 /***/ })
 /******/ ]);

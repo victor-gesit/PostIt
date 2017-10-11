@@ -1,4 +1,4 @@
-import methods from '../services/functions/storeMethods';
+import methods from '../services/utils';
 
 const userGroupsReducer = (state = { meta: { count: 0, allLoaded: 0 },
   userGroups: {} }, action) => {
