@@ -29,7 +29,7 @@ export default {
       }
     },
     socket: {
-      on: () => {},
+      on: (action, cb) => { cb(); },
       emit: () => {}
     },
   }

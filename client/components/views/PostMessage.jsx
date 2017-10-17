@@ -7,7 +7,7 @@ import io from 'socket.io-client';
 import {
   getGroupMembers, addUser, getMessages, loadMessages,
   resetRedirect, deleteMember, leaveGroup, getPostItMembers,
-  deleteGroup, getAllGroupsForUser, resetLoadingState,
+  deleteGroup, getAllGroupsForUser, resetLoadingState, getGroupsForUser,
   postMessage, verifyToken, signOut, notify, seenBy, searchGroup
 } from '../../actions';
 
@@ -57,11 +57,8 @@ export class PostMessage extends React.Component {
    * @returns {undefined} This method returns nothing
    */
   componentDidMount() {
-    let matchQuery = {};
-    if (window.matchMedia) {
-      matchQuery = window.matchMedia('(max-width: 992px)');
-    }
-    if (matchQuery.matches && $('.button-collapse').sideNav) {
+    const matchQuery = window.matchMedia('(max-width: 992px)');
+    if (matchQuery.matches) {
       $('.button-collapse').sideNav({
         closeOnClick: true,
         draggable: true
@@ -234,6 +231,8 @@ const mapDispatchToProps = dispatch =>
   ({
     getAllGroupsForUser: (token, offset) =>
       dispatch(getAllGroupsForUser(token, offset)),
+    getGroupsForUser: (token, offset, limit) =>
+      dispatch(getGroupsForUser(token, offset, limit)),
     getGroupMembers: (groupId, token) =>
       dispatch(getGroupMembers(groupId, token)),
     resetRedirect: () => dispatch(resetRedirect()),

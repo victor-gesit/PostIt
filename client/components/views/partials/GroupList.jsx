@@ -53,6 +53,7 @@ export default class GroupList extends React.Component {
         <div className="row searchbox valign-wrapper">
           <div className="col s9">
             <input placeholder="Search group"
+              id="searchGroupInput"
               onKeyUp={this.searchGroup}
               ref={(searchTerm) => { this.searchTerm = searchTerm; }}
               type="search" className="black-text" />

@@ -45,6 +45,7 @@ export default class Groups extends React.Component {
           allLoaded < groupCount ? (
             <div className="center">
             <button className="btn"
+              id="loadMoreButton"
               onClick={ () => this.loadMore()}>...Load More</button>
             </div>
           ) : (
@@ -81,7 +82,7 @@ export class UserGroup extends React.Component {
     this.props.store.getMessages(groupId, token);
 
     // Load user groups
-    this.props.store.getAllGroupsForUser(token);
+    this.props.store.getGroupsForUser(token);
     // Load all members of the group
     this.props.store.getGroupMembers(groupId, token);
     // Load messages into the conversation page

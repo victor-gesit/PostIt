@@ -31,14 +31,6 @@ export class SignInForm extends React.Component {
   componentDidMount() {
     // Initialize notification component
     this.notificationSystem = this.notificationRef;
-    // Set focus to Sign in button
-    $('.signin-form').keypress((event) => {
-      if ((event.which && event.which === 13)
-        || (event.keyCode && event.keyCode === 13)) {
-        $('#signInButton').click();
-        return false;
-      }
-    });
   }
   /**
    * Component method called before component receives new properties
@@ -143,21 +135,20 @@ export class SignInForm extends React.Component {
                   <h3 className="center">Sign In</h3>
                 </div>
                 <div className="input-field col s12">
-                  <input id="email" ref={(email) => { this.email = email; }}
+                  <input id="email"
                     type="email" className="validate" ></input>
                   <label htmlFor="email"
                     data-error="Enter valid email">Email</label>
                 </div>
                 <div className="input-field col s12">
                   <input id="password"
-                    ref={(password) => { this.password = password; }}
                     type="password" className="validate" />
                   <label htmlFor="password">Password</label>
                 </div>
                 <div className="col s12 center">
-                  <button id="signInButton" onClick={this.signIn}
+                  <button id="signInButton"
                     className="btn green darken-4"
-                    ref={(button) => { this.button = button; }} >
+                    >
                       Sign in</button>
                 </div>
                 <br /><br />
@@ -167,7 +158,7 @@ export class SignInForm extends React.Component {
                   <label htmlFor="signedin">Keep me signed in</label>
                 </div>
                 <div>
-                  <p>Don't have an account? <a href="/signup">Sign up</a></p>
+                  <p>Don't have an account? <a href="/#/signup">Sign up</a></p>
                 </div>
               </div>
               <div className="userlist-preloader">

@@ -15,12 +15,18 @@ import './js/materialize';
 import reducers from './reducers';
 
 // API Query middlweare
-import dataService from './services/dataservice';
+import { authMiddleware,
+  createGroupMiddleware,
+  messageBoardMiddleware,
+  postMessageMiddleware } from './middlewares';
 
 // Routes
 import PostItApp from './components/App.jsx';
 
-const store = createStore(reducers, {}, applyMiddleware(dataService));
+const store = createStore(reducers, {}, applyMiddleware(authMiddleware,
+  messageBoardMiddleware,
+  createGroupMiddleware,
+  postMessageMiddleware));
 
 const authState = {
   authenticate() {

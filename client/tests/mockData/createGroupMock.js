@@ -15,6 +15,13 @@ export default {
 
       }
     },
+    appInfo: {
+      userDetails: {
+        id: 'meme',
+        firstName: 'Me',
+        lastName: 'You'
+      }
+    },
     match: {
       params: {
         groupId: '12345'
@@ -28,14 +35,15 @@ export default {
           }
         },
         meta: {
-          count: 0
+          count: 3,
+          allLoaded: 0
         }
       }
     },
     resetRedirect: sinon.spy(),
     createGroup: sinon.spy(),
     getPostItMembers: sinon.spy(),
-    getAllGroupsForUser: sinon.spy(),
+    getGroupsForUser: sinon.spy(),
   },
   propsWithError: {
     allUserGroups: {
@@ -66,8 +74,15 @@ export default {
         }
       }
     },
+    appInfo: {
+      userDetails: {
+        id: 'meme',
+        firstName: 'Me',
+        lastName: 'You'
+      }
+    },
     resetErrorLog: sinon.spy(),
     getPostItMembers: sinon.spy(),
-    getAllGroupsForUser: sinon.spy(),
+    getGroupsForUser: sinon.spy(),
   }
 };

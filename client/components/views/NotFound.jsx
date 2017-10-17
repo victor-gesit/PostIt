@@ -24,12 +24,10 @@ export class NotFound extends React.Component {
   componentDidMount() {
     this.props.resetLoadingState();
       // Initialize navbar
-    if ($('.button-collapse').sideNav) {
-      $('.button-collapse').sideNav({
-        closeOnClick: true,
-        draggable: true
-      });
-    }
+    $('.button-collapse').sideNav({
+      closeOnClick: true,
+      draggable: true
+    });
   }
   /**
    * Render method of React component
@@ -80,8 +78,8 @@ const mapDispatchToProps = dispatch =>
     createGroup: (creatorId, title, description, selectedMembers, token) =>
       dispatch(createGroup(creatorId, title, description,
         selectedMembers, token)),
-    getGroupsForUser: (offset, limit, token) =>
-    dispatch(getGroupsForUser(offset, limit, token)),
+    getGroupsForUser: (token, offset, limit) =>
+    dispatch(getGroupsForUser(token, offset, limit)),
     signOut: () => dispatch(signOut())
   });
 

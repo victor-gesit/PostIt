@@ -33,13 +33,10 @@ export class NewPassword extends React.Component {
   componentDidMount() {
     this.props.resetLoadingState();
     // Initialize the side nav
-    if ($('.button-collapse').sideNav) {
-      $('.button-collapse').sideNav({
-        closeOnClick: true,
-        draggable: true
-      });
-    }
-
+    $('.button-collapse').sideNav({
+      closeOnClick: true,
+      draggable: true
+    });
     $('#sidenav-overlay').trigger('click');
     // Initialize notification component
     this.notificationSystem = this.notificationRef;

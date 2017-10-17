@@ -82,7 +82,7 @@ export const getAllGroups = (offset, limit, token) =>
     token
   });
 
-export const getGroupsForUser = (offset, limit, token) =>
+export const getGroupsForUser = (token, offset = 0, limit = 6) =>
   ({
     type: 'GET_ALL_GROUPS_FOR_A_USER',
     offset,

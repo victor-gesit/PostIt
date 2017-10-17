@@ -5,6 +5,9 @@ export default {
     leaveGroup: sinon.spy(),
     resetErrorLog: sinon.spy(),
     resetLoadingState: sinon.spy(),
+    appInfo: {
+      userDetails: {}
+    },
     apiError: {
       errored: false,
       message: 'No message'

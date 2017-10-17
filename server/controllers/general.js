@@ -21,9 +21,20 @@ export default {
       offset,
       limit })
       .then((allUsers) => {
-        const allLoaded = Number(offset) + allUsers.rows.length;
         offset = Number(offset);
-        res.status(200).send({ ...allUsers, allLoaded, offset });
+        const allLoaded = offset + allUsers.rows.length;
+        const totalPages = Math.ceil(allUsers.count / limit);
+        const isLastPage = allLoaded === allUsers.count;
+        const currentPage = Math.ceil(offset / limit) + 1;
+        const meta = {
+          indexOfLast: allLoaded,
+          total: allUsers.count,
+          totalPages,
+          isLastPage,
+          currentPage,
+          offset
+        };
+        res.status(200).send({ ...allUsers, allLoaded, meta, offset });
       }).catch(() =>
         res.status(422).send({ success: false, message: 'Invalid query in url' }));
   },
@@ -136,9 +147,10 @@ export default {
               phone: updatedUser.phone,
               id: user.id
             };
-            const token = jwt.sign(userDetails, jwtSecret, {
+            const token = jwt.sign({ id: user.id }, jwtSecret, {
               expiresIn: '2 days' // expires in 48 hours
             });
+            userDetails.token = token;
             return res.status(202).send({ token,
               success: true,
               user: userDetails,

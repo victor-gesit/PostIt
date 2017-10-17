@@ -2,7 +2,7 @@ import React from 'react';
 /**
  * React component to display a modal for deleting a member
  */
-export default class Spinner extends React.Component {
+export class Spinner extends React.Component {
   /**
    * Render method of React component
    * @returns {Object} Returns the DOM object to be rendered
@@ -25,3 +25,5 @@ export default class Spinner extends React.Component {
     );
   }
 }
+
+export default Spinner;

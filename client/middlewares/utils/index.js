@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const methods = {
+const utilities = {
   // Delete a group from State
   deleteGroup: (appState, groupId) => {
     const { userGroups } = appState;
@@ -52,17 +52,6 @@ const methods = {
     newState.members.meta.allLoaded = dbSnapshot.allLoaded;
     done(null, newState);
   },
-  // Get groups on PostIt
-  getAllPostItGroups: (dbSnapshot, done) => {
-    const newState = { groups: { postItGroups: { }, meta: { count: 0 } } };
-    const groupRows = dbSnapshot.rows;
-    groupRows.forEach((group) => {
-      newState.groups.postItGroups[group.id] = group;
-    });
-
-    newState.groups.meta.count = dbSnapshot.count;
-    done(null, newState);
-  },
   // Create a group
   createGroup: (apiCallResult, done) => {
     const createdGroup = apiCallResult.createdGroup;
@@ -111,7 +100,7 @@ const methods = {
     newState.userGroups[groupId].info = groupInfo;
     const groupMessages = newState.userGroups[groupId].messages;
     // Format the time stamp of new message
-    methods.getTimeStamp(newMessage.createdAt, (formattedTime) => {
+    utilities.getTimeStamp(newMessage.createdAt, (formattedTime) => {
       newMessage.createdAt = `Sent ${formattedTime}`;
       groupMessages[newMessage.id] = newMessage;
       newState.userGroups[groupId].messages = groupMessages;
@@ -158,7 +147,7 @@ const methods = {
     const newState = { userGroups: {} };
     const messagesObject = {};
     messages.map((message, index) => {
-      methods.getTimeStamp(message.createdAt, (formattedTime) => {
+      utilities.getTimeStamp(message.createdAt, (formattedTime) => {
         messages[index].createdAt = `Sent ${formattedTime}`;
       });
     });
@@ -193,4 +182,4 @@ const methods = {
   }
 };
 
-export default methods;
+export default utilities;

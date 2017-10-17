@@ -38,6 +38,7 @@ export default class MessageInputBox extends React.Component {
         $('#member-list-button').click();
       }
     });
+    $('.radioButtonLabel').css('padding-left', '25px');
   }
   /**
    * This method sets the priority of the message to be sent

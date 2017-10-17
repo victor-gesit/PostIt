@@ -47,7 +47,7 @@ export class CreateGroup extends React.Component {
     // Load all registered members
     const token = localStorage.getItem('token');
     this.props.getPostItMembers(token);
-    this.props.getAllGroupsForUser(token);
+    this.props.getGroupsForUser(token);
   }
   /**
    * React component method called after component render
@@ -55,17 +55,15 @@ export class CreateGroup extends React.Component {
    */
   componentDidMount() {
     // Initialize navbar
-    if ($('.button-collapse').sideNav) {
-      $('.button-collapse').sideNav({
-        closeOnClick: true,
-        draggable: true
-      });
-    }
+    $('.button-collapse').sideNav({
+      closeOnClick: true,
+      draggable: true
+    });
     $('#sidenav-overlay').trigger('click');
     // Load a default tab for the createGroup page
     try {
       $('#defaultTab')[0].click();
-    } catch (e) { return false; }
+    } catch (e) {}
     // Bind the notifications component
     this.notificationSystem = this.notificationRef;
   }
@@ -275,6 +273,7 @@ export class CreateGroup extends React.Component {
                       allLoaded < membersCount ? (
                         <div className="center">
                         <button className="btn"
+                          id="loadMoreButton"
                           onClick={ () => this.loadMore()}>...Load More</button>
                         </div>
                       ) : (
@@ -395,8 +394,8 @@ const mapDispatchToProps = dispatch =>
     createGroup: (title, description, selectedMembers, token) =>
       dispatch(createGroup(title,
         description, selectedMembers, token)),
-    getGroupsForUser: (userId, offset, limit, token) =>
-      dispatch(getGroupsForUser(offset, limit, token)),
+    getGroupsForUser: (token, offset, limit) =>
+      dispatch(getGroupsForUser(token, offset, limit)),
     signOut: () => dispatch(signOut())
   });
 

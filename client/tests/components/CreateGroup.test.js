@@ -2,16 +2,22 @@ import React from 'react';
 import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
 import { StaticRouter } from 'react-router';
-import { CreateGroup, RegisteredMember } from '../../components/views/CreateGroup.jsx';
-import Spinner from '../../components/views/partials/Spinner.jsx';
+import '../../js/materialize';
+import DefaultCreatGroup, { CreateGroup, RegisteredMember } from '../../components/views/CreateGroup.jsx';
 import { createGroupMock as mock, registeredMemberMock as memberMock } from '../mockData';
 
+jest.mock('react-router-dom');
 describe('<CreateGroup/>', () => {
-  it('renders the component', () => {
+  it('renders the connected component', () => {
+    const dispatch = sinon.spy();
+    const subscribe = sinon.spy();
     const wrapper = mount(
-      <StaticRouter>
-        <CreateGroup {...mock.props} />
-      </StaticRouter>
+        <DefaultCreatGroup
+        store={{ getState: () => mock.props,
+          dispatch,
+          subscribe }}
+        {...mock.props}
+        />
     );
   });
   it('calls createGroup method on button click', () => {
@@ -34,7 +40,7 @@ describe('<CreateGroup/>', () => {
     expect(mock.props.resetRedirect.calledOnce).toEqual(true);
   });
   it('calls switchTab method on button click', () => {
-    const wrapper = shallow(
+    const wrapper = mount(
       <CreateGroup { ...mock.props }/>
     );
     const stub = sinon.stub(wrapper.instance(), 'switchTab');
@@ -99,14 +105,46 @@ describe('<CreateGroup/>', () => {
     );
     const stub = sinon.stub(wrapper.instance(), 'showNotification');
     wrapper.instance().notificationSystem = {
-      addNotification: () => {}
+      addNotification: sinon.spy()
     };
     // Force a call to componentWillUpdate
     wrapper.setProps({ });
     wrapper.instance().forceUpdate();
     wrapper.update();
-    wrapper.instance().showNotification('error', 'An error occured');
     expect(stub.called).toEqual(true);
+  });
+  it('calls the action to load more users, when button is clicked', () => {
+    const wrapper = shallow(<CreateGroup {...mock.props} />);
+    wrapper.instance().notificationSystem = {
+      addNotification: sinon.spy()
+    };
+    wrapper.update();
+    wrapper.instance().showNotification();
+    expect(wrapper.instance().notificationSystem
+      .addNotification.called).toEqual(true);
+  });
+  it('calls the loadMore component method when the load more button is clicked', () => {
+    const wrapper = shallow(<CreateGroup {...mock.props} />);
+    const stub = sinon.stub(wrapper.instance(), 'loadMore');
+    wrapper.setProps({});
+    wrapper.instance().forceUpdate();
+    wrapper.update();
+    wrapper.find('#loadMoreButton').simulate('click');
+    expect(stub.called).toEqual(true);
+  });
+  it('calls the action to load more users, when button is clicked', () => {
+    const wrapper = shallow(<CreateGroup {...mock.props} />);
+    wrapper.instance().loadMore();
+    expect(mock.props.getPostItMembers.called).toEqual(true);
+  });
+  it('calls the method to enable button, when button is clicked', () => {
+    const wrapper = shallow(<CreateGroup {...mock.props} />);
+    wrapper.instance().title = { value: 'Group Title' };
+    wrapper.instance().description = { value: 'Group Description' };
+    wrapper.instance().setState = sinon.spy();
+    wrapper.update();
+    wrapper.instance().enterText();
+    expect(wrapper.instance().setState.called).toEqual(true);
   });
 });
 
@@ -125,5 +163,14 @@ describe('<RegisteredMember/>', () => {
     wrapper.update();
     wrapper.find('#victorgesit@andela.com').simulate('click');
     expect(stub.called).toEqual(true);
+  });
+  it('calls the parent method to add members, when button is clicked', () => {
+    const wrapper = shallow(<RegisteredMember {...memberMock.props} />);
+    wrapper.instance().addOrRemove();
+    expect(memberMock.props.addMember.called).toEqual(true);
+  });
+  it('renders a user as already added to the group, if the user is the creator', () => {
+    const wrapper = shallow(<RegisteredMember {...memberMock.creator} />);
+    expect(wrapper.find('#victorgesit@andela.com').node.props.checked).toEqual(true);
   });
 });

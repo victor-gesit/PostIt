@@ -25,14 +25,18 @@ router.post('/signin', (req, res, next) => {
     // create a token
     if (user) {
       const userInfo = {
-        id: user.id
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone
       };
-      const token = jwt.sign(userInfo, jwtSecret, {
+      const token = jwt.sign({ id: user.id }, jwtSecret, {
         expiresIn: '2 days' // expires in 48 hours
       });
+      userInfo.token = token;
       return res.status(200).send({ success: true,
         user: userInfo,
-        token,
         message: 'Successful Signin' });
     }
   })(req, res, next);
@@ -57,14 +61,18 @@ router.post('/signup', (req, res, next) => {
     }
     if (user) {
       const newUser = {
-        id: user.id
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone
       };
-      const token = jwt.sign(newUser, jwtSecret, {
+      const token = jwt.sign({ id: user.id }, jwtSecret, {
         expiresIn: '2 days' // expires in 48 hours
       });
+      newUser.token = token;
       return res.status(202).send({ success: true,
         user: newUser,
-        token,
         message: 'Successful Sign up' });
     }
   })(req, res, next);
@@ -87,11 +95,16 @@ router.post('/google/login', (req, res, next) => {
     }
     if (user) {
       const newUser = {
-        id: user.id
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        email: user.email
       };
-      const token = jwt.sign(newUser, jwtSecret, {
+      const token = jwt.sign({ id: user.id }, jwtSecret, {
         expiresIn: '2 days' // expires in 48 hours
       });
+      newUser.token = token;
       return res.status(202).send({ success: true,
         user: newUser,
         token,

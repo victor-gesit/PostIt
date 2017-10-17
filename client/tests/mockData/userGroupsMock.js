@@ -7,7 +7,7 @@ export default {
     },
     store: {
       getMessages: sinon.spy(),
-      getAllGroupsForUser: sinon.spy(),
+      getGroupsForUser: sinon.spy(),
       getGroupMembers: sinon.spy(),
       loadMessages: sinon.spy()
     }

@@ -8,7 +8,7 @@ export default {
           12345: {},
         },
         meta: {
-          count: 1
+          count: 2
         }
       },
       getMessages: sinon.spy(),

@@ -1,16 +1,19 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
+import configureMockStore from 'redux-mock-store';
 import { StaticRouter } from 'react-router';
+import '../../js/materialize';
 import ConnectedPostMessageComponent, { PostMessage } from '../../components/views/PostMessage.jsx';
 import { postMessageMock as mock } from '../mockData';
+
+const mockStore = configureMockStore([]);
+jest.mock('react-router-dom');
 
 describe('<PostMessage/>', () => {
   it('renders the component successfully', () => {
     const wrapper = mount(
-      <StaticRouter>
         <PostMessage {...mock.props} />
-      </StaticRouter>
     );
   });
   it('calls the action that makes an API call to remove a user from a group', () => {
@@ -43,12 +46,17 @@ describe('<PostMessage/>', () => {
   it('mounts the connected component', () => {
     const dispatch = sinon.spy();
     const subscribe = sinon.spy();
-    const wrapper = shallow(
+    const store = mockStore({ reducers: {} });
+    const wrapper = mount(
         <ConnectedPostMessageComponent {...mock.props}
           store={{ getState: () => mock.props,
             dispatch,
             subscribe }}
         />
     );
+    store.dispatch({
+      type: 'GOOGLE_LOGIN',
+      token: 'abracadabra'
+    });
   });
 });

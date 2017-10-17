@@ -36,18 +36,15 @@ export class MessageBoard extends React.Component {
     this.props.resetLoadingState();
     this.props.resetRedirect();
     // Initialize navbar
-    if ($('.button-collapse').sideNav) {
-      $('.button-collapse').sideNav({
-        closeOnClick: true,
-        draggable: true
-      });
-    }
+    $('.button-collapse').sideNav({
+      closeOnClick: true,
+      draggable: true
+    });
     $('#sidenav-overlay').trigger('click');
     const token = localStorage.getItem('token');
     const offset = 0;
     const limit = this.state.perPage;
-    this.props.getGroupsForUser(offset, limit, token);
-    this.props.getAllGroupsForUser(token);
+    this.props.getGroupsForUser(token, offset, limit);
   }
   /**
    * @param {Object} event Event fired when the pagination is clicked
@@ -60,7 +57,7 @@ export class MessageBoard extends React.Component {
     const offset = Math.ceil(selected * this.state.perPage);
     const limit = this.state.perPage;
     this.setState({ offset }, () => {
-      this.props.getGroupsForUser(offset, limit, token);
+      this.props.getGroupsForUser(token, offset, limit);
     });
   }
   /**
@@ -153,8 +150,8 @@ const mapStateToProps = state =>
 
 const mapDispatchToProps = dispatch =>
   ({
-    getGroupsForUser: (offset, limit, token) =>
-      dispatch(getGroupsForUser(offset, limit, token)),
+    getGroupsForUser: (token, offset, limit) =>
+      dispatch(getGroupsForUser(token, offset, limit)),
     loadMessages: groupId => dispatch(loadMessages(groupId)),
     resetRedirect: () => dispatch(resetRedirect()),
     getMessages: (groupId, token) =>

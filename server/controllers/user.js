@@ -10,7 +10,7 @@ export default {
       req.query.token || req.headers['x-access-token'];
     const decode = jwt.decode(token);
     const userId = decode.id;
-    const offset = req.query.offset || 0;
+    let offset = req.query.offset || 0;
     const limit = req.query.limit || 6;
     let count;
     User.find({ where: { id: userId } }).then((foundUser) => {
@@ -22,9 +22,19 @@ export default {
           limit,
           offset })
           .then((groupsBelongedTo) => {
-            const allLoaded = Number(offset) + groupsBelongedTo.length;
+            offset = Number(offset);
+            const allLoaded = offset + groupsBelongedTo.length;
+            let totalPages = Math.ceil(groupsBelongedTo.length / limit);
+            totalPages = offset > 0 ? totalPages + 1 : totalPages;
+            const meta = {
+              indexOfLast: allLoaded,
+              total: count,
+              totalPages,
+              offset
+            };
             res.status(200).send({ count,
               allLoaded,
+              meta,
               success: true,
               type: 'Groups',
               rows: groupsBelongedTo

@@ -1,15 +1,27 @@
 import React from 'react';
+import sinon from 'sinon';
 import { mount } from 'enzyme';
-import { StaticRouter } from 'react-router';
-import { NotFound } from '../../components/views/NotFound.jsx';
+import '../../js/materialize';
+import NotFoundDefault, { NotFound } from '../../components/views/NotFound.jsx';
 import { notFoundMock as mock } from '../mockData';
 
+
+jest.mock('react-router-dom');
 describe('<NotFound/>', () => {
   it('renders the component', () => {
     const wrapper = mount(
-      <StaticRouter>
         <NotFound {...mock.props} />
-      </StaticRouter>
+    );
+  });
+  it('renders the component', () => {
+    const dispatch = sinon.spy();
+    const subscribe = sinon.spy();
+    const wrapper = mount(
+      <NotFoundDefault {...mock.props}
+        store={{ getState: () => mock.props,
+          dispatch,
+          subscribe }}
+      />
     );
   });
 });

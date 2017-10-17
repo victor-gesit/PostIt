@@ -2,7 +2,7 @@ import { Reducer } from 'redux-testkit';
 import postItInfoReducer from '../../reducers/postItInfoReducer';
 import { postItInfoReducerMock as mock } from '../mockData';
 
-describe('authStateReducer', () => {
+describe('postItInfoReducer', () => {
   it('should have an initial state', () => {
     expect(postItInfoReducer(undefined, {
       type: 'UNREGISTERED'

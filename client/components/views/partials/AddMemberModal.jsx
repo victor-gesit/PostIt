@@ -99,6 +99,7 @@ export default class AddMemberModal extends React.Component {
                         allLoaded < membersCount ? (
                           <div className="center">
                           <button className="btn"
+                            id="loadMoreButton"
                             onClick={ () => this.loadMore()}>...Load More
                           </button>
                           </div>
