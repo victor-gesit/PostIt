@@ -1,13 +1,14 @@
 import supertest from 'supertest';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import sinon from 'sinon';
+import nodemailer from 'nodemailer';
 import models from '../models';
 import app from '../index';
 import fixtures from '../fixtures/testFixtures';
 
 dotenv.config();
 const request = supertest(app);
-
 
 describe('PostIt Tests', () => {
   let token;
@@ -24,6 +25,7 @@ describe('PostIt Tests', () => {
       }).catch((err) => {
         done(err);
       });
+      done();
     });
   });
   describe('Tests for User creation routes', () => {
@@ -40,7 +42,8 @@ describe('PostIt Tests', () => {
         .post('/api/user/signup')
         .send(fixtures.newUser)
         .expect((res) => {
-          token = res.body.token; // Instantiate a token for the rest of the test process
+          // Instantiate a token for the rest of the test process
+          token = res.body.user.token;
           expect(res.body.message).toEqual('Successful Sign up');
         })
        .end((err) => {
@@ -118,20 +121,6 @@ describe('PostIt Tests', () => {
         .send(fixtures.newUser)
         .expect((res) => {
           expect(res.body.message).toEqual('Could not authenticate token');
-        })
-       .end((err) => {
-         if (err) {
-           return done(err);
-         }
-         done();
-       });
-    });
-    it('returns an error when an invalid UUID is supplied for user id during search for groups', (done) => {
-      request
-        .get('/api/user/invaliduuidcode/groups')
-        .set('x-access-token', token)
-        .expect((res) => {
-          expect(res.body.message).toEqual('Invalid User Id');
         })
        .end((err) => {
          if (err) {
@@ -247,7 +236,7 @@ describe('PostIt Tests', () => {
     });
     it('returns error if you attempt to load the groups for a non-existent user', (done) => {
       request
-        .get('/api/user/34998203-58d2-4854-9003-8092e5035ae8/groups')
+        .get('/api/user/groups')
         .set('x-access-token', token)
         .expect((res) => {
           expect(res.body.message).toEqual('User not found');
@@ -262,7 +251,8 @@ describe('PostIt Tests', () => {
   });
   describe('Group members and messages fetch tests', () => {
     let groupId;
-    let newToken; // userId is gotten from token generated during authentication
+    // userId is gotten from token generated during authentication
+    let newToken;
     const groupToBeCreated = fixtures.newGroup;
     const jwtSecret = process.env.JWT_SECRET;
     beforeEach((done) => {
@@ -282,10 +272,6 @@ describe('PostIt Tests', () => {
               createdGroup.addUser(createdUser).then(() => {
                 // Generate a jwt token and make the created user details it's payload
                 const newUser = {
-                  firstName: createdUser.firstName,
-                  lastName: createdUser.lastName,
-                  email: createdUser.email,
-                  phone: createdUser.phone,
                   id: createdUser.id
                 };
                 newToken = jwt.sign(newUser, jwtSecret, {
@@ -331,7 +317,6 @@ describe('PostIt Tests', () => {
     });
   });
   describe('Authentication routes test', () => {
-    const newUser = fixtures.newUser;
     const registeredUser = fixtures.registeredUser;
     const userWithIncorrectPassword = fixtures.userWithIncorrectPassword;
     let userId;
@@ -342,8 +327,17 @@ describe('PostIt Tests', () => {
         cascade: true,
         truncate: true
       }).then(() => {
-        models.User.create(newUser).then((createdUser) => {
-          userId = createdUser.id;
+        request
+          .post('/api/user/signup')
+          .send(fixtures.newUser)
+          .expect((res) => {
+            // Instantiate a token for the rest of the test process
+            token = res.body.user.token;
+          })
+        .end((err) => {
+          if (err) {
+            return done(err);
+          }
           done();
         });
       });
@@ -393,7 +387,7 @@ describe('PostIt Tests', () => {
     });
     it('ensures all groups a user belongs to can be loaded', (done) => {
       request
-        .get(`/api/user/${userId}/groups`)
+        .get('/api/user/groups')
         .set('x-access-token', token)
         .expect((res) => {
           const isArray = res.body.rows instanceof Array;
@@ -411,6 +405,9 @@ describe('PostIt Tests', () => {
     // Delete previous records and populate db with test data
     let groupId;
     let aCreatedUser;
+    let idToDelete;
+    let newToken;
+    const jwtSecret = process.env.JWT_SECRET;
     const newGroup = fixtures.newGroup;
     const newGroup2 = fixtures.newGroup2;
     const newGroupWithMultipleMembers = fixtures.newGroupWithMultipleMembers;
@@ -427,6 +424,9 @@ describe('PostIt Tests', () => {
           cascade: true
         }).then(() => {
           models.User.create(fixtures.newUser).then((createdUser) => {
+            newToken = jwt.sign({ id: createdUser.id }, jwtSecret, {
+              expiresIn: '2 days' // expires in 48 hours
+            });
             aCreatedUser = createdUser;
             newGroup.creatorId = createdUser.id;
             newGroup.creatorEmail = createdUser.email;
@@ -437,9 +437,10 @@ describe('PostIt Tests', () => {
             newGroupWithSingleMember.creatorId = createdUser.id;
             newGroupWithSingleMember.creatorEmail = createdUser.email;
           }).then(() => {
-            models.User.bulkCreate([fixtures.newUser2, fixtures.newUser3]).then(() => {
+            models.User.bulkCreate([fixtures.newUser2, fixtures.newUser3]).then((newGuys) => {
+              idToDelete = newGuys[0].id;
               models.Group.create(newGroup).then((createdGroup) => {
-                createdGroup.addUser(aCreatedUser).then(() => {
+                createdGroup.addUsers([aCreatedUser, ...newGuys]).then(() => {
                   groupId = createdGroup.id;
                   done();
                 });
@@ -452,10 +453,11 @@ describe('PostIt Tests', () => {
     it('ensures successfull group creation', (done) => {
       request
         .post('/api/group')
-        .set('x-access-token', token)
+        .set('x-access-token', newToken)
         .send(fixtures.newGroup2)
         .expect((res) => {
-          expect(res.body.createdGroup.title).toEqual(fixtures.newGroup2.title);
+          expect(res.body.createdGroup.title)
+          .toEqual(fixtures.newGroup2.title);
         })
        .end((err) => {
          if (err) {
@@ -463,57 +465,11 @@ describe('PostIt Tests', () => {
          }
          done();
        });
-    });
-    it('ensures proper response when an invalid user id is supplied during group creation', (done) => {
-      newGroup2.creatorId = 'invaliduserid';
-      request
-        .post('/api/group')
-        .set('x-access-token', token)
-        .send(newGroup2)
-        .expect((res) => {
-          expect(res.body.message).toEqual('Supply a valid user id');
-        })
-       .end((err) => {
-         if (err) {
-           return done(err);
-         }
-         done();
-       });
-    });
-    it('ensures a user can be added to a group after it is created', (done) => {
-      request
-        .post(`/api/group/${groupId}/user`)
-        .set('x-access-token', token)
-        .send({ email: 'taiwok@yahoo.com', adderId: aCreatedUser.id })
-        .expect((res) => {
-          expect(res.body[0].email).toEqual('taiwok@yahoo.com');
-        })
-        .end((err) => {
-          if (err) {
-            return done(err);
-          }
-          done();
-        });
-    });
-    it('ensures proper response when a non member of a group attempts to add someone to the group', (done) => {
-      request
-        .post(`/api/group/${groupId}/user`)
-        .set('x-access-token', token)
-        .send({ email: 'taiwok@yahoo.com', adderId: '34998203-58d2-4854-9003-8092e5035ae8' }) // Unknown ID
-        .expect((res) => {
-          expect(res.body.message).toEqual('Adder is not member of the group');
-        })
-        .end((err) => {
-          if (err) {
-            return done(err);
-          }
-          done();
-        });
     });
     it('returns an empty object if an unregistered user is to be added to a group', (done) => {
       request
         .post(`/api/group/${groupId}/user`)
-        .set('x-access-token', token)
+        .set('x-access-token', newToken)
         .send({ email: 'unregistered@email.com', adderId: aCreatedUser.id })
         .expect({ success: false, message: 'User not found' })
        .end((err) => {
@@ -526,10 +482,11 @@ describe('PostIt Tests', () => {
     it('ensures group can be created with no members added initially', (done) => {
       request
         .post('/api/group')
-        .set('x-access-token', token)
+        .set('x-access-token', newToken)
         .send(fixtures.newGroup2)
         .expect((res) => {
-          expect(res.body.createdGroup.title).toEqual(fixtures.newGroup2.title);
+          expect(res.body.createdGroup.title)
+          .toEqual(fixtures.newGroup2.title);
         })
        .end((err) => {
          if (err) {
@@ -541,10 +498,11 @@ describe('PostIt Tests', () => {
     it('ensures group can be created with a single member added initially', (done) => {
       request
         .post('/api/group')
-        .set('x-access-token', token)
+        .set('x-access-token', newToken)
         .send(fixtures.newGroupWithSingleMember)
         .expect((res) => {
-          expect(res.body.createdGroup.title).toEqual(fixtures.newGroupWithSingleMember.title);
+          expect(res.body.createdGroup.title)
+          .toEqual(fixtures.newGroupWithSingleMember.title);
         })
        .end((err) => {
          if (err) {
@@ -556,10 +514,27 @@ describe('PostIt Tests', () => {
     it('ensures group can be created with multiple members added initially', (done) => {
       request
         .post('/api/group')
-        .set('x-access-token', token)
+        .set('x-access-token', newToken)
         .send(fixtures.newGroupWithMultipleMembers)
         .expect((res) => {
-          expect(res.body.createdGroup.title).toEqual(fixtures.newGroupWithMultipleMembers.title);
+          expect(res.body.createdGroup.title)
+          .toEqual(fixtures.newGroupWithMultipleMembers.title);
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('ensures group member can be deleted successfully', (done) => {
+      request
+        .delete(`/api/group/${groupId}/members`)
+        .set('x-access-token', newToken)
+        .send({ idToDelete })
+        .expect((res) => {
+          expect(res.body.message)
+          .toEqual('Deleted successfully');
         })
        .end((err) => {
          if (err) {
@@ -570,6 +545,23 @@ describe('PostIt Tests', () => {
     });
   });
   describe('General app activities', () => {
+    let newToken;
+    const jwtSecret = process.env.JWT_SECRET;
+
+    beforeEach((done) => {
+      models.User.destroy({
+        where: {},
+        truncate: true,
+        cascade: true
+      }).then(() => {
+        models.User.create(fixtures.newUser).then((createdUser) => {
+          newToken = jwt.sign({ id: createdUser.id }, jwtSecret, {
+            expiresIn: '2 days' // expires in 48 hours
+          });
+          done();
+        });
+      });
+    });
     it('ensures sensible response for incorrect route', (done) => {
       request
         .get('/unregistered')
@@ -595,10 +587,93 @@ describe('PostIt Tests', () => {
     it('ensures all registered users can be loaded from the database', (done) => {
       request
         .get('/api/members')
-        .set('x-access-token', token)
+        .set('x-access-token', newToken)
         .expect((res) => {
           const isArray = res.body.rows instanceof Array;
           expect(isArray).toEqual(true);
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('ensures user search can be carried out successful', (done) => {
+      request
+        .get('/api/search?searchQuery=victor')
+        .set('x-access-token', newToken)
+        .expect((res) => {
+          const isArray = res.body.users.rows instanceof Array;
+          expect(isArray).toEqual(true);
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('calls the method to send a user a password recovery email', (done) => {
+      const stub = sinon.stub(nodemailer, 'createTransport');
+      stub.returns({
+        sendMail: (mailOptions = {}, cb) => cb(null)
+      });
+      request
+        .post('/api/password/recover')
+        .send({ email: 'taiwok@yahoo.com' })
+        .expect((res) => {
+          stub.restore();
+          expect(res.body.message).toEqual('A password reset link has been sent to your email');
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('throws an error when there is no internet connection during password recovery', (done) => {
+      const stub = sinon.stub(nodemailer, 'createTransport');
+      stub.returns({
+        sendMail: (mailOptions = {}, cb) => cb({ error: true })
+      });
+      request
+        .post('/api/password/recover')
+        .send({ email: 'taiwok@yahoo.com' })
+        .expect((res) => {
+          stub.restore();
+          expect(res.body.message).toEqual('Could not send email. Check your internet connection');
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('ensures user password can be reset password successful', (done) => {
+      request
+        .post('/api/password/reset')
+        .send({ newPassword: 'taiwookonkwo' })
+        .set('x-access-token', newToken)
+        .expect((res) => {
+          expect(res.body.message).toEqual('Password changed successfully');
+        })
+       .end((err) => {
+         if (err) {
+           return done(err);
+         }
+         done();
+       });
+    });
+    it('ensures an error is thrown if password reset token is expired, or invalid', (done) => {
+      request
+        .post('/api/password/reset')
+        .send({ newPassword: 'taiwookonkwo' })
+        .set('x-access-token', 'invalidtoken')
+        .expect((res) => {
+          expect(res.body.message).toEqual('The password recovery link has expired.');
         })
        .end((err) => {
          if (err) {
@@ -624,7 +699,10 @@ describe('PostIt Tests', () => {
     });
   });
   describe('Tests for CRUD activities in a particular group', () => {
+    const jwtSecret = process.env.JWT_SECRET;
+    let newToken;
     let groupId;
+    let messageId;
     const newMessage = fixtures.newMessage;
     const newMessageForRoute = fixtures.newMessageForRoute;
     beforeEach((done) => {
@@ -639,12 +717,16 @@ describe('PostIt Tests', () => {
           truncate: true
         }).then(() => {
           models.User.create(fixtures.newUser).then((createdUser) => {
+            newToken = jwt.sign({ id: createdUser.id }, jwtSecret, {
+              expiresIn: '2 days' // expires in 48 hours
+            });
             models.Group.create(fixtures.newGroup).then((createdGroup) => {
               createdGroup.addUser(createdUser).then(() => {
                 groupId = createdGroup.id;
                 newMessage.groupId = createdGroup.id;
                 newMessageForRoute.senderId = createdUser.id;
-                models.Message.create(newMessage).then(() => {
+                models.Message.create(newMessage).then((createdMessage) => {
+                  messageId = createdMessage.id;
                   done();
                 });
               });
@@ -653,29 +735,13 @@ describe('PostIt Tests', () => {
         });
       });
     });
-    it('ensures successfull posting of messages to a particular group', (done) => {
+    it('ensures member of a group can post message to the group', (done) => {
       request
         .post(`/api/group/${groupId}/message`)
-        .set('x-access-token', token)
+        .set('x-access-token', newToken)
         .send(newMessageForRoute)
         .expect((res) => {
-          expect(res.body.message.body).toEqual(newMessageForRoute.body);
-        })
-       .end((err) => {
-         if (err) {
-           return done(err);
-         }
-         done();
-       });
-    });
-    it('ensures successfull posting of messages to a group, with isComment field not defined', (done) => {
-      newMessageForRoute.isComment = undefined;
-      request
-        .post(`/api/group/${groupId}/message`)
-        .set('x-access-token', token)
-        .send(newMessageForRoute)
-        .expect((res) => {
-          expect(res.body.message.body).toEqual(newMessageForRoute.body);
+          expect(res.body.success).toEqual(true);
         })
        .end((err) => {
          if (err) {
@@ -685,7 +751,6 @@ describe('PostIt Tests', () => {
        });
     });
     it('ensures non member of a group cannot post message to the group', (done) => {
-      newMessageForRoute.senderId = '34998203-58d2-4854-9003-8092e5035ae8';
       request
         .post(`/api/group/${groupId}/message`)
         .set('x-access-token', token)
@@ -700,30 +765,13 @@ describe('PostIt Tests', () => {
          done();
        });
     });
-    it('ensures proper response when an invalid UUID is supplied for user id when posting a message', (done) => {
-      newMessageForRoute.senderId = 'thisIsInvalidUUID';
+    it('ensures those who have read a message can be loaded', (done) => {
       request
-        .post(`/api/group/${groupId}/message`)
-        .set('x-access-token', token)
-        .send(newMessageForRoute)
+        .get(`/api/group/${messageId}/message/seenby`)
+        .set('x-access-token', newToken)
         .expect((res) => {
-          expect(res.body.message).toEqual('Invalid User Id');
-        })
-       .end((err) => {
-         if (err) {
-           return done(err);
-         }
-         done();
-       });
-    });
-    it('ensures proper response when incomplete fields are supplied when posting a message', (done) => {
-      newMessageForRoute.body = undefined;
-      request
-        .post(`/api/group/${groupId}/message`)
-        .set('x-access-token', token)
-        .send(newMessageForRoute)
-        .expect((res) => {
-          expect(res.body.message).toEqual('Incomplete fields. Specify senderId, message and priority (normal, urgent or critical)');
+          const isArray = res.body.seenBy instanceof Array;
+          expect(isArray).toEqual(true);
         })
        .end((err) => {
          if (err) {
@@ -737,7 +785,8 @@ describe('PostIt Tests', () => {
         .get(`/api/group/${groupId}/messages`)
         .set('x-access-token', token)
         .expect((res) => {
-          expect(res.body).toEqual({ success: false, message: 'User does not belong to this group' });
+          expect(res.body).toEqual({ success: false,
+            message: 'User does not belong to this group' });
         })
        .end((err) => {
          if (err) {
@@ -751,7 +800,8 @@ describe('PostIt Tests', () => {
         .get(`/api/group/${groupId}/members`)
         .set('x-access-token', token)
         .expect((res) => {
-          expect(res.body).toEqual({ success: false, message: 'User does not belong to this group' });
+          expect(res.body).toEqual({ success: false,
+            message: 'User does not belong to this group' });
         })
        .end((err) => {
          if (err) {

@@ -148,7 +148,8 @@ export default {
           sentBy: `${users[0].firstName} ${users[0].lastName}`,
           body: messageBody
         }).save().then((createdMessage) => {
-          const connectedUsers = req.app.connections[groupId] || [];
+          const connections = req.app.connections || {};
+          const connectedUsers = connections[groupId] || [];
           User.findAll({ where: { id: connectedUsers } })
           .then((foundUsers) => {
             createdMessage.addUser(foundUsers);

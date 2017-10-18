@@ -84,7 +84,8 @@ export default {
     User.find({ where: { email } }).then((foundUser) => {
       if (foundUser) {
         const user = {
-          email: foundUser.email
+          email: foundUser.email,
+          id: foundUser.id
         };
         const token = jwt.sign(user, jwtSecret, {
           expiresIn: 600 // expires in 10 minutes
@@ -136,8 +137,8 @@ export default {
           return res.status(401).send({ message: 'The password recovery link has expired.',
             error: err });
         }
-        const email = decoded.email;
-        User.find({ where: { email } }).then((user) => {
+        const userId = decoded.id;
+        User.find({ where: { id: userId } }).then((user) => {
           user.password = newPassword;
           user.save().then((updatedUser) => {
             const userDetails = {
