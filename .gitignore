@@ -5,3 +5,4 @@ server/*.env
 coverage
 .DS_Store
 .vscode
+client/build/

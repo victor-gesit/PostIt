@@ -138,7 +138,6 @@ export class SignUpForm extends React.Component {
           </div>
           <div className="input-field col s12">
             <input id="firstName"
-              value=""
               ref={(firstName) => { this.firstName = firstName; }}
               onKeyUp={this.enterText}
               type="text" name="fname" className="validate" />

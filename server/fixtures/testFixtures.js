@@ -1,4 +1,12 @@
 export default {
+  googleUser: {
+    firstName: 'Taiwo',
+    lastName: 'Okonkwo',
+    email: 'google@google.com',
+    phone: '080312345679',
+    password: 'google@google',
+    googleId: 'dummyGoogleId'
+  },
   newUser: {
     firstName: 'Taiwo',
     lastName: 'Okonkwo',
@@ -23,12 +31,14 @@ export default {
   newGroup: {
     createdBy: 'Jane Doe',
     title: 'A Test Group',
-    description: 'This group is created to test the Group model'
+    description: 'This group is created to test the Group model',
+    creatorEmail: 'taiwok@yahoo.com'
   },
   newGroup2: {
     createdBy: 'John Doe',
     title: 'Another test Group',
-    description: 'This group is for sharing random thoughts'
+    description: 'This group is for sharing random thoughts',
+    creatorEmail: 'taiwok@yahoo.com'
   },
   newGroupForRoutes: {
     title: 'Another Test Group',
