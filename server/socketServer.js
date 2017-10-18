@@ -11,8 +11,6 @@ export default (server, app) => {
   const connections = {};
   const unreadMessages = {};
   socketServer.on('connection', (client) => {
-    client.on('disconnect', () => {
-    });
     client.on('open group', (data) => {
       const token = data.token;
       let decode;
@@ -31,40 +29,6 @@ export default (server, app) => {
       connections[groupId].push(userId);
       client.join(groupId, () => {
       });
-    });
-    client.on('delete member', (data) => {
-      const token = data.token;
-      let decode;
-      try {
-        decode = jwt.decode(token);
-      } catch (error) {}
-      if (!decode) {
-        return;
-      }
-      const userId = decode.id;
-      const groupId = data.groupId;
-      connections[groupId] = connections[groupId] || [];
-      const index = connections[groupId].indexOf(userId);
-      connections[groupId].splice(index, 1);
-    });
-    client.on('close group', (data) => {
-      const token = data.token;
-      let decode;
-      try {
-        decode = jwt.decode(token);
-      } catch (error) {}
-      if (!decode) {
-        return;
-      }
-      const userId = decode.id;
-      const groupId = data.groupId;
-      connections[groupId] = connections[groupId] || [];
-      const index = connections[groupId].indexOf(userId);
-      connections[groupId].splice(index, 1);
-      client.leave(groupId);
-    });
-    client.on('delete group', () => {
-
     });
     client.on('postMessage', (data) => {
       const groupMembers = data.groupMembers;

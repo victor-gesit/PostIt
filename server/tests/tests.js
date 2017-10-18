@@ -434,7 +434,7 @@ describe('General App Tests', () => {
     });
   });
   describe('socketServer method', () => {
-    it('sends emails to members of a group', () => {
+    it('is called when the application loads, to start a socket.io server', () => {
       const stub = sinon.stub(io({}), 'on');
       stub.returns((event = {}, cb) => cb({ response: 'Email sending failed' })
       );
