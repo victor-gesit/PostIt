@@ -2,7 +2,7 @@ import { Reducer } from 'redux-testkit';
 import loadedMessagesReducer from '../../reducers/loadedMessagesReducer';
 import { loadedMessagesReducerMock as mock } from '../mockData';
 
-describe('authStateReducer', () => {
+describe('loadedMessagesReducer', () => {
   it('should have an initial state', () => {
     expect(loadedMessagesReducer(undefined, {
       type: 'UNREGISTERED'

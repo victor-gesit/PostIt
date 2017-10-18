@@ -2,7 +2,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import 'jquery';
-import jwtDecode from 'jwt-decode';
 import NotificationSystem from 'react-notification-system';
 import {
   getGroupsForUser, getAllGroupsForUser, resetErrorLog,
@@ -47,15 +46,8 @@ export class CreateGroup extends React.Component {
   componentWillMount() {
     // Load all registered members
     const token = localStorage.getItem('token');
-    let decode;
-    try {
-      decode = jwtDecode(token);
-    } catch (err) {
-      this.props.history.push('/');
-    }
-    const userId = decode.id;
     this.props.getPostItMembers(token);
-    this.props.getAllGroupsForUser(userId, token);
+    this.props.getGroupsForUser(token);
   }
   /**
    * React component method called after component render
@@ -63,17 +55,15 @@ export class CreateGroup extends React.Component {
    */
   componentDidMount() {
     // Initialize navbar
-    if ($('.button-collapse').sideNav) {
-      $('.button-collapse').sideNav({
-        closeOnClick: true,
-        draggable: true
-      });
-    }
+    $('.button-collapse').sideNav({
+      closeOnClick: true,
+      draggable: true
+    });
     $('#sidenav-overlay').trigger('click');
     // Load a default tab for the createGroup page
     try {
       $('#defaultTab')[0].click();
-    } catch (e) { return false; }
+    } catch (e) {}
     // Bind the notifications component
     this.notificationSystem = this.notificationRef;
   }
@@ -123,15 +113,8 @@ export class CreateGroup extends React.Component {
     const title = this.title.value;
     const description = this.description.value;
     const token = localStorage.getItem('token');
-    let decode;
-    try {
-      decode = jwtDecode(token);
-    } catch (err) {
-      this.props.signOut();
-    }
-    const creatorId = decode.id;
     const selectedMembers = this.selectedMembers;
-    this.props.createGroup(creatorId, title, description,
+    this.props.createGroup(title, description,
       selectedMembers, token);
   }
   /**
@@ -278,6 +261,7 @@ export class CreateGroup extends React.Component {
                     {
                       Object.keys(postItMembers).map((userId, index) =>
                         <RegisteredMember
+                          store={this.props}
                           addMember={this.addMember}
                           key={index}
                           id={userId}
@@ -289,6 +273,7 @@ export class CreateGroup extends React.Component {
                       allLoaded < membersCount ? (
                         <div className="center">
                         <button className="btn"
+                          id="loadMoreButton"
                           onClick={ () => this.loadMore()}>...Load More</button>
                         </div>
                       ) : (
@@ -349,14 +334,7 @@ export class RegisteredMember extends React.Component {
    * @returns {Object} Returns the DOM object to be rendered
    */
   render() {
-    const token = localStorage.getItem('token');
-    let decode;
-    try {
-      decode = jwtDecode(token);
-    } catch (err) {
-      this.props.store.signOut();
-    }
-    const userId = decode.id;
+    const userId = this.props.store.appInfo.userDetails.id;
     const userInfo = this.props.userInfo;
     return (
       <li className="collection-item">
@@ -407,17 +385,17 @@ const mapDispatchToProps = dispatch =>
     verifyToken: token => dispatch(verifyToken(token)),
     getPostItMembers: (token, offset, limit) =>
       dispatch(getPostItMembers(token, offset, limit)),
-    getAllGroupsForUser: (userId, token, offset) =>
-      dispatch(getAllGroupsForUser(userId, token, offset)),
+    getAllGroupsForUser: (token, offset) =>
+      dispatch(getAllGroupsForUser(token, offset)),
     getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
     loadMessages: groupId => dispatch(loadMessages(groupId)),
     getGroupMembers: (groupId, token) =>
       dispatch(getGroupMembers(groupId, token)),
-    createGroup: (creatorId, title, description, selectedMembers, token) =>
-      dispatch(createGroup(creatorId, title,
+    createGroup: (title, description, selectedMembers, token) =>
+      dispatch(createGroup(title,
         description, selectedMembers, token)),
-    getGroupsForUser: (userId, offset, limit, token) =>
-      dispatch(getGroupsForUser(userId, offset, limit, token)),
+    getGroupsForUser: (token, offset, limit) =>
+      dispatch(getGroupsForUser(token, offset, limit)),
     signOut: () => dispatch(signOut())
   });
 

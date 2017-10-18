@@ -49,9 +49,7 @@ app.use('/*', (req, res) => {
 const port = process.env.PORT || 8002;
 
 models.sequelize.sync();
-const server = httpServer.listen(port, () => {
-  console.log(`Listening at port ${port}`);
-});
+const server = httpServer.listen(port);
 
 // Export server for use in unit tests
 export default server;

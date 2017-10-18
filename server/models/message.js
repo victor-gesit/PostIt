@@ -41,7 +41,8 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     isComment: {
-      type: DataTypes.BOOLEAN
+      type: DataTypes.BOOLEAN,
+      allowNull: false
     }
   });
   Message.associate = (models) => {

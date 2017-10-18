@@ -15,6 +15,13 @@ export default {
         count: 0
       }
     },
+    appInfo: {
+      userDetails: {
+        id: 'meme',
+        firstName: 'Me',
+        lastName: 'You'
+      }
+    },
     match: {
       params: {
         groupId: '12345'
@@ -40,6 +47,13 @@ export default {
           postItMembers: {
 
           }
+        }
+      },
+      appInfo: {
+        userDetails: {
+          id: 'meme',
+          firstName: 'Me',
+          lastName: 'You'
         }
       }
     }

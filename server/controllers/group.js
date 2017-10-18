@@ -148,7 +148,8 @@ export default {
           sentBy: `${users[0].firstName} ${users[0].lastName}`,
           body: messageBody
         }).save().then((createdMessage) => {
-          const connectedUsers = req.app.connections[groupId] || [];
+          const connections = req.app.connections || {};
+          const connectedUsers = connections[groupId] || [];
           User.findAll({ where: { id: connectedUsers } })
           .then((foundUsers) => {
             createdMessage.addUser(foundUsers);
@@ -268,12 +269,30 @@ export default {
               order: [['firstName', 'ASC']],
               limit,
               offset })
-              .then(groupMembers =>
-                res.status(200).send({
-                  count,
+              .then((groupMembers) => {
+                const countOfMembers = groupMembers.length;
+                const allLoaded = Number(offset) + countOfMembers;
+                let totalPages = Math.ceil(count / limit);
+                totalPages = offset > 0 ? totalPages + 1 : totalPages;
+                const isLastPage = allLoaded === count;
+                const currentPage = Math.ceil(offset / limit) + 1;
+                const meta = {
+                  indexOfLast: allLoaded,
+                  total: count,
+                  totalPages,
+                  isLastPage,
+                  currentPage,
+                  offset
+                };
+                return res.status(200).send({
                   success: true,
                   type: 'Users',
-                  rows: groupMembers }))
+                  rows: groupMembers,
+                  count,
+                  allLoaded,
+                  meta
+                });
+              })
               .catch(() =>
                 res.status(422).send({ success: false,
                   message: 'Invalid query in url' }));

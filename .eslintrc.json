@@ -9,7 +9,8 @@
   },
   "globals": {
     "describe": true,
-    "expect": true
+    "expect": true,
+    "jest": true
   },
   "parserOptions": {
       "ecmaVersion": 6,

@@ -1,6 +1,5 @@
 /* eslint-env browser */
 import React from 'react';
-import jwtDecode from 'jwt-decode';
 import { Link } from 'react-router-dom';
 import ReactToolTip from 'react-tooltip';
 import Groups from './Groups.jsx';
@@ -34,13 +33,7 @@ export class NavBar extends React.Component {
     const groupId = this.props.store.match.params.groupId;
     const isCreator = this.props.isCreator;
     const token = localStorage.getItem('token');
-    let decode;
-    try {
-      decode = jwtDecode(token);
-    } catch (err) {
-      this.props.store.history.push('/');
-    }
-    const userDetails = decode;
+    const userDetails = this.props.store.appInfo.userDetails;
     const allUserGroups = this.props.allUserGroups;
     const path = this.props.store.match.path;
     let modalText = 'Leave Group';
@@ -66,7 +59,7 @@ export class NavBar extends React.Component {
               {
                 path === '/postmessage/:groupId' ? (
                   <li>
-                      <a
+                      <a id="getMembersButton"
                       onClick={ () =>
                         this.props.store.getGroupMembers(groupId, token) }
                       ><i id="member-list-toggle" data-tip="Group info"
@@ -82,7 +75,7 @@ export class NavBar extends React.Component {
               </li>
                 ) : (
                 <li>
-                      <Link to="/messageboard">
+                      <Link id="linkToMessageBoard" to="/messageboard">
                         <i data-tip="Message Board"
                           className="material-icons">view_module</i>
                       </Link>
@@ -143,16 +136,10 @@ export class NavBar extends React.Component {
                     <i className="large material-icons red-text">
                     texture</i>{modalText}</a></li>
                 ) : (
-                  path === '/#/creategroup' ? (
-                    <li><a><i className="large material-icons green-text">
-                      library_add</i>
-                    Create New Group</a></li>
-                  ) : (
                     <li><Link to='/creategroup'>
                     <i className="large material-icons green-text">
                       library_add</i>
                     Create New Group</Link></li>
-                  )
                 )
               }
               <hr />
@@ -175,7 +162,7 @@ export class NavBar extends React.Component {
               {/* Groups a user belongs to */}
               <Groups store={this.props.store} allUserGroups={allUserGroups}/>
               <hr />
-              <li><a onClick={this.signOut}>
+              <li><a id="signOutButton" onClick={this.signOut}>
                 <i className="large material-icons red-text">exit_to_app</i>
                 Sign Out</a>
               </li>

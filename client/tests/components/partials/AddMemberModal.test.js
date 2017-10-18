@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from 'enzyme';
+import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
 import AddMemberModal, { RegisteredMember } from '../../../components/views/partials/AddMemberModal.jsx';
 import { addMemberModalMock as mock } from '../../mockData';
@@ -33,6 +33,20 @@ describe('<AddMemberModal/>', () => {
     wrapper.instance().selectedMembers.push('victorgesit@andela.com');
     wrapper.instance().addNewMembers();
     expect(mock.props.store.addUser.calledOnce).toEqual(true);
+  });
+  it('calls the loadMore component method when the load more button is clicked', () => {
+    const wrapper = shallow(<AddMemberModal {...mock.propsForLoadMore} />);
+    const stub = sinon.stub(wrapper.instance(), 'loadMore');
+    wrapper.setProps({});
+    wrapper.instance().forceUpdate();
+    wrapper.update();
+    wrapper.find('#loadMoreButton').simulate('click');
+    expect(stub.called).toEqual(true);
+  });
+  it('calls the action to load more users, when button is clicked', () => {
+    const wrapper = shallow(<AddMemberModal {...mock.props} />);
+    wrapper.instance().loadMore();
+    expect(mock.props.store.getPostItMembers.called).toEqual(true);
   });
 });
 

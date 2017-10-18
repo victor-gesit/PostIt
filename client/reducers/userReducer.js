@@ -15,6 +15,8 @@ const userReducer = (state = {
     case 'SIGN_UP_SUCCESS':
       localStorage.setItem('token', userDetails.token);
       return userDetails;
+    case 'VERIFY_TOKEN_SUCCESS':
+      return userDetails;
     case 'SIGN_OUT':
       return {
         firstName: null,

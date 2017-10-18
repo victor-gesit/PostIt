@@ -14,6 +14,20 @@ describe('<Groups/>', () => {
     );
     expect(wrapper.find(UserGroup).length).toEqual(1);
   });
+  it('calls the loadMore component method when the load more button is clicked', () => {
+    const wrapper = shallow(<Groups {...groupsMock.props} />);
+    const stub = sinon.stub(wrapper.instance(), 'loadMore');
+    wrapper.setProps({});
+    wrapper.instance().forceUpdate();
+    wrapper.update();
+    wrapper.find('#loadMoreButton').simulate('click');
+    expect(stub.called).toEqual(true);
+  });
+  it('calls the action to load more users, when button is clicked', () => {
+    const wrapper = shallow(<Groups {...groupsMock.props} />);
+    wrapper.instance().loadMore();
+    expect(groupsMock.props.store.getAllGroupsForUser.called).toEqual(true);
+  });
 });
 
 describe('<UserGroup/>', () => {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
+import sinon from 'sinon';
 import Messages, { Message } from '../../../components/views/partials/Messages.jsx';
 import { messagesMock, messageMock } from '../../mockData';
 
@@ -15,7 +16,21 @@ describe('<Messages/>', () => {
     wrapper.instance().forceUpdate();
     wrapper.update();
     // Trigger componentWillReceiveProps
-    wrapper.setProps({ socket: {} });
+    wrapper.setProps({ ...messagesMock.propsAfterUpdate });
+  });
+  it('calls componentWillReceiveProps if user is in same group', () => {
+    const wrapper = shallow(<Messages {...messagesMock.props} />);
+    wrapper.instance().bodyRef = {
+      scrollIntoView: () => {}
+    };
+    wrapper.instance().forceUpdate();
+    wrapper.update();
+    // Trigger componentWillReceiveProps
+    wrapper.setProps({ ...messagesMock.props });
+  });
+  it('renders the component even if there are no messages', () => {
+    messagesMock.props.store.groups.userGroups['12345'].messages = {};
+    const wrapper = mount(<Messages {...messagesMock.props} />);
   });
 });
 

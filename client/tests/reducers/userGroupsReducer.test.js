@@ -2,7 +2,7 @@ import { Reducer } from 'redux-testkit';
 import userGroupsReducer from '../../reducers/userGroupsReducer';
 import { userGroupsReducerMock as mock } from '../mockData';
 
-describe('authStateReducer', () => {
+describe('userGroupsReducer', () => {
   it('should have an initial state', () => {
     expect(userGroupsReducer(undefined, {
       type: 'UNREGISTERED'

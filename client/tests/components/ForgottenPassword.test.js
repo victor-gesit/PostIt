@@ -1,13 +1,22 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
-import { ForgottenPassword } from '../../components/views/ForgottenPassword.jsx';
+import ForgottenPasswordDefault, { ForgottenPassword } from '../../components/views/ForgottenPassword.jsx';
 import Spinner from '../../components/views/partials/Spinner.jsx';
 import { forgottenPasswordMock as mock } from '../mockData';
 
+jest.mock('react-router-dom');
+
 describe('<ForgottenPassword/>', () => {
   it('renders the component', () => {
-    const wrapper = mount(<ForgottenPassword {...mock.props} />);
+    const dispatch = sinon.spy();
+    const subscribe = sinon.spy();
+    const wrapper = mount(<ForgottenPasswordDefault
+    {...mock.props}
+    store={{ getState: () => mock.props,
+      dispatch,
+      subscribe }}
+    />);
   });
   it('it calls the recoverPassword component method when a button is clicked', () => {
     const wrapper = shallow(<ForgottenPassword {...mock.props} />);

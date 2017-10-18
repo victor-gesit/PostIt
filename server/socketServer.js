@@ -1,5 +1,6 @@
 
 import io from 'socket.io';
+import jwt from 'jsonwebtoken';
 import models from './models';
 
 const User = models.User;
@@ -13,8 +14,16 @@ export default (server, app) => {
     client.on('disconnect', () => {
     });
     client.on('open group', (data) => {
+      const token = data.token;
+      let decode;
+      try {
+        decode = jwt.decode(token);
+      } catch (error) {}
+      if (!decode) {
+        return;
+      }
+      const userId = decode.id;
       const groupId = data.groupId;
-      const userId = data.userId;
       // Indicate that member has read all messages in the group
       unreadMessages[groupId] = unreadMessages[groupId] || {};
       unreadMessages[groupId][userId] = unreadMessages[groupId][userId] || 0;
@@ -24,14 +33,30 @@ export default (server, app) => {
       });
     });
     client.on('delete member', (data) => {
-      const userId = data.userId;
+      const token = data.token;
+      let decode;
+      try {
+        decode = jwt.decode(token);
+      } catch (error) {}
+      if (!decode) {
+        return;
+      }
+      const userId = decode.id;
       const groupId = data.groupId;
       connections[groupId] = connections[groupId] || [];
       const index = connections[groupId].indexOf(userId);
       connections[groupId].splice(index, 1);
     });
     client.on('close group', (data) => {
-      const userId = data.userId;
+      const token = data.token;
+      let decode;
+      try {
+        decode = jwt.decode(token);
+      } catch (error) {}
+      if (!decode) {
+        return;
+      }
+      const userId = decode.id;
       const groupId = data.groupId;
       connections[groupId] = connections[groupId] || [];
       const index = connections[groupId].indexOf(userId);
@@ -44,7 +69,15 @@ export default (server, app) => {
     client.on('postMessage', (data) => {
       const groupMembers = data.groupMembers;
       const groupId = data.groupId;
-      const senderId = data.senderId;
+      const token = data.token;
+      let decode;
+      try {
+        decode = jwt.decode(token);
+      } catch (error) {}
+      if (!decode) {
+        return;
+      }
+      const senderId = decode.id;
       const groupMemberIds = Object.keys(groupMembers)
         .map(groupMember => groupMember);
       groupMemberIds.forEach((groupMember) => {

@@ -4,7 +4,7 @@ import NotificationSystem from 'react-notification-system';
 /**
  * React component to display a modal for deleting a member
  */
-export default class SignUpForm extends React.Component {
+export class SignUpForm extends React.Component {
   /**
    * Constructor initializes component parameters
    * @param {Object} props Properties passed from parent component
@@ -138,6 +138,7 @@ export default class SignUpForm extends React.Component {
           </div>
           <div className="input-field col s12">
             <input id="firstName"
+              value=""
               ref={(firstName) => { this.firstName = firstName; }}
               onKeyUp={this.enterText}
               type="text" name="fname" className="validate" />
@@ -179,6 +180,7 @@ export default class SignUpForm extends React.Component {
           </div>
           <div className="center">
             <GoogleLogin
+              id= 'googleLoginButton'
               clientId='856410977175-5n2ns6ad2p5ofrrtma3jgun5f7paif78.apps.googleusercontent.com'
               buttonText="Login"
               onSuccess={this.googleLogin}
@@ -192,3 +194,5 @@ export default class SignUpForm extends React.Component {
     );
   }
 }
+
+export default SignUpForm;

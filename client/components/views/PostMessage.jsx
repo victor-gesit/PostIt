@@ -3,12 +3,11 @@
 import React from 'react';
 import 'jquery/dist/jquery';
 import { connect } from 'react-redux';
-import jwtDecode from 'jwt-decode';
 import io from 'socket.io-client';
 import {
   getGroupMembers, addUser, getMessages, loadMessages,
   resetRedirect, deleteMember, leaveGroup, getPostItMembers,
-  deleteGroup, getAllGroupsForUser, resetLoadingState,
+  deleteGroup, getAllGroupsForUser, resetLoadingState, getGroupsForUser,
   postMessage, verifyToken, signOut, notify, seenBy, searchGroup
 } from '../../actions';
 
@@ -34,16 +33,8 @@ export class PostMessage extends React.Component {
    */
   componentWillUnmount() {
     const token = localStorage.getItem('token');
-    let decode;
-    let userId;
-    try {
-      decode = jwtDecode(token);
-      userId = decode.id;
-    } catch (err) {
-      this.props.history.push('/');
-    }
     const groupId = this.props.match.params.groupId;
-    socket.emit('close group', { groupId, userId });
+    socket.emit('close group', { groupId, token });
   }
   /**
    * Constructor initializes component parameters
@@ -57,15 +48,8 @@ export class PostMessage extends React.Component {
     this.memberIdToDelete = '';
     this.groupIdToDelete = '';
     const token = localStorage.getItem('token');
-    let decode;
-    try {
-      decode = jwtDecode(token);
-    } catch (err) {
-      this.props.signOut();
-    }
-    const userId = decode.id;
     const groupId = this.props.match.params.groupId;
-    socket.emit('open group', { groupId, userId });
+    socket.emit('open group', { groupId, token });
   }
   /**
    * Component method called after component renders to initialize modals
@@ -73,11 +57,8 @@ export class PostMessage extends React.Component {
    * @returns {undefined} This method returns nothing
    */
   componentDidMount() {
-    let matchQuery = {};
-    if (window.matchMedia) {
-      matchQuery = window.matchMedia('(max-width: 992px)');
-    }
-    if (matchQuery.matches && $('.button-collapse').sideNav) {
+    const matchQuery = window.matchMedia('(max-width: 992px)');
+    if (matchQuery.matches) {
       $('.button-collapse').sideNav({
         closeOnClick: true,
         draggable: true
@@ -86,18 +67,11 @@ export class PostMessage extends React.Component {
     $('#sidenav-overlay').trigger('click');
     this.props.resetLoadingState();
     const token = localStorage.getItem('token');
-    let decode;
-    try {
-      decode = jwtDecode(token);
-    } catch (err) {
-      this.props.signOut();
-    }
-    const userId = decode.id;
     const groupId = this.props.match.params.groupId;
     // Load all messages for the group
     this.props.getMessages(groupId, token);
     // // Load user groups
-    this.props.getAllGroupsForUser(userId, token);
+    this.props.getAllGroupsForUser(token);
     // Load all members of the group
     this.props.getGroupMembers(groupId, token);
     /* Toggle group list*/
@@ -142,14 +116,12 @@ export class PostMessage extends React.Component {
    */
   deleteMember() {
     const token = localStorage.getItem('token');
-    const decode = jwtDecode(token);
-    const ownerId = decode.id;
     const idToDelete = this.memberIdToDelete;
     const groupId = this.props.match.params.groupId;
     // Remove user socket from group sockets list
-    socket.emit('delete member', { groupId, userId: idToDelete });
+    socket.emit('delete member', { groupId, token });
     // Call the redux action to delete the member
-    this.props.deleteMember(ownerId, idToDelete, groupId, token);
+    this.props.deleteMember(idToDelete, groupId, token);
   }
   /**
    * Method to delete a group
@@ -157,12 +129,10 @@ export class PostMessage extends React.Component {
    */
   deleteGroup() {
     const token = localStorage.getItem('token');
-    const decode = jwtDecode(token);
-    const ownerId = decode.id;
     const groupId = this.groupIdToDelete;
-    socket.emit('delete group', { groupId, userId: ownerId });
+    socket.emit('delete group', { groupId, token });
     // Call redux action to delete the group
-    this.props.deleteGroup(ownerId, groupId, token);
+    this.props.deleteGroup(groupId, token);
   }
   /**
    * Method for leaving a group
@@ -171,10 +141,8 @@ export class PostMessage extends React.Component {
   leaveGroup() {
     const token = localStorage.getItem('token');
     const groupId = this.groupIdToDelete;
-    const decode = jwtDecode(token);
-    const userId = decode.id;
     // Remove user socket from group sockets list
-    socket.emit('close group', { groupId, userId });
+    socket.emit('close group', { groupId, token });
     this.props.leaveGroup(token, groupId);
   }
   /**
@@ -196,14 +164,7 @@ export class PostMessage extends React.Component {
     const allUserGroups = this.props.allUserGroups.userGroups;
     const groupId = this.props.match.params.groupId;
     const groupLoaded = this.props.allUserGroups.userGroups[groupId];
-    const token = localStorage.getItem('token');
-    let decode;
-    try {
-      decode = jwtDecode(token);
-    } catch (err) {
-      this.props.history.push('/');
-    }
-    const userEmail = decode.email;
+    const userEmail = this.props.appInfo.userDetails.email;
     let creatorEmail, isCreator;
     if (groupLoaded) {
       creatorEmail = groupLoaded.info.creatorEmail;
@@ -268,27 +229,29 @@ const mapStateToProps = state =>
 
 const mapDispatchToProps = dispatch =>
   ({
-    getAllGroupsForUser: (userId, token, offset) =>
-      dispatch(getAllGroupsForUser(userId, token, offset)),
+    getAllGroupsForUser: (token, offset) =>
+      dispatch(getAllGroupsForUser(token, offset)),
+    getGroupsForUser: (token, offset, limit) =>
+      dispatch(getGroupsForUser(token, offset, limit)),
     getGroupMembers: (groupId, token) =>
       dispatch(getGroupMembers(groupId, token)),
     resetRedirect: () => dispatch(resetRedirect()),
     verifyToken: token => dispatch(verifyToken(token)),
-    deleteMember: (ownerId, idToDelete, groupId, token) =>
-      dispatch(deleteMember(ownerId, idToDelete, groupId, token)),
+    deleteMember: (idToDelete, groupId, token) =>
+      dispatch(deleteMember(idToDelete, groupId, token)),
     leaveGroup: (token, groupId) => dispatch(leaveGroup(token, groupId)),
-    deleteGroup: (ownerId, groupId, token) =>
-      dispatch(deleteGroup(ownerId, groupId, token)),
+    deleteGroup: (groupId, token) =>
+      dispatch(deleteGroup(groupId, token)),
     getMessages: (groupId, token) => dispatch(getMessages(groupId, token)),
     loadMessages: groupId => dispatch(loadMessages(groupId)),
     getPostItMembers: (token, offset) =>
       dispatch(getPostItMembers(token, offset)),
     searchGroup: (token, groupId, searchQuery, offset, limit) =>
       dispatch(searchGroup(token, groupId, searchQuery, offset, limit)),
-    addUser: (email, groupId, adderId, token) =>
-      dispatch(addUser(email, groupId, adderId, token)),
-    postMessage: (senderId, groupId, body, priority, isComment, token) =>
-      dispatch(postMessage(senderId, groupId, body,
+    addUser: (email, groupId, token) =>
+      dispatch(addUser(email, groupId, token)),
+    postMessage: (groupId, body, priority, isComment, token) =>
+      dispatch(postMessage(groupId, body,
         priority, isComment, token)),
     resetLoadingState: () => dispatch(resetLoadingState()),
     notify: (newMessage, groupId) => dispatch(notify(newMessage, groupId)),

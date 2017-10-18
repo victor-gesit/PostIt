@@ -286,11 +286,9 @@ header, #messageInputBox, #main-postmessage, #footer {
 // Normal
 #normal[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:after {
     background-color: green;
-    margin: 0px;
 }
 #normal[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:before, [type="radio"].with-gap:checked + label:after {
     border: 2px solid green;
-    margin: 0px;
 }
 // Urgent
 #urgent[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:after {
@@ -361,6 +359,6 @@ header, #messageInputBox, #main-postmessage, #footer {
 }
 
 .radioButtonLabel{
-    padding-right:35px;
+    padding-right:30px;
     padding-left: 22px;
 }

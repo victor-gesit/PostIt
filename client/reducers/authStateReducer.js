@@ -1,4 +1,5 @@
-const authStateReducer = (state = { signedIn: false, message: null }, action) => {
+const authStateReducer = (state = { signedIn: false, message: null },
+  action) => {
   switch (action.type) {
     case 'SIGN_IN_SUCCESS':
       return { signedIn: true, message: action.message };

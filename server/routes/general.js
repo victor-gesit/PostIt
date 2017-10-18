@@ -1,5 +1,6 @@
 import express from 'express';
 import generalController from '../controllers/general';
+import userController from '../controllers/user';
 import tokenValidator from '../auth/tokenValidator';
 
 
@@ -14,9 +15,7 @@ router.get('/members', tokenValidator.validateToken, generalController.getalluse
 router.get('/groups', tokenValidator.validateToken, generalController.getAllGroups);
 // Verify token, useful for react components that
 // require authentication before they can be accessed
-router.use('/token', tokenValidator.validateToken, (req, res) => {
-  res.status(200).send({ success: true, message: 'Token is valid' });
-});
+router.use('/token', tokenValidator.validateToken, userController.getUserInfo);
 // Search for users
 router.use('/search', tokenValidator.validateToken, generalController.searchForUsers);
 // Password recovery

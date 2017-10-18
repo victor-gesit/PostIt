@@ -18,6 +18,7 @@ export default {
       },
       appInfo: {
         authState: {
+          signedIn: true,
           message: 'Signed In'
         }
       },
@@ -27,7 +28,8 @@ export default {
       groups: {
         userGroups: {}
       },
-      history: [],
+      history: { push: sinon.spy() },
+      googleLogin: sinon.spy(),
       postItInfo: {
         members: {
           postItMembers: {
@@ -45,9 +47,6 @@ export default {
       deleteGroup: sinon.spy(),
       resetErrorLog: sinon.spy(),
       location: {
-        state: {
-          from: '/'
-        }
       },
       signIn: sinon.spy(),
       appInfo: {
@@ -71,5 +70,44 @@ export default {
         }
       }
     }
-  }
+  },
+  propsWithDataLoading: {
+    allUserGroups: {
+
+    },
+    store: {
+      getPostItMembers: sinon.spy(),
+      // method that makes API call to add members
+      addUser: sinon.spy(),
+      deleteGroup: sinon.spy(),
+      resetErrorLog: sinon.spy(),
+      location: {
+        state: {
+          from: '/'
+        }
+      },
+      dataLoading: true,
+      appInfo: {
+        authState: {
+          signedIn: true,
+          message: 'Signed In'
+        }
+      },
+      apiError: {
+        message: 'No Error'
+      },
+      groups: {
+        userGroups: {}
+      },
+      googleLogin: sinon.spy(),
+      history: { push: sinon.spy() },
+      postItInfo: {
+        members: {
+          postItMembers: {
+
+          }
+        }
+      }
+    }
+  },
 };

@@ -11569,12 +11569,10 @@ header, #messageInputBox, #main-postmessage, #footer {
 
 /* Styling for radio buttons */
 #normal[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:after {
-  background-color: green;
-  margin: 0px; }
+  background-color: green; }
 
 #normal[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:before, [type="radio"].with-gap:checked + label:after {
-  border: 2px solid green;
-  margin: 0px; }
+  border: 2px solid green; }
 
 #urgent[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:after {
   background-color: orange; }
@@ -11635,7 +11633,7 @@ header, #messageInputBox, #main-postmessage, #footer {
   cursor: default; }
 
 .radioButtonLabel {
-  padding-right: 35px;
+  padding-right: 30px;
   padding-left: 22px; }
 
 /*# sourceMappingURL=styles.css.map*/

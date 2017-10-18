@@ -23,6 +23,7 @@ export { default as postItInfoReducerMock } from './postItInfoReducerMock';
 export { default as postMessageMock } from './postMessageMock';
 export { default as registeredMemberMock } from './registeredMemberMock';
 export { default as signInFormMock } from './signInFormMock';
+export { default as signUpFormMock } from './signUpFormMock';
 export { default as signUpMock } from './signUpMock';
 export { default as userGroupMock } from './userGroupsMock';
 export { default as userGroupsReducerMock } from './userGroupsReducerMock';

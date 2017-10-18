@@ -4,8 +4,8 @@ export default {
   props: {
     apiError: {
       redirect: {
-        yes: false,
-        to: null
+        yes: true,
+        to: '/messageboard'
       }
     },
     appInfo: {
@@ -23,23 +23,23 @@ export default {
     match: {
       params: { groupId: '12345' }
     },
+    history: { push: sinon.spy() },
     getPostItMembers: sinon.spy(),
     resetLoadingState: sinon.spy(),
+    resetRedirect: sinon.spy(),
     getMessages: sinon.spy(),
+    getGroupsForUser: sinon.spy(),
     getAllGroupsForUser: sinon.spy(),
     getGroupMembers: sinon.spy(),
     leaveGroup: sinon.spy(),
     deleteGroup: sinon.spy(),
     deleteMember: sinon.spy(),
     getState: sinon.spy(),
-    match: {
-      params: {
-        groupId: '12345'
-      }
-    },
     allUserGroups: {
       userGroups: {
-
+        12345: {
+          info: {}
+        }
       },
       meta: {
         count: 0

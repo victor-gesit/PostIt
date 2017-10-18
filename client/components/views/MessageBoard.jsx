@@ -2,7 +2,6 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
 import { connect } from 'react-redux';
-import jwtDecode from 'jwt-decode';
 import 'jquery/dist/jquery';
 import { getGroupsForUser, getMessages, getGroupMembers, verifyToken,
   loadMessages, resetRedirect,
@@ -37,25 +36,15 @@ export class MessageBoard extends React.Component {
     this.props.resetLoadingState();
     this.props.resetRedirect();
     // Initialize navbar
-    if ($('.button-collapse').sideNav) {
-      $('.button-collapse').sideNav({
-        closeOnClick: true,
-        draggable: true
-      });
-    }
+    $('.button-collapse').sideNav({
+      closeOnClick: true,
+      draggable: true
+    });
     $('#sidenav-overlay').trigger('click');
     const token = localStorage.getItem('token');
-    let decode;
-    try {
-      decode = jwtDecode(token);
-    } catch (err) {
-      this.props.signOut();
-    }
-    const userId = decode.id;
     const offset = 0;
     const limit = this.state.perPage;
-    this.props.getGroupsForUser(userId, offset, limit, token);
-    this.props.getAllGroupsForUser(userId, token);
+    this.props.getGroupsForUser(token, offset, limit);
   }
   /**
    * @param {Object} event Event fired when the pagination is clicked
@@ -63,14 +52,12 @@ export class MessageBoard extends React.Component {
    */
   handlePageNumberClick(event) {
     const token = localStorage.getItem('token');
-    const decode = jwtDecode(token);
-    const userId = decode.id;
 
     const selected = event.selected;
     const offset = Math.ceil(selected * this.state.perPage);
     const limit = this.state.perPage;
     this.setState({ offset }, () => {
-      this.props.getGroupsForUser(userId, offset, limit, token);
+      this.props.getGroupsForUser(token, offset, limit);
     });
   }
   /**
@@ -163,16 +150,16 @@ const mapStateToProps = state =>
 
 const mapDispatchToProps = dispatch =>
   ({
-    getGroupsForUser: (userId, offset, limit, token) =>
-      dispatch(getGroupsForUser(userId, offset, limit, token)),
+    getGroupsForUser: (token, offset, limit) =>
+      dispatch(getGroupsForUser(token, offset, limit)),
     loadMessages: groupId => dispatch(loadMessages(groupId)),
     resetRedirect: () => dispatch(resetRedirect()),
     getMessages: (groupId, token) =>
       dispatch(getMessages(groupId, token)),
     getGroupMembers: (groupId, token) =>
       dispatch(getGroupMembers(groupId, token)),
-    getAllGroupsForUser: (userId, token, offset) =>
-      dispatch(getAllGroupsForUser(userId, token, offset)),
+    getAllGroupsForUser: (token, offset) =>
+      dispatch(getAllGroupsForUser(token, offset)),
     resetLoadingState: () => dispatch(resetLoadingState()),
     verifyToken: token => dispatch(verifyToken(token)),
     signOut: () => dispatch(signOut())

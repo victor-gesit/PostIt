@@ -1,27 +1,21 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
+import nock from 'nock';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
-import sinon from 'sinon';
 import { App } from '../components/App.jsx';
-import dataService from '../services/dataservice';
+import { authMiddleware } from '../middlewares';
 import reducers from '../reducers';
-import {
-  getGroupMembers, addUser, getMessages, loadMessages,
-  resetRedirect, deleteMember, leaveGroup, getPostItMembers,
-  deleteGroup, getAllGroupsForUser, resetLoadingState,
-  postMessage, verifyToken, signOut, notify, seenBy, searchGroup
-} from '../actions';
 
-const store = createStore(reducers, {}, applyMiddleware(dataService));
+jest.mock('react-router-dom');
+jest.mock('react-google-login');
+jest.mock('react-notification-system');
+jest.mock('superagent');
+const store = createStore(reducers, {}, applyMiddleware(authMiddleware));
 
 describe('<App/>', () => {
-  const props = {
-    leaveGroup: sinon.spy(),
-
-  };
   it('loads the full application successfully', () => {
-    const wrapper = shallow(
+    const wrapper = mount(
       <Provider
         store={ store }
       >
@@ -32,6 +26,5 @@ describe('<App/>', () => {
       type: 'VERIFY_TOKEN',
       token: 'abracadabra'
     });
-    wrapper.instance();
   });
 });

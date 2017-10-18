@@ -36,14 +36,6 @@ export class SignUp extends React.Component {
     });
     // Initialize notification component
     this.notificationSystem = this.notificationRef;
-    // Set focus to SignUp button
-    $('#signUpForm').keypress((event) => {
-      if ((event.which && event.which === 13) ||
-        (event.keyCode && event.keyCode === 13)) {
-        $('#signUpButton').click();
-        return false;
-      }
-    });
   }
   /**
    * Component method called before component properties are updated,

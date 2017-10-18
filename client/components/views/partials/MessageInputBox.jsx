@@ -1,6 +1,5 @@
 /* eslint-env browser */
 import React from 'react';
-import jwtDecode from 'jwt-decode';
 import 'jquery/dist/jquery';
 
 /**
@@ -39,6 +38,7 @@ export default class MessageInputBox extends React.Component {
         $('#member-list-button').click();
       }
     });
+    $('.radioButtonLabel').css('padding-left', '25px');
   }
   /**
    * This method sets the priority of the message to be sent
@@ -55,13 +55,6 @@ export default class MessageInputBox extends React.Component {
    */
   sendMessage() {
     const token = localStorage.getItem('token');
-    let decode;
-    try {
-      decode = jwtDecode(token);
-    } catch (err) {
-      this.props.store.history.push('/');
-    }
-    const senderId = decode.id;
     const groupId = this.props.store.match.params.groupId;
     let priority = this.state.priority;
     let body;
@@ -83,15 +76,15 @@ export default class MessageInputBox extends React.Component {
         this.props.store.groups.userGroups[groupId].members;
       const socket = this.props.socket;
       socket.emit('postMessage', {
-        senderId,
         groupId,
         body,
+        token,
         priority,
         isComment: this.isComment,
         groupMembers
       });
-      this.props.store.postMessage(senderId,
-        groupId, body, priority, this.isComment, token);
+      this.props.store.postMessage(groupId,
+        body, priority, this.isComment, token);
     }
   }
   /**

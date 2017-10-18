@@ -80,9 +80,6 @@ module.exports = (sequelize, DataTypes) => {
       through: 'MessageRead'
     });
   };
-  User.beforeCreate((user) => {
-    user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(5), null);
-  });
   User.beforeSave((user) => {
     user.password = bcrypt.hashSync(user.password, bcrypt.genSaltSync(5), null);
   });
