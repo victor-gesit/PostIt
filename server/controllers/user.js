@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import models from '../models';
+import generatePagination from './utils/generatePagination';
 
 const User = models.User;
 
@@ -24,20 +25,14 @@ export default {
           .then((groupsBelongedTo) => {
             offset = Number(offset);
             const allLoaded = offset + groupsBelongedTo.length;
-            let totalPages = Math.ceil(groupsBelongedTo.length / limit);
-            totalPages = offset > 0 ? totalPages + 1 : totalPages;
-            const meta = {
-              indexOfLast: allLoaded,
-              total: count,
-              totalPages,
-              offset
-            };
-            res.status(200).send({ count,
-              allLoaded,
-              meta,
-              success: true,
-              type: 'Groups',
-              rows: groupsBelongedTo
+            generatePagination(offset, limit, count, allLoaded, (meta) => {
+              res.status(200).send({ count,
+                allLoaded,
+                meta,
+                success: true,
+                type: 'Groups',
+                rows: groupsBelongedTo
+              });
             });
           }).catch(() => res.status(422).send({ success: false,
             message: 'Invalid query in url' }));
@@ -58,10 +53,17 @@ export default {
       req.query.token || req.headers['x-access-token'];
     const decode = jwt.decode(token);
     const userId = decode.id;
-    User.find({ where: { id: userId }, attributes: ['firstName', 'lastName', 'email', 'phone', 'id'] }).then(foundUser =>
-      res.status(200).send({ success: true,
+    User.find({ where: { id: userId }, attributes: ['firstName', 'lastName', 'email', 'phone', 'id'] }).then((foundUser) => {
+      if (!foundUser) {
+        return res.status(404).send({
+          success: false,
+          message: 'Token valid, but user not found'
+        });
+      }
+      return res.status(200).send({ success: true,
         message: 'Token is valid. User data gotten',
-        user: foundUser }))
+        user: foundUser });
+    })
       .catch((err) => {
         // Check if it's a sequelize error or group doesn't exist
         if (err.constructor === TypeError) {

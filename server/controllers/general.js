@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import models from '../models';
 import emailTemplate from './utils/emailTemplate';
+import generatePagination from './utils/generatePagination';
 
 dotenv.config();
 const jwtSecret = process.env.JWT_SECRET;
@@ -23,18 +24,10 @@ export default {
       .then((allUsers) => {
         offset = Number(offset);
         const allLoaded = offset + allUsers.rows.length;
-        const totalPages = Math.ceil(allUsers.count / limit);
-        const isLastPage = allLoaded === allUsers.count;
-        const currentPage = Math.ceil(offset / limit) + 1;
-        const meta = {
-          indexOfLast: allLoaded,
-          total: allUsers.count,
-          totalPages,
-          isLastPage,
-          currentPage,
-          offset
-        };
-        res.status(200).send({ ...allUsers, allLoaded, meta, offset });
+        const count = allUsers.count;
+        generatePagination(offset, limit, count, allLoaded, (meta) => {
+          res.status(200).send({ ...allUsers, allLoaded, meta, offset });
+        });
       }).catch(() =>
         res.status(422).send({ success: false, message: 'Invalid query in url' }));
   },

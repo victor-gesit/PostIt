@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import sendEmail from './utils/sendEmail';
 import models from '../models';
+import generatePagination from './utils/generatePagination';
 
 const Group = models.Group;
 const User = models.User;
@@ -270,25 +271,15 @@ export default {
               .then((groupMembers) => {
                 const countOfMembers = groupMembers.length;
                 const allLoaded = Number(offset) + countOfMembers;
-                let totalPages = Math.ceil(count / limit);
-                totalPages = offset > 0 ? totalPages + 1 : totalPages;
-                const isLastPage = allLoaded === count;
-                const currentPage = Math.ceil(offset / limit) + 1;
-                const meta = {
-                  indexOfLast: allLoaded,
-                  total: count,
-                  totalPages,
-                  isLastPage,
-                  currentPage,
-                  offset
-                };
-                return res.status(200).send({
-                  success: true,
-                  type: 'Users',
-                  rows: groupMembers,
-                  count,
-                  allLoaded,
-                  meta
+                generatePagination(offset, limit, count, allLoaded, (meta) => {
+                  return res.status(200).send({
+                    success: true,
+                    type: 'Users',
+                    rows: groupMembers,
+                    count,
+                    allLoaded,
+                    meta
+                  });
                 });
               })
               .catch(() =>

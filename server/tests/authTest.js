@@ -56,7 +56,7 @@ describe('Authentication Tests', () => {
         .get('/api/token')
         .set('x-access-token', token)
         .expect((res) => {
-          expect(res.body.message).toEqual('Token is valid. User data gotten');
+          expect(res.body.message).toEqual('Token valid, but user not found');
           done();
         })
        .end((err) => {
