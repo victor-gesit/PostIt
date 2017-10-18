@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import sendEmail from './utils/sendEmail';
-import sendSMS from './utils/sendSMS';
 import models from '../models';
 
 const Group = models.Group;
@@ -161,7 +160,6 @@ export default {
               .then((groupMembers) => {
                 if (priority === 'critical') {
                   sendEmail(foundGroup, groupMembers, createdMessage);
-                  sendSMS(foundGroup, groupMembers, createdMessage);
                 } else {
                   sendEmail(foundGroup, groupMembers, createdMessage);
                 }
@@ -402,27 +400,12 @@ export default {
       req.query.token || req.headers['x-access-token'];
     const decode = jwt.decode(token);
     const userId = decode.id;
-
-    let membersLeaving = [];
-    // Add new members if specified
-    if (userId !== undefined && userId !== null) {
-      if (typeof (toBeDeleted) === 'string') {
-        membersLeaving.push(userId);
-      }
-      if (userId.constructor === Array) {
-        membersLeaving = membersLeaving.concat(userId);
-      }
-    }
     Group.find({ where: { id: groupId } }).then((foundGroup) => {
       foundGroup.getUsers({ where: { id: userId } }).then((foundUsers) => {
         // Check to see if person to be deleted belongs to the group
         if (foundUsers.length === 0) {
           return res.status(403).send({ success: false,
             message: 'You are not a member of this group' });
-        }
-        if (foundUsers.length === 0) {
-          return res.status(404).send({ success: false,
-            message: 'The person(s) to be deleted do not belong to the group' });
         }
         // You cannot leave if you are the group creator
         if (foundGroup.creatorEmail === foundUsers[0].email) {

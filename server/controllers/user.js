@@ -50,8 +50,7 @@ export default {
           error: err });
       }
       return res.status(422).send({ success: false,
-        message: 'Invalid User Id',
-        error: err });
+        message: 'Invalid User Id' });
     });
   },
   getUserInfo: (req, res) => {
@@ -61,18 +60,16 @@ export default {
     const userId = decode.id;
     User.find({ where: { id: userId }, attributes: ['firstName', 'lastName', 'email', 'phone', 'id'] }).then(foundUser =>
       res.status(200).send({ success: true,
-        message: 'User is valid. User data gotten',
+        message: 'Token is valid. User data gotten',
         user: foundUser }))
       .catch((err) => {
         // Check if it's a sequelize error or group doesn't exist
         if (err.constructor === TypeError) {
           return res.status(404).send({ success: false,
-            message: 'User not found',
-            error: err });
+            message: 'User not found' });
         }
         return res.status(422).send({ success: false,
-          message: 'Invalid User Id',
-          error: err });
+          message: 'Invalid User Id' });
       });
   }
 };

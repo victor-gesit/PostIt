@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer';
 
 dotenv.config();
 
-export default (groupInfo, groupMembers, message) => {
+export default (groupInfo, groupMembers, message, done) => {
   const mailListUnfiltered = groupMembers.map(groupMember =>
     groupMember.email);
   const mailList = mailListUnfiltered.filter(email =>
@@ -33,8 +33,10 @@ export default (groupInfo, groupMembers, message) => {
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.log(error);
+      done(error);
     } else {
       console.log(`Email sent: ${info.response}`);
+      done(null, 'Email sent');
     }
   });
 };
