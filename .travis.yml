@@ -4,4 +4,4 @@ node_js:
 services:
   - postgresql
 before_script:
-  - psql -c 'create database postit_test;' -U postgres
+  - psql -c 'create database post_it;' -U postgres
