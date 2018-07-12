@@ -11,6 +11,12 @@ const request = supertest(app);
 
 describe('Authentication Tests', () => {
   let token;
+  // Sync database before commencing testing
+  beforeEach((done) => {
+    models.sequelize.sync().then(() => {
+      done();
+    });
+  });
   describe('Tests for User creation routes', () => {
     // Clean up database before commencing testing
     beforeEach((done) => {
