@@ -47,6 +47,7 @@ app.use('/*', (req, res) => {
   res.status(404).send({ message: 'Api up and running. Check documentation for appropriate routes' });
 });
 const port = process.env.PORT || 8002;
+console.log("Running on port", port);
 
 models.sequelize.sync();
 const server = httpServer.listen(port);
