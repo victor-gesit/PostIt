@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PostIt</title>
+	<script src="build/bundle.js"></script>
+</head>
+<div class="navbar-fixed">
+<nav class="pink darken-4" role="navigation" >
+	<div class="nav-wrapper">
+		<a href="#" id="brand" class="brand-logo">PostIt</a>
+		<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+		<ul class="right hide-on-med-and-down">
+			<li><a href="#">About PostIt</a></li>
+		</ul>
+		<ul id="mobile-demo" class="side-nav">
+			<li>
+			   <div class="user-details">
+					<div class="background">
+						<img src="images/fire2.png">
+					</div>
+			  </div>
+			</li>
+			<li><a href="#"><i class="large material-icons black-text">info</i>About PostIt</a></li>
+		</ul>
+	</div>
+</nav>
+</div>
+<body>
+<div>
+	<div class="row">
+		<form class="col s8 m6 l4 offset-s2 offset-m3 offset-l4 signup-form">
+			<div class="row">
+				<div>
+					<h3 class="center">Sign Up</h3>
+				</div>
+				<div class="input-field col s12">
+					<input id="firstName" type="text" name="fname" class="validate">
+					<label for="firstName">First Name</label>
+				</div>
+				<div class="input-field col s12">
+					<input id="lastName" type="text" name="lastName" class="validate">
+					<label for="lastName">Last Name</label>
+				</div>
+				<div class="input-field col s12">
+					<input type="text" id="phone" name="number" class="validate">
+					<label for="phone">Phone</label>
+				</div>
+				<div class="input-field col s12">
+					<input id="email" type="email" name="email" class="validate">
+					<label for="email" data-error="Enter valid email">Email</label>
+				</div>
+				<div class="input-field col s12">
+					<input id="password" type="password" class="validate">
+					<label for="password">Password</label>
+				</div>
+				<div class="center">
+				    <button class="btn center green darken-4" autofocus>Sign up</button>
+				</div>
+				<div>
+					<p>Already have an account? <a href="#">Sign in</a></p>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<footer class="page-footer pink darken-4">
+	<div class="shift-left white-text">Built by Victor Idongesit</div>
+	<div class="footer-copyright shift-left">    © Andela, 2017</div>
+</footer>
+</body>
+</html>

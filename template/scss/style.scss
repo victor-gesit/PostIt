@@ -1,0 +1,289 @@
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+/* Style the tab */
+div.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+div.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+div.tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+div.tab button.active {
+    background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+body {
+	background-image: url("../images/map.jpeg");
+	background-repeat: repeat-y;
+	background-position: center;
+	background-size: cover;
+	background-attachment: fixed;
+}
+
+#brand {
+    padding-left: 50px;
+}
+
+.signin-form {
+    margin-top: 20px;
+    padding: 20px;
+    border-style: solid;
+    border-radius: 20px;
+    border-color: black;
+}
+.signup-form {
+    margin-top: 20px;
+    padding: 20px;
+    border-style: solid;
+    border-radius: 20px;
+    border-color: black;
+    padding-bottom: 30px;
+}
+
+.group-details {
+	background-color: white;
+    padding: 20px;
+}
+
+
+
+.message {
+	padding: 10px;
+    margin: 2px;
+    background: rgba(0, 0, 0, .5);
+}
+
+.adminmessage {
+	padding: 10px;
+    margin: 2px;
+    background: rgba(136, 14, 79, .5);
+}
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+.transparent-body {
+  background: rgba(255, 255, 255, .0);
+}
+.shift-left {
+  margin-left: 10px;
+}
+
+body {
+     display: flex;
+     min-height: 100vh;
+     flex-direction: column;
+ }
+ #main {
+     flex: 1 0 auto;
+ }
+.revealed {
+    margin: 30px;
+}
+
+.send-button {
+    margin-left: 12px;
+    position: relative;
+    right: 10px;
+    top: 30px;
+    
+}
+
+.group-info {
+    overflow: auto;
+    height: 70px;
+    font-family: 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.dropdowns {
+    width: auto !important;
+}
+
+
+
+.input-field {
+    float: left;
+    width: 85%;
+}
+.send-button {
+    float:right;
+    width: 12%;
+}
+
+.members-list-container {
+    height: 400px;
+    position: fixed;
+    right: 30px;
+    top: 120px;
+    border: solid;
+    padding: 20px;
+    background: rgba(255, 255, 255, .9);
+    display: none;
+
+}
+
+.members-list {
+    height: 200px;
+    overflow: auto;
+    width: auto !important;
+}
+.project-title {
+    padding: 10px;
+    background: rgba(255, 255, 255, .5);
+    width: 200px;
+}
+
+.searchbox {
+    background: rgba(0, 0, 0, .5);
+    height: 50px;
+}
+.list-side-nav {
+    height: 190px;
+    overflow: auto;
+}
+.navbar-fixed {
+    z-index: 1003;
+}
+
+::-webkit-input-placeholder {
+    color:  rgba(0, 0, 0, .5);
+}
+
+/* label underline focus color */
+.input-field input[type=text]:focus {
+    border-bottom: 1px solid #000;
+    box-shadow: 0 1px 0 0 #000;
+}
+.input-field input[type=password]:focus {
+    border-bottom: 1px solid #000;
+    box-shadow: 0 1px 0 0 #000;
+}
+.input-field input[type=email]:focus {
+    border-bottom: 1px solid #000;
+    box-shadow: 0 1px 0 0 #000;
+}
+
+.input-field input[type=text]:focus + label {
+    color: #000;
+}
+.input-field input[type=password]:focus + label {
+    color: #000;
+}
+.input-field input[type=email]:focus + label {
+    color: #000;
+}
+
+.input-field input[type=text].valid {
+    border-bottom: 1px solid #000;
+    box-shadow: 0 1px 0 0 #000;
+}
+/* invalid color */
+.input-field input[type=email].invalid {
+    border-bottom: 1px solid #880e4f;
+    box-shadow: 0 1px 0 0 #880e4f;
+}
+
+nav{
+    padding-right: 30px;
+}
+
+.message-box {
+    display: flex;
+    flex-direction: row;
+}
+.text-input-field {
+    flex: 1 0 auto;
+    margin-left: 10px;
+}
+
+.memberListToggle {
+    position: fixed;
+    right: 0px;
+    z-index: 2;
+}
+#memberList {
+    z-index: 2;
+}
+header, #messageInputBox, #main-postmessage, #footer {
+    padding-left: 300px;
+}
+
+@media only screen and (max-width : 992px) {
+    #header, #main-postmessage, #messageInputBox, #footer {
+    padding-left: 0;
+    }
+}
+#emptySpace {
+    height: 65px;
+    padding-left: 20px;
+}
+#member-list-toggle {
+    background: transparent;
+}
+#member-list-toggle:hover {
+    background: #880e4f;
+}
+#messageInputBox {
+    background: rgba(255, 255, 255, .5);
+}
+/* Styling for radio buttons */
+// Normal
+#normal[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:after {
+    background-color: green;
+}
+#normal[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:before, [type="radio"].with-gap:checked + label:after {
+    border: 2px solid green;
+}
+// Urgent
+#urgent[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:after {
+    background-color: orange;
+}
+#urgent[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:before, [type="radio"].with-gap:checked + label:after {
+    border: 2px solid orange;
+}
+// Critical
+#critical[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:after {
+    background-color: red;
+}
+#critical[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:before, [type="radio"].with-gap:checked + label:after {
+    border: 2px solid red;
+}
+// Comment
+#comment[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:after {
+    background-color: grey;
+}
+#comment[type="radio"]:checked + label:after, [type="radio"].with-gap:checked + label:before, [type="radio"].with-gap:checked + label:after {
+    border: 2px solid grey;
+}
+#deleteMemberModal {
+    z-index: 0;
+}

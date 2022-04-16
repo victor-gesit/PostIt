@@ -1,0 +1,21 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "idongesit",
+    "database": "post_it",
+    "host": "127.0.0.1",
+    "dialect": "postgres",
+    "logging": false
+  },
+  "test": {
+    "username": "postgres",
+    "password": "idongesit",
+    "database": "postit_test",
+    "host": "127.0.0.1",
+    "dialect": "postgres",
+    "logging": false
+  },
+  "production": {
+    "use_env_variable": "DATABASE_URL"
+  }
+}

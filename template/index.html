@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PostIt</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<script src="build/bundle.js"></script>
+</head>
+<div class="navbar-fixed">
+<nav class="pink darken-4" role="navigation" >
+	<div class="nav-wrapper">
+		<a href="#" id="brand" class="brand-logo">PostIt</a>
+		<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+		<ul class="right hide-on-med-and-down">
+			<li><a href="#">About PostIt</a></li>
+		</ul>
+		<ul id="mobile-demo" class="side-nav">
+			<li>
+			   <div class="user-details">
+					<div class="background">
+						<img src="images/fire2.png">
+					</div>
+			  </div>
+			</li>
+			<li><a href="#"><i class="large material-icons black-text">info</i>About PostIt</a></li>
+		</ul>
+	</div>
+</nav>
+</div>
+<body>
+<div id="main">
+  <div class="fixed-action-btn hide-on-med-and-up">
+    <a class="btn-floating btn-large red" href="#signinform">
+      <i class="large material-icons">lock_outline</i>
+    </a>
+  </div>
+<div class="transparent-body">
+	<div class="row">
+		<div class="col s12 m6 l7 center">
+			<h3 class="brown-text accent-4 lighten-3 center">Why meet when you can PostIt?</h3>
+			<div class="row">
+				<div class="col s12 m12 l6">
+					<i class="large green-text text-darken-4 material-icons">people</i>
+					<h6 class="brown-text accent-4">Create teams of all sizes</h6>
+				</div>
+				<div class="col s12 m12 l6">
+					<i class="large green-text text-darken-4 material-icons">perm_scan_wifi</i>
+					<h6 class="brown-text accent-4">Send broadcast messages to team members</h6>
+				</div>
+				<div class="col s12 m12 l6">
+					<i class="large green-text text-darken-4 material-icons">done_all</i>
+					<h6 class="brown-text accent-4">Get receipt notifications</h6>
+				</div>
+				<div class="col s12 m12 l6">
+					<i class="large green-text text-darken-4 material-icons">trending_up</i>
+					<h6 class="brown-text accent-4">Achieve more in less time</h6>
+				</div>
+		  </div>
+		</div>
+		<div id="signinform" class="col s12 m6 l5">
+			<form class="signin-form">
+				<div class="row">
+					<div>
+						<h3 class="center" >Sign In</h3>
+					</div>
+					<div class="input-field col s12">
+						<input id="email" type="email" class="validate">
+						<label for="email" data-error="Enter valid email">Email</label>
+					</div>
+					<div class="input-field col s12">
+						<input id="password" type="password" class="validate">
+						<label for="password">Password</label>
+					</div>
+					<div class="col s12 center">
+						<button class="btn green darken-4" autofocus>Sign in</button>
+					</div>
+					<br><br>
+					<div class="col s12">
+						<input id="signedin" class="teal-text" type="checkbox" name="signedin">
+						<label for="signedin" >Keep me signed in</label>
+					</div>
+					<div>
+						<p>Don't have an account? <a href="#">Sign up</a></p>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+</div>
+<footer class="page-footer pink darken-4">
+	<div class="shift-left white-text">Built by Victor Idongesit</div>
+	<div class="footer-copyright shift-left">    © Andela, 2017</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PostIt</title>
+	<script type="text/javascript" src="build/bundle.js"></script>
+</head>
+<div class="navbar-fixed">
+<nav class="pink darken-4">
+	<div class="nav-wrapper">
+		<a href="#" id="brand" class="brand-logo">PostIt</a>
+		<a href="#" data-activates="mobile-demo" data-hover="true" class="button-collapse show-on-large"><i class="material-icons">menu</i></a>
+		<ul class="right">
+			<li>
+				<!-- Dropdown Trigger -->
+				<ul>
+					<li>
+						<a class='dropdown-button' data-alignment="right" data-constrainWidth="false" data-beloworigin="true" data-hover="true"  href='#' data-activates='dropdown0'>
+							<i class="material-icons">notifications_active</i>
+						</a>
+					</li>
+				</ul>
+				<!-- Dropdown Structure -->
+				<ul id="dropdown0" class="dropdown-content">
+					<li><a href="#!" class="black-text">Family and Friends<span class="badge">1</span></a></li>
+					<li><a href="#!" class="black-text">DisruptI.T. Project<span class="new pink badge">1</span></a></li>
+				</ul>
+			</li>
+			<li>
+				<!-- Dropdown Trigger -->
+				<ul>
+					<li>
+						<a class='dropdown-button' data-alignment="right" data-constrainWidth="false" data-beloworigin="true" data-hover="true"  href='#' data-activates='dropdown1'>
+							<i class="material-icons">library_add</i>
+						</a>
+					</li>
+				</ul>
+				<!-- Dropdown Structure -->
+				<ul id='dropdown1' class='dropdowns dropdown-content'>
+					<li><a href="#!" class="black-text" ><i class="material-icons green-text">library_add</i>Create Group</a></li>
+				</ul>
+			</li>
+			<li>
+				<!-- Dropdown Trigger -->
+				<ul>
+					<li>
+						<a class='dropdown-button' data-beloworigin="true" data-hover="true"  href='#' data-activates='dropdown3'>
+							<i class="material-icons">person</i>
+						</a>
+					</li>
+				</ul>
+				<!-- Dropdown Structure -->
+				<ul id='dropdown3' class='dropdowns dropdown-content'>
+					<li class="user-profile-container">
+						<ul class="collection">
+							<li class="collection-item avatar black-text">
+							<i class="material-icons purple circle">person</i>
+							<div class="title black-text">Philip Newmann</div>
+							<p>philip@newmann.com<br>08033322425</p>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<div class="row valign-wrapper">
+							<div class="col s12 center">
+								<button class="btn  black">Sign out</button>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<!-- Side Nav -->
+		<ul id="mobile-demo" class="side-nav">
+			<li>
+			   <div class="user-details">
+					<div class="background">
+						<img src="images/fire2.png">
+					</div>
+			  </div>
+			  <ul class="collection">
+				  <li class="collection-item avatar black-text">
+					<i class="material-icons purple circle">person</i>
+					<span class="title black-text">Philip Newmann</span>
+					<p>philip@newmann.com<br>08033322425</p>
+				  </li>
+			  </ul>
+			</li>
+			<li><a href="#"><i class="large material-icons green-text">library_add</i>Create New Group</a></li>
+			<hr/>
+			<li><a href="#"><i class="large material-icons black-text">texture</i>All Groups</a></li>
+			<div class="row searchbox valign-wrapper">
+				<div class="col s9">
+					<input type="search" placeholder="Find a group" class="white-text">
+				</div>
+				<div class="col s3">
+			    <span><i class="material-icons black-text">search</i></span>
+				</div>
+			</div>
+			<ul class="list-side-nav">
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Invent NextBigThing</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Just GetStuffDone</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Let's MakesThingsWork</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Make and DisruptIt</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Invent NextBigThing</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Just GetStuffDone</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Let's MakesThingsWork</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Make and DisruptIt</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Invent NextBigThing</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Just GetStuffDone</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Let's MakesThingsWork</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Make and DisruptIt</a></li>
+			</ul>
+			<hr>
+			<li><a href="#"><i class="large material-icons black-text">info</i>About PostIt</a></li>
+			<li><a href="#"><i class="large material-icons red-text">info</i>Sign Out</a></li>
+		</ul>
+
+	</div>
+</nav>
+</div>
+<body>
+<div id="main">
+	<div class="row">
+		<h3 class="board-title black-text text-darken-4 center">Message Board</h3>
+	</div>
+	<!-- Groups -->
+	<div class="row">
+		<!-- A sample Group -->
+		<div class="col s12 m6 l4">
+			<div class="card">
+				<div class="card-image waves-effect waves-block waves-light">
+					<img class="activator tooltipped"  data-position="top" data-delay="1000" data-tooltip="Click for group info" src="images/fire2.png">
+				</div>
+				<div class="card-content">
+					<div>
+						<a href="#" class="card-title grey-text text-darken-4">NextBigThing<span class="badge new pink">4</span></a>
+						<p class="blue-text">Created by Johnson Thomas</p>
+					</div>
+				</div>
+				
+				<div class="card-reveal">
+				<div>
+					<span class="card-title purple-text text-darken-4">Project NextBigThing<i class="material-icons right">close</i></span>
+					<hr>
+				</div>
+				<div class="group-info">	
+					<p class="black-text">This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!</p>
+					<hr>
+				</div>
+				</div>
+			</div>
+		</div>
+		<!-- Another Sample Group -->
+		<div class="col s12 m6 l4">
+			<div class="card">
+				<div class="card-image waves-effect waves-block waves-light">
+					<img class="activator tooltipped" data-position="top" data-delay="1000" data-tooltip="Click for group info" src="images/fire2.png">
+				</div>
+				<div class="card-content">
+					<div>
+						<a href="#" class="card-title grey-text text-darken-4">DisruptiveTech<span class="badge new pink">3</span></a>
+						<p class="blue-text">Created by Jane Doe</p>
+					</div>
+				</div>
+				
+				<div class="card-reveal">
+				<div>
+					<span class="card-title purple-text text-darken-4">Project DisruptiveIt<i class="material-icons right">close</i></span>
+					<hr>
+				</div>
+				<div class="group-info">	
+					<p class="black-text">This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!</p>
+					<hr>
+				</div>
+				</div>	
+			</div>
+		</div>
+		<!-- A Third Sample Group -->
+		<div class="col s12 m6 l4">
+			<div class="card">
+				<div class="card-image waves-effect waves-block waves-light">
+					<img class="activator tooltipped" data-position="top" data-delay="1000" data-tooltip="Click for group info" src="images/fire2.png">
+				</div>
+				<div class="card-content">
+					<div>
+						<a href="#" class="card-title grey-text text-darken-4">MakeItHappen</a>
+						<p class="blue-text">Created by John Roe</p>
+					</div>
+				</div>
+				
+				<div class="card-reveal">
+				<div>
+					<span class="card-title purple-text text-darken-4">Project MakeItHappen<i class="material-icons right">close</i></span>
+					<hr>
+				</div>
+				<div class="group-info">	
+					<p class="black-text">This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!</p>
+					<hr>
+				</div>
+				</div>
+			</div>
+		</div>
+		<!-- A Fourth Group -->
+		<div class="col s12 m6 l4">
+			<div class="card">
+				<div class="card-image waves-effect waves-block waves-light">
+					<img class="activator tooltipped"  data-position="top" data-delay="1000" data-tooltip="Click for group info" src="images/fire2.png">
+				</div>
+				<div class="card-content">
+					<div>
+						<a href="#" class="card-title grey-text text-darken-4">NextBigThing<span class="badge new pink">4</span></a>
+						<p class="blue-text">Created by Johnson Thomas</p>
+					</div>
+				</div>
+				
+				<div class="card-reveal">
+				<div>
+					<span class="card-title purple-text text-darken-4">Project NextBigThing<i class="material-icons right">close</i></span>
+					<hr>
+				</div>
+				<div class="group-info">	
+					<p class="black-text">This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!</p>
+					<hr>
+				</div>
+				</div>
+			</div>
+		</div>
+		<!-- A Fifth Group -->
+		<div class="col s12 m6 l4">
+			<div class="card">
+				<div class="card-image waves-effect waves-block waves-light">
+					<img class="activator tooltipped" data-position="top" data-delay="1000" data-tooltip="Click for group info" src="images/fire2.png">
+				</div>
+				<div class="card-content">
+					<div>
+						<a href="#" class="card-title grey-text text-darken-4">DisruptiveTech<span class="badge new pink">3</span></a>
+						<p class="blue-text">Created by Jane Doe</p>
+					</div>
+				</div>
+				
+				<div class="card-reveal">
+				<div>
+					<span class="card-title purple-text text-darken-4">Project DisruptiveIt<i class="material-icons right">close</i></span>
+					<hr>
+				</div>
+				<div class="group-info">	
+					<p class="black-text">This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!</p>
+					<hr>
+				</div>
+				</div>	
+			</div>
+		</div>
+		<!-- A Sixth Sample Group -->
+		<div class="col s12 m6 l4">
+			<div class="card">
+				<div class="card-image waves-effect waves-block waves-light">
+					<img class="activator tooltipped" data-position="top" data-delay="1000" data-tooltip="Click for group info" src="images/fire2.png">
+				</div>
+				<div class="card-content">
+					<div>
+						<a href="#" class="card-title grey-text text-darken-4">MakeItHappen</a>
+						<p class="blue-text">Created by John Roe</p>
+					</div>
+				</div>
+				
+				<div class="card-reveal">
+				<div>
+					<span class="card-title purple-text text-darken-4">Project MakeItHappen<i class="material-icons right">close</i></span>
+					<hr>
+				</div>
+				<div class="group-info">	
+					<p class="black-text">This is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!! his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!his is a group where we discuss a KickAss project, and what the project basically does is... Kick Ass!!</p>
+					<hr>
+				</div>
+				</div>
+			</div>
+		</div>
+	<!--End of Groups-->
+	</div>
+</div>
+</div>
+	<!--Pagination-->
+<ul class="pagination center">
+	<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+	<li class="active pink"><a href="#!">1</a></li>
+	<li class="waves-effect"><a href="#!">2</a></li>
+	<li class="waves-effect"><a href="#!">3</a></li>
+	<li class="waves-effect"><a href="#!">4</a></li>
+	<li class="waves-effect"><a href="#!">5</a></li>
+	<li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+</ul>
+<footer class="page-footer pink darken-4">
+	<div class="shift-left white-text">Built by Victor Idongesit</div>
+	<div class="footer-copyright shift-left">© Andela, 2017</div>
+</footer>
+</body>
+</html>

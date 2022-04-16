@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PostIt</title>
+	<script type="text/javascript" src="build/bundle.js"></script>
+</head>
+<div class="navbar-fixed">
+<nav class="pink darken-4">
+	<div class="nav-wrapper">
+		<a href="#" id="brand" class="brand-logo">PostIt</a>
+		<a href="#" data-activates="mobile-demo" data-hover="true" class="button-collapse show-on-large"><i class="material-icons">menu</i></a>
+		<ul class="right">
+			<li>
+				<!-- Dropdown Trigger -->
+				<ul>
+					<li>
+						<a class='dropdown-button' data-alignment="right" data-constrainWidth="false" data-beloworigin="true" data-hover="true"  href='#' data-activates='dropdown0'>
+							<i class="material-icons">notifications_active</i>
+						</a>
+					</li>
+				</ul>
+				<!-- Dropdown Structure -->
+				<ul id="dropdown0" class="dropdown-content">
+					<li><a href="#!" class="black-text">Family and Friends<span class="badge">1</span></a></li>
+					<li><a href="#!" class="black-text">DisruptI.T. Project<span class="new pink badge">1</span></a></li>
+				</ul>
+			</li>
+			<li>
+				<!-- Dropdown Trigger -->
+				<ul>
+					<li>
+						<a class='dropdown-button' data-alignment="right" data-constrainWidth="false" data-beloworigin="true" data-hover="true"  href='#' data-activates='dropdown1'>
+							<i class="material-icons">library_add</i>
+						</a>
+					</li>
+				</ul>
+				<!-- Dropdown Structure -->
+				<ul id='dropdown1' class='dropdowns dropdown-content'>
+					<li><a href="#!" class="black-text" ><i class="material-icons green-text">library_add</i>Create Group</a></li>
+				</ul>
+			</li>
+			<li>
+				<!-- Dropdown Trigger -->
+				<ul>
+					<li>
+						<a class='dropdown-button' data-beloworigin="true" data-hover="true"  href='#' data-activates='dropdown3'>
+							<i class="material-icons">person</i>
+						</a>
+					</li>
+				</ul>
+				<!-- Dropdown Structure -->
+				<ul id='dropdown3' class='dropdowns dropdown-content'>
+					<li class="user-profile-container">
+						<ul class="collection">
+							<li class="collection-item avatar black-text">
+							<i class="material-icons purple circle">person</i>
+							<div class="title black-text">Philip Newmann</div>
+							<p>philip@newmann.com<br>08033322425</p>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<div class="row valign-wrapper">
+							<div class="col s12 center">
+								<button class="btn  black">Sign out</button>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<!-- Side Nav -->
+		<ul id="mobile-demo" class="side-nav fixed">
+			<li>
+			   <div class="user-details">
+					<div class="background">
+						<!-- Overlay navbar background color on sidenav -->
+						<div id="emptySpace" class="pink darken-4">
+							<div class="brand-logo">PostIt</div>
+						</div>
+						<img src="images/fire2.png">
+					</div>
+			  </div>
+			  <ul class="collection">
+				  <li class="collection-item avatar black-text">
+					<i class="material-icons purple circle">person</i>
+					<span class="title black-text">Philip Newmann</span>
+					<p>philip@newmann.com<br>08033322425</p>
+				  </li>
+			  </ul>
+			</li>
+			<li><a href="#groupDeleteModal"><i class="large material-icons red-text">texture</i>Delete Group</a></li>
+			<hr/>
+			<li><a href="#"><i class="large material-icons black-text">texture</i>All Groups</a></li>
+			<div class="row searchbox valign-wrapper">
+				<div class="col s9">
+					<input type="search" placeholder="Find a group" class="white-text">
+				</div>
+				<div class="col s3">
+			    <span><i class="material-icons black-text">search</i></span>
+				</div>
+			</div>
+			<ul class="list-side-nav">
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Invent NextBigThing</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Just GetStuffDone</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Let's MakesThingsWork</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Make and DisruptIt</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Invent NextBigThing</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Just GetStuffDone</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Let's MakesThingsWork</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Make and DisruptIt</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Invent NextBigThing</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Just GetStuffDone</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Let's MakesThingsWork</a></li>
+				<li><a href="#"><i class="material-icons teal-text">people_outline</i>Make and DisruptIt</a></li>
+			</ul>
+			<hr>
+			<li><a href="#"><i class="large material-icons black-text">info</i>About PostIt</a></li>
+			<li><a href="#"><i class="large material-icons red-text">info</i>Sign Out</a></li>
+		</ul>
+	</div>
+
+
+  <!-- Modal Structure for group delete dialog -->
+  <div id="groupDeleteModal" class="modal grey">
+    <div class="modal-content">
+      <h5 class="orange-text">Delete Group?</h5>
+      <p class="white-text">This group will be deleted.</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat green-text">Agree</a>
+			<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat green-text">Disagree</a>
+    </div>
+  </div>
+
+
+</nav>
+</div>
+<body>
+<div id="main-postmessage">
+	<div class="memberListToggle">
+	  <button id="member-list-toggle" class="btn s4">Member List</button>
+  </div>
+	<div class="row">
+		<div class="col s12 m8 offset-m2 l8 offset-l2 messageboard">
+			<div class="group-info center row">
+				<h5 class="col s8 m8 l8">Project NexBigThing</h5>
+			</div>
+			<ul class="messages row">
+				<li class="message card col s11">
+					<small class="sender-name">Ade Balogun<a class="secondary-content red-text"><i class="material-icons">lens</i></a></small>
+					<div class="message-body white-text">I will not be able to make it to the meeting</div>
+					<div class="message-info"><small>Post created 12:06:2017, 11:34am</small></div>
+				</li>
+				<li class="message card col s11">
+					<small class="sender-name">John Smith<a class="secondary-content orange-text"><i class="material-icons">lens</i></a></small>
+					<div class="message-body white-text">We will try to make up for your absence. Take care.</div>
+					<div class="message-info"><small>Post created 12:06:2017, 11:50am</small></div>
+				</li>
+				<li class="message card col s11">
+					<small class="sender-name">Joy Okafor <a class="secondary-content green-text"><i class="material-icons">lens</i></a></small>
+					<div class="message-body white-text">Can we get someone to fill his place?</div>
+					<div class="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+				</li>
+				<li class="adminmessage card col s11 offset-s1">
+					<small class="sender-name">John Keneddy</small>
+					<div class="message-body white-text">Can we get someone to fill his place?</div>
+					<div class="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+				</li>
+				<li class="message card col s11">
+					<small class="sender-name">Ade Balogun <a class="secondary-content grey-text"><i class="material-icons">lens</i></a></small>
+					<div class="message-body white-text">I will not be able to make it to the meeting</div>
+					<div class="message-info"><small>Post created 12:06:2017, 11:34am</small></div>
+				</li>
+				<li class="message card col s11">
+					<small class="sender-name">John Smith</small>
+					<div class="message-body white-text">We will try to make up for your absence. Take care.</div>
+					<div class="message-info"><small>Post created 12:06:2017, 11:50am</small></div>
+				</li>
+				<li class="message card col s11">
+					<small class="sender-name">Joy Okafor</small>
+					<div class="message-body white-text">Can we get someone to fill his place?</div>
+					<div class="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+				</li>
+				<li class="adminmessage card col s11 offset-s1">
+					<small class="sender-name">John Keneddy</small>
+					<div class="message-body white-text">Can we get someone to fill his place?</div>
+					<div class="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+				</li>
+				<li class="adminmessage card col s11 offset-s1">
+					<small class="sender-name">John Keneddy</small>
+					<div class="message-body white-text">Can we get someone to fill his place?</div>
+					<div class="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+				</li>
+				<li class="message card col s11">
+					<small class="sender-name">Ade Balogun</small>
+					<div class="message-body white-text">I will not be able to make it to the meeting</div>
+					<div class="message-info"><small>Post created 12:06:2017, 11:34am</small></div>
+				</li>
+				<li class="message card col s11">
+					<small class="sender-name">John Smith</small>
+					<div class="message-body white-text">We will try to make up for your absence. Take care.</div>
+					<div class="message-info"><small>Post created 12:06:2017, 11:50am</small></div>
+				</li>
+				<li class="message card col s11">
+					<small class="sender-name">Joy Okafor</small>
+					<div class="message-body white-text">Can we get someone to fill his place?</div>
+					<div class="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+				</li>
+				<li class="adminmessage card col s11 offset-s1">
+					<small class="sender-name">John Keneddy</small>
+					<div class="message-body white-text">Can we get someone to fill his place?</div>
+					<div class="message-info"><small>Post created 12:06:2017, 12:00pm</small></div>
+				</li>
+			</ul>
+		</div>
+		<!--Side bar, visible by toggle-->
+		<div id="memberList" class="members-list-container m4 l3">
+				<div class="row searchbox valign-wrapper">
+					<div class="col s9">
+						<input type="search" class="black-text">
+					</div>
+					<div class="col s3">
+						<span><i class="material-icons black-text">search</i></span>
+					</div>
+				</div>
+			<div>Project NextBigThing <span class="badge">24</span></div>
+			<hr>
+			<span>Members List</span>
+	        <ul class="collection members-list">
+	            <li class="collection-item">Ade Balogun<br><small class="grey-text">adebalogyn@yahoo.com</small><a href="#deleteMemberModal" class="secondary-content modal-trigger red-text"><i class="material-icons">clear</i></a></li>
+	            <li class="collection-item">John Smith<a href="#" class="secondary-content red-text"><i class="material-icons">clear</i></a></li>
+	            <li class="collection-item">Joy Okafor<a href="#" class="secondary-content red-text"><i class="material-icons">clear</i></a></li>
+	            <li class="collection-item">John Kennedy Balogun<a class="secondary-content"><i class="material-icons red-text">person</i></a></li>
+	            <li class="collection-item">Ade Balogun<a href="#" class="secondary-content red-text"><i class="material-icons">clear</i></a></li>
+	            <li class="collection-item">John Smith<a href="#" class="secondary-content red-text"><i class="material-icons">clear</i></a></li>
+	            <li class="collection-item">Joy Okafor<a href="#" class="secondary-content red-text"><i class="material-icons">clear</i></a></li>
+	            <li class="collection-item">John Kennedy<a href="#" class="secondary-content red-text"><i class="material-icons">clear</i></a></li>
+	        </ul>
+
+		</div>
+	</div>
+</div>
+
+  <!-- Modal Structure -->
+  <div id="deleteMemberModal" class="modal grey">
+    <div class="modal-content">
+      <h5 class="orange-text">Delete Member?</h5>
+      <p class="white-text">This group member will be removed from this group.</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat green-text">Agree</a>
+			<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat green-text">Disagree</a>
+    </div>
+  </div>
+
+
+
+				<!-- Message Input Box -->
+<div id="messageInputBox">
+	<div id="messageInput">
+		<div class="row">
+			<div class="col center s12 m8 offset-m2 l8 offset-l2">
+				<input name="grp1" type="radio" id="normal" checked>
+				<label for="normal">Normal</label>
+
+				<input name="grp1"  type="radio" id="urgent">
+				<label for="urgent">Urgent</label>
+
+				<input name="grp1" type="radio" id="critical">
+				<label for="critical">Critical</label>
+
+				<input name="grp1" type="radio" id="comment">
+				<label for="comment">Comment</label>
+		  </div>
+			<div class="col s12 m8 offset-m2 l8 offset-l2">
+				<div class="message-box">
+					<div class="text-input-field">
+						<textarea class="black-text materialize-textarea" type="text" name="mymessage"></textarea>
+					</div>
+					<div class="send-button">
+						<button id="member-list-button" class="btn"><i class="material-icons">send</i></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>
